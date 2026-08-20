@@ -1,10 +1,12 @@
+English | [한국어](README-ko.md)
+
 # OpenForge
 
 > **오픈소스 프로젝트 Blueprint & Engineering Standards**
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
-English | [한국어](README-ko.md) · [소개](docs/about-ko.md)
+[소개](docs/about-ko.md) · [English README](README.md)
 
 ## 왜 OpenForge인가?
 
