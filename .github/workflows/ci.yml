@@ -1,0 +1,38 @@
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  repository-check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Verify required files
+        shell: bash
+        run: |
+          set -euo pipefail
+          required=(
+            README.md README-ko.md LICENSE
+            CONTRIBUTING.md CONTRIBUTING-ko.md
+            SECURITY.md SECURITY-ko.md
+            CODE_OF_CONDUCT.md CODE_OF_CONDUCT-ko.md
+            .editorconfig .gitignore
+          )
+          for file in "${required[@]}"; do
+            test -f "$file" || { echo "Missing required file: $file"; exit 1; }
+          done
+
+      - name: Validate Korean filename convention
+        shell: bash
+        run: |
+          set -euo pipefail
+          if find . -type f -name '*_ko.md' -o -type f -name '*.ko.md' | grep -q .; then
+            echo 'Legacy Korean Markdown filename detected. Use <name>-ko.md.'
+            exit 1
+          fi
