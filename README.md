@@ -1,31 +1,34 @@
 # OpenForge
 
-> Open Source Project Blueprint & Engineering Standards
+> **Open Source Project Blueprint & Engineering Standards**
 
-OpenForge is a reusable blueprint for creating and maintaining high-quality open-source projects.
-It defines repository structure, documentation, GitHub practices, CI/CD, security, release management,
-localization, engineering tooling, and project lifecycle standards.
+OpenForge is a reusable engineering foundation for creating, evolving, and maintaining high-quality open-source projects.
 
-## 한국어
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, releases, localization, development tooling, AI-assisted development, and project lifecycle practices.
 
-OpenForge는 품질과 운영 방식을 일관되게 유지하면서 오픈소스 프로젝트를 만들고 운영하기 위한
-재사용 가능한 Blueprint와 Engineering Standard를 제공합니다.
+[한국어 README](README-ko.md) · [About OpenForge](docs/about.md) · [한국어 소개](docs/about-ko.md)
 
-저장소 구조, 문서, GitHub 운영, CI/CD, 보안, 릴리스, 다국어, 개발 도구, 프로젝트 생명주기까지 공통 기준으로 관리합니다.
+## Why OpenForge?
 
-## Core Principles / 핵심 원칙
+Starting an OSS project should not mean rebuilding the same engineering foundation every time. OpenForge provides a practical baseline based on patterns already proven across active projects.
+
+OpenForge is designed to be applied as a **repository blueprint, engineering standard, and reusable project template**.
+
+## Core Principles
 
 - English is the canonical project language; Korean is a first-class translation.
 - User-facing Markdown follows `<name>.md` and `<name>-ko.md`.
-- Open-source projects should be reproducible, documented, testable, and secure by default.
+- Projects should be reproducible, documented, testable, observable, and secure by default.
 - GitHub Issues and Pull Requests are the primary change-management mechanism.
 - Architecture decisions are recorded as ADRs.
 - CI validates quality before changes are merged.
+- Security and supply-chain controls are built into the lifecycle.
 - Localization is designed from the beginning rather than retrofitted later.
 - Development tooling is standardized where it improves consistency and reproducibility.
-- Secrets and credentials are never committed to source control.
+- Actual project resources, identifiers, and API values are not translated.
+- Intentional deviations from the baseline are documented through ADRs.
 
-## Standards / 표준
+## Standards
 
 - [Documentation Standard](docs/documentation.md)
 - [Repository Standard](docs/repository.md)
@@ -39,19 +42,42 @@ OpenForge는 품질과 운영 방식을 일관되게 유지하면서 오픈소�
 - [Internationalization Standard](docs/i18n.md)
 - [OSS Compliance Standard](docs/oss-compliance.md)
 - [Reference Practices Audit](docs/reference-practices.md)
+- [Reference Implementation Metrics](docs/reference-metrics.md)
 
-## Tooling Examples / 개발 도구 예시
+## Engineering Tooling Examples
 
-- Go formatting: `gofumpt` instead of direct `gofmt` usage
-- Code intelligence: `codegraph`, `graphify`, or an equivalent tool when appropriate
-- AI-assisted development: versioned repository guidance such as `AGENTS.md` or `CLAUDE.md`
+OpenForge provides defaults rather than one mandatory stack.
 
-## Templates / 템플릿
+- **Go formatting:** `gofumpt` as the default formatter instead of direct `gofmt` usage
+- **Go quality:** `go vet`, tests, and a static analyzer appropriate to the project
+- **Code intelligence:** `codegraph`, `graphify`, or an equivalent tool when the repository benefits from dependency/call-graph analysis
+- **AI-assisted development:** version-controlled project guidance such as `AGENTS.md`, `CLAUDE.md`, or equivalent instructions
+- **Task automation:** Makefile or an equivalent reproducible task runner where appropriate
+
+See the [Engineering Tooling Matrix](docs/tooling-matrix.md).
+
+## Reference Metrics
+
+OpenForge includes a practical maturity scorecard based on real implementation patterns from existing OSS projects.
+
+Each applicable metric is scored:
+
+- `2` — implemented and automated where practical
+- `1` — partially or manually implemented
+- `0` — missing
+- `N/A` — not applicable
+
+The scorecard covers documentation, architecture, GitHub, CI/CD, security, development tooling, release management, configuration, and localization.
+
+See [Reference Implementation Metrics](docs/reference-metrics.md).
+
+## Templates
 
 Reusable GitHub and project templates are provided under [`templates/`](templates/).
+
 A Go starter example is available under [`templates/go/`](templates/go/).
 
-## Project Lifecycle / 프로젝트 생명주기
+## Project Lifecycle
 
 ```text
 Idea
@@ -69,8 +95,30 @@ CI / Security / Testing
 Release
   ↓
 Maintenance
+  ↓
+Lessons / Metrics
+  ↓
+OpenForge Improvement
 ```
 
-## License / 라이선스
+## Reference Projects
+
+OpenForge is informed by active OSS development practices, including:
+
+- Narwhal
+- Narwhal Portal
+- nfs-quota-agent
+- kube-ready-box
+- KubeMetal
+- ldapium
+- Beluga Manager
+
+These projects are references, not rigid dependencies. The goal is to capture repeatable engineering practices while keeping projects free to choose their own implementation details.
+
+## Contributing
+
+Contributions should follow the repository's [Contributing Guide](CONTRIBUTING.md). New standards should be supported by a concrete use case, reference implementation, or repeatable engineering benefit.
+
+## License
 
 Apache License 2.0. See [LICENSE](LICENSE).
