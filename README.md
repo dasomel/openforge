@@ -1,3 +1,5 @@
+English | [한국어](README-ko.md)
+
 # OpenForge
 
 > **Open Source Project Blueprint & Engineering Standards**
@@ -6,7 +8,7 @@ OpenForge is a reusable engineering foundation for creating, evolving, and maint
 
 It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, releases, localization, development tooling, AI-assisted development, and project lifecycle practices.
 
-English | [한국어](README-ko.md) · [About](docs/about.md)
+[About](docs/about.md)
 
 ## Why OpenForge?
 
