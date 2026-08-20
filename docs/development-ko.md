@@ -8,6 +8,23 @@
 - 중요한 결정은 ADR로 기록합니다.
 - UI에 종속된 API보다 안정적인 Domain Model을 우선합니다.
 - 외부 컴포넌트와의 불필요한 결합을 피합니다.
+- Architecture 정보는 source code와 configuration으로 재현 가능하게 유지합니다.
+
+## 코드 품질
+
+- 언어별 formatter를 로컬 개발과 CI에서 일관되게 적용합니다.
+- Go 프로젝트에서는 `gofmt`를 직접 사용하기보다 `gofumpt`를 기본 formatter로 사용합니다.
+- 언어에 맞는 static analysis 도구를 적용합니다.
+- formatting, linting, testing, build를 CI에서 재현 가능하게 유지합니다.
+- 생성 코드와 생성 분석 artifact는 파생 산출물로 취급합니다.
+
+선호 도구와 적용 예시는 [Engineering Tooling Standard](tooling.md)를 참고합니다.
+
+## Code Intelligence
+
+중간 규모 이상의 저장소에서는 Architecture 이해, Review, Change-impact 분석에 도움이 되는 경우 Code Graph 또는 Code Intelligence 도구를 사용합니다. 예를 들어 프로젝트 기술 스택에 맞는 경우 `codegraph`, `graphify`를 사용할 수 있습니다.
+
+생성된 Graph는 재현 가능해야 하며 source code나 ADR을 대신하는 authoritative Architecture 기록이 되어서는 안 됩니다.
 
 ## 테스트
 
