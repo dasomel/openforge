@@ -32,6 +32,7 @@ OpenForge는 품질과 운영 방식을 일관되게 유지하면서 오픈소�
 - [GitHub Standard](docs/github.md)
 - [Development Standard](docs/development.md)
 - [Engineering Tooling Standard](docs/tooling.md)
+- [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Security Standard](docs/security.md)
 - [CI/CD Standard](docs/ci-cd.md)
 - [Release Standard](docs/release.md)
@@ -47,6 +48,7 @@ OpenForge는 품질과 운영 방식을 일관되게 유지하면서 오픈소�
 ## Templates / 템플릿
 
 Reusable GitHub and project templates are provided under [`templates/`](templates/).
+A Go starter example is available under [`templates/go/`](templates/go/).
 
 ## Project Lifecycle / 프로젝트 생명주기
 
