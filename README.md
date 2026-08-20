@@ -38,6 +38,7 @@ OpenForge는 품질과 운영 방식을 일관되게 유지하면서 오픈소�
 - [Release Standard](docs/release.md)
 - [Internationalization Standard](docs/i18n.md)
 - [OSS Compliance Standard](docs/oss-compliance.md)
+- [Reference Practices Audit](docs/reference-practices.md)
 
 ## Tooling Examples / 개발 도구 예시
 
