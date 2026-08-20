@@ -6,7 +6,7 @@ OpenForge is a reusable engineering foundation for creating, evolving, and maint
 
 It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, releases, localization, development tooling, AI-assisted development, and project lifecycle practices.
 
-[한국어 README](README-ko.md) · [About OpenForge](docs/about.md) · [한국어 소개](docs/about-ko.md)
+English | [한국어](README-ko.md) · [About](docs/about.md)
 
 ## Why OpenForge?
 
