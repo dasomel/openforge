@@ -1,30 +1,26 @@
-name: Bug report
-description: Report a reproducible problem
+name: Bug report / 버그 신고
+description: Report a reproducible problem / 재현 가능한 문제를 신고합니다.
 labels: [bug]
 body:
   - type: textarea
     id: summary
     attributes:
-      label: Summary
-      label: 요약
+      label: Summary / 요약
       description: Describe the problem / 문제를 설명해 주세요.
     validations:
       required: true
   - type: textarea
     id: reproduction
     attributes:
-      label: Reproduction
-      label: 재현 방법
+      label: Reproduction / 재현 방법
       description: Steps and environment / 재현 절차와 환경
     validations:
       required: true
   - type: textarea
     id: expected
     attributes:
-      label: Expected behavior
-      label: 기대 동작
+      label: Expected behavior / 기대 동작
   - type: textarea
     id: logs
     attributes:
-      label: Logs
-      label: 로그
+      label: Logs / 로그
