@@ -4,9 +4,7 @@
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
-Repository 구조, 문서, GitHub 운영, CI/CD, 보안, 릴리스, 다국어, 개발 도구, AI-assisted development, 프로젝트 생명주기 등 OSS 개발에서 반복적으로 필요한 기준을 표준화합니다.
-
-[English README](README.md) · [OpenForge 소개](docs/about-ko.md) · [About OpenForge](docs/about.md)
+English | [한국어](README-ko.md) · [소개](docs/about-ko.md)
 
 ## 왜 OpenForge인가?
 
