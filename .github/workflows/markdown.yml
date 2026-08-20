@@ -1,0 +1,32 @@
+name: Markdown
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  markdown:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check Markdown naming convention
+        shell: bash
+        run: |
+          set -euo pipefail
+          legacy=$(find . -type f \( -name '*_ko.md' -o -name '*.ko.md' \) -not -path './.git/*' || true)
+          if [ -n "$legacy" ]; then
+            echo 'Legacy Korean Markdown names detected:'
+            echo "$legacy"
+            exit 1
+          fi
+      - name: Check language pairs for root user-facing documents
+        shell: bash
+        run: |
+          set -euo pipefail
+          for file in README.md CONTRIBUTING.md SECURITY.md CODE_OF_CONDUCT.md; do
+            test -f "$file" || continue
+            test -f "${file%.md}-ko.md" || { echo "Missing Korean counterpart for $file"; exit 1; }
+          done
