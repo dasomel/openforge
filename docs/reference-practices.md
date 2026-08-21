@@ -23,16 +23,29 @@ OpenForge was reviewed against active repositories including Narwhal, Narwhal Po
 | Make-based developer UX | KubeMetal, ldapium, Narwhal | Prefer a small, discoverable command surface where appropriate |
 | Version checks | ldapium | Automate version consistency checks when multiple manifests/configs carry versions |
 | Supply-chain checks | ldapium scorecard workflow, image/release workflows | Add provenance, SBOM, vulnerability and workflow-hardening checks where applicable |
+| **Dependency freshness / cooling** | Portfolio security review | **`docs/supply-chain.md`: latest-compatible is insufficient; 14-day default cooling, emergency exception and progressive adoption** |
+| **Change impact / workflow contract** | Recent Bun CI incident and cross-workflow review | **`docs/change-management.md`: Class C/D changes require workflow-wide impact analysis and runtime/toolchain verification** |
+| **Build-time trust boundary** | Rust supply-chain incident analysis | **Treat install hooks, build scripts, proc-macros, plugins and code generators as executable supply-chain inputs** |
 | Deployment-specific docs | Narwhal | Separate common guidance from target-specific operational documents |
 | Helm chart docs | ldapium | Maintain chart README and values documentation for reusable charts |
 | Image/packaging docs | ldapium, KubeMetal | Document build, packaging, registry and architecture expectations |
 | CI regression evidence | Narwhal | Preserve reproducible regression tests and link important failures to lessons |
 
+## Change-management rule
+
+A dependency/runtime/toolchain migration changes the build contract even when the application interface remains compatible. Before merge, search every workflow that can invoke the affected build, test, package or release command.
+
+The historical Bun migration failure is the reference example: a build command changed to invoke Bun, but an independent Pages deployment workflow did not install Bun. The durable OpenForge rule is therefore **workflow-wide impact analysis**, not a one-off fix.
+
+## Supply-chain rule
+
+OpenForge is the reference standard for the portfolio. Repository-specific supply-chain policies should reference `docs/supply-chain.md` rather than inventing incompatible freshness, pinning, provenance or rollback rules.
+
 ## Documentation naming exception
 
 The `-ko.md` rule applies to **project-owned, user-facing documentation**. It does not require rewriting third-party or vendored documentation, generated documentation, or upstream artifacts whose filename is part of the upstream distribution contract.
 
-Examples from Narwhal include vendored chart documentation and existing upstream README conventions. Preserve those artifacts unless there is a specific reason to fork the document naming.
+Examples from Narwhal include vendored chart documentation and existing upstream README conventions. Preserve those artifacts unless there is a specific reason to change the filename.
 
 ## Recommended evidence loop
 
@@ -41,9 +54,13 @@ Failure / Change
       ↓
 Issue / ADR / Incident record
       ↓
+Change impact analysis
+      ↓
 Implementation
       ↓
 Regression test or CI check
+      ↓
+Security / supply-chain evidence
       ↓
 Release note / Changelog
       ↓
@@ -56,4 +73,9 @@ This loop is particularly valuable for infrastructure and platform projects wher
 
 OpenForge는 Narwhal, Narwhal Portal, nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, Beluga 등 실제 개발 중인 저장소를 기준으로 공통 패턴을 검토했습니다.
 
-위 표의 공통 패턴은 OpenForge 표준에 반영하며, 프로젝트별 특수성은 ADR 또는 project-specific guidance로 분리합니다.
+이번 표준화에서 공급망과 변경 영향 분석도 공통 engineering practice로 승격했습니다.
+
+- `docs/supply-chain.md`: dependency freshness/cooling, immutable input, build-time trust boundary, provenance, progressive adoption, quarantine/rollback
+- `docs/change-management.md`: Class C/D 변경 분류, workflow-wide impact analysis, runtime/toolchain verification, regression rule
+
+프로젝트별 특수성은 ADR 또는 project-specific guidance로 분리하고, 공통 정책은 위 두 표준을 참조합니다.
