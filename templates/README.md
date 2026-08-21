@@ -19,6 +19,7 @@ templates/
 ├── observability/   # health / metrics / traces / logs
 ├── backup/          # backup / restore
 ├── offline/         # air-gap bundle manifest
+├── documentation/   # documentation-site architecture/content contract
 └── design/          # README / landing page / architecture / status / tokens
 ```
 
@@ -29,3 +30,4 @@ templates/
 3. Run the project's CI, security, and compatibility checks.
 4. Document deviations from the baseline.
 5. Keep derived assets (such as SVG exports) generated from source-controlled definitions when possible.
+6. Keep implementation assets in the project repository and explanatory documentation in the documentation portal without duplicating the source of truth.
