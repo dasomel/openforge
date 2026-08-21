@@ -6,7 +6,7 @@ English | [한국어](README-ko.md)
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
-OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, localization, development tooling, project lifecycle을 공통 기준으로 관리합니다.
+OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, development tooling, project lifecycle을 공통 기준으로 관리합니다.
 
 [소개](docs/about-ko.md) · [English README](README.md)
 
@@ -22,6 +22,7 @@ OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, securi
 - Dependency/runtime/toolchain 변경은 workflow 전체 영향 분석을 수행합니다.
 - AI agent와 repository-local instruction은 잠재적으로 untrusted execution input으로 취급합니다.
 - 단독 maintainer OSS도 고려하여 사람 수가 아닌 risk와 automated control을 기준으로 governance를 적용합니다.
+- CI 장애가 security gate 우회를 유도하지 않도록 resilience/fallback을 설계합니다.
 - 의도적인 예외는 범위와 만료를 기록합니다.
 
 ## 표준
@@ -36,6 +37,7 @@ OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, securi
 - [Supply Chain Security Standard](docs/supply-chain-ko.md)
 - [Package and Artifact Identity](docs/package-identity-ko.md)
 - [CI/CD Security Standard](docs/ci-security-ko.md)
+- [CI/CD Resilience Standard](docs/ci-resilience-ko.md)
 - [Change Management and Impact Analysis](docs/change-management-ko.md)
 - [Upgrade and Compatibility Engineering](docs/upgrade-compatibility-ko.md)
 - [Reproducible Build](docs/reproducible-build-ko.md)
@@ -57,7 +59,7 @@ OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, securi
 
 ## Reference Metrics
 
-OpenForge의 maturity scorecard는 documentation, architecture, GitHub, CI/CD, security, supply-chain, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release, configuration, localization 등을 평가합니다.
+OpenForge의 maturity scorecard는 documentation, architecture, GitHub, CI/CD, security, supply-chain, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release, resilience, configuration, localization 등을 평가합니다.
 
 - `2` — 구현되어 있고 가능한 경우 자동화됨
 - `1` — 부분적 또는 수동으로 구현됨
