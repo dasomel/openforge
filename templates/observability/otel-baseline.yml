@@ -1,0 +1,24 @@
+# OpenTelemetry Observability Baseline
+
+```yaml
+service:
+  name: project-name
+  version: vX.Y.Z
+  environment: production
+telemetry:
+  traces: otlp
+  metrics: otlp
+  logs: structured
+health:
+  liveness: /healthz
+  readiness: /readyz
+```
+
+Minimum application contract:
+
+- expose liveness and readiness separately
+- emit structured logs with timestamp, level, service, version, and correlation/trace ID where available
+- expose application metrics appropriate to the workload
+- propagate W3C Trace Context when distributed tracing is enabled
+- document telemetry endpoints and required credentials
+- avoid secrets and personal data in logs

@@ -1,0 +1,37 @@
+# SBOM Release Workflow Baseline
+name: SBOM
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: read
+
+jobs:
+  sbom:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout release commit
+        uses: actions/checkout@v7
+
+      - name: Generate SBOM
+        uses: anchore/sbom-action@v0
+        with:
+          artifact-name: sbom.spdx.json
+          output-file: sbom.spdx.json
+
+      - name: Validate SBOM exists
+        shell: bash
+        run: test -s sbom.spdx.json
+
+      - name: Upload SBOM
+        uses: actions/upload-artifact@v4
+        with:
+          name: sbom
+          path: sbom.spdx.json
+          if-no-files-found: error
+
+# Adapt the generator/version to the project ecosystem and pin action
+# references to the project's approved immutable revision policy.

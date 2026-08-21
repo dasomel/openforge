@@ -1,0 +1,22 @@
+# Offline Bundle Manifest
+version: 1
+project: project-name
+release: vX.Y.Z
+artifacts:
+  - path: images/app.tar
+    digest: sha256:REPLACE_ME
+  - path: charts/app.tgz
+    digest: sha256:REPLACE_ME
+  - path: sbom.spdx.json
+    digest: sha256:REPLACE_ME
+  - path: provenance.json
+    digest: sha256:REPLACE_ME
+  - path: checksums.txt
+    digest: sha256:REPLACE_ME
+metadata:
+  source_revision: REPLACE_ME
+  build_revision: REPLACE_ME
+  created_at: REPLACE_ME
+
+# Offline/air-gap bundles should be self-contained, checksummed, versioned,
+# and independently verifiable without contacting the public internet.
