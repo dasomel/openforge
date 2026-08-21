@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout exact release commit
-        uses: actions/checkout@v6
+        uses: actions/checkout@<APPROVED_IMMUTABLE_REVISION>
 
       - name: Release gate checklist
         shell: bash
@@ -28,6 +28,6 @@ jobs:
           echo "6. Apply project approval/publish policy"
           echo "7. Re-verify published artifact"
 
-# Replace this checklist with ecosystem-specific gates. Do not grant
-# id-token: write or registry publish permissions unless the publish job
-# explicitly requires them.
+# Replace APPROVED_IMMUTABLE_REVISION with the exact approved commit SHA.
+# Do not grant id-token: write or registry publish permissions unless the
+# publish job explicitly requires them.
