@@ -6,7 +6,7 @@ English | [한국어](README-ko.md)
 
 OpenForge is a reusable engineering foundation for creating, evolving, and maintaining high-quality open-source projects.
 
-It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, development tooling, and project lifecycle practices.
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, development tooling, reusable implementation templates, and project lifecycle practices.
 
 [About](docs/about.md)
 
@@ -30,6 +30,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - AI agents and repository-local instructions are treated as potentially untrusted execution inputs.
 - Security controls are risk-based so single-maintainer OSS projects remain practical.
 - CI outages must not force maintainers to bypass security gates blindly.
+- Reusable templates provide implementation starting points but are not universal drop-in configuration.
 - Intentional deviations from the baseline are time-bounded and documented.
 
 ## Standards
@@ -64,6 +65,17 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - [Reference Practices Audit](docs/reference-practices.md)
 - [Reference Implementation Metrics](docs/reference-metrics.md)
 
+## Templates
+
+Reusable implementation starting points are provided under [`templates/`](templates/):
+
+- GitHub PR and security-sensitive path samples
+- CI and release-security workflow baselines
+- Toolchain verification script
+- Dependency governance policy example
+
+Templates are intentionally conservative. Adapt permissions, versions, paths, commands and ecosystem-specific controls to the target repository and threat model.
+
 ## Reference Metrics
 
 OpenForge includes a practical maturity scorecard covering documentation, architecture, GitHub, CI/CD, security, supply-chain governance, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release management, resilience, configuration, and localization.
@@ -87,6 +99,8 @@ Project Definition
 Repository Bootstrap
   ↓
 Documentation + Architecture
+  ↓
+Template Adoption
   ↓
 Implementation
   ↓
