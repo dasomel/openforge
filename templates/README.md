@@ -19,7 +19,7 @@ templates/
 ├── observability/   # health / metrics / traces / logs
 ├── backup/          # backup / restore
 ├── offline/         # air-gap bundle manifest
-├── documentation/   # documentation-site architecture/content contract
+├── documentation/   # independent OSS documentation portal blueprint
 └── design/          # README / landing page / architecture / status / tokens
 ```
 
@@ -28,6 +28,6 @@ templates/
 1. Start from the closest ecosystem template.
 2. Replace placeholders and pin security-sensitive inputs.
 3. Run the project's CI, security, and compatibility checks.
-4. Document deviations from the baseline.
-5. Keep derived assets (such as SVG exports) generated from source-controlled definitions when possible.
-6. Keep implementation assets in the project repository and explanatory documentation in the documentation portal without duplicating the source of truth.
+4. For OSS documentation, use `templates/documentation/blueprint.md` as the contract and expose the project through the shared `/oss/` hub.
+5. Document deviations from the baseline.
+6. Keep derived assets (such as SVG exports) generated from source-controlled definitions when possible.
