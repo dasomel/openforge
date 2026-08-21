@@ -6,6 +6,8 @@ English | [한국어](README-ko.md)
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
+OpenForge는 repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, release, localization, development tooling, AI-assisted development, project lifecycle을 공통 기준으로 관리합니다.
+
 [소개](docs/about-ko.md) · [English README](README.md)
 
 ## 왜 OpenForge인가?
@@ -23,6 +25,8 @@ OpenForge는 **Repository Blueprint, Engineering Standard, 재사용 가능한 P
 - 아키텍처 결정은 ADR로 기록합니다.
 - Merge 전에 CI가 품질을 검증합니다.
 - Security와 Supply Chain 관리를 프로젝트 생명주기에 포함합니다.
+- Dependency 호환성만으로 최신 버전을 즉시 채택하지 않습니다.
+- Dependency/runtime/toolchain 변경은 workflow 전체 영향 분석을 수행합니다.
 - Localization은 나중에 추가하지 않고 처음부터 설계합니다.
 - 일관성과 재현성을 높이는 개발 도구는 표준화합니다.
 - 실제 프로젝트 리소스 이름, identifier, API 값 등은 번역하지 않습니다.
@@ -37,6 +41,8 @@ OpenForge는 **Repository Blueprint, Engineering Standard, 재사용 가능한 P
 - [Engineering Tooling Standard](docs/tooling-ko.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
 - [Security Standard](docs/security-ko.md)
+- [Supply Chain Security Standard](docs/supply-chain-ko.md)
+- [Change Management and Impact Analysis Standard](docs/change-management-ko.md)
 - [CI/CD Standard](docs/ci-cd-ko.md)
 - [Release Standard](docs/release-ko.md)
 - [Internationalization Standard](docs/i18n-ko.md)
@@ -67,7 +73,7 @@ OpenForge에는 기존 OSS 프로젝트의 실제 구현 사례를 기반으로 
 - `0` — 미구현
 - `N/A` — 해당 없음
 
-문서, 아키텍처, GitHub, CI/CD, 보안, 개발 도구, 릴리스, 설정, 다국어 등 주요 영역을 평가합니다.
+문서, 아키텍처, GitHub, CI/CD, 보안, 공급망, 변경 관리, 개발 도구, 릴리스, 설정, 다국어 등 주요 영역을 평가합니다.
 
 자세한 내용은 [Reference Implementation Metrics](docs/reference-metrics-ko.md)를 참고합니다.
 
@@ -89,6 +95,8 @@ Repository Bootstrap
 Documentation + Architecture
   ↓
 Implementation
+  ↓
+Change Impact / Supply Chain Review
   ↓
 CI / Security / Testing
   ↓
