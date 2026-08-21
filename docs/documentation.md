@@ -24,6 +24,8 @@ English is the canonical filename. Korean uses the `-ko.md` suffix.
 - Record architecture decisions as ADRs.
 - Record important operational failures as lessons/incidents/mistakes and connect them to tests when practical.
 - Do not put secrets, private endpoints or credentials in documentation.
+- Treat build, runtime, dependency and release contracts as documented engineering interfaces.
+- Update relevant documentation when a change modifies those contracts.
 
 ## Documentation set
 
@@ -37,6 +39,7 @@ CODE_OF_CONDUCT.md / CODE_OF_CONDUCT-ko.md
 CHANGELOG.md / CHANGELOG-ko.md
 docs/architecture.md / docs/architecture-ko.md
 docs/development.md / docs/development-ko.md
+docs/change-management.md
 ```
 
 Add when applicable:
@@ -44,10 +47,13 @@ Add when applicable:
 ```text
 RELEASING.md / RELEASING-ko.md
 VERSIONS.md / VERSIONS-ko.md
+docs/supply-chain.md / docs/supply-chain-ko.md
 NOTICE / THIRD-PARTY-LICENSES.md
 docs/common/
 docs/<deployment-target>/
 ```
+
+Supply-chain and change-management standards are canonical portfolio guidance; repository-specific documents should link to them rather than define conflicting policies.
 
 ## Filename exceptions
 

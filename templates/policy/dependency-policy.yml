@@ -1,0 +1,27 @@
+version: 1
+policy:
+  dependency_adoption:
+    latest_compatible_is_not_sufficient: true
+    routine_cooling_days: 14
+    emergency_bypass:
+      requires_reason: true
+      requires_rollback_plan: true
+      requires_expiration: true
+  immutable_inputs:
+    required_for_release: true
+    forbid_floating_tags: true
+  provenance:
+    required_when_supported: true
+    trust_equivalence: false
+  build_time_execution:
+    treat_install_hooks_as_untrusted: true
+    restrict_egress_when_practical: true
+  progressive_adoption:
+    canary_before_broad_rollout: true
+  rollback:
+    keep_last_known_good: true
+  change_impact:
+    inspect_all_affected_workflows: true
+
+# This file is a policy example. Projects should map these controls to the
+# package manager, CI platform, artifact registry and threat model they use.
