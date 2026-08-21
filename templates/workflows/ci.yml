@@ -13,7 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@<APPROVED_IMMUTABLE_REVISION>
 
       - name: Validate repository contracts
         shell: bash
@@ -26,3 +26,7 @@ jobs:
           test -f docs/supply-chain.md
           test -f docs/change-management.md
           echo "OpenForge baseline files present"
+
+# Replace APPROVED_IMMUTABLE_REVISION with the exact commit SHA approved by
+# the project's dependency/workflow policy. Do not use a floating tag in
+# production without an explicit exception.

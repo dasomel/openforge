@@ -4,9 +4,9 @@ English | [한국어](README-ko.md)
 
 > **Open Source Project Blueprint & Engineering Standards**
 
-OpenForge is a reusable engineering foundation for creating, evolving, and maintaining high-quality open-source projects.
+OpenForge is a reusable engineering foundation for creating, evolving, deploying, and maintaining high-quality open-source projects.
 
-It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, development tooling, reusable implementation templates, and project lifecycle practices.
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, reusable implementation templates, deployment baselines, design templates, and project lifecycle practices.
 
 [About](docs/about.md)
 
@@ -14,13 +14,13 @@ It standardizes the parts of OSS development that should be consistent across pr
 
 Starting an OSS project should not mean rebuilding the same engineering foundation every time. OpenForge provides a practical baseline based on patterns already proven across active projects.
 
-OpenForge is designed to be applied as a **repository blueprint, engineering standard, and reusable project template**.
+OpenForge is designed to be applied as a **repository blueprint, engineering standard, reusable project template, and implementation catalog**.
 
 ## Core Principles
 
 - English is the canonical project language; Korean is a first-class translation.
 - User-facing Markdown follows `<name>.md` and `<name>-ko.md`.
-- Projects should be reproducible, documented, testable, observable, and secure by default.
+- Projects should be reproducible, documented, testable, observable, accessible, and secure by default.
 - GitHub Issues and Pull Requests are the primary change-management mechanism.
 - Architecture decisions are recorded as ADRs.
 - CI validates quality before changes are merged.
@@ -67,14 +67,25 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 
 ## Templates
 
-Reusable implementation starting points are provided under [`templates/`](templates/):
+OpenForge provides reusable implementation and design templates under [`templates/`](templates/):
 
-- GitHub PR and security-sensitive path samples
-- CI and release-security workflow baselines
-- Toolchain verification script
-- Dependency governance policy example
+```text
+templates/
+├── github/          # PR / CODEOWNERS patterns
+├── workflows/       # CI / release / SBOM workflows
+├── scripts/         # toolchain / validation helpers
+├── policy/          # dependency / engineering policies
+├── container/       # Docker image baseline
+├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
+├── gitops/          # Argo CD / GitOps deployment patterns
+├── identity/        # OIDC / SSO integration contract
+├── observability/   # health / metrics / traces / logs contract
+├── backup/          # backup and restore runbook
+├── offline/         # air-gap bundle manifest
+└── design/          # README / landing / architecture / status / design tokens
+```
 
-Templates are intentionally conservative. Adapt permissions, versions, paths, commands and ecosystem-specific controls to the target repository and threat model.
+Templates are intentionally conservative. Adapt versions, permissions, paths, commands, domains, images, identities, and ecosystem-specific controls to the target repository and threat model.
 
 ## Reference Metrics
 
@@ -100,7 +111,7 @@ Repository Bootstrap
   ↓
 Documentation + Architecture
   ↓
-Template Adoption
+Standards + Template Adoption
   ↓
 Implementation
   ↓
@@ -109,6 +120,8 @@ Change Impact / Supply Chain Review
 CI / Security / Testing
   ↓
 Release / Publish Verification
+  ↓
+Operations / Backup / Observability
   ↓
 Maintenance / Incident Learning
   ↓
@@ -133,7 +146,7 @@ These projects are references, not rigid dependencies. The goal is to capture re
 
 ## Contributing
 
-Contributions should follow the repository's [Contributing Guide](CONTRIBUTING.md). New standards should be supported by a concrete use case, reference implementation, or repeatable engineering benefit.
+Contributions should follow the repository's [Contributing Guide](CONTRIBUTING.md). New standards and templates should be supported by a concrete use case, reference implementation, or repeatable engineering benefit.
 
 ## License
 

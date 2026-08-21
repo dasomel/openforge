@@ -1,0 +1,16 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+resources:
+  - deployment.yaml
+  - service.yaml
+  - serviceaccount.yaml
+  - networkpolicy.yaml
+  - pdb.yaml
+  - ingress.yaml
+
+commonLabels:
+  app.kubernetes.io/part-of: project
+  app.kubernetes.io/managed-by: kustomize
+
+# Keep environment-specific patches in overlays/ rather than copying the base.
