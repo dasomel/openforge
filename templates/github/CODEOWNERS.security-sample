@@ -1,0 +1,14 @@
+# Security-sensitive path review sample
+
+# Security-sensitive repository configuration
+/.github/workflows/ @SECURITY_REVIEWER
+/.github/actions/ @SECURITY_REVIEWER
+/Dockerfile @SECURITY_REVIEWER
+/package.json @SECURITY_REVIEWER
+/*lock* @SECURITY_REVIEWER
+/scripts/ @SECURITY_REVIEWER
+/release/ @SECURITY_REVIEWER
+
+# Replace @SECURITY_REVIEWER with a real maintainer/team, or use CODEOWNERS
+# path ownership appropriate to the project. Single-maintainer projects may
+# combine CODEOWNERS with automated policy checks and protected release gates.

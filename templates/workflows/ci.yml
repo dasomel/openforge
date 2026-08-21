@@ -1,0 +1,28 @@
+name: OpenForge CI Baseline
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Validate repository contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f README.md
+          test -f SECURITY.md
+          test -f docs/documentation.md
+          test -f docs/security.md
+          test -f docs/supply-chain.md
+          test -f docs/change-management.md
+          echo "OpenForge baseline files present"
