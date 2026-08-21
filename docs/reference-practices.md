@@ -23,13 +23,20 @@ OpenForge was reviewed against active repositories including Narwhal, Narwhal Po
 | Make-based developer UX | KubeMetal, ldapium, Narwhal | Prefer a small, discoverable command surface where appropriate |
 | Version checks | ldapium | Automate version consistency checks when multiple manifests/configs carry versions |
 | Supply-chain checks | ldapium scorecard workflow, image/release workflows | Add provenance, SBOM, vulnerability and workflow-hardening checks where applicable |
-| **Dependency freshness / cooling** | Portfolio security review | **`docs/supply-chain.md`: latest-compatible is insufficient; 14-day default cooling, emergency exception and progressive adoption** |
-| **Change impact / workflow contract** | Recent Bun CI incident and cross-workflow review | **`docs/change-management.md`: Class C/D changes require workflow-wide impact analysis and runtime/toolchain verification** |
-| **Build-time trust boundary** | Rust supply-chain incident analysis | **Treat install hooks, build scripts, proc-macros, plugins and code generators as executable supply-chain inputs** |
-| Deployment-specific docs | Narwhal | Separate common guidance from target-specific operational documents |
-| Helm chart docs | ldapium | Maintain chart README and values documentation for reusable charts |
-| Image/packaging docs | ldapium, KubeMetal | Document build, packaging, registry and architecture expectations |
-| CI regression evidence | Narwhal | Preserve reproducible regression tests and link important failures to lessons |
+| Dependency freshness / cooling | Portfolio security review | `docs/supply-chain.md`: latest-compatible is insufficient; 14-day default cooling, emergency exception and progressive adoption |
+| Change impact / workflow contract | Recent Bun CI incident and cross-workflow review | `docs/change-management.md`: Class C/D changes require workflow-wide impact analysis and runtime/toolchain verification |
+| Build-time trust boundary | Rust supply-chain incident analysis | Treat install hooks, build scripts, proc-macros, plugins and code generators as executable supply-chain inputs |
+| CI/CD security boundary | 2026 GitHub Actions cache/fork/OIDC threat model | `docs/ci-security.md`: runner, trigger, cache, permission, egress and artifact trust boundaries |
+| Package identity | 2026 typosquat/evil-twin package and extension cases | `docs/package-identity.md`: publisher/namespace verification, ownership-change review and quarantine |
+| Developer environment security | IDE/extension and repository-configuration incidents | `docs/developer-environment-security.md`: extension, devcontainer, Git hook and workspace-config trust controls |
+| AI-assisted engineering security | 2026 coding-agent and prompt-injection incidents | `docs/ai-engineering-security.md`: agent permissions, untrusted context, tool execution and release boundary |
+| Reproducible build | Release engineering practice | `docs/reproducible-build.md`: source/dependency/toolchain/builder/artifact identity linkage |
+| Container/Kubernetes/IaC security | Narwhal, Beluga, KubeMetal, kube-ready-box | `docs/container-iac-security.md`: image/chart/provider/plugin integrity and privileged configuration review |
+| Machine identity/security | CI and publishing threat model | `docs/secrets-identity.md`: short-lived identity, OIDC, least privilege and credential separation |
+| Vulnerability lifecycle | Active OSS maintenance | `docs/vulnerability-management.md`: triage, remediation, verification, exceptions and monitoring |
+| Supply-chain incident response | Recent package compromise patterns | `docs/incident-response.md`: quarantine, credential rotation, blast radius, clean rebuild and regression control |
+| Release security | Package registry publishing incidents | `docs/release-security.md`: artifact freeze, publish isolation, approval and post-publish verification |
+| Maintainer governance | Small OSS operating model | `docs/maintainer-governance.md`: single-maintainer support with risk-based review and automation |
 
 ## Change-management rule
 
@@ -41,11 +48,13 @@ The historical Bun migration failure is the reference example: a build command c
 
 OpenForge is the reference standard for the portfolio. Repository-specific supply-chain policies should reference `docs/supply-chain.md` rather than inventing incompatible freshness, pinning, provenance or rollback rules.
 
+## Governance rule
+
+OpenForge supports single-maintainer repositories. Two-person review is a risk-reduction recommendation for high-impact changes, not a universal staffing requirement. When independent review is unavailable, strong automated controls, explicit impact analysis and retrospective review compensate where practical.
+
 ## Documentation naming exception
 
-The `-ko.md` rule applies to **project-owned, user-facing documentation**. It does not require rewriting third-party or vendored documentation, generated documentation, or upstream artifacts whose filename is part of the upstream distribution contract.
-
-Examples from Narwhal include vendored chart documentation and existing upstream README conventions. Preserve those artifacts unless there is a specific reason to change the filename.
+The `-ko.md` rule applies to project-owned, user-facing documentation. It does not require rewriting third-party or vendored documentation, generated documentation, or upstream artifacts whose filename is part of the upstream distribution contract.
 
 ## Recommended evidence loop
 
@@ -71,11 +80,6 @@ This loop is particularly valuable for infrastructure and platform projects wher
 
 ## Korean
 
-OpenForge는 Narwhal, Narwhal Portal, nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, Beluga 등 실제 개발 중인 저장소를 기준으로 공통 패턴을 검토했습니다.
+OpenForge는 실제 개발 중인 여러 OSS를 기준으로 공통 engineering practice를 표준화합니다. 공급망, 변경 영향 분석, CI/CD 보안, AI-assisted engineering, developer environment, release, maintainer governance까지 공통 정책으로 승격했습니다.
 
-이번 표준화에서 공급망과 변경 영향 분석도 공통 engineering practice로 승격했습니다.
-
-- `docs/supply-chain.md`: dependency freshness/cooling, immutable input, build-time trust boundary, provenance, progressive adoption, quarantine/rollback
-- `docs/change-management.md`: Class C/D 변경 분류, workflow-wide impact analysis, runtime/toolchain verification, regression rule
-
-프로젝트별 특수성은 ADR 또는 project-specific guidance로 분리하고, 공통 정책은 위 두 표준을 참조합니다.
+프로젝트별 특수성은 ADR 또는 project-specific guidance로 분리하고, 공통 정책은 각 표준 문서를 참조합니다.
