@@ -6,7 +6,7 @@ English | [한국어](README-ko.md)
 
 OpenForge is a reusable engineering foundation for creating, evolving, and maintaining high-quality open-source projects.
 
-It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, releases, localization, development tooling, AI-assisted development, and project lifecycle practices.
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, releases, localization, development tooling, AI-assisted development, and project lifecycle practices.
 
 [About](docs/about.md)
 
@@ -25,6 +25,8 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - Architecture decisions are recorded as ADRs.
 - CI validates quality before changes are merged.
 - Security and supply-chain controls are built into the lifecycle.
+- Dependency compatibility alone does not justify immediate adoption of the newest release.
+- Dependency/runtime/toolchain changes require workflow-wide impact analysis.
 - Localization is designed from the beginning rather than retrofitted later.
 - Development tooling is standardized where it improves consistency and reproducibility.
 - Actual project resources, identifiers, and API values are not translated.
@@ -39,6 +41,8 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - [Engineering Tooling Standard](docs/tooling.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Security Standard](docs/security.md)
+- [Supply Chain Security Standard](docs/supply-chain.md)
+- [Change Management and Impact Analysis Standard](docs/change-management.md)
 - [CI/CD Standard](docs/ci-cd.md)
 - [Release Standard](docs/release.md)
 - [Internationalization Standard](docs/i18n.md)
@@ -69,7 +73,7 @@ Each applicable metric is scored:
 - `0` — missing
 - `N/A` — not applicable
 
-The scorecard covers documentation, architecture, GitHub, CI/CD, security, development tooling, release management, configuration, and localization.
+The scorecard covers documentation, architecture, GitHub, CI/CD, security, supply-chain governance, change management, development tooling, release management, configuration, and localization.
 
 See [Reference Implementation Metrics](docs/reference-metrics.md).
 
@@ -91,6 +95,8 @@ Repository Bootstrap
 Documentation + Architecture
   ↓
 Implementation
+  ↓
+Change Impact / Supply Chain Review
   ↓
 CI / Security / Testing
   ↓
