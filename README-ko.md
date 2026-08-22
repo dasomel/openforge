@@ -22,6 +22,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - Dependency 호환성만으로 최신 버전을 즉시 채택하지 않습니다.
 - Dependency/runtime/toolchain 변경은 workflow 전체 영향 분석을 수행합니다.
 - AI agent와 repository-local instruction은 잠재적으로 untrusted execution input으로 취급합니다.
+- 외부 plugin과 skill은 immutable identity, integrity 및 실행 행위 정책 검증을 통과하기 전까지 untrusted executable input으로 취급합니다.
 - 단독 maintainer OSS도 사람 수가 아니라 risk와 automated control을 기준으로 governance를 적용합니다.
 - CI 장애가 security gate 우회를 유도하지 않도록 resilience/fallback을 설계합니다.
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
@@ -37,6 +38,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
 - [Security Standard](docs/security-ko.md)
 - [Supply Chain Security Standard](docs/supply-chain-ko.md)
+- [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain-ko.md)
 - [Package and Artifact Identity](docs/package-identity-ko.md)
 - [CI/CD Security Standard](docs/ci-security-ko.md)
 - [CI/CD Resilience Standard](docs/ci-resilience-ko.md)
@@ -66,16 +68,16 @@ OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿
 ```text
 templates/
 ├── github/          # PR / CODEOWNERS
-├── workflows/       # CI / release / SBOM
-├── scripts/         # toolchain / validation
-├── policy/          # dependency / engineering policy
+├── workflows/       # CI / release / SBOM / supply-chain
+├── scripts/         # toolchain / validation / supply-chain checks
+├── policy/          # dependency / plugin-intake / engineering policy
 ├── container/       # Docker baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
 ├── gitops/          # Argo CD / GitOps
 ├── identity/        # OIDC / SSO
 ├── observability/   # health / metrics / traces / logs
 ├── backup/          # backup / restore
-├── offline/         # air-gap bundle
+├── offline/         # air-gap bundle / trusted plugin catalog
 └── design/          # README / landing / architecture / status / design tokens
 ```
 
@@ -122,14 +124,24 @@ Lessons / Metrics
 OpenForge Improvement
 ```
 
-## 참고 프로젝트
+## Reference Projects
 
-OpenForge는 Narwhal, Narwhal Portal, nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, Beluga Manager 등의 실제 OSS 개발 사례에서 반복 가능한 Engineering Practice를 추출합니다.
+OpenForge는 다음과 같은 active OSS development practices를 참고합니다.
 
-## Contributing
+- Narwhal
+- Narwhal Portal
+- nfs-quota-agent
+- kube-ready-box
+- KubeMetal
+- ldapium
+- Beluga Manager
 
-기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 템플릿은 구체적인 사용 사례, 참고 구현 또는 반복 가능한 Engineering Benefit을 근거로 제안해야 합니다.
+이 프로젝트들은 rigid dependency가 아니라 reference입니다. 목표는 반복 가능한 engineering practice를 추출하면서 각 프로젝트의 구현 선택권을 유지하는 것입니다.
+
+## 기여
+
+기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 템플릿은 구체적인 use case, reference implementation 또는 repeatable engineering benefit을 근거로 제안해야 합니다.
 
 ## License
 
-Apache License 2.0. See [LICENSE](LICENSE).
+Apache License 2.0. 자세한 내용은 [LICENSE](LICENSE)를 참고합니다.
