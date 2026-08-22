@@ -11,7 +11,7 @@ jobs:
   repository-check:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@<APPROVED_IMMUTABLE_REVISION>
 
       - name: Verify required files
         shell: bash
@@ -36,3 +36,12 @@ jobs:
             echo 'Legacy Korean Markdown filename detected. Use <name>-ko.md.'
             exit 1
           fi
+
+      - name: Verify supply-chain baseline contracts
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash templates/scripts/verify-supply-chain.sh
+
+# Replace APPROVED_IMMUTABLE_REVISION with the approved immutable checkout
+# commit SHA before using this workflow as a production baseline.
