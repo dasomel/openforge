@@ -1,0 +1,20 @@
+version: 1
+catalog:
+  generated_at: <timestamp>
+  generator:
+    name: <trusted-catalog-generator>
+    version: <version>
+  plugins:
+    - name: example-plugin
+      repository: https://example.invalid/example-plugin
+      revision: 0123456789abcdef0123456789abcdef01234567
+      digest: sha256:<content-digest>
+      dependency_lock_sha256: <lockfile-digest>
+      installer_min_version: <version>
+      status: approved
+      approved_at: <timestamp>
+      rollback_revision: <known-good-commit-sha>
+
+# Offline installers MUST resolve only against this snapshot.
+# Missing entries and digest mismatches must fail closed.
+# Replace example values with verified immutable identities before use.
