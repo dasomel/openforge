@@ -28,6 +28,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - Dependency compatibility alone does not justify immediate adoption of the newest release.
 - Dependency/runtime/toolchain changes require workflow-wide impact analysis.
 - AI agents and repository-local instructions are treated as potentially untrusted execution inputs.
+- External plugins and skills are treated as untrusted executable inputs until immutable identity, integrity and behavioral policy checks pass.
 - Security controls are risk-based so single-maintainer OSS projects remain practical.
 - CI outages must not force maintainers to bypass security gates blindly.
 - Reusable templates provide implementation starting points but are not universal drop-in configuration.
@@ -43,6 +44,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Security Standard](docs/security.md)
 - [Supply Chain Security Standard](docs/supply-chain.md)
+- [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain.md)
 - [Package and Artifact Identity](docs/package-identity.md)
 - [CI/CD Security Standard](docs/ci-security.md)
 - [CI/CD Resilience Standard](docs/ci-resilience.md)
@@ -74,14 +76,14 @@ templates/
 ├── github/          # PR / CODEOWNERS patterns
 ├── workflows/       # CI / release / SBOM workflows
 ├── scripts/         # toolchain / validation helpers
-├── policy/          # dependency / engineering policies
+├── policy/          # dependency / plugin-intake / engineering policies
 ├── container/       # Docker image baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
 ├── gitops/          # Argo CD / GitOps deployment patterns
 ├── identity/        # OIDC / SSO integration contract
 ├── observability/   # health / metrics / traces / logs contract
 ├── backup/          # backup and restore runbook
-├── offline/         # air-gap bundle manifest
+├── offline/         # air-gap bundle and trusted plugin catalog manifests
 └── design/          # README / landing / architecture / status / design tokens
 ```
 
