@@ -1,0 +1,42 @@
+version: 1
+policy:
+  source:
+    ownership_is_not_trust: true
+    require_immutable_revision: true
+    allow_floating_reference_by_exception_only: true
+  integrity:
+    require_content_digest: true
+    verify_dependency_checksums_when_supported: true
+  executable_content:
+    inspect_install_hooks: true
+    inspect_build_hooks: true
+    inspect_download_and_execute_patterns: true
+    inspect_credential_access: true
+    inspect_network_endpoints: true
+    fail_on_obfuscated_payloads_when_detected: true
+  network:
+    default: deny
+    allowlist_required: true
+    credentials_default: deny
+  installation_evidence:
+    record_repository: true
+    record_revision: true
+    record_digest: true
+    record_dependency_metadata: true
+    record_installer_version: true
+    record_policy_result: true
+  quarantine:
+    enabled: true
+    key: revision-and-digest
+    retain_last_known_good: true
+  offline:
+    trusted_catalog_required: true
+    fail_closed_on_missing_entry: true
+    verify_content_digest: true
+  change_management:
+    classify_dependency_or_runtime_changes: true
+    inspect_all_affected_workflows: true
+    require_rollback_identity: true
+
+# Template policy only. Map these controls to the repository's installer,
+# sandbox, package manager, artifact registry and network enforcement layer.
