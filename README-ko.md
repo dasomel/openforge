@@ -6,7 +6,7 @@ English | [한국어](README-ko.md)
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고, 배포하고, 운영하고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
-Repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, engineering tooling, reusable implementation templates, deployment baseline, 디자인 템플릿과 프로젝트 lifecycle을 공통 기준으로 관리합니다.
+Repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, engineering tooling, **UI/UX 디자인 시스템**, reusable implementation templates, deployment baseline, 디자인 템플릿과 프로젝트 lifecycle을 공통 기준으로 관리합니다.
 
 [소개](docs/about-ko.md) · [English README](README.md)
 
@@ -26,6 +26,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - 단독 maintainer OSS도 사람 수가 아니라 risk와 automated control을 기준으로 governance를 적용합니다.
 - CI 장애가 security gate 우회를 유도하지 않도록 resilience/fallback을 설계합니다.
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
+- UI의 의미와 Accessibility는 공통 표준을 따르되 Product Personality, Density, Platform Convention은 프로젝트 특성에 따라 의도적으로 달라질 수 있습니다.
 - 의도적인 예외는 범위와 만료를 기록합니다.
 
 ## 표준
@@ -36,6 +37,8 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - [Development Standard](docs/development-ko.md)
 - [Engineering Tooling Standard](docs/tooling-ko.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
+- [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
+- [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security-ko.md)
 - [Supply Chain Security Standard](docs/supply-chain-ko.md)
 - [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain-ko.md)
@@ -63,10 +66,11 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 
 ## 재사용 가능한 템플릿
 
-OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다.
+OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 프로젝트별 Archetype, Token Mapping, Product Personality, Workflow, Accessibility, 예외를 기록하기 위한 [`templates/DESIGN.md`](templates/DESIGN.md)를 제공합니다.
 
 ```text
 templates/
+├── DESIGN.md        # 프로젝트 디자인 시스템 계약
 ├── github/          # PR / CODEOWNERS
 ├── workflows/       # CI / release / SBOM / supply-chain
 ├── scripts/         # toolchain / validation / supply-chain checks
@@ -78,70 +82,29 @@ templates/
 ├── observability/   # health / metrics / traces / logs
 ├── backup/          # backup / restore
 ├── offline/         # air-gap bundle / trusted plugin catalog
-└── design/          # README / landing / architecture / status / design tokens
+└── design/          # README / landing / architecture / status / design token
 ```
 
-각 템플릿은 대상 프로젝트의 runtime, permission, platform, deployment model, identity, image, domain, threat model에 맞게 조정해야 합니다.
+Template은 보수적인 출발점입니다. Target repository와 threat model에 맞게 version, permission, path, command, domain, image, identity, ecosystem-specific control을 조정해야 합니다.
 
-## Reference Metrics
+## Reference Project
 
-OpenForge의 maturity scorecard는 documentation, architecture, GitHub, CI/CD, security, supply-chain, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release, resilience, configuration, localization 등을 평가합니다.
+OpenForge의 디자인 시스템 표준은 현재 개발 중인 프로젝트의 서로 다른 UI 성격을 참고합니다.
 
-- `2` — 구현되어 있고 가능한 경우 자동화됨
-- `1` — 부분적 또는 수동으로 구현됨
-- `0` — 미구현
-- `N/A` — 해당 없음
+- Narwhal / Narwhal Portal — Platform Portal
+- Beluga Manager — Data Control Plane
+- ClusterDeck — Desktop Operator
+- KubeMetal — Desktop ML Infrastructure
+- ldapium — Admin Console
+- nfs-quota-agent — Operations Dashboard
+- eGovFrame Launcher — Developer Tool
 
-자세한 내용은 [Reference Implementation Metrics](docs/reference-metrics-ko.md)를 참고합니다.
+이 프로젝트들은 rigid dependency가 아니라 반복 가능한 Engineering 및 Design Practice를 추출하기 위한 Reference입니다.
 
-## 프로젝트 생명주기
+## Contributing
 
-```text
-Idea
-  ↓
-Project Definition
-  ↓
-Repository Bootstrap
-  ↓
-Documentation + Architecture
-  ↓
-Standards + Template Adoption
-  ↓
-Implementation
-  ↓
-Change Impact / Supply Chain Review
-  ↓
-CI / Security / Testing
-  ↓
-Release / Publish Verification
-  ↓
-Operations / Backup / Observability
-  ↓
-Maintenance / Incident Learning
-  ↓
-Lessons / Metrics
-  ↓
-OpenForge Improvement
-```
-
-## Reference Projects
-
-OpenForge는 다음과 같은 active OSS development practices를 참고합니다.
-
-- Narwhal
-- Narwhal Portal
-- nfs-quota-agent
-- kube-ready-box
-- KubeMetal
-- ldapium
-- Beluga Manager
-
-이 프로젝트들은 rigid dependency가 아니라 reference입니다. 목표는 반복 가능한 engineering practice를 추출하면서 각 프로젝트의 구현 선택권을 유지하는 것입니다.
-
-## 기여
-
-기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 템플릿은 구체적인 use case, reference implementation 또는 repeatable engineering benefit을 근거로 제안해야 합니다.
+기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 Template은 구체적인 Use Case, Reference Implementation 또는 반복 가능한 Engineering Benefit을 기반으로 추가합니다.
 
 ## License
 
-Apache License 2.0. 자세한 내용은 [LICENSE](LICENSE)를 참고합니다.
+Apache License 2.0. [LICENSE](LICENSE)를 참고하세요.
