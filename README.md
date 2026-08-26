@@ -6,7 +6,7 @@ English | [한국어](README-ko.md)
 
 OpenForge is a reusable engineering foundation for creating, evolving, deploying, and maintaining high-quality open-source projects.
 
-It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, reusable implementation templates, deployment baselines, design templates, and project lifecycle practices.
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, **UI/UX design systems**, reusable implementation templates, deployment baselines, design templates, and project lifecycle practices.
 
 [About](docs/about.md)
 
@@ -32,6 +32,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - Security controls are risk-based so single-maintainer OSS projects remain practical.
 - CI outages must not force maintainers to bypass security gates blindly.
 - Reusable templates provide implementation starting points but are not universal drop-in configuration.
+- UI semantics and accessibility are shared while project personality, density, and platform conventions may vary intentionally.
 - Intentional deviations from the baseline are time-bounded and documented.
 
 ## Standards
@@ -42,6 +43,8 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - [Development Standard](docs/development.md)
 - [Engineering Tooling Standard](docs/tooling.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
+- [OSS Design System Standard](docs/design-system.md) ([한국어](docs/design-system-ko.md))
+- [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security.md)
 - [Supply Chain Security Standard](docs/supply-chain.md)
 - [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain.md)
@@ -69,10 +72,11 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 
 ## Templates
 
-OpenForge provides reusable implementation and design templates under [`templates/`](templates/):
+OpenForge provides reusable implementation and design templates under [`templates/`](templates/). The project-level [DESIGN.md template](templates/DESIGN.md) records archetype, token mapping, product personality, workflows, accessibility, and intentional deviations.
 
 ```text
 templates/
+├── DESIGN.md        # project design-system contract
 ├── github/          # PR / CODEOWNERS patterns
 ├── workflows/       # CI / release / SBOM workflows
 ├── scripts/         # toolchain / validation helpers
@@ -91,7 +95,7 @@ Templates are intentionally conservative. Adapt versions, permissions, paths, co
 
 ## Reference Metrics
 
-OpenForge includes a practical maturity scorecard covering documentation, architecture, GitHub, CI/CD, security, supply-chain governance, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release management, resilience, configuration, and localization.
+OpenForge includes a practical maturity scorecard covering documentation, architecture, GitHub, CI/CD, security, supply-chain governance, change management, upgrade/compatibility, developer environment, AI-assisted engineering, release management, resilience, configuration, localization, and design-system adoption.
 
 Each applicable metric is scored:
 
@@ -136,15 +140,16 @@ OpenForge Improvement
 
 OpenForge is informed by active OSS development practices, including:
 
-- Narwhal
-- Narwhal Portal
+- Narwhal / Narwhal Portal
+- ClusterDeck
 - nfs-quota-agent
 - kube-ready-box
 - KubeMetal
 - ldapium
 - Beluga Manager
+- eGovFrame Launcher
 
-These projects are references, not rigid dependencies. The goal is to capture repeatable engineering practices while keeping projects free to choose their own implementation details.
+These projects are references, not rigid dependencies. The goal is to capture repeatable engineering and design practices while keeping projects free to choose their own implementation details.
 
 ## Contributing
 
