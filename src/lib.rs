@@ -79,11 +79,13 @@ pub fn calibrate_files(
         other => anyhow::bail!("unsupported calibration format: {other}"),
     }
 
-    Ok(if require_complete && report.summary.unclassified_rules > 0 {
-        2
-    } else {
-        0
-    })
+    Ok(
+        if require_complete && report.summary.unclassified_rules > 0 {
+            2
+        } else {
+            0
+        },
+    )
 }
 
 pub fn baseline_create(assessment: &Path, output: &Path) -> Result<()> {
