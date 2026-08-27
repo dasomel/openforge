@@ -100,7 +100,7 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
             continue;
         };
 
-        if finding.status == "SKIP" {
+        if finding.status != "FAIL" {
             continue;
         }
         if waiver.reason.trim().is_empty() {
@@ -145,7 +145,21 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
 
 #[cfg(test)]
 mod tests {
-    use super::{applicable, compile_globs};
+    use super::{Policy, Profile, Waiver, applicable, apply, compile_globs};
+    use crate::Finding;
+
+    fn finding(status: &'static str) -> Finding {
+        Finding {
+            rule_id: "RT-005".to_string(),
+            category: "Runtime Reliability".to_string(),
+            title: "PDB coverage".to_string(),
+            status,
+            score: if status == "PASS" { 10.0 } else { 0.0 },
+            weight: 10.0,
+            evidence: Vec::new(),
+            remediation: String::new(),
+        }
+    }
 
     #[test]
     fn profile_include_and_exclude_rules_are_deterministic() {
@@ -154,5 +168,22 @@ mod tests {
         assert!(applicable("RT-020", Some(&include), Some(&exclude)));
         assert!(!applicable("RT-021", Some(&include), Some(&exclude)));
         assert!(!applicable("DOC-001", Some(&include), Some(&exclude)));
+    }
+
+    #[test]
+    fn waiver_only_applies_to_failing_findings() {
+        let policy = Policy {
+            profile: Profile::default(),
+            waivers: vec![Waiver {
+                rule_id: "RT-005".to_string(),
+                reason: "temporary exception".to_string(),
+                expires: "2099-12-31".to_string(),
+            }],
+        };
+        let mut findings = vec![finding("PASS"), finding("FAIL")];
+        let summary = apply(&mut findings, &policy).unwrap();
+        assert_eq!(findings[0].status, "PASS");
+        assert_eq!(findings[1].status, "WAIVED");
+        assert_eq!(summary.waived, 1);
     }
 }
