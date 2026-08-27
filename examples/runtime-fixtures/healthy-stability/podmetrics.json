@@ -1,0 +1,1 @@
+{"apiVersion":"metrics.k8s.io/v1beta1","items":[{"metadata":{"namespace":"apps","name":"api"},"containers":[{"name":"api","usage":{"cpu":"150m","memory":"128Mi"}}]}]}
