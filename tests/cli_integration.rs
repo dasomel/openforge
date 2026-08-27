@@ -66,19 +66,31 @@ fn write_assessment(path: &Path, overall: f64, status: &str, score: f64) {
 fn assess_subcommand_outputs_assessment_json() {
     let manifest = env!("CARGO_MANIFEST_DIR");
     let output = run(&["assess", manifest, "--format", "json"]);
-    assert!(output.status.success(), "stderr: {}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 
     let report: Value = serde_json::from_slice(&output.stdout).expect("valid assessment JSON");
     assert_eq!(report["schema"], "openforge-assessment/v0.12");
     assert!(report["overall"].as_f64().is_some());
-    assert!(report["findings"].as_array().is_some_and(|items| !items.is_empty()));
+    assert!(
+        report["findings"]
+            .as_array()
+            .is_some_and(|items| !items.is_empty())
+    );
 }
 
 #[test]
 fn legacy_assess_alias_remains_supported() {
     let manifest = env!("CARGO_MANIFEST_DIR");
     let output = run(&[manifest, "--format", "json"]);
-    assert!(output.status.success(), "stderr: {}", String::from_utf8_lossy(&output.stderr));
+    assert!(
+        output.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&output.stderr)
+    );
 
     let report: Value = serde_json::from_slice(&output.stdout).expect("valid assessment JSON");
     assert_eq!(report["schema"], "openforge-assessment/v0.12");
@@ -122,13 +134,19 @@ fn baseline_create_and_check_use_unified_cli() {
         .arg(&baseline)
         .output()
         .expect("baseline create should run");
-    assert!(create.status.success(), "stderr: {}", String::from_utf8_lossy(&create.stderr));
+    assert!(
+        create.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&create.stderr)
+    );
 
-    let baseline_json: Value = serde_json::from_str(
-        &fs::read_to_string(&baseline).expect("baseline should exist"),
-    )
-    .expect("valid baseline JSON");
-    assert_eq!(baseline_json["_baseline"]["schema"], "openforge-baseline/v0.1");
+    let baseline_json: Value =
+        serde_json::from_str(&fs::read_to_string(&baseline).expect("baseline should exist"))
+            .expect("valid baseline JSON");
+    assert_eq!(
+        baseline_json["_baseline"]["schema"],
+        "openforge-baseline/v0.1"
+    );
 
     let check = Command::new(openforge())
         .arg("baseline")
@@ -139,5 +157,9 @@ fn baseline_create_and_check_use_unified_cli() {
         .arg("--require-compatible")
         .output()
         .expect("baseline check should run");
-    assert!(check.status.success(), "stderr: {}", String::from_utf8_lossy(&check.stderr));
+    assert!(
+        check.status.success(),
+        "stderr: {}",
+        String::from_utf8_lossy(&check.stderr)
+    );
 }
