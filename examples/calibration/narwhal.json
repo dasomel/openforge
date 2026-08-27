@@ -1,0 +1,18 @@
+{
+  "project": "dasomel/narwhal",
+  "profile": "kubernetes-platform",
+  "expectations": {
+    "DOC-001": {
+      "classification": "accepted",
+      "rationale": "Narwhal has a canonical project README with purpose, architecture, installation and operational context."
+    },
+    "PLT-001": {
+      "classification": "accepted",
+      "rationale": "Narwhal is explicitly a Kubernetes platform and contains repeatable Kubernetes/GitOps packaging."
+    },
+    "PLT-006": {
+      "classification": "accepted",
+      "rationale": "Narwhal explicitly integrates Prometheus, Grafana, Loki, Tempo and Hubble observability components."
+    }
+  }
+}
