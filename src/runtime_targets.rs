@@ -31,7 +31,8 @@ fn kubectl_raw(context: Option<&str>, path: &str) -> Result<Value, String> {
     if !output.status.success() {
         return Err(String::from_utf8_lossy(&output.stderr).trim().to_string());
     }
-    serde_json::from_slice(&output.stdout).map_err(|error| format!("invalid Prometheus JSON: {error}"))
+    serde_json::from_slice(&output.stdout)
+        .map_err(|error| format!("invalid Prometheus JSON: {error}"))
 }
 
 fn prometheus_instances(value: &Value) -> Vec<(String, String)> {
@@ -48,12 +49,13 @@ fn prometheus_instances(value: &Value) -> Vec<(String, String)> {
         .collect()
 }
 
-fn prometheus_pods(context: Option<&str>, namespace: &str, name: &str) -> Result<Vec<String>, String> {
+fn prometheus_pods(
+    context: Option<&str>,
+    namespace: &str,
+    name: &str,
+) -> Result<Vec<String>, String> {
     let selector = format!("prometheus={name}");
-    let value = kubectl_json(
-        context,
-        &["get", "pods", "-n", namespace, "-l", &selector],
-    )?;
+    let value = kubectl_json(context, &["get", "pods", "-n", namespace, "-l", &selector])?;
     Ok(value
         .get("items")
         .and_then(Value::as_array)
@@ -76,7 +78,10 @@ fn target_summary(value: &Value) -> (usize, usize, Vec<String>) {
         .flatten()
     {
         total += 1;
-        let health = target.get("health").and_then(Value::as_str).unwrap_or("unknown");
+        let health = target
+            .get("health")
+            .and_then(Value::as_str)
+            .unwrap_or("unknown");
         if health == "up" {
             up += 1;
             continue;
@@ -145,19 +150,22 @@ pub(crate) fn finding(enabled: bool, context: Option<&str>) -> Finding {
         let pods = match prometheus_pods(context, &namespace, &name) {
             Ok(pods) => pods,
             Err(error) => {
-                evidence.push(format!("prometheus={namespace}/{name} pod_discovery_error={error}"));
+                evidence.push(format!(
+                    "prometheus={namespace}/{name} pod_discovery_error={error}"
+                ));
                 continue;
             }
         };
 
         for pod in pods {
-            let path = format!(
-                "/api/v1/namespaces/{namespace}/pods/http:{pod}:9090/proxy/api/v1/targets"
-            );
+            let path =
+                format!("/api/v1/namespaces/{namespace}/pods/http:{pod}:9090/proxy/api/v1/targets");
             let value = match kubectl_raw(context, &path) {
                 Ok(value) => value,
                 Err(error) => {
-                    evidence.push(format!("prometheus_pod={namespace}/{pod} target_api_error={error}"));
+                    evidence.push(format!(
+                        "prometheus_pod={namespace}/{pod} target_api_error={error}"
+                    ));
                     continue;
                 }
             };
