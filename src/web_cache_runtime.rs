@@ -61,7 +61,11 @@ pub(crate) fn finding(url: Option<&str>) -> Finding {
         .build()
     {
         Ok(client) => client,
-        Err(_) => return failed(vec!["probe_error=http_client_initialization_failed".to_string()]),
+        Err(_) => {
+            return failed(vec![
+                "probe_error=http_client_initialization_failed".to_string(),
+            ]);
+        }
     };
 
     let response = match client.head(url).send() {
@@ -128,9 +132,7 @@ mod tests {
         assert!(cache_policy_passes(Some(
             "public, max-age=86400, immutable"
         )));
-        assert!(!cache_policy_passes(Some(
-            "public, max-age=60, immutable"
-        )));
+        assert!(!cache_policy_passes(Some("public, max-age=60, immutable")));
         assert!(!cache_policy_passes(Some("public, max-age=31536000")));
         assert!(!cache_policy_passes(None));
     }
