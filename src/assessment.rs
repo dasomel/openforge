@@ -2,7 +2,7 @@ use crate::{
     execution, policy, runtime, runtime_alertmanager, runtime_backup, runtime_certificates,
     runtime_csi, runtime_csi_nodes, runtime_gitops, runtime_metrics, runtime_observability,
     runtime_pod_security, runtime_post_restore, runtime_rbac, runtime_restore, runtime_storage,
-    runtime_targets, web_assets, web_cache, web_cache_runtime,
+    runtime_targets, web_assets, web_cache, web_cache_effectiveness, web_cache_runtime,
 };
 use anyhow::{Context, Result};
 use globset::{Glob, GlobSetBuilder};
@@ -92,6 +92,7 @@ pub struct AssessOptions<'a> {
     pub namespace: Option<&'a str>,
     pub post_restore_spec: Option<&'a Path>,
     pub web_cache_url: Option<&'a str>,
+    pub web_cache_effectiveness_url: Option<&'a str>,
 }
 
 fn collect_files(root: &Path) -> Vec<PathBuf> {
@@ -250,6 +251,9 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     findings.extend(web_assets::findings(&root));
     findings.push(web_cache::finding(&root));
     findings.push(web_cache_runtime::finding(options.web_cache_url));
+    findings.push(web_cache_effectiveness::finding(
+        options.web_cache_effectiveness_url,
+    ));
     findings.extend(execution::findings(&root, options.run_execution));
     findings.extend(runtime::findings(
         options.runtime,
@@ -322,7 +326,7 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.16",
+        schema: "openforge-assessment/v0.17",
         ruleset: rules.version,
         root: root.display().to_string(),
         execution_enabled: options.run_execution,
