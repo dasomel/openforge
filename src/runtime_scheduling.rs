@@ -147,11 +147,17 @@ fn has_topology_protection(workload: &Value) -> bool {
         .and_then(Value::as_array)
         .is_some_and(|items| !items.is_empty());
     let required_anti_affinity = template_spec
-        .and_then(|spec| spec.pointer("/affinity/podAntiAffinity/requiredDuringSchedulingIgnoredDuringExecution"))
+        .and_then(|spec| {
+            spec.pointer("/affinity/podAntiAffinity/requiredDuringSchedulingIgnoredDuringExecution")
+        })
         .and_then(Value::as_array)
         .is_some_and(|items| !items.is_empty());
     let preferred_anti_affinity = template_spec
-        .and_then(|spec| spec.pointer("/affinity/podAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution"))
+        .and_then(|spec| {
+            spec.pointer(
+                "/affinity/podAntiAffinity/preferredDuringSchedulingIgnoredDuringExecution",
+            )
+        })
         .and_then(Value::as_array)
         .is_some_and(|items| !items.is_empty());
 
@@ -195,11 +201,7 @@ fn topology_coverage(value: &Value) -> (usize, usize, Vec<String>) {
     (total, covered, missing)
 }
 
-fn scheduling_finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+fn scheduling_finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     let title = "No Pods are blocked by scheduler constraints";
     if !enabled {
         return skipped(
@@ -281,11 +283,7 @@ fn pressure_finding(enabled: bool, context: Option<&str>) -> Finding {
     }
 }
 
-fn topology_finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+fn topology_finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     let title = "Replicated workloads declare topology distribution protection";
     if !enabled {
         return skipped(
