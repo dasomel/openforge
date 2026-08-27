@@ -1,0 +1,14 @@
+{
+  "profile": {
+    "name": "runtime-core-fixture",
+    "include_rules": [
+      "RT-001",
+      "RT-002",
+      "RT-003",
+      "RT-004",
+      "RT-005",
+      "RT-006"
+    ]
+  },
+  "waivers": []
+}
