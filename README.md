@@ -8,7 +8,7 @@ OpenForge is a reusable engineering foundation for creating, evolving, deploying
 
 It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, **UI/UX design systems**, reusable implementation templates, deployment baselines, design templates, and project lifecycle practices.
 
-[About](docs/about.md)
+[About](docs/about.md) · [Decision History / ADRs](docs/adr/README.md)
 
 ## Why OpenForge?
 
@@ -22,7 +22,8 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - User-facing Markdown follows `<name>.md` and `<name>-ko.md`.
 - Projects should be reproducible, documented, testable, observable, accessible, and secure by default.
 - GitHub Issues and Pull Requests are the primary change-management mechanism.
-- Architecture decisions are recorded as ADRs.
+- Architecture and durable cross-project decisions are recorded as ADRs.
+- Accepted ADRs preserve history; material changes supersede them instead of rewriting rationale.
 - CI validates quality before changes are merged.
 - Security and supply-chain controls are built into the lifecycle.
 - Dependency compatibility alone does not justify immediate adoption of the newest release.
@@ -35,6 +36,16 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - UI semantics and accessibility are shared while project personality, density, and platform conventions may vary intentionally.
 - Intentional deviations from the baseline are time-bounded and documented.
 
+## Decision History
+
+OpenForge separates durable rationale from normative standards and rollout history:
+
+```text
+ADR -> Standard -> Template / CI / Policy -> Adoption record / Issue / PR
+```
+
+See the [ADR index](docs/adr/README.md). The initial retrospective ADR set captures major common decisions already reflected across OpenForge standards, including language policy, risk-based governance, AI/plugin trust, upgrade impact analysis, lifecycle security, design-system boundaries, agent-engineering context management, evidence-first verification, reusable-template policy, CI resilience, and exception governance.
+
 ## Standards
 
 - [Documentation Standard](docs/documentation.md)
@@ -43,6 +54,8 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - [Development Standard](docs/development.md)
 - [Engineering Tooling Standard](docs/tooling.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
+- [Agent Engineering Standard](docs/agent-engineering.md) ([한국어](docs/agent-engineering-ko.md))
+- [Agent Engineering Adoption — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS Design System Standard](docs/design-system.md) ([한국어](docs/design-system-ko.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security.md)
@@ -72,11 +85,14 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 
 ## Templates
 
-OpenForge provides reusable implementation and design templates under [`templates/`](templates/). The project-level [DESIGN.md template](templates/DESIGN.md) records archetype, token mapping, product personality, workflows, accessibility, and intentional deviations.
+OpenForge provides reusable implementation and design templates under [`templates/`](templates/). Important project-level templates include [AGENTS.md](templates/AGENTS.md), [CODING_STANDARDS.md](templates/CODING_STANDARDS.md), [DESIGN.md](templates/DESIGN.md), and [ADR.md](templates/ADR.md).
 
 ```text
 templates/
+├── AGENTS.md        # concise agent execution contract
+├── CODING_STANDARDS.md
 ├── DESIGN.md        # project design-system contract
+├── ADR.md           # durable decision record
 ├── github/          # PR / CODEOWNERS patterns
 ├── workflows/       # CI / release / SBOM workflows
 ├── scripts/         # toolchain / validation helpers
@@ -153,7 +169,7 @@ These projects are references, not rigid dependencies. The goal is to capture re
 
 ## Contributing
 
-Contributions should follow the repository's [Contributing Guide](CONTRIBUTING.md). New standards and templates should be supported by a concrete use case, reference implementation, or repeatable engineering benefit.
+Contributions should follow the repository's [Contributing Guide](CONTRIBUTING.md). New standards and templates should be supported by a concrete use case, reference implementation, or repeatable engineering benefit. Durable cross-project policy changes should include an ADR when they meet the criteria in the [ADR index](docs/adr/README.md).
 
 ## License
 
