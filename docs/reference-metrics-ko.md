@@ -96,8 +96,25 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 2. Reference Metrics checklist를 실행한다.
 3. 각 항목을 `2`, `1`, `0`, `N/A`로 표시한다.
 4. 적용 대상 중 `0`인 항목은 issue로 등록한다.
-5. 의도적인 예외는 ADR에 기록한다.
+5. 의도적인 예외는 ADR에 남긴다.
 6. 장기적인 공통 Default는 ADR → Standard → Enforcement → Adoption Evidence로 연결한다.
 7. 첫 stable release 전에 다시 matrix를 실행한다.
 
 기존 프로젝트에서 더 나은 반복 가능한 관행이 발견되면 이 매트릭스도 함께 발전시킨다.
+
+## 6. 자동화된 포트폴리오 컴플라이언스 감사
+
+OpenForge는 활성 포트폴리오 저장소를 자동으로 진단하고 성숙도 스코어카드 및 GitHub Issue 템플릿을 생성하는 컴플라이언스 엔진(`templates/scripts/audit-portfolio.py`)을 제공합니다.
+
+```bash
+# 전체 포트폴리오 컴플라이언스 감사 실행
+python3 templates/scripts/audit-portfolio.py
+
+# 특정 저장소 단독 감사 실행
+python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
+```
+
+- **포트폴리오 스코어카드 (영문):** [docs/portfolio-scorecard.md](portfolio-scorecard.md)
+- **포트폴리오 스코어카드 (한국어):** [docs/portfolio-scorecard-ko.md](portfolio-scorecard-ko.md)
+- **Branch Protection 표준:** [docs/branch-protection-ko.md](branch-protection-ko.md)
+- **리포지토리별 Gap Issue:** `docs/gap-issues/`

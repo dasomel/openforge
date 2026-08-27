@@ -101,3 +101,21 @@ When bootstrapping a new OSS repository:
 7. Re-run the matrix before the first stable release.
 
 The matrix should evolve when existing projects demonstrate a better repeatable practice.
+
+## 6. Automated Portfolio Compliance Audit
+
+OpenForge provides an automated compliance engine (`templates/scripts/audit-portfolio.py`) that audits active portfolio repositories and generates maturity scorecards and actionable GitHub issue manifests.
+
+```bash
+# Run portfolio-wide compliance audit
+python3 templates/scripts/audit-portfolio.py
+
+# Audit a specific repository
+python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
+```
+
+- **Portfolio Scorecard (English):** [docs/portfolio-scorecard.md](portfolio-scorecard.md)
+- **Portfolio Scorecard (Korean):** [docs/portfolio-scorecard-ko.md](portfolio-scorecard-ko.md)
+- **Branch Protection Standard:** [docs/branch-protection.md](branch-protection.md)
+- **Actionable Gap Issues:** `docs/gap-issues/`
+
