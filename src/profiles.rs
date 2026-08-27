@@ -1,12 +1,18 @@
 use crate::policy::{Policy, Profile};
-use anyhow::{bail, Result};
+use anyhow::{Result, bail};
 
 fn profile(name: &str, include_rules: &[&str], exclude_rules: &[&str]) -> Policy {
     Policy {
         profile: Profile {
             name: name.to_string(),
-            include_rules: include_rules.iter().map(|value| (*value).to_string()).collect(),
-            exclude_rules: exclude_rules.iter().map(|value| (*value).to_string()).collect(),
+            include_rules: include_rules
+                .iter()
+                .map(|value| (*value).to_string())
+                .collect(),
+            exclude_rules: exclude_rules
+                .iter()
+                .map(|value| (*value).to_string())
+                .collect(),
         },
         waivers: Vec::new(),
     }
