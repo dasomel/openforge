@@ -36,7 +36,12 @@ fn source_files(root: &Path) -> Vec<(String, String)> {
         .collect()
 }
 
-fn extract_tag_usages(path: &str, text: &str, needle: &str, framework_image: bool) -> Vec<ImageUsage> {
+fn extract_tag_usages(
+    path: &str,
+    text: &str,
+    needle: &str,
+    framework_image: bool,
+) -> Vec<ImageUsage> {
     let mut usages = Vec::new();
     let mut offset = 0usize;
 
@@ -122,7 +127,10 @@ fn lazy_applies(usage: &ImageUsage) -> bool {
         return false;
     }
     if usage.framework_image {
-        return !contains_any(&usage.fragment, &["priority", "loading=\"eager\"", "loading='eager'"]);
+        return !contains_any(
+            &usage.fragment,
+            &["priority", "loading=\"eager\"", "loading='eager'"],
+        );
     }
     contains_any(
         &usage.fragment,
@@ -200,7 +208,11 @@ where
         rule_id: id.to_string(),
         category: "Web Assets".to_string(),
         title: title.to_string(),
-        status: if passed_count == total { "PASS" } else { "FAIL" },
+        status: if passed_count == total {
+            "PASS"
+        } else {
+            "FAIL"
+        },
         score: (ratio * weight * 10.0).round() / 10.0,
         weight,
         evidence,
@@ -246,8 +258,16 @@ pub(crate) fn findings(root: &Path) -> Vec<Finding> {
     let usages = image_usages(&files);
     if usages.is_empty() {
         return vec![
-            skipped("WEB-001", "Images use lazy loading", "no image usage detected"),
-            skipped("WEB-002", "Images declare dimensions", "no image usage detected"),
+            skipped(
+                "WEB-001",
+                "Images use lazy loading",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-002",
+                "Images declare dimensions",
+                "no image usage detected",
+            ),
             skipped(
                 "WEB-003",
                 "Responsive image strategy is present",
