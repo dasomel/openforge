@@ -3,7 +3,11 @@ use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::process::Command;
 
-fn kubectl_json(context: Option<&str>, namespace: Option<&str>, args: &[&str]) -> Result<Value, String> {
+fn kubectl_json(
+    context: Option<&str>,
+    namespace: Option<&str>,
+    args: &[&str],
+) -> Result<Value, String> {
     let mut command = Command::new("kubectl");
     if let Some(context) = context {
         command.arg("--context").arg(context);
@@ -44,23 +48,30 @@ fn latest_completed_backup(value: &Value) -> Option<(String, DateTime<Utc>)> {
         .iter()
         .filter(|item| item.pointer("/status/phase").and_then(Value::as_str) == Some("Completed"))
         .filter_map(|item| {
-            let namespace = item.pointer("/metadata/namespace").and_then(Value::as_str).unwrap_or("default");
-            let name = item.pointer("/metadata/name").and_then(Value::as_str).unwrap_or("unknown");
+            let namespace = item
+                .pointer("/metadata/namespace")
+                .and_then(Value::as_str)
+                .unwrap_or("default");
+            let name = item
+                .pointer("/metadata/name")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown");
             let timestamp = item
                 .pointer("/status/completionTimestamp")
                 .and_then(Value::as_str)
-                .or_else(|| item.pointer("/metadata/creationTimestamp").and_then(Value::as_str))?;
-            let parsed = DateTime::parse_from_rfc3339(timestamp).ok()?.with_timezone(&Utc);
+                .or_else(|| {
+                    item.pointer("/metadata/creationTimestamp")
+                        .and_then(Value::as_str)
+                })?;
+            let parsed = DateTime::parse_from_rfc3339(timestamp)
+                .ok()?
+                .with_timezone(&Utc);
             Some((format!("{namespace}/{name}"), parsed))
         })
         .max_by_key(|(_, timestamp)| *timestamp)
 }
 
-pub(crate) fn finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+pub(crate) fn finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     if !enabled {
         return skipped("runtime assessment disabled; use --runtime".to_string());
     }
@@ -71,7 +82,10 @@ pub(crate) fn finding(
     };
 
     let Some((name, completed_at)) = latest_completed_backup(&value) else {
-        let count = value.get("items").and_then(Value::as_array).map_or(0, Vec::len);
+        let count = value
+            .get("items")
+            .and_then(Value::as_array)
+            .map_or(0, Vec::len);
         return if count == 0 {
             skipped("no Velero Backup resources found".to_string())
         } else {
