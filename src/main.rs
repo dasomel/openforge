@@ -1,3 +1,5 @@
+mod execution;
+
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
 use globset::{Glob, GlobSetBuilder};
@@ -21,14 +23,24 @@ const DEFAULT_RULES: &str = include_str!("../rules/maturity-v0.1.json");
 struct Cli {
     #[arg(default_value = ".")]
     path: PathBuf,
+
     #[arg(long, value_enum, default_value_t = OutputFormat::Text)]
     format: OutputFormat,
+
     #[arg(long)]
     output: Option<PathBuf>,
+
     #[arg(long)]
     rules: Option<PathBuf>,
+
     #[arg(long)]
     fail_under: Option<f64>,
+
+    #[arg(
+        long,
+        help = "Run trusted built-in build/test/lint probes. This may execute target repository code."
+    )]
+    run_execution: bool,
 }
 
 #[derive(Copy, Clone, Debug, ValueEnum)]
@@ -67,15 +79,15 @@ enum Check {
 }
 
 #[derive(Debug, Serialize)]
-struct Finding {
-    rule_id: String,
-    category: String,
-    title: String,
-    status: &'static str,
-    score: f64,
-    weight: f64,
-    evidence: Vec<String>,
-    remediation: String,
+pub(crate) struct Finding {
+    pub(crate) rule_id: String,
+    pub(crate) category: String,
+    pub(crate) title: String,
+    pub(crate) status: &'static str,
+    pub(crate) score: f64,
+    pub(crate) weight: f64,
+    pub(crate) evidence: Vec<String>,
+    pub(crate) remediation: String,
 }
 
 #[derive(Debug, Serialize)]
@@ -90,6 +102,7 @@ struct Report {
     schema: &'static str,
     ruleset: String,
     root: String,
+    execution_enabled: bool,
     overall: f64,
     grade: &'static str,
     level: &'static str,
@@ -100,53 +113,59 @@ struct Report {
 fn collect_files(root: &Path) -> Vec<PathBuf> {
     WalkDir::new(root)
         .into_iter()
-        .filter_entry(|e| {
-            let n = e.file_name().to_string_lossy();
-            n != ".git" && n != "target" && n != "node_modules" && n != "vendor"
+        .filter_entry(|entry| {
+            let name = entry.file_name().to_string_lossy();
+            name != ".git" && name != "target" && name != "node_modules" && name != "vendor"
         })
         .filter_map(Result::ok)
-        .filter(|e| e.file_type().is_file())
-        .filter_map(|e| e.path().strip_prefix(root).ok().map(PathBuf::from))
+        .filter(|entry| entry.file_type().is_file())
+        .filter_map(|entry| entry.path().strip_prefix(root).ok().map(PathBuf::from))
         .collect()
 }
 
 fn matches(files: &[PathBuf], patterns: &[String]) -> Result<Vec<String>> {
     let mut builder = GlobSetBuilder::new();
-    for p in patterns {
-        builder.add(Glob::new(p).with_context(|| format!("invalid glob: {p}"))?);
+    for pattern in patterns {
+        builder.add(
+            Glob::new(pattern).with_context(|| format!("invalid glob pattern: {pattern}"))?,
+        );
     }
+
     let set = builder.build()?;
-    let mut out: Vec<String> = files
+    let mut matched: Vec<String> = files
         .iter()
-        .filter(|p| set.is_match(p))
-        .map(|p| p.to_string_lossy().to_string())
+        .filter(|path| set.is_match(path))
+        .map(|path| path.to_string_lossy().to_string())
         .collect();
-    out.sort();
-    out.dedup();
-    Ok(out)
+    matched.sort();
+    matched.dedup();
+    Ok(matched)
 }
 
-fn evaluate(root: &Path, files: &[PathBuf], rule: &Rule) -> Result<Finding> {
+fn evaluate_static_rule(root: &Path, files: &[PathBuf], rule: &Rule) -> Result<Finding> {
     let (passed, evidence) = match &rule.check {
         Check::AnyFile { patterns } => {
-            let ev = matches(files, patterns)?;
-            (!ev.is_empty(), ev)
+            let evidence = matches(files, patterns)?;
+            (!evidence.is_empty(), evidence)
         }
         Check::Contains { patterns, needles } => {
             let candidates = matches(files, patterns)?;
-            let needles: Vec<String> = needles.iter().map(|n| n.to_lowercase()).collect();
-            let mut ev = Vec::new();
-            for rel in candidates {
-                if let Ok(text) = fs::read_to_string(root.join(&rel)) {
+            let needles: Vec<String> = needles.iter().map(|needle| needle.to_lowercase()).collect();
+            let mut evidence = Vec::new();
+
+            for relative_path in candidates {
+                if let Ok(text) = fs::read_to_string(root.join(&relative_path)) {
                     let text = text.to_lowercase();
-                    if needles.iter().any(|n| text.contains(n)) {
-                        ev.push(rel);
+                    if needles.iter().any(|needle| text.contains(needle)) {
+                        evidence.push(relative_path);
                     }
                 }
             }
-            (!ev.is_empty(), ev)
+
+            (!evidence.is_empty(), evidence)
         }
     };
+
     Ok(Finding {
         rule_id: rule.id.clone(),
         category: rule.category.clone(),
@@ -159,84 +178,103 @@ fn evaluate(root: &Path, files: &[PathBuf], rule: &Rule) -> Result<Finding> {
     })
 }
 
-fn grade(s: f64) -> &'static str {
-    if s >= 90.0 {
+fn grade(score: f64) -> &'static str {
+    if score >= 90.0 {
         "A"
-    } else if s >= 80.0 {
+    } else if score >= 80.0 {
         "B"
-    } else if s >= 70.0 {
+    } else if score >= 70.0 {
         "C"
-    } else if s >= 60.0 {
+    } else if score >= 60.0 {
         "D"
     } else {
         "E"
     }
 }
 
-fn level(s: f64) -> &'static str {
-    if s >= 90.0 {
+fn level(score: f64) -> &'static str {
+    if score >= 90.0 {
         "L5 Optimizing"
-    } else if s >= 80.0 {
+    } else if score >= 80.0 {
         "L4 Resilient"
-    } else if s >= 70.0 {
+    } else if score >= 70.0 {
         "L3 Production"
-    } else if s >= 55.0 {
+    } else if score >= 55.0 {
         "L2 Managed"
-    } else if s >= 35.0 {
+    } else if score >= 35.0 {
         "L1 Repeatable"
     } else {
         "L0 Initial"
     }
 }
 
-fn round1(v: f64) -> f64 {
-    (v * 10.0).round() / 10.0
+fn round1(value: f64) -> f64 {
+    (value * 10.0).round() / 10.0
 }
 
-fn assess(root: &Path, rules: Ruleset) -> Result<Report> {
-    let files = collect_files(root);
-    let mut findings = Vec::new();
-    for rule in &rules.rules {
-        findings.push(evaluate(root, &files, rule)?);
+fn score_findings(findings: &[Finding]) -> (BTreeMap<String, CategoryScore>, f64) {
+    let mut totals: BTreeMap<String, (f64, f64)> = BTreeMap::new();
+
+    for finding in findings {
+        if finding.status == "SKIP" {
+            continue;
+        }
+
+        let total = totals.entry(finding.category.clone()).or_default();
+        total.0 += finding.score;
+        total.1 += finding.weight;
     }
 
-    let mut totals: BTreeMap<String, (f64, f64)> = BTreeMap::new();
-    for f in &findings {
-        let e = totals.entry(f.category.clone()).or_default();
-        e.0 += f.score;
-        e.1 += f.weight;
-    }
     let mut categories = BTreeMap::new();
-    let (mut earned, mut max) = (0.0, 0.0);
-    for (name, (e, m)) in totals {
+    let (mut earned, mut maximum) = (0.0, 0.0);
+
+    for (name, (category_earned, category_maximum)) in totals {
         categories.insert(
             name,
             CategoryScore {
-                score: if m > 0.0 {
-                    round1(e / m * 100.0)
+                score: if category_maximum > 0.0 {
+                    round1(category_earned / category_maximum * 100.0)
                 } else {
                     0.0
                 },
-                earned: e,
-                max: m,
+                earned: category_earned,
+                max: category_maximum,
             },
         );
-        earned += e;
-        max += m;
+        earned += category_earned;
+        maximum += category_maximum;
     }
-    let overall = if max > 0.0 {
-        round1(earned / max * 100.0)
+
+    let overall = if maximum > 0.0 {
+        round1(earned / maximum * 100.0)
     } else {
         0.0
     };
+
+    (categories, overall)
+}
+
+fn assess(root: &Path, rules: Ruleset, run_execution: bool) -> Result<Report> {
+    let files = collect_files(root);
+    let mut findings = Vec::new();
+
+    for rule in &rules.rules {
+        findings.push(evaluate_static_rule(root, &files, rule)?);
+    }
+
+    findings.extend(execution::findings(root, run_execution));
+
+    let (categories, overall) = score_findings(&findings);
+
     Ok(Report {
-        schema: "openforge-assessment/v0.1",
+        schema: "openforge-assessment/v0.2",
         ruleset: rules.version,
         root: root
             .canonicalize()
             .unwrap_or_else(|_| root.to_path_buf())
             .display()
             .to_string(),
+        execution_enabled: run_execution,
         overall,
         grade: grade(overall),
         level: level(overall),
@@ -245,25 +283,40 @@ fn assess(root: &Path, rules: Ruleset) -> Result<Report> {
     })
 }
 
-fn print_text(r: &Report) {
+fn print_text(report: &Report) {
     println!("OpenForge Maturity Assessment");
     println!("{}", "=".repeat(72));
     println!(
         "Overall: {:>5.1} / 100   Grade: {}   {}",
-        r.overall, r.grade, r.level
+        report.overall, report.grade, report.level
+    );
+    println!(
+        "Execution evidence: {}",
+        if report.execution_enabled {
+            "enabled"
+        } else {
+            "disabled"
+        }
     );
     println!("{}", "-".repeat(72));
-    for (name, c) in &r.categories {
-        println!("{:<24} {:>5.1} / 100", name, c.score);
+
+    for (name, category) in &report.categories {
+        println!("{:<24} {:>5.1} / 100", name, category.score);
     }
+
     println!("{}", "-".repeat(72));
-    for f in r.findings.iter().filter(|f| f.status == "FAIL") {
+
+    for finding in report
+        .findings
+        .iter()
+        .filter(|finding| finding.status == "FAIL" || finding.status == "SKIP")
+    {
         println!(
-            "FAIL [{}] {} (+{} possible)",
-            f.rule_id, f.title, f.weight
+            "{} [{}] {}",
+            finding.status, finding.rule_id, finding.title
         );
-        if !f.remediation.is_empty() {
-            println!("     {}", f.remediation);
+        if finding.status == "FAIL" && !finding.remediation.is_empty() {
+            println!("     {}", finding.remediation);
         }
     }
 }
@@ -274,23 +327,31 @@ fn run() -> Result<i32> {
         .path
         .canonicalize()
         .with_context(|| format!("invalid path: {}", cli.path.display()))?;
+
     let rules_text = match cli.rules {
-        Some(p) => {
-            fs::read_to_string(&p).with_context(|| format!("cannot read rules: {}", p.display()))?
-        }
+        Some(path) => fs::read_to_string(&path)
+            .with_context(|| format!("cannot read rules: {}", path.display()))?,
         None => DEFAULT_RULES.to_string(),
     };
     let rules: Ruleset = serde_json::from_str(&rules_text).context("invalid maturity ruleset")?;
-    let report = assess(&root, rules)?;
+
+    let report = assess(&root, rules, cli.run_execution)?;
     let json = serde_json::to_string_pretty(&report)?;
-    if let Some(out) = &cli.output {
-        fs::write(out, &json).with_context(|| format!("cannot write {}", out.display()))?;
+
+    if let Some(output) = &cli.output {
+        fs::write(output, &json)
+            .with_context(|| format!("cannot write {}", output.display()))?;
     }
+
     match cli.format {
         OutputFormat::Text => print_text(&report),
         OutputFormat::Json => println!("{json}"),
     }
-    Ok(if cli.fail_under.is_some_and(|t| report.overall < t) {
+
+    Ok(if cli
+        .fail_under
+        .is_some_and(|threshold| report.overall < threshold)
+    {
         2
     } else {
         0
@@ -300,8 +361,8 @@ fn run() -> Result<i32> {
 fn main() -> ExitCode {
     match run() {
         Ok(code) => ExitCode::from(code as u8),
-        Err(e) => {
-            eprintln!("openforge: {e:#}");
+        Err(error) => {
+            eprintln!("openforge: {error:#}");
             ExitCode::FAILURE
         }
     }
