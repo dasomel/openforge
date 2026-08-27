@@ -22,6 +22,7 @@ mod runtime_storage;
 mod runtime_targets;
 mod web_assets;
 mod web_cache;
+mod web_cache_runtime;
 
 pub(crate) use assessment::Finding;
 
