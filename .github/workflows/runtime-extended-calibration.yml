@@ -1,0 +1,178 @@
+name: Runtime Extended Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/runtime_observability.rs"
+      - "src/runtime_targets.rs"
+      - "src/runtime_alertmanager.rs"
+      - "src/runtime_gitops.rs"
+      - "src/runtime_restore.rs"
+      - "examples/calibration/runtime-observability-*.json"
+      - "examples/calibration/runtime-gitops-*.json"
+      - "examples/calibration/runtime-restore-*.json"
+      - "examples/runtime-fixtures/*-observability/**"
+      - "examples/runtime-fixtures/*-gitops/**"
+      - "examples/runtime-fixtures/*-restore/**"
+      - ".github/workflows/runtime-extended-calibration.yml"
+
+permissions:
+  contents: read
+
+env:
+  OPENFORGE_NOW: "2026-08-27T07:00:00Z"
+
+jobs:
+  observability:
+    name: ${{ matrix.name }} runtime observability replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-observability
+            manifest: openforge/examples/calibration/runtime-observability-healthy.json
+            output_prefix: runtime-observability-healthy
+          - name: Degraded
+            fixture: degraded-observability
+            manifest: openforge/examples/calibration/runtime-observability-degraded.json
+            output_prefix: runtime-observability-degraded
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded observability fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded observability evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate observability expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
+
+  gitops:
+    name: ${{ matrix.name }} runtime GitOps replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-gitops
+            manifest: openforge/examples/calibration/runtime-gitops-healthy.json
+            output_prefix: runtime-gitops-healthy
+          - name: Degraded
+            fixture: degraded-gitops
+            manifest: openforge/examples/calibration/runtime-gitops-degraded.json
+            output_prefix: runtime-gitops-degraded
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded GitOps fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded GitOps evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate GitOps expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
+
+  restore:
+    name: ${{ matrix.name }} runtime restore replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-restore
+            manifest: openforge/examples/calibration/runtime-restore-healthy.json
+            output_prefix: runtime-restore-healthy
+          - name: Degraded
+            fixture: degraded-restore
+            manifest: openforge/examples/calibration/runtime-restore-degraded.json
+            output_prefix: runtime-restore-degraded
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded restore fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded restore evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate restore expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
