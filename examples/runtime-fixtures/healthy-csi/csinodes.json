@@ -1,0 +1,1 @@
+{"items":[{"metadata":{"name":"node-a"},"spec":{"drivers":[{"name":"ebs.csi.aws.com"}]}},{"metadata":{"name":"node-b"},"spec":{"drivers":[{"name":"ebs.csi.aws.com"}]}}]}
