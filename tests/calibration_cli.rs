@@ -53,20 +53,21 @@ fn calibrate_outputs_machine_readable_report() {
         String::from_utf8_lossy(&output.stderr)
     );
     let report: Value = serde_json::from_slice(&output.stdout).expect("valid calibration JSON");
-    assert_eq!(report["schema"], "openforge-calibration/v0.1");
+    assert_eq!(report["schema"], "openforge-calibration/v0.2");
     assert_eq!(report["summary"]["classified_rules"], 2);
     assert_eq!(report["summary"]["unclassified_rules"], 0);
+    assert_eq!(report["summary"]["inactive_rules"], 0);
     assert_eq!(report["summary"]["false_positives"], 1);
 }
 
 #[test]
-fn require_complete_returns_exit_two_for_unclassified_rules() {
+fn require_complete_returns_exit_two_for_unclassified_active_rules() {
     let assessment = temp("incomplete-assessment");
     let expectations = temp("incomplete-expectations");
 
     fs::write(
         &assessment,
-        r#"{"findings":[{"rule_id":"A","status":"PASS"},{"rule_id":"B","status":"FAIL"}]}"#,
+        r#"{"findings":[{"rule_id":"A","status":"PASS"},{"rule_id":"B","status":"FAIL"},{"rule_id":"R","status":"SKIP"}]}"#,
     )
     .unwrap();
     fs::write(
