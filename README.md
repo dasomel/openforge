@@ -152,6 +152,26 @@ Lessons / Metrics
 OpenForge Improvement
 ```
 
+## Compliance Assessment
+
+OpenForge provides a portable compliance audit engine to assess OSS repositories against shared engineering standards, generating reproducible scorecards, delta comparisons, and actionable GitHub gap issues.
+
+```bash
+# Run portfolio-wide compliance audit
+python3 templates/scripts/audit-portfolio.py --config templates/portfolio.example.yml
+
+# Audit a single local repository
+python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
+
+# Compare against historical baseline
+python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
+```
+
+- [Portfolio Scorecard](docs/portfolio-scorecard.md) — 14-repository adoption scorecard and remediation ranking
+- [Reference Metrics](docs/reference-metrics.md) — 35 standard engineering and maturity metrics
+- [Branch Protection Standard](docs/branch-protection.md) — canonical branch gates and status check requirements
+- [Gap Issues Catalog](docs/gap-issues/) — structured GitHub issue drafts grouped by area
+
 ## Reference Projects
 
 OpenForge is informed by active OSS development practices, including:

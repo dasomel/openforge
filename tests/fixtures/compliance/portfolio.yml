@@ -1,0 +1,43 @@
+version: openforge-portfolio/v1
+workspaceRoot: "."
+
+repositories:
+  - id: good-repo
+    repository: fixture/good-repo
+    path: good
+    category: Test Fixtures
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: false
+
+  - id: partial-repo
+    repository: fixture/partial-repo
+    path: partial
+    category: Test Fixtures
+    archetype: Developer Tool
+    profile: standard
+    ui: true
+    container: true
+    env: true
+
+  - id: minimal-repo
+    repository: fixture/minimal-repo
+    path: minimal
+    category: Test Fixtures
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: false
+
+  - id: missing-repo
+    repository: fixture/missing-repo
+    path: nonexistent-path
+    category: Test Fixtures
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: false

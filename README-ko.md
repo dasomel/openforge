@@ -105,6 +105,26 @@ templates/
 
 Template은 보수적인 출발점입니다. Target repository와 threat model에 맞게 version, permission, path, command, domain, image, identity, ecosystem-specific control을 조정해야 합니다.
 
+## 컴플라이언스 평가 및 감사 도구
+
+OpenForge는 공통 엔지니어링 표준 대비 각 OSS 저장소의 성숙도를 자동으로 진단하고, 재현 가능한 스코어카드, 이전 베이스라인과의 비교 분석, GitHub Issue 등록용 Gap 명세를 생성하는 이식 가능한 감사 엔진을 제공합니다.
+
+```bash
+# 전체 포트폴리오 컴플라이언스 감사 실행
+python3 templates/scripts/audit-portfolio.py --config templates/portfolio.example.yml
+
+# 특정 저장소 단독 감사 실행
+python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
+
+# 이전 베이스라인과의 비교 (Delta 및 해결된 Gap 분석)
+python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
+```
+
+- [포트폴리오 스코어카드](docs/portfolio-scorecard-ko.md) — 14개 OSS 저장소의 표준 채택률 및 우선 개선 순위
+- [참고 메트릭](docs/reference-metrics-ko.md) — 35개 표준 엔지니어링 및 성숙도 지표
+- [Branch Protection 표준](docs/branch-protection-ko.md) — 기준 브랜치 보호 및 필수 CI 검사 요건
+- [Gap Issues 카탈로그](docs/gap-issues/) — 영역별로 분리된 GitHub Issue 등록용 명세
+
 ## Reference Project
 
 OpenForge의 디자인 시스템 표준은 현재 개발 중인 프로젝트의 서로 다른 UI 성격을 참고합니다.
