@@ -8,7 +8,7 @@ OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키�
 
 Repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, engineering tooling, **UI/UX 디자인 시스템**, reusable implementation templates, deployment baseline, 디자인 템플릿과 프로젝트 lifecycle을 공통 기준으로 관리합니다.
 
-[소개](docs/about-ko.md) · [English README](README.md)
+[소개](docs/about-ko.md) · [의사결정 기록 / ADR](docs/adr/README-ko.md) · [English README](README.md)
 
 ## 핵심 원칙
 
@@ -16,7 +16,8 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md` 규칙을 사용합니다.
 - 프로젝트는 기본적으로 재현 가능하고, 문서화되고, 테스트 가능하며, 관측 가능하고, 접근 가능하며, 안전해야 합니다.
 - GitHub Issue와 Pull Request를 주요 변경 관리 수단으로 사용합니다.
-- Architecture Decision은 ADR로 기록합니다.
+- Architecture 및 장기적인 Cross-project Decision은 ADR로 기록합니다.
+- Accepted ADR은 History로 보존하고 실질적인 변경은 새로운 ADR로 Supersede합니다.
 - Merge 전에 CI가 품질을 검증합니다.
 - Security와 Supply Chain을 프로젝트 생명주기에 포함합니다.
 - Dependency 호환성만으로 최신 버전을 즉시 채택하지 않습니다.
@@ -29,6 +30,16 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - UI의 의미와 Accessibility는 공통 표준을 따르되 Product Personality, Density, Platform Convention은 프로젝트 특성에 따라 의도적으로 달라질 수 있습니다.
 - 의도적인 예외는 범위와 만료를 기록합니다.
 
+## 의사결정 관리
+
+OpenForge는 장기적인 공통 의사결정을 다음 계층으로 관리합니다.
+
+```text
+ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
+```
+
+자세한 기준은 [의사결정 관리 표준](docs/decision-management-ko.md)과 [ADR Index](docs/adr/README-ko.md)를 참고합니다.
+
 ## 표준
 
 - [Documentation Standard](docs/documentation-ko.md)
@@ -37,6 +48,9 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - [Development Standard](docs/development-ko.md)
 - [Engineering Tooling Standard](docs/tooling-ko.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
+- [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
+- [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
+- [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security-ko.md)
@@ -66,11 +80,15 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 
 ## 재사용 가능한 템플릿
 
-OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 프로젝트별 Archetype, Token Mapping, Product Personality, Workflow, Accessibility, 예외를 기록하기 위한 [`templates/DESIGN.md`](templates/DESIGN.md)를 제공합니다.
+OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md)입니다.
 
 ```text
 templates/
-├── DESIGN.md        # 프로젝트 디자인 시스템 계약
+├── AGENTS.md
+├── CODING_STANDARDS.md
+├── DESIGN.md
+├── ADR.md
+├── ADR-ko.md
 ├── github/          # PR / CODEOWNERS
 ├── workflows/       # CI / release / SBOM / supply-chain
 ├── scripts/         # toolchain / validation / supply-chain checks
@@ -103,7 +121,7 @@ OpenForge의 디자인 시스템 표준은 현재 개발 중인 프로젝트의 
 
 ## Contributing
 
-기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 Template은 구체적인 Use Case, Reference Implementation 또는 반복 가능한 Engineering Benefit을 기반으로 추가합니다.
+기여는 [Contributing Guide](CONTRIBUTING-ko.md)를 따릅니다. 새로운 표준과 Template은 구체적인 Use Case, Reference Implementation 또는 반복 가능한 Engineering Benefit을 기반으로 추가합니다. 여러 OSS에 영향을 주는 장기적인 Policy 변경은 [ADR 기준](docs/decision-management-ko.md)을 함께 검토합니다.
 
 ## License
 
