@@ -1,5 +1,7 @@
 mod execution;
 mod runtime;
+mod runtime_backup;
+mod runtime_certificates;
 mod runtime_metrics;
 mod runtime_pod_security;
 mod runtime_rbac;
@@ -309,11 +311,21 @@ fn assess(
         runtime_context,
         runtime_namespace,
     ));
+    findings.push(runtime_certificates::finding(
+        runtime_enabled,
+        runtime_context,
+        runtime_namespace,
+    ));
+    findings.push(runtime_backup::finding(
+        runtime_enabled,
+        runtime_context,
+        runtime_namespace,
+    ));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.3",
+        schema: "openforge-assessment/v0.4",
         ruleset: rules.version,
         root: root
             .canonicalize()
