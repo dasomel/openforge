@@ -38,7 +38,40 @@ The optimizer may be application-native, self-hosted, or managed. OpenForge does
 
 If no image usage is detected in supported web source files, all WEB rules are `SKIP` and do not affect the score.
 
-The first implementation scans HTML, JSX, TSX, Vue, Svelte, Astro, Markdown/MDX, JavaScript, and TypeScript source. It intentionally favors explainable static evidence over heuristic browser simulation.
+The analyzer scans HTML, JSX, TSX, Vue, Svelte, Astro, Markdown/MDX, JavaScript, and TypeScript source. It intentionally favors explainable static evidence over heuristic browser simulation.
+
+## Per-image coverage scoring
+
+`WEB-001` through `WEB-004` are coverage rules. OpenForge extracts individual image usages and calculates the fraction that satisfy each rule.
+
+```text
+coverage = matching image usages / total detected image usages
+score    = coverage * rule weight
+```
+
+A rule is `PASS` only when coverage is 100%. Partial coverage remains `FAIL`, but receives proportional credit so the maturity score reflects incremental improvement.
+
+Example:
+
+```text
+FAIL [WEB-002] Images declare dimensions
+coverage=17/20 coverage_percent=85.0
+score=4.3/5.0
+covered=src/pages/index.tsx:42
+missing=src/components/Avatar.tsx:18
+```
+
+Evidence is reported at source location granularity and includes both covered and missing examples.
+
+Current extraction semantics:
+
+- `<img>` usages are evaluated per tag.
+- JSX/TSX `<Image>` usages are treated as framework image components. They count as responsive by default and lazy-loaded unless `priority` or eager loading is explicitly requested.
+- `<Image fill>` satisfies layout-space handling for WEB-002.
+- Markdown image syntax is counted as an image usage, but lazy loading, explicit dimensions, and responsive behavior are not inferred from Markdown alone.
+- WebP/AVIF is credited only when the specific image fragment references the modern format or transformation option.
+
+These rules deliberately avoid assuming browser/runtime behavior that cannot be established from source evidence.
 
 ## Why origin control matters
 
@@ -85,9 +118,8 @@ For private images, authenticated assets, closed networks, or workloads requirin
 
 ## Planned extensions
 
-The initial static analyzer is intentionally conservative. Future improvements can add:
+Further improvements can add:
 
-- per-image coverage rather than file-level evidence
 - cache-control and immutable asset URL analysis
 - framework-specific image configuration adapters
 - origin allow-list validation for Next.js and common image proxies
