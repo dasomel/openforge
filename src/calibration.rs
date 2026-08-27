@@ -3,7 +3,7 @@ use serde::{Deserialize, Serialize};
 use serde_json::Value;
 use std::{collections::BTreeMap, fs, path::Path};
 
-const SCHEMA: &str = "openforge-calibration/v0.1";
+const SCHEMA: &str = "openforge-calibration/v0.2";
 
 #[derive(Debug, Clone, Deserialize)]
 pub struct CalibrationManifest {
@@ -42,9 +42,14 @@ pub struct CalibrationRule {
 
 #[derive(Debug, Clone, Serialize)]
 pub struct CalibrationSummary {
+    /// PASS/FAIL rules that were actually scored in this assessment run.
     pub assessed_rules: usize,
+    /// Active PASS/FAIL rules with a reviewed calibration classification.
     pub classified_rules: usize,
+    /// Active PASS/FAIL rules that still need review.
     pub unclassified_rules: usize,
+    /// SKIP/NOT_APPLICABLE/WAIVED and other non-scoring findings.
+    pub inactive_rules: usize,
     pub failed_rules: usize,
     pub true_findings: usize,
     pub false_positives: usize,
@@ -80,6 +85,25 @@ fn percentage(part: usize, total: usize) -> f64 {
     }
 }
 
+fn is_active(status: &str) -> bool {
+    matches!(status, "PASS" | "FAIL")
+}
+
+fn validate_classification(rule_id: &str, status: &str, classification: Classification) -> Result<()> {
+    let valid = match classification {
+        Classification::TrueFinding | Classification::FalsePositive => status == "FAIL",
+        Classification::NotApplicable => matches!(status, "FAIL" | "NOT_APPLICABLE"),
+        Classification::Accepted => status == "PASS",
+    };
+
+    if !valid {
+        bail!(
+            "calibration classification '{classification:?}' is inconsistent with {rule_id} status '{status}'"
+        );
+    }
+    Ok(())
+}
+
 pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<CalibrationReport> {
     let assessment = read_json(assessment_path)?;
     let manifest_value = read_json(manifest_path)?;
@@ -102,6 +126,8 @@ pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<Calibra
         .ok_or_else(|| anyhow::anyhow!("assessment does not contain a findings array"))?;
 
     let mut rules = Vec::with_capacity(findings.len());
+    let mut assessed_rules = 0usize;
+    let mut inactive_rules = 0usize;
     let mut failed_rules = 0usize;
     let mut classified_rules = 0usize;
     let mut true_findings = 0usize;
@@ -120,13 +146,22 @@ pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<Calibra
             .and_then(Value::as_str)
             .unwrap_or("UNKNOWN")
             .to_string();
+        let active = is_active(&status);
+        if active {
+            assessed_rules += 1;
+        } else {
+            inactive_rules += 1;
+        }
         if status == "FAIL" {
             failed_rules += 1;
         }
 
         let expectation = manifest.expectations.get(&rule_id);
         if let Some(expectation) = expectation {
-            classified_rules += 1;
+            validate_classification(&rule_id, &status, expectation.classification)?;
+            if active {
+                classified_rules += 1;
+            }
             match expectation.classification {
                 Classification::TrueFinding => true_findings += 1,
                 Classification::FalsePositive => false_positives += 1,
@@ -159,7 +194,6 @@ pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<Calibra
     } else {
         Some(percentage(true_findings, failure_classified))
     };
-    let assessed_rules = rules.len();
 
     Ok(CalibrationReport {
         schema: SCHEMA.to_string(),
@@ -172,6 +206,7 @@ pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<Calibra
             assessed_rules,
             classified_rules,
             unclassified_rules: assessed_rules.saturating_sub(classified_rules),
+            inactive_rules,
             failed_rules,
             true_findings,
             false_positives,
@@ -194,11 +229,12 @@ pub fn print_text(report: &CalibrationReport) {
         println!("Profile: {profile}");
     }
     println!(
-        "Classified: {}/{} ({:.1}%)",
+        "Classified active rules: {}/{} ({:.1}%)",
         report.summary.classified_rules,
         report.summary.assessed_rules,
         report.summary.classification_coverage_percent
     );
+    println!("Inactive findings: {}", report.summary.inactive_rules);
     if let Some(precision) = report.summary.failure_precision_percent {
         println!("Failure precision: {precision:.1}%");
     } else {
@@ -249,12 +285,12 @@ mod tests {
     }
 
     #[test]
-    fn calculates_failure_precision_and_coverage() {
+    fn calculates_precision_and_coverage_from_active_rules_only() {
         let assessment_path = temp("assessment");
         let manifest_path = temp("manifest");
         fs::write(
             &assessment_path,
-            r#"{"schema":"openforge-assessment/v0.17","ruleset":"maturity-v0.1","findings":[{"rule_id":"A","status":"FAIL"},{"rule_id":"B","status":"FAIL"},{"rule_id":"C","status":"PASS"}]}"#,
+            r#"{"schema":"openforge-assessment/v0.17","ruleset":"maturity-v0.1","findings":[{"rule_id":"A","status":"FAIL"},{"rule_id":"B","status":"FAIL"},{"rule_id":"C","status":"PASS"},{"rule_id":"R","status":"SKIP"}]}"#,
         )
         .unwrap();
         fs::write(
@@ -264,6 +300,8 @@ mod tests {
         .unwrap();
 
         let report = calibrate(&assessment_path, &manifest_path).unwrap();
+        assert_eq!(report.summary.assessed_rules, 3);
+        assert_eq!(report.summary.inactive_rules, 1);
         assert_eq!(report.summary.classified_rules, 2);
         assert_eq!(report.summary.unclassified_rules, 1);
         assert_eq!(report.summary.failure_precision_percent, Some(50.0));
@@ -271,6 +309,45 @@ mod tests {
             report.rules[0].classification,
             Some(Classification::TrueFinding)
         );
+    }
+
+    #[test]
+    fn rejects_failure_classification_for_passed_rule() {
+        let assessment_path = temp("status-assessment");
+        let manifest_path = temp("status-manifest");
+        fs::write(
+            &assessment_path,
+            r#"{"findings":[{"rule_id":"A","status":"PASS"}]}"#,
+        )
+        .unwrap();
+        fs::write(
+            &manifest_path,
+            r#"{"project":"fixture","expectations":{"A":{"classification":"false_positive"}}}"#,
+        )
+        .unwrap();
+
+        assert!(calibrate(&assessment_path, &manifest_path).is_err());
+    }
+
+    #[test]
+    fn accepts_not_applicable_classification_for_not_applicable_rule() {
+        let assessment_path = temp("na-assessment");
+        let manifest_path = temp("na-manifest");
+        fs::write(
+            &assessment_path,
+            r#"{"findings":[{"rule_id":"WEB-001","status":"NOT_APPLICABLE"}]}"#,
+        )
+        .unwrap();
+        fs::write(
+            &manifest_path,
+            r#"{"project":"fixture","expectations":{"WEB-001":{"classification":"not_applicable"}}}"#,
+        )
+        .unwrap();
+
+        let report = calibrate(&assessment_path, &manifest_path).unwrap();
+        assert_eq!(report.summary.assessed_rules, 0);
+        assert_eq!(report.summary.inactive_rules, 1);
+        assert_eq!(report.summary.not_applicable, 1);
     }
 
     #[test]
