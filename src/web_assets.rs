@@ -1,5 +1,5 @@
 use crate::Finding;
-use std::{fs, path::Path};
+use std::{collections::BTreeSet, fs, path::Path};
 use walkdir::WalkDir;
 
 const SOURCE_EXTENSIONS: &[&str] = &[
@@ -102,24 +102,52 @@ fn image_usages(files: &[(String, String)]) -> Vec<ImageUsage> {
     usages
 }
 
-fn evidence_for(files: &[(String, String)], needles: &[&str]) -> Vec<String> {
-    files
-        .iter()
-        .filter_map(|(path, text)| {
-            let lower = text.to_ascii_lowercase();
-            needles
-                .iter()
-                .any(|needle| lower.contains(&needle.to_ascii_lowercase()))
-                .then_some(path.clone())
-        })
-        .collect()
-}
-
 fn contains_any(text: &str, needles: &[&str]) -> bool {
     let lower = text.to_ascii_lowercase();
     needles
         .iter()
         .any(|needle| lower.contains(&needle.to_ascii_lowercase()))
+}
+
+fn attribute_value(fragment: &str, attribute: &str) -> Option<String> {
+    let lower = fragment.to_ascii_lowercase();
+    let needle = format!("{attribute}=");
+    let start = lower.find(&needle)? + needle.len();
+    let rest = fragment[start..].trim_start();
+    let quote = rest.chars().next()?;
+    if quote != '"' && quote != '\'' {
+        return None;
+    }
+    let body = &rest[quote.len_utf8()..];
+    let end = body.find(quote)?;
+    Some(body[..end].to_string())
+}
+
+fn markdown_url(fragment: &str) -> Option<String> {
+    let start = fragment.find("](")? + 2;
+    let end = fragment[start..].find(')')? + start;
+    Some(fragment[start..end].trim().to_string())
+}
+
+fn source_url(usage: &ImageUsage) -> Option<String> {
+    if usage.markdown_image {
+        markdown_url(&usage.fragment)
+    } else {
+        attribute_value(&usage.fragment, "src")
+    }
+}
+
+fn host_from_url(url: &str) -> Option<String> {
+    let rest = url
+        .strip_prefix("https://")
+        .or_else(|| url.strip_prefix("http://"))?;
+    let authority = rest.split('/').next()?.split('?').next()?;
+    let host = authority.rsplit('@').next()?.split(':').next()?;
+    (!host.is_empty()).then(|| host.to_ascii_lowercase())
+}
+
+fn external_host(usage: &ImageUsage) -> Option<String> {
+    source_url(usage).and_then(|url| host_from_url(&url))
 }
 
 fn lazy_applies(usage: &ImageUsage) -> bool {
@@ -171,6 +199,71 @@ fn modern_format_applies(usage: &ImageUsage) -> bool {
     )
 }
 
+fn optimizer_applies(usage: &ImageUsage) -> bool {
+    if usage.framework_image {
+        return true;
+    }
+    contains_any(
+        &usage.fragment,
+        &[
+            "wsrv.nl",
+            "weserv",
+            "imagekit.io",
+            "cloudinary",
+            "imgix",
+            "cdn-cgi/image",
+            "/_next/image",
+        ],
+    )
+}
+
+fn configured_origin_hosts(files: &[(String, String)]) -> BTreeSet<String> {
+    let mut hosts = BTreeSet::new();
+    for (_, text) in files {
+        let lower = text.to_ascii_lowercase();
+        if !contains_any(
+            &lower,
+            &[
+                "remotepatterns",
+                "images.domains",
+                "allowedorigins",
+                "allowed_origins",
+                "origin allow",
+                "origin_allow",
+            ],
+        ) {
+            continue;
+        }
+        for token in text.split(|c: char| {
+            c.is_whitespace() || matches!(c, ',' | '[' | ']' | '{' | '}' | '(' | ')' | ';')
+        }) {
+            let cleaned = token.trim_matches(|c: char| {
+                matches!(c, '"' | '\'' | '`' | ':' | '=')
+            });
+            if let Some(host) = host_from_url(cleaned) {
+                hosts.insert(host);
+            } else if cleaned.contains('.')
+                && !cleaned.contains('/')
+                && cleaned
+                    .chars()
+                    .all(|c| c.is_ascii_alphanumeric() || matches!(c, '.' | '-' | '*'))
+            {
+                hosts.insert(cleaned.to_ascii_lowercase());
+            }
+        }
+    }
+    hosts
+}
+
+fn host_allowed(host: &str, allowed: &BTreeSet<String>) -> bool {
+    allowed.iter().any(|pattern| {
+        pattern == host
+            || pattern
+                .strip_prefix("*.")
+                .is_some_and(|suffix| host == suffix || host.ends_with(&format!(".{suffix}")))
+    })
+}
+
 fn coverage_finding<F>(
     id: &str,
     title: &str,
@@ -220,23 +313,69 @@ where
     }
 }
 
-fn finding(
-    id: &str,
-    title: &str,
-    weight: f64,
-    passed: bool,
-    evidence: Vec<String>,
-    remediation: &str,
-) -> Finding {
+fn external_proxy_finding(usages: &[ImageUsage]) -> Finding {
+    let external: Vec<&ImageUsage> = usages
+        .iter()
+        .filter(|usage| external_host(usage).is_some())
+        .collect();
+    if external.is_empty() {
+        return skipped(
+            "WEB-005",
+            "External images use an optimization or CDN path",
+            "no external image usage detected",
+        );
+    }
+    coverage_finding(
+        "WEB-005",
+        "External images use an optimization or CDN path",
+        6.0,
+        &external.into_iter().cloned().collect::<Vec<_>>(),
+        optimizer_applies,
+        "Route external images through an application-native optimizer, controlled proxy, or image CDN when transformation/caching is required.",
+    )
+}
+
+fn origin_coverage_finding(files: &[(String, String)], usages: &[ImageUsage]) -> Finding {
+    let external_hosts: BTreeSet<String> = usages.iter().filter_map(external_host).collect();
+    if external_hosts.is_empty() {
+        return skipped(
+            "WEB-006",
+            "External image origins are constrained",
+            "no external image usage detected",
+        );
+    }
+
+    let allowed = configured_origin_hosts(files);
+    let covered: Vec<String> = external_hosts
+        .iter()
+        .filter(|host| host_allowed(host, &allowed))
+        .cloned()
+        .collect();
+    let missing: Vec<String> = external_hosts
+        .iter()
+        .filter(|host| !host_allowed(host, &allowed))
+        .cloned()
+        .collect();
+    let total = external_hosts.len();
+    let ratio = covered.len() as f64 / total as f64;
+    let mut evidence = vec![format!(
+        "origin_coverage={}/{} coverage_percent={:.1}",
+        covered.len(),
+        total,
+        ratio * 100.0
+    )];
+    evidence.extend(covered.iter().take(12).map(|host| format!("allowed={host}")));
+    evidence.extend(missing.iter().take(12).map(|host| format!("missing_allowlist={host}")));
+
     Finding {
-        rule_id: id.to_string(),
+        rule_id: "WEB-006".to_string(),
         category: "Web Assets".to_string(),
-        title: title.to_string(),
-        status: if passed { "PASS" } else { "FAIL" },
-        score: if passed { weight } else { 0.0 },
-        weight,
+        title: "External image origins are constrained".to_string(),
+        status: if missing.is_empty() { "PASS" } else { "FAIL" },
+        score: (ratio * 6.0 * 10.0).round() / 10.0,
+        weight: 6.0,
         evidence,
-        remediation: remediation.to_string(),
+        remediation: "Declare explicit allowed external image origins and keep them aligned with actual external image usage.".to_string(),
     }
 }
 
@@ -280,7 +419,7 @@ pub(crate) fn findings(root: &Path) -> Vec<Finding> {
             ),
             skipped(
                 "WEB-005",
-                "Image optimization or CDN path is present",
+                "External images use an optimization or CDN path",
                 "no image usage detected",
             ),
             skipped(
@@ -290,31 +429,6 @@ pub(crate) fn findings(root: &Path) -> Vec<Finding> {
             ),
         ];
     }
-
-    let optimization = evidence_for(
-        &files,
-        &[
-            "wsrv.nl",
-            "weserv",
-            "imagekit.io",
-            "cloudinary",
-            "imgix",
-            "/_next/image",
-            "next/image",
-            "cdn-cgi/image",
-        ],
-    );
-    let constrained = evidence_for(
-        &files,
-        &[
-            "remotePatterns",
-            "images.domains",
-            "allowedOrigins",
-            "allowed_origins",
-            "origin allow",
-            "origin_allow",
-        ],
-    );
 
     vec![
         coverage_finding(
@@ -349,29 +463,16 @@ pub(crate) fn findings(root: &Path) -> Vec<Finding> {
             modern_format_applies,
             "Provide WebP/AVIF delivery where compatible, with fallback when required.",
         ),
-        finding(
-            "WEB-005",
-            "Image optimization or CDN path is present",
-            6.0,
-            !optimization.is_empty(),
-            optimization,
-            "Use an application-native optimizer, image proxy, or managed/self-hosted image CDN when repeated resizing and cache delivery are needed.",
-        ),
-        finding(
-            "WEB-006",
-            "External image origins are constrained",
-            6.0,
-            !constrained.is_empty(),
-            constrained,
-            "Constrain external image origins with allow-lists or equivalent policy, especially when using image proxies.",
-        ),
+        external_proxy_finding(&usages),
+        origin_coverage_finding(&files, &usages),
     ]
 }
 
 #[cfg(test)]
 mod tests {
     use super::{
-        dimensions_apply, image_usages, lazy_applies, modern_format_applies, responsive_applies,
+        configured_origin_hosts, dimensions_apply, external_host, host_allowed, image_usages,
+        lazy_applies, modern_format_applies, optimizer_applies, responsive_applies,
     };
 
     #[test]
@@ -392,16 +493,19 @@ mod tests {
     }
 
     #[test]
-    fn treats_next_image_as_lazy_and_responsive_by_default() {
+    fn treats_next_image_as_lazy_responsive_and_optimized_by_default() {
         let files = vec![(
             "page.tsx".to_string(),
-            "<Image src=\"/hero.jpg\" width={1200} height={800} />".to_string(),
+            "<Image src=\"https://images.example.com/hero.jpg\" width={1200} height={800} />"
+                .to_string(),
         )];
         let usages = image_usages(&files);
         assert_eq!(usages.len(), 1);
         assert!(lazy_applies(&usages[0]));
         assert!(dimensions_apply(&usages[0]));
         assert!(responsive_applies(&usages[0]));
+        assert!(optimizer_applies(&usages[0]));
+        assert_eq!(external_host(&usages[0]).as_deref(), Some("images.example.com"));
     }
 
     #[test]
@@ -415,5 +519,18 @@ mod tests {
         assert!(!lazy_applies(&usages[0]));
         assert!(!dimensions_apply(&usages[0]));
         assert!(modern_format_applies(&usages[0]));
+    }
+
+    #[test]
+    fn extracts_and_matches_allowed_external_origins() {
+        let files = vec![(
+            "next.config.js".to_string(),
+            "images: { remotePatterns: [{ hostname: 'images.example.com' }, { hostname: '*.cdn.example.net' }] }"
+                .to_string(),
+        )];
+        let hosts = configured_origin_hosts(&files);
+        assert!(host_allowed("images.example.com", &hosts));
+        assert!(host_allowed("a.cdn.example.net", &hosts));
+        assert!(!host_allowed("evil.example.org", &hosts));
     }
 }
