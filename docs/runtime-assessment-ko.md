@@ -24,8 +24,9 @@ L3 v0.3은 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfi
 | RT-005 | Runtime Reliability | 복제 workload 대비 PodDisruptionBudget selector coverage |
 | RT-006 | Runtime Security | workload 대비 NetworkPolicy podSelector coverage |
 | RT-007 | Runtime Compatibility | API server에서 실제 요청된 deprecated API metric |
+| RT-008 | Runtime Security | built-in cluster-admin에 연결된 비시스템 subject |
 
-`--namespace`를 지정하지 않으면 namespaced workload 진단은 전체 namespace를 대상으로 합니다. Node 진단은 항상 cluster scope입니다.
+`--namespace`를 지정하지 않으면 namespaced workload 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다.
 
 ## Coverage 기반 점수
 
@@ -60,6 +61,19 @@ apiserver_requested_deprecated_apis{group="...",version="...",resource="...",rem
 
 API server metrics를 읽을 권한이 없거나 해당 endpoint에 접근할 수 없으면 점수를 임의로 낮추지 않고 `SKIP` 처리합니다.
 
+## RBAC 최소 권한 진단
+
+RT-008은 모든 ClusterRole을 추정 분석하지 않습니다. 우선 오탐이 적고 영향도가 큰 built-in `cluster-admin` ClusterRoleBinding만 검사합니다.
+
+`system:*` 주체, `system:masters`, `kube-system` ServiceAccount는 Kubernetes 시스템 주체로 간주해 기본 경고 대상에서 제외합니다. 그 외 User, Group, ServiceAccount가 `cluster-admin`에 직접 연결되어 있으면 evidence로 기록합니다.
+
+```text
+RT-008 No non-system subjects are bound to cluster-admin
+binding=platform-admins subject=Group/platform-team
+```
+
+이 규칙은 직접적인 `cluster-admin` binding만 검사하며, 다른 ClusterRole을 통한 실질적 동등 권한 분석은 후속 단계에서 별도 규칙으로 확장합니다.
+
 ## Evidence 원칙
 
 - Kubernetes API에서 읽은 관측 결과만 사용합니다.
@@ -68,6 +82,7 @@ API server metrics를 읽을 권한이 없거나 해당 endpoint에 접근할 �
 - Runtime FAIL은 정적 manifest 존재 여부가 아니라 현재 cluster 상태를 의미합니다.
 - 적용률을 계산할 수 있는 정책은 단순 존재 여부보다 coverage 기반 evidence를 우선합니다.
 - coverage 계산의 분모와 제외 기준을 명시해 동일 입력에 대해 동일 결과가 나오도록 합니다.
+- 권한 진단은 해석이 명확한 고위험 상태부터 단계적으로 추가합니다.
 
 ## 제한사항과 후속 범위
 
@@ -75,4 +90,6 @@ API server metrics를 읽을 권한이 없거나 해당 endpoint에 접근할 �
 
 RT-007은 API server 프로세스가 노출하는 deprecated API 요청 metric을 기준으로 하므로, API server 재시작 이후의 관측 상태에 영향을 받을 수 있습니다.
 
-RBAC privilege 분석, backup/restore verification, certificate expiry, GitOps drift, observability health는 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
+RT-008은 built-in `cluster-admin` 직접 binding을 우선 대상으로 합니다. wildcard verbs/resources, aggregation rule, impersonate/escalate/bind 권한 등을 포함하는 일반화된 RBAC privilege graph 분석은 후속 범위입니다.
+
+backup/restore verification, certificate expiry, GitOps drift, observability health도 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
