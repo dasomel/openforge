@@ -6,13 +6,69 @@
       "classification": "accepted",
       "rationale": "Narwhal has a canonical project README with purpose, architecture, installation and operational context."
     },
+    "CI-002": {
+      "classification": "accepted",
+      "rationale": "Narwhal CI runs scripts/test/regression-check-kakao.sh --static as an automated regression suite."
+    },
     "PLT-001": {
       "classification": "accepted",
       "rationale": "Narwhal is explicitly a Kubernetes platform and contains repeatable Kubernetes/GitOps packaging."
     },
+    "PLT-002": {
+      "classification": "accepted",
+      "rationale": "Kubernetes workload manifests under gitops/ contain readiness, liveness or startup probe configuration."
+    },
+    "PLT-003": {
+      "classification": "accepted",
+      "rationale": "Kubernetes workload manifests under gitops/ contain resource requests or limits."
+    },
+    "PLT-004": {
+      "classification": "accepted",
+      "rationale": "gitops/resources/network-policies.yaml contains Kubernetes NetworkPolicy resources."
+    },
+    "PLT-005": {
+      "classification": "accepted",
+      "rationale": "Narwhal GitOps manifests contain PodDisruptionBudget resources including Istio and packaged component PDBs."
+    },
     "PLT-006": {
       "classification": "accepted",
       "rationale": "Narwhal explicitly integrates Prometheus, Grafana, Loki, Tempo and Hubble observability components."
+    },
+    "WEB-001": {
+      "classification": "not_applicable",
+      "rationale": "The kubernetes-platform profile does not treat README badges and documentation screenshots as web-application image delivery evidence."
+    },
+    "WEB-002": {
+      "classification": "not_applicable",
+      "rationale": "The kubernetes-platform profile does not treat README badges and documentation screenshots as web-application image delivery evidence."
+    },
+    "WEB-003": {
+      "classification": "not_applicable",
+      "rationale": "The kubernetes-platform profile does not treat README badges and documentation screenshots as web-application image delivery evidence."
+    },
+    "WEB-004": {
+      "classification": "not_applicable",
+      "rationale": "The kubernetes-platform profile does not treat README badges and documentation screenshots as web-application image delivery evidence."
+    },
+    "WEB-005": {
+      "classification": "not_applicable",
+      "rationale": "The kubernetes-platform profile does not require documentation-only external images to use an image optimization pipeline."
+    },
+    "WEB-006": {
+      "classification": "not_applicable",
+      "rationale": "Badge and documentation image hosts are not web-application runtime origin configuration for this profile."
+    },
+    "WEB-007": {
+      "classification": "not_applicable",
+      "rationale": "Immutable web image caching is outside the default kubernetes-platform profile unless explicitly opted in."
+    },
+    "WEB-008": {
+      "classification": "not_applicable",
+      "rationale": "Runtime web cache verification is outside the default kubernetes-platform profile unless explicitly opted in."
+    },
+    "WEB-009": {
+      "classification": "not_applicable",
+      "rationale": "Runtime cache effectiveness verification is outside the default kubernetes-platform profile unless explicitly opted in."
     }
   }
 }
