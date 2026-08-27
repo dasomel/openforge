@@ -1,4 +1,5 @@
 mod execution;
+mod runtime;
 
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
@@ -41,6 +42,18 @@ struct Cli {
         help = "Run trusted built-in build/test/lint probes. This may execute target repository code."
     )]
     run_execution: bool,
+
+    #[arg(
+        long,
+        help = "Collect read-only Kubernetes runtime evidence using the selected kube context."
+    )]
+    runtime: bool,
+
+    #[arg(long, help = "Kubernetes context used by runtime assessment.")]
+    kube_context: Option<String>,
+
+    #[arg(long, help = "Limit namespaced runtime checks to one Kubernetes namespace.")]
+    namespace: Option<String>,
 }
 
 #[derive(Copy, Clone, Debug, ValueEnum)]
@@ -103,6 +116,9 @@ struct Report {
     ruleset: String,
     root: String,
     execution_enabled: bool,
+    runtime_enabled: bool,
+    runtime_context: Option<String>,
+    runtime_namespace: Option<String>,
     overall: f64,
     grade: &'static str,
     level: &'static str,
@@ -253,7 +269,14 @@ fn score_findings(findings: &[Finding]) -> (BTreeMap<String, CategoryScore>, f64
     (categories, overall)
 }
 
-fn assess(root: &Path, rules: Ruleset, run_execution: bool) -> Result<Report> {
+fn assess(
+    root: &Path,
+    rules: Ruleset,
+    run_execution: bool,
+    runtime_enabled: bool,
+    runtime_context: Option<&str>,
+    runtime_namespace: Option<&str>,
+) -> Result<Report> {
     let files = collect_files(root);
     let mut findings = Vec::new();
 
@@ -262,11 +285,16 @@ fn assess(root: &Path, rules: Ruleset, run_execution: bool) -> Result<Report> {
     }
 
     findings.extend(execution::findings(root, run_execution));
+    findings.extend(runtime::findings(
+        runtime_enabled,
+        runtime_context,
+        runtime_namespace,
+    ));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.2",
+        schema: "openforge-assessment/v0.3",
         ruleset: rules.version,
         root: root
             .canonicalize()
@@ -274,6 +302,9 @@ fn assess(root: &Path, rules: Ruleset, run_execution: bool) -> Result<Report> {
             .display()
             .to_string(),
         execution_enabled: run_execution,
+        runtime_enabled,
+        runtime_context: runtime_context.map(str::to_string),
+        runtime_namespace: runtime_namespace.map(str::to_string),
         overall,
         grade: grade(overall),
         level: level(overall),
@@ -292,6 +323,14 @@ fn print_text(report: &Report) {
     println!(
         "Execution evidence: {}",
         if report.execution_enabled {
+            "enabled"
+        } else {
+            "disabled"
+        }
+    );
+    println!(
+        "Runtime evidence:   {}",
+        if report.runtime_enabled {
             "enabled"
         } else {
             "disabled"
@@ -331,7 +370,14 @@ fn run() -> Result<i32> {
     };
     let rules: Ruleset = serde_json::from_str(&rules_text).context("invalid maturity ruleset")?;
 
-    let report = assess(&root, rules, cli.run_execution)?;
+    let report = assess(
+        &root,
+        rules,
+        cli.run_execution,
+        cli.runtime,
+        cli.kube_context.as_deref(),
+        cli.namespace.as_deref(),
+    )?;
     let json = serde_json::to_string_pretty(&report)?;
 
     if let Some(output) = &cli.output {
