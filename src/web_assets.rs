@@ -237,9 +237,7 @@ fn configured_origin_hosts(files: &[(String, String)]) -> BTreeSet<String> {
         for token in text.split(|c: char| {
             c.is_whitespace() || matches!(c, ',' | '[' | ']' | '{' | '}' | '(' | ')' | ';')
         }) {
-            let cleaned = token.trim_matches(|c: char| {
-                matches!(c, '"' | '\'' | '`' | ':' | '=')
-            });
+            let cleaned = token.trim_matches(|c: char| matches!(c, '"' | '\'' | '`' | ':' | '='));
             if let Some(host) = host_from_url(cleaned) {
                 hosts.insert(host);
             } else if cleaned.contains('.')
@@ -364,8 +362,18 @@ fn origin_coverage_finding(files: &[(String, String)], usages: &[ImageUsage]) ->
         total,
         ratio * 100.0
     )];
-    evidence.extend(covered.iter().take(12).map(|host| format!("allowed={host}")));
-    evidence.extend(missing.iter().take(12).map(|host| format!("missing_allowlist={host}")));
+    evidence.extend(
+        covered
+            .iter()
+            .take(12)
+            .map(|host| format!("allowed={host}")),
+    );
+    evidence.extend(
+        missing
+            .iter()
+            .take(12)
+            .map(|host| format!("missing_allowlist={host}")),
+    );
 
     Finding {
         rule_id: "WEB-006".to_string(),
@@ -505,7 +513,10 @@ mod tests {
         assert!(dimensions_apply(&usages[0]));
         assert!(responsive_applies(&usages[0]));
         assert!(optimizer_applies(&usages[0]));
-        assert_eq!(external_host(&usages[0]).as_deref(), Some("images.example.com"));
+        assert_eq!(
+            external_host(&usages[0]).as_deref(),
+            Some("images.example.com")
+        );
     }
 
     #[test]
