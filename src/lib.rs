@@ -8,6 +8,7 @@ mod policy;
 mod profiles;
 mod runtime;
 mod runtime_alertmanager;
+#[path = "runtime_workloads.rs"]
 mod runtime_autoscaling;
 mod runtime_backup;
 mod runtime_certificates;
@@ -24,7 +25,6 @@ mod runtime_scheduling;
 mod runtime_stability;
 mod runtime_storage;
 mod runtime_targets;
-mod runtime_workloads;
 mod web_assets;
 mod web_cache;
 mod web_cache_effectiveness;
