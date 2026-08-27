@@ -195,7 +195,9 @@ pub(crate) fn compare(before_path: &Path, after_path: &Path) -> Result<Compariso
             _ => summary.unchanged += 1,
         }
 
-        let source = after_rule.or(before_rule).expect("rule id came from one report");
+        let source = after_rule
+            .or(before_rule)
+            .expect("rule id came from one report");
         let delta = match (before_rule, after_rule) {
             (Some(before), Some(after)) => Some(round1(after.score - before.score)),
             _ => None,
@@ -316,7 +318,7 @@ pub(crate) fn print_text(comparison: &Comparison) {
 
 #[cfg(test)]
 mod tests {
-    use super::{classify, Finding};
+    use super::{Finding, classify};
 
     fn finding(status: &str, score: f64) -> Finding {
         Finding {
