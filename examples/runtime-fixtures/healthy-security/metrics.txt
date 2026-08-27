@@ -1,0 +1,4 @@
+# HELP apiserver_requested_deprecated_apis Gauge of deprecated API requests.
+# TYPE apiserver_requested_deprecated_apis gauge
+apiserver_requested_deprecated_apis{group="extensions",removed_release="1.22",resource="ingresses",version="v1beta1"} 0
+apiserver_request_total{code="200",resource="pods",verb="GET"} 42
