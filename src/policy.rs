@@ -31,13 +31,13 @@ pub(crate) struct Waiver {
 }
 
 #[derive(Debug, Serialize)]
-pub(crate) struct PolicySummary {
-    pub(crate) profile: String,
-    pub(crate) fingerprint: String,
-    pub(crate) not_applicable: usize,
-    pub(crate) waived: usize,
-    pub(crate) expired_waivers: usize,
-    pub(crate) invalid_waivers: usize,
+pub struct PolicySummary {
+    pub profile: String,
+    pub fingerprint: String,
+    pub not_applicable: usize,
+    pub waived: usize,
+    pub expired_waivers: usize,
+    pub invalid_waivers: usize,
 }
 
 fn default_profile_name() -> String {
