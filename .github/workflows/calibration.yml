@@ -7,6 +7,7 @@ on:
       - "src/**"
       - "rules/**"
       - "examples/calibration/**"
+      - "tests/**"
       - ".github/workflows/calibration.yml"
 
 permissions:
@@ -51,15 +52,9 @@ jobs:
 
       - name: Calibration summary
         run: |
-          python3 - <<'PY'
-          import json
-          report = json.load(open('narwhal-calibration.json'))
-          summary = report['summary']
-          print(f"classified={summary['classified_rules']}/{summary['assessed_rules']}")
-          print(f"coverage={summary['classification_coverage_percent']:.1f}%")
-          print(f"false_positives={summary['false_positives']}")
-          print(f"true_findings={summary['true_findings']}")
-          PY
+          ./openforge/target/debug/openforge calibrate \
+            narwhal-assessment.json \
+            openforge/examples/calibration/narwhal.json
 
       - name: Upload calibration reports
         uses: actions/upload-artifact@v4
