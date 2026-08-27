@@ -1,0 +1,7 @@
+{
+  "profile": {
+    "name": "runtime-restore-fixture",
+    "include_rules": ["RT-016"]
+  },
+  "waivers": []
+}
