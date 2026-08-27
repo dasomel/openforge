@@ -1,5 +1,6 @@
 pub mod assessment;
 pub mod baseline;
+pub mod calibration;
 pub mod compare;
 
 mod execution;
@@ -52,6 +53,33 @@ pub fn compare_files(
     }
 
     Ok(if fail_on_regression && comparison.summary.regressed > 0 {
+        2
+    } else {
+        0
+    })
+}
+
+pub fn calibrate_files(
+    assessment: &Path,
+    manifest: &Path,
+    format: &str,
+    output: Option<&Path>,
+    require_complete: bool,
+) -> Result<i32> {
+    let report = calibration::calibrate(assessment, manifest)?;
+    let json = serde_json::to_string_pretty(&report)?;
+
+    if let Some(path) = output {
+        fs::write(path, &json).with_context(|| format!("cannot write {}", path.display()))?;
+    }
+
+    match format {
+        "json" => println!("{json}"),
+        "text" => calibration::print_text(&report),
+        other => anyhow::bail!("unsupported calibration format: {other}"),
+    }
+
+    Ok(if require_complete && report.summary.unclassified_rules > 0 {
         2
     } else {
         0
