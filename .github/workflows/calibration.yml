@@ -14,19 +14,39 @@ permissions:
   contents: read
 
 jobs:
-  narwhal-static:
+  static-reference:
+    name: ${{ matrix.name }} static
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Narwhal
+            repository: dasomel/narwhal
+            checkout_path: reference
+            profile: kubernetes-platform
+            manifest: openforge/examples/calibration/narwhal.json
+            artifact: narwhal-openforge-calibration
+            output_prefix: narwhal
+          - name: NFS Quota Agent
+            repository: dasomel/nfs-quota-agent
+            checkout_path: reference
+            profile: kubernetes-platform
+            manifest: openforge/examples/calibration/nfs-quota-agent.json
+            artifact: nfs-quota-agent-openforge-calibration
+            output_prefix: nfs-quota-agent
+
     steps:
       - name: Checkout OpenForge
         uses: actions/checkout@v4
         with:
           path: openforge
 
-      - name: Checkout Narwhal
+      - name: Checkout reference project
         uses: actions/checkout@v4
         with:
-          repository: dasomel/narwhal
-          path: narwhal
+          repository: ${{ matrix.repository }}
+          path: ${{ matrix.checkout_path }}
 
       - name: Install Rust
         uses: dtolnay/rust-toolchain@stable
@@ -35,32 +55,32 @@ jobs:
         working-directory: openforge
         run: cargo build --bin openforge
 
-      - name: Assess Narwhal repository evidence
+      - name: Assess reference repository evidence
         run: |
-          ./openforge/target/debug/openforge assess ./narwhal \
-            --profile kubernetes-platform \
+          ./openforge/target/debug/openforge assess ./${{ matrix.checkout_path }} \
+            --profile ${{ matrix.profile }} \
             --format json \
-            --output narwhal-assessment.json
+            --output ${{ matrix.output_prefix }}-assessment.json
 
-      - name: Calibrate reviewed Narwhal expectations
+      - name: Calibrate reviewed expectations
         run: |
           ./openforge/target/debug/openforge calibrate \
-            narwhal-assessment.json \
-            openforge/examples/calibration/narwhal.json \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
             --format json \
-            --output narwhal-calibration.json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
             --require-complete
 
       - name: Calibration summary
         run: |
           ./openforge/target/debug/openforge calibrate \
-            narwhal-assessment.json \
-            openforge/examples/calibration/narwhal.json
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
 
       - name: Upload calibration reports
         uses: actions/upload-artifact@v4
         with:
-          name: narwhal-openforge-calibration
+          name: ${{ matrix.artifact }}
           path: |
-            narwhal-assessment.json
-            narwhal-calibration.json
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
