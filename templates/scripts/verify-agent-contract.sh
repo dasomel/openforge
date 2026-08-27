@@ -50,9 +50,10 @@ require_text "templates/AGENTS.md" "formatter/linter rules own deterministic sty
 require_text "templates/AGENTS.md" "reproduce -> failing regression test/evidence -> fix"
 
 # Detailed coding guidance must remain outside the compact AGENTS contract.
-require_text "templates/CODING_STANDARDS.md" "# Coding Standards"
+require_text "templates/CODING_STANDARDS.md" "# CODING_STANDARDS.md"
+require_text "templates/CODING_STANDARDS.md" "## Deterministic rules"
 
-# Catch common context bloat regressions: deterministic formatting rules belong in tooling.
+# Catch common context-bloat regressions: deterministic formatting rules belong in tooling.
 if grep -Eiq '(^|[^[:alnum:]])(2|4)[ -]?spaces per indent|tabs? (must|should) be used for indentation|maximum line length (is|of) [0-9]+' "$ROOT/AGENTS.md" "$ROOT/templates/AGENTS.md"; then
   fail "deterministic formatting rule found in AGENTS contract; enforce it with formatter/linter configuration instead"
 fi
