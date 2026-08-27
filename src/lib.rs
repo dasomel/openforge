@@ -19,6 +19,7 @@ mod runtime_pod_security;
 mod runtime_post_restore;
 mod runtime_rbac;
 mod runtime_restore;
+mod runtime_scheduling;
 mod runtime_storage;
 mod runtime_targets;
 mod web_assets;
