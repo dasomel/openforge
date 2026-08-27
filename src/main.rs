@@ -2,7 +2,9 @@ mod execution;
 mod runtime;
 mod runtime_backup;
 mod runtime_certificates;
+mod runtime_gitops;
 mod runtime_metrics;
+mod runtime_observability;
 mod runtime_pod_security;
 mod runtime_rbac;
 mod runtime_storage;
@@ -91,9 +93,7 @@ struct Rule {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Check {
-    AnyFile {
-        patterns: Vec<String>,
-    },
+    AnyFile { patterns: Vec<String> },
     Contains {
         patterns: Vec<String>,
         needles: Vec<String>,
@@ -321,11 +321,16 @@ fn assess(
         runtime_context,
         runtime_namespace,
     ));
+    findings.push(runtime_observability::finding(
+        runtime_enabled,
+        runtime_context,
+    ));
+    findings.push(runtime_gitops::finding(runtime_enabled, runtime_context));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.4",
+        schema: "openforge-assessment/v0.5",
         ruleset: rules.version,
         root: root
             .canonicalize()
