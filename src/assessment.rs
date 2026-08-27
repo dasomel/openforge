@@ -319,7 +319,7 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.13",
+        schema: "openforge-assessment/v0.14",
         ruleset: rules.version,
         root: root.display().to_string(),
         execution_enabled: options.run_execution,
