@@ -2,7 +2,12 @@ use anyhow::{Context, Result};
 use chrono::Utc;
 use serde::{Deserialize, Serialize};
 use serde_json::{Map, Value};
-use std::{collections::BTreeMap, env, fs, path::{Path, PathBuf}, process::ExitCode};
+use std::{
+    collections::BTreeMap,
+    env, fs,
+    path::{Path, PathBuf},
+    process::ExitCode,
+};
 
 #[derive(Debug, Deserialize)]
 struct Assessment {
@@ -40,8 +45,8 @@ struct BaselineMetadata {
 }
 
 fn read_value(path: &Path) -> Result<Value> {
-    let text = fs::read_to_string(path)
-        .with_context(|| format!("cannot read {}", path.display()))?;
+    let text =
+        fs::read_to_string(path).with_context(|| format!("cannot read {}", path.display()))?;
     serde_json::from_str(&text)
         .with_context(|| format!("invalid assessment JSON: {}", path.display()))
 }
@@ -76,8 +81,11 @@ fn create(assessment: &Path, output: &Path) -> Result<()> {
                 .with_context(|| format!("cannot create {}", parent.display()))?;
         }
     }
-    fs::write(output, serde_json::to_string_pretty(&Value::Object(object))?)
-        .with_context(|| format!("cannot write {}", output.display()))?;
+    fs::write(
+        output,
+        serde_json::to_string_pretty(&Value::Object(object))?,
+    )
+    .with_context(|| format!("cannot write {}", output.display()))?;
     println!("Baseline created: {}", output.display());
     Ok(())
 }
@@ -103,7 +111,10 @@ fn check(baseline: &Path, current: &Path, require_compatible: bool) -> Result<i3
     }
     if before.ruleset != after.ruleset {
         compatible = false;
-        println!("WARN ruleset changed: {} -> {}", before.ruleset, after.ruleset);
+        println!(
+            "WARN ruleset changed: {} -> {}",
+            before.ruleset, after.ruleset
+        );
     }
     if !policy_same(&before.policy, &after.policy) {
         compatible = false;
@@ -127,8 +138,7 @@ fn check(baseline: &Path, current: &Path, require_compatible: bool) -> Result<i3
         let Some(current) = after_rules.get(rule_id) else {
             continue;
         };
-        if current.score < previous.score
-            || (previous.status == "PASS" && current.status == "FAIL")
+        if current.score < previous.score || (previous.status == "PASS" && current.status == "FAIL")
         {
             regressions += 1;
             println!(
@@ -166,7 +176,9 @@ fn run() -> Result<i32> {
     let args: Vec<String> = env::args().collect();
     match args.get(1).map(String::as_str) {
         Some("create") => {
-            let source = args.get(2).context("usage: openforge-baseline create <assessment.json> [output.json]")?;
+            let source = args
+                .get(2)
+                .context("usage: openforge-baseline create <assessment.json> [output.json]")?;
             let output = args
                 .get(3)
                 .map(PathBuf::from)
@@ -175,8 +187,12 @@ fn run() -> Result<i32> {
             Ok(0)
         }
         Some("check") => {
-            let baseline = args.get(2).context("usage: openforge-baseline check <baseline.json> <current.json> [--require-compatible]")?;
-            let current = args.get(3).context("usage: openforge-baseline check <baseline.json> <current.json> [--require-compatible]")?;
+            let baseline = args.get(2).context(
+                "usage: openforge-baseline check <baseline.json> <current.json> [--require-compatible]",
+            )?;
+            let current = args.get(3).context(
+                "usage: openforge-baseline check <baseline.json> <current.json> [--require-compatible]",
+            )?;
             let require_compatible = args.iter().any(|arg| arg == "--require-compatible");
             check(Path::new(baseline), Path::new(current), require_compatible)
         }
