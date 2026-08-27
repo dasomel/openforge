@@ -7,7 +7,11 @@ use crate::{
 use anyhow::{Context, Result};
 use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
-use std::{collections::BTreeMap, fs, path::{Path, PathBuf}};
+use std::{
+    collections::BTreeMap,
+    fs,
+    path::{Path, PathBuf},
+};
 use walkdir::WalkDir;
 
 const DEFAULT_RULES: &str = include_str!("../rules/maturity-v0.1.json");
@@ -32,8 +36,13 @@ struct Rule {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Check {
-    AnyFile { patterns: Vec<String> },
-    Contains { patterns: Vec<String>, needles: Vec<String> },
+    AnyFile {
+        patterns: Vec<String>,
+    },
+    Contains {
+        patterns: Vec<String>,
+        needles: Vec<String>,
+    },
 }
 
 #[derive(Debug, Serialize)]
@@ -100,7 +109,8 @@ fn collect_files(root: &Path) -> Vec<PathBuf> {
 fn matches(files: &[PathBuf], patterns: &[String]) -> Result<Vec<String>> {
     let mut builder = GlobSetBuilder::new();
     for pattern in patterns {
-        builder.add(Glob::new(pattern).with_context(|| format!("invalid glob pattern: {pattern}"))?);
+        builder
+            .add(Glob::new(pattern).with_context(|| format!("invalid glob pattern: {pattern}"))?);
     }
     let set = builder.build()?;
     let mut matched: Vec<String> = files
@@ -148,28 +158,45 @@ fn evaluate_static_rule(root: &Path, files: &[PathBuf], rule: &Rule) -> Result<F
 }
 
 fn grade(score: f64) -> &'static str {
-    if score >= 90.0 { "A" }
-    else if score >= 80.0 { "B" }
-    else if score >= 70.0 { "C" }
-    else if score >= 60.0 { "D" }
-    else { "E" }
+    if score >= 90.0 {
+        "A"
+    } else if score >= 80.0 {
+        "B"
+    } else if score >= 70.0 {
+        "C"
+    } else if score >= 60.0 {
+        "D"
+    } else {
+        "E"
+    }
 }
 
 fn level(score: f64) -> &'static str {
-    if score >= 90.0 { "L5 Optimizing" }
-    else if score >= 80.0 { "L4 Resilient" }
-    else if score >= 70.0 { "L3 Production" }
-    else if score >= 55.0 { "L2 Managed" }
-    else if score >= 35.0 { "L1 Repeatable" }
-    else { "L0 Initial" }
+    if score >= 90.0 {
+        "L5 Optimizing"
+    } else if score >= 80.0 {
+        "L4 Resilient"
+    } else if score >= 70.0 {
+        "L3 Production"
+    } else if score >= 55.0 {
+        "L2 Managed"
+    } else if score >= 35.0 {
+        "L1 Repeatable"
+    } else {
+        "L0 Initial"
+    }
 }
 
-fn round1(value: f64) -> f64 { (value * 10.0).round() / 10.0 }
+fn round1(value: f64) -> f64 {
+    (value * 10.0).round() / 10.0
+}
 
 fn score_findings(findings: &[Finding]) -> (BTreeMap<String, CategoryScore>, f64) {
     let mut totals: BTreeMap<String, (f64, f64)> = BTreeMap::new();
     for finding in findings {
-        if !matches!(finding.status, "PASS" | "FAIL") { continue; }
+        if !matches!(finding.status, "PASS" | "FAIL") {
+            continue;
+        }
         let total = totals.entry(finding.category.clone()).or_default();
         total.0 += finding.score;
         total.1 += finding.weight;
@@ -178,22 +205,36 @@ fn score_findings(findings: &[Finding]) -> (BTreeMap<String, CategoryScore>, f64
     let mut categories = BTreeMap::new();
     let (mut earned, mut maximum) = (0.0, 0.0);
     for (name, (category_earned, category_maximum)) in totals {
-        categories.insert(name, CategoryScore {
-            score: if category_maximum > 0.0 { round1(category_earned / category_maximum * 100.0) } else { 0.0 },
-            earned: category_earned,
-            max: category_maximum,
-        });
+        categories.insert(
+            name,
+            CategoryScore {
+                score: if category_maximum > 0.0 {
+                    round1(category_earned / category_maximum * 100.0)
+                } else {
+                    0.0
+                },
+                earned: category_earned,
+                max: category_maximum,
+            },
+        );
         earned += category_earned;
         maximum += category_maximum;
     }
-    let overall = if maximum > 0.0 { round1(earned / maximum * 100.0) } else { 0.0 };
+    let overall = if maximum > 0.0 {
+        round1(earned / maximum * 100.0)
+    } else {
+        0.0
+    };
     (categories, overall)
 }
 
 pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
-    let root = root.canonicalize().with_context(|| format!("invalid path: {}", root.display()))?;
+    let root = root
+        .canonicalize()
+        .with_context(|| format!("invalid path: {}", root.display()))?;
     let rules_text = match options.rules {
-        Some(path) => fs::read_to_string(path).with_context(|| format!("cannot read rules: {}", path.display()))?,
+        Some(path) => fs::read_to_string(path)
+            .with_context(|| format!("cannot read rules: {}", path.display()))?,
         None => DEFAULT_RULES.to_string(),
     };
     let rules: Ruleset = serde_json::from_str(&rules_text).context("invalid maturity ruleset")?;
@@ -201,26 +242,79 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
 
     let files = collect_files(&root);
     let mut findings = Vec::new();
-    for rule in &rules.rules { findings.push(evaluate_static_rule(&root, &files, rule)?); }
+    for rule in &rules.rules {
+        findings.push(evaluate_static_rule(&root, &files, rule)?);
+    }
 
     findings.extend(execution::findings(&root, options.run_execution));
-    findings.extend(runtime::findings(options.runtime, options.kube_context, options.namespace));
-    findings.push(runtime_metrics::finding(options.runtime, options.kube_context));
-    findings.extend(runtime_rbac::findings(options.runtime, options.kube_context));
-    findings.push(runtime_pod_security::finding(options.runtime, options.kube_context, options.namespace));
-    findings.push(runtime_storage::finding(options.runtime, options.kube_context, options.namespace));
-    findings.push(runtime_certificates::finding(options.runtime, options.kube_context, options.namespace));
-    findings.push(runtime_backup::finding(options.runtime, options.kube_context, options.namespace));
-    findings.push(runtime_observability::finding(options.runtime, options.kube_context));
-    findings.push(runtime_gitops::finding(options.runtime, options.kube_context));
-    findings.push(runtime_restore::finding(options.runtime, options.kube_context));
-    findings.push(runtime_targets::finding(options.runtime, options.kube_context));
-    findings.push(runtime_alertmanager::finding(options.runtime, options.kube_context));
+    findings.extend(runtime::findings(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
+    findings.push(runtime_metrics::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.extend(runtime_rbac::findings(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_pod_security::finding(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
+    findings.push(runtime_storage::finding(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
+    findings.push(runtime_certificates::finding(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
+    findings.push(runtime_backup::finding(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
+    findings.push(runtime_observability::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_gitops::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_restore::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_targets::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_alertmanager::finding(
+        options.runtime,
+        options.kube_context,
+    ));
     findings.push(runtime_csi::finding(options.runtime, options.kube_context));
-    findings.push(runtime_csi_nodes::finding(options.runtime, options.kube_context));
-    findings.push(runtime_post_restore::finding(options.runtime, options.kube_context, options.post_restore_spec));
+    findings.push(runtime_csi_nodes::finding(
+        options.runtime,
+        options.kube_context,
+    ));
+    findings.push(runtime_post_restore::finding(
+        options.runtime,
+        options.kube_context,
+        options.post_restore_spec,
+    ));
 
-    let policy_summary = assessment_policy.as_ref().map(|p| policy::apply(&mut findings, p)).transpose()?;
+    let policy_summary = assessment_policy
+        .as_ref()
+        .map(|p| policy::apply(&mut findings, p))
+        .transpose()?;
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
@@ -231,7 +325,9 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
         runtime_enabled: options.runtime,
         runtime_context: options.kube_context.map(str::to_string),
         runtime_namespace: options.namespace.map(str::to_string),
-        post_restore_spec: options.post_restore_spec.map(|path| path.display().to_string()),
+        post_restore_spec: options
+            .post_restore_spec
+            .map(|path| path.display().to_string()),
         policy: policy_summary,
         overall,
         grade: grade(overall),
@@ -244,18 +340,49 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
 pub fn print_text(report: &Report) {
     println!("OpenForge Maturity Assessment");
     println!("{}", "=".repeat(72));
-    println!("Overall: {:>5.1} / 100   Grade: {}   {}", report.overall, report.grade, report.level);
-    println!("Execution evidence: {}", if report.execution_enabled { "enabled" } else { "disabled" });
-    println!("Runtime evidence:   {}", if report.runtime_enabled { "enabled" } else { "disabled" });
+    println!(
+        "Overall: {:>5.1} / 100   Grade: {}   {}",
+        report.overall, report.grade, report.level
+    );
+    println!(
+        "Execution evidence: {}",
+        if report.execution_enabled {
+            "enabled"
+        } else {
+            "disabled"
+        }
+    );
+    println!(
+        "Runtime evidence:   {}",
+        if report.runtime_enabled {
+            "enabled"
+        } else {
+            "disabled"
+        }
+    );
     if let Some(policy) = &report.policy {
-        println!("Policy profile:     {} (not-applicable={}, waived={}, expired={}, invalid={})",
-            policy.profile, policy.not_applicable, policy.waived, policy.expired_waivers, policy.invalid_waivers);
+        println!(
+            "Policy profile:     {} (not-applicable={}, waived={}, expired={}, invalid={})",
+            policy.profile,
+            policy.not_applicable,
+            policy.waived,
+            policy.expired_waivers,
+            policy.invalid_waivers
+        );
     }
     println!("{}", "-".repeat(72));
-    for (name, category) in &report.categories { println!("{:<24} {:>5.1} / 100", name, category.score); }
+    for (name, category) in &report.categories {
+        println!("{:<24} {:>5.1} / 100", name, category.score);
+    }
     println!("{}", "-".repeat(72));
-    for finding in report.findings.iter().filter(|f| matches!(f.status, "FAIL" | "SKIP" | "WAIVED" | "NOT_APPLICABLE")) {
+    for finding in report
+        .findings
+        .iter()
+        .filter(|f| matches!(f.status, "FAIL" | "SKIP" | "WAIVED" | "NOT_APPLICABLE"))
+    {
         println!("{} [{}] {}", finding.status, finding.rule_id, finding.title);
-        if finding.status == "FAIL" && !finding.remediation.is_empty() { println!("     {}", finding.remediation); }
+        if finding.status == "FAIL" && !finding.remediation.is_empty() {
+            println!("     {}", finding.remediation);
+        }
     }
 }
