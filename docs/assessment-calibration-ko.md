@@ -79,13 +79,37 @@ true_findings / (true_findings + false_positives)
 
 추측으로 높은 Coverage를 만드는 것보다 검증된 낮은 Coverage가 더 가치 있습니다.
 
-## 첫 Reference: Narwhal
+## Reference Calibration Set
 
-`examples/calibration/narwhal.json`을 첫 Reference Calibration Manifest로 사용합니다. `Calibration` GitHub Actions Workflow는 OpenForge와 Narwhal을 함께 checkout하고 `kubernetes-platform` static assessment를 실행한 뒤 검토된 expectation을 적용하며, 현재는 모든 활성 static rule의 분류 완료를 Gate로 검증합니다. 두 JSON report는 workflow artifact로 저장합니다.
+OpenForge는 하나의 선호 프로젝트에 규칙을 맞추지 않고 구조가 다른 실제 프로젝트 여러 개를 Reference로 사용합니다. `Calibration` Workflow는 static reference를 각각 독립적으로 실행하고 `fail-fast: false`로 한 프로젝트의 실패가 다른 프로젝트 검증을 막지 않도록 하며, 모든 활성 규칙의 분류 완료를 Gate로 검증합니다. Assessment와 Calibration JSON은 각각 artifact로 저장합니다.
 
-첫 Narwhal 실행에서는 프로젝트 Gap이 아니라 진단기 Gap도 실제로 발견됐습니다. Shell 기반 regression test가 `CI-002`에서 인식되지 않았고, `gitops/` manifest가 `PLT-002~005` 검색 경로에서 빠져 있었으며, README badge와 문서 screenshot이 Web Application image asset으로 점수화되고 있었습니다. 이 사례들은 regression test로 고정해 같은 오탐이 다시 생기지 않도록 했습니다.
+### Narwhal
 
-Runtime rule은 실제 cluster evidence가 확보되기 전까지 static calibration 범위에 포함하지 않습니다.
+`examples/calibration/narwhal.json`은 Shell/GitOps 중심 Kubernetes Platform을 검증합니다. 첫 Calibration에서 프로젝트 Gap이 아니라 진단기 Gap도 발견됐습니다. Shell 기반 regression test가 `CI-002`에서 인식되지 않았고, `gitops/` manifest가 `PLT-002~005` 검색 경로에서 빠져 있었으며, README badge와 문서 screenshot이 Web Application image asset으로 점수화되고 있었습니다. 이 사례들은 regression test로 고정했습니다.
+
+Detector 보정 후 static `kubernetes-platform` 평가는 82.6점(`B`, `L4 Resilient`)이며 활성 규칙 20/20을 모두 분류했습니다. 검토된 실제 Gap은 4개, false positive는 0개이고 Classification Coverage와 Failure Precision은 모두 100%입니다.
+
+### NFS Quota Agent
+
+`examples/calibration/nfs-quota-agent.json`은 구조가 다른 Go + Helm Reference입니다. Narwhal의 GitOps 구조 대신 Go test/lint/security workflow, Helm workload probe/resource/PDB, Prometheus resource와 Kubernetes packaging을 독립적으로 검증합니다.
+
+Static `kubernetes-platform` 평가는 73.4점(`C`, `L3 Production`)이고 활성 규칙 20/20을 모두 분류했습니다. FAIL 6개는 검토 결과 실제 프로젝트 Gap으로 유지됐고 false positive는 0개였습니다. 따라서 Narwhal에서 수행한 Detector 보정이 한 Repository에만 과적합된 것이 아니라 다른 구현 방식에서도 성립함을 확인할 수 있습니다.
+
+## L2 Execution Calibration
+
+Static Repository Evidence와 Trusted Execution Evidence는 별도 Contract로 관리합니다. `examples/calibration/nfs-quota-agent-execution.json`은 명시적으로 `--run-execution`을 사용하는 NFS Quota Agent 실행 Job에서만 적용됩니다. 이 Calibration은 다음 규칙을 활성화하여 검증합니다.
+
+- `EXE-GO-001` — `go build ./...`
+- `EXE-GO-002` — `go test ./...`
+- `EXE-GO-003` — `go vet ./...`
+
+Execution은 대상 Repository의 코드를 실제 실행하기 때문에 계속 명시적 opt-in으로 유지합니다. Static Calibration에서 비활성 Execution probe를 Coverage를 높이기 위해 억지로 분류하지 않습니다.
+
+Kubernetes Runtime Rule은 실제 Cluster Evidence를 확보하기 전까지 Repository/Execution Reference와 분리합니다.
+
+## Reference 추가 원칙
+
+새 Reference는 기존 프로젝트와 언어, packaging 또는 deployment layout이 실질적으로 다른 프로젝트를 우선합니다. Expectation을 작성하기 전에 실제 증거를 검토하고, 실제 Gap은 `true_finding`으로 유지하며, 진짜 Detector/Appplicability 결함이 확인될 때만 OpenForge를 수정합니다. 기존 Reference와 같은 구조를 반복하는 프로젝트보다 기존 가정을 반증할 가능성이 있는 프로젝트가 더 가치 있습니다.
 
 ## 규칙 개선 Loop
 
@@ -102,7 +126,7 @@ false-positive / applicability 분석
     ↓
 작은 rule 수정 + regression test
     ↓
-재진단
+전체 reference set 재진단
 ```
 
 OpenForge 점수를 높이기 위해 대상 프로젝트를 억지로 수정해서는 안 됩니다. 규칙이 잘못됐다면 OpenForge 규칙을 고치고, 프로젝트에 실제 Gap이 있다면 finding을 유지한 채 프로젝트 개선을 별도로 진행합니다.
