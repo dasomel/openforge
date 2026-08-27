@@ -1,5 +1,6 @@
 mod compare;
 mod execution;
+mod policy;
 mod runtime;
 mod runtime_alertmanager;
 mod runtime_backup;
@@ -48,6 +49,12 @@ struct Cli {
 
     #[arg(long)]
     rules: Option<PathBuf>,
+
+    #[arg(
+        long,
+        help = "JSON policy defining rule applicability and time-bounded waivers."
+    )]
+    policy: Option<PathBuf>,
 
     #[arg(long)]
     fail_under: Option<f64>,
@@ -144,6 +151,7 @@ struct Report {
     runtime_context: Option<String>,
     runtime_namespace: Option<String>,
     post_restore_spec: Option<String>,
+    policy: Option<policy::PolicySummary>,
     overall: f64,
     grade: &'static str,
     level: &'static str,
@@ -256,7 +264,7 @@ fn score_findings(findings: &[Finding]) -> (BTreeMap<String, CategoryScore>, f64
     let mut totals: BTreeMap<String, (f64, f64)> = BTreeMap::new();
 
     for finding in findings {
-        if finding.status == "SKIP" {
+        if !matches!(finding.status, "PASS" | "FAIL") {
             continue;
         }
 
@@ -302,6 +310,7 @@ fn assess(
     runtime_context: Option<&str>,
     runtime_namespace: Option<&str>,
     post_restore_spec: Option<&Path>,
+    assessment_policy: Option<&policy::Policy>,
 ) -> Result<Report> {
     let files = collect_files(root);
     let mut findings = Vec::new();
@@ -357,10 +366,13 @@ fn assess(
         post_restore_spec,
     ));
 
+    let policy_summary = assessment_policy
+        .map(|policy| policy::apply(&mut findings, policy))
+        .transpose()?;
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.11",
+        schema: "openforge-assessment/v0.12",
         ruleset: rules.version,
         root: root
             .canonicalize()
@@ -372,6 +384,7 @@ fn assess(
         runtime_context: runtime_context.map(str::to_string),
         runtime_namespace: runtime_namespace.map(str::to_string),
         post_restore_spec: post_restore_spec.map(|path| path.display().to_string()),
+        policy: policy_summary,
         overall,
         grade: grade(overall),
         level: level(overall),
@@ -403,6 +416,16 @@ fn print_text(report: &Report) {
             "disabled"
         }
     );
+    if let Some(policy) = &report.policy {
+        println!(
+            "Policy profile:     {} (not-applicable={}, waived={}, expired={}, invalid={})",
+            policy.profile,
+            policy.not_applicable,
+            policy.waived,
+            policy.expired_waivers,
+            policy.invalid_waivers
+        );
+    }
     println!("{}", "-".repeat(72));
 
     for (name, category) in &report.categories {
@@ -411,11 +434,12 @@ fn print_text(report: &Report) {
 
     println!("{}", "-".repeat(72));
 
-    for finding in report
-        .findings
-        .iter()
-        .filter(|finding| finding.status == "FAIL" || finding.status == "SKIP")
-    {
+    for finding in report.findings.iter().filter(|finding| {
+        matches!(
+            finding.status,
+            "FAIL" | "SKIP" | "WAIVED" | "NOT_APPLICABLE"
+        )
+    }) {
         println!("{} [{}] {}", finding.status, finding.rule_id, finding.title);
         if finding.status == "FAIL" && !finding.remediation.is_empty() {
             println!("     {}", finding.remediation);
@@ -496,12 +520,13 @@ fn run() -> Result<i32> {
         .canonicalize()
         .with_context(|| format!("invalid path: {}", cli.path.display()))?;
 
-    let rules_text = match cli.rules {
-        Some(path) => fs::read_to_string(&path)
+    let rules_text = match &cli.rules {
+        Some(path) => fs::read_to_string(path)
             .with_context(|| format!("cannot read rules: {}", path.display()))?,
         None => DEFAULT_RULES.to_string(),
     };
     let rules: Ruleset = serde_json::from_str(&rules_text).context("invalid maturity ruleset")?;
+    let assessment_policy = cli.policy.as_deref().map(policy::load).transpose()?;
 
     let report = assess(
         &root,
@@ -511,6 +536,7 @@ fn run() -> Result<i32> {
         cli.kube_context.as_deref(),
         cli.namespace.as_deref(),
         cli.post_restore_spec.as_deref(),
+        assessment_policy.as_ref(),
     )?;
     let json = serde_json::to_string_pretty(&report)?;
 
