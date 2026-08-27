@@ -1,5 +1,6 @@
 mod execution;
 mod runtime;
+mod runtime_metrics;
 
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
@@ -293,6 +294,7 @@ fn assess(
         runtime_context,
         runtime_namespace,
     ));
+    findings.push(runtime_metrics::finding(runtime_enabled, runtime_context));
 
     let (categories, overall) = score_findings(&findings);
 
