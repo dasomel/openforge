@@ -33,7 +33,7 @@ The optimizer may be application-native, self-hosted, or managed. OpenForge does
 | WEB-002 | images reserve layout space with explicit dimensions | 5 |
 | WEB-003 | responsive image delivery is present | 6 |
 | WEB-004 | WebP/AVIF or equivalent modern delivery is referenced | 4 |
-| WEB-005 | an image optimization/CDN path is present | 6 |
+| WEB-005 | external images use an optimization/CDN path | 6 |
 | WEB-006 | external image origins are constrained | 6 |
 
 If no image usage is detected in supported web source files, all WEB rules are `SKIP` and do not affect the score.
@@ -66,12 +66,48 @@ Evidence is reported at source location granularity and includes both covered an
 Current extraction semantics:
 
 - `<img>` usages are evaluated per tag.
-- JSX/TSX `<Image>` usages are treated as framework image components. They count as responsive by default and lazy-loaded unless `priority` or eager loading is explicitly requested.
+- JSX/TSX `<Image>` usages are treated as framework image components. They count as responsive and optimized by default, and lazy-loaded unless `priority` or eager loading is explicitly requested.
 - `<Image fill>` satisfies layout-space handling for WEB-002.
 - Markdown image syntax is counted as an image usage, but lazy loading, explicit dimensions, and responsive behavior are not inferred from Markdown alone.
 - WebP/AVIF is credited only when the specific image fragment references the modern format or transformation option.
 
 These rules deliberately avoid assuming browser/runtime behavior that cannot be established from source evidence.
+
+## External image optimization coverage
+
+`WEB-005` applies only to image usages whose source is an explicit `http://` or `https://` URL. Local and relative images do not participate in this rule.
+
+OpenForge calculates how many external image usages pass through a recognized optimizer/CDN path. Framework image components such as Next.js `<Image>` are treated as optimized because the framework provides an image delivery pipeline unless explicitly configured otherwise.
+
+```text
+external_proxy_coverage = optimized external image usages / external image usages
+```
+
+If a project has no external images, WEB-005 is `SKIP` rather than `PASS`. This prevents local-only projects from receiving credit for a capability they do not need.
+
+## External origin allow-list coverage
+
+`WEB-006` extracts distinct external image hosts and compares them with explicit origin configuration found in the repository.
+
+Examples of recognized policy signals include Next.js `remotePatterns` / `images.domains` and equivalent `allowedOrigins` / `allowed_origins` declarations. Exact hosts and wildcard subdomains such as `*.cdn.example.net` are supported by the first implementation.
+
+```text
+origin_coverage = allowed external image hosts / distinct external image hosts
+```
+
+Example:
+
+```text
+FAIL [WEB-006] External image origins are constrained
+origin_coverage=2/3 coverage_percent=66.7
+allowed=images.example.com
+allowed=avatars.example.net
+missing_allowlist=legacy.example.org
+```
+
+A rule is `PASS` only when every detected external image origin is represented by the source-level allow-list evidence. Partial coverage receives proportional score.
+
+This remains a static source assessment. It does not prove that runtime requests cannot reach other destinations, so SSRF prevention and proxy runtime policy can be added as deeper provider/runtime checks later.
 
 ## Why origin control matters
 
@@ -122,7 +158,7 @@ Further improvements can add:
 
 - cache-control and immutable asset URL analysis
 - framework-specific image configuration adapters
-- origin allow-list validation for Next.js and common image proxies
+- exact parser adapters for Next.js and common image proxy configs
 - fallback behavior for failed external origins
 - self-hosted proxy runtime health
 - cache hit ratio / origin latency evidence
