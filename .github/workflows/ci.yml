@@ -37,6 +37,21 @@ jobs:
             exit 1
           fi
 
+      - name: Verify agent engineering contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash templates/scripts/verify-agent-contract.sh
+
+      - name: Smoke-test repository agent audit
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash -n templates/scripts/audit-agent-repo.sh
+          output=$(bash templates/scripts/audit-agent-repo.sh . openforge)
+          echo "$output"
+          grep -Fq $'openforge\tAGENTS.md' <<<"$output"
+
       - name: Verify supply-chain baseline contracts
         shell: bash
         run: |
