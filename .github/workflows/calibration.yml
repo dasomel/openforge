@@ -7,6 +7,7 @@ on:
       - "src/**"
       - "rules/**"
       - "examples/calibration/**"
+      - "examples/runtime-fixtures/**"
       - "tests/**"
       - ".github/workflows/calibration.yml"
 
@@ -147,3 +148,55 @@ jobs:
           path: |
             nfs-quota-agent-execution-assessment.json
             nfs-quota-agent-execution-calibration.json
+
+  runtime-core-reference:
+    name: Kubernetes runtime core replay
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Enable recorded kubectl replay fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/healthy-core/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/healthy-core" >> "$GITHUB_PATH"
+
+      - name: Assess recorded Kubernetes runtime evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/healthy-core/policy.json \
+            --format json \
+            --output runtime-core-assessment.json
+
+      - name: Calibrate core runtime expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            runtime-core-assessment.json \
+            openforge/examples/calibration/runtime-core-healthy.json \
+            --format json \
+            --output runtime-core-calibration.json \
+            --require-complete
+
+      - name: Runtime calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            runtime-core-assessment.json \
+            openforge/examples/calibration/runtime-core-healthy.json
+
+      - name: Upload runtime calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: openforge-runtime-core-calibration
+          path: |
+            runtime-core-assessment.json
+            runtime-core-calibration.json
