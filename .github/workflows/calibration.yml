@@ -150,8 +150,23 @@ jobs:
             nfs-quota-agent-execution-calibration.json
 
   runtime-core-reference:
-    name: Kubernetes runtime core replay
+    name: ${{ matrix.name }} runtime core replay
     runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-core
+            manifest: openforge/examples/calibration/runtime-core-healthy.json
+            output_prefix: runtime-core-healthy
+            artifact: openforge-runtime-core-healthy-calibration
+          - name: Degraded
+            fixture: degraded-core
+            manifest: openforge/examples/calibration/runtime-core-degraded.json
+            output_prefix: runtime-core-degraded
+            artifact: openforge-runtime-core-degraded-calibration
+
     steps:
       - name: Checkout OpenForge
         uses: actions/checkout@v4
@@ -167,36 +182,36 @@ jobs:
 
       - name: Enable recorded kubectl replay fixture
         run: |
-          chmod +x openforge/examples/runtime-fixtures/healthy-core/kubectl
-          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/healthy-core" >> "$GITHUB_PATH"
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
 
       - name: Assess recorded Kubernetes runtime evidence
         run: |
           ./openforge/target/debug/openforge assess ./openforge \
             --runtime \
-            --policy openforge/examples/runtime-fixtures/healthy-core/policy.json \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
             --format json \
-            --output runtime-core-assessment.json
+            --output ${{ matrix.output_prefix }}-assessment.json
 
       - name: Calibrate core runtime expectations
         run: |
           ./openforge/target/debug/openforge calibrate \
-            runtime-core-assessment.json \
-            openforge/examples/calibration/runtime-core-healthy.json \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
             --format json \
-            --output runtime-core-calibration.json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
             --require-complete
 
       - name: Runtime calibration summary
         run: |
           ./openforge/target/debug/openforge calibrate \
-            runtime-core-assessment.json \
-            openforge/examples/calibration/runtime-core-healthy.json
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
 
       - name: Upload runtime calibration reports
         uses: actions/upload-artifact@v4
         with:
-          name: openforge-runtime-core-calibration
+          name: ${{ matrix.artifact }}
           path: |
-            runtime-core-assessment.json
-            runtime-core-calibration.json
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
