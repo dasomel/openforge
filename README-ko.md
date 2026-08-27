@@ -13,7 +13,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 ## 핵심 원칙
 
 - English를 canonical project language로 사용하고 Korean을 first-class translation으로 제공합니다.
-- 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md>` 규칙을 사용합니다.
+- 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md` 규칙을 사용합니다.
 - 프로젝트는 기본적으로 재현 가능하고, 문서화되고, 테스트 가능하며, 관측 가능하고, 접근 가능하며, 안전해야 합니다.
 - GitHub Issue와 Pull Request를 주요 변경 관리 수단으로 사용합니다.
 - Architecture Decision은 ADR로 기록합니다.
