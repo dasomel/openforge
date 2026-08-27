@@ -64,6 +64,12 @@ struct AssessArgs {
         help = "JSON spec containing explicit GET-only Kubernetes Service probes for post-restore functional verification."
     )]
     post_restore_spec: Option<PathBuf>,
+
+    #[arg(
+        long,
+        help = "Explicit HTTP(S) image URL to probe with a read-only HEAD request for runtime cache headers."
+    )]
+    web_cache_url: Option<String>,
 }
 
 #[derive(Parser, Debug)]
@@ -154,6 +160,7 @@ fn run_assess(args: AssessArgs) -> Result<i32> {
             kube_context: args.kube_context.as_deref(),
             namespace: args.namespace.as_deref(),
             post_restore_spec: args.post_restore_spec.as_deref(),
+            web_cache_url: args.web_cache_url.as_deref(),
         },
     );
 
