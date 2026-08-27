@@ -1,37 +1,43 @@
 # Contributing
 
-## English
+English | [한국어](CONTRIBUTING-ko.md)
 
 Thank you for contributing.
 
-### Before you start
+## Before you start
 
 - Check existing Issues and Pull Requests.
-- Open an Issue for significant feature or architecture changes.
+- Open an Issue for significant feature, architecture, security, governance, compatibility, release, agent-engineering, or design-system changes.
+- Check the [Decision Management Standard](docs/decision-management.md) when a change may alter a reusable OpenForge default.
 - Keep changes small and reviewable.
 
-### Pull Requests
+## ADR gate
+
+Before implementing a durable cross-project policy change, determine whether it crosses the ADR threshold.
+
+An ADR is normally required when the change affects multiple repositories, changes architecture/trust boundaries, deliberately selects among meaningful alternatives, creates migration obligations, or supersedes an accepted decision.
+
+Use [`templates/ADR.md`](templates/ADR.md) and keep the Korean first-class counterpart synchronized with [`templates/ADR-ko.md`](templates/ADR-ko.md).
+
+Do not create ADR noise for typo fixes, wording-only changes, or project-local implementation details already covered by an accepted decision.
+
+## Pull Requests
 
 - Use a focused branch.
 - Follow Conventional Commits.
 - Link the related Issue.
-- Explain tests and documentation impact.
+- Link the ADR when the change crosses the ADR threshold.
+- Explain tests, evidence, migration/adoption, and documentation impact.
 - Keep English and Korean user-facing documentation synchronized.
+- Identify any accepted ADR that the change supersedes.
 
-## 한국어
+## Review questions
 
-기여해 주셔서 감사합니다.
+For non-trivial changes, reviewers should ask:
 
-### 시작하기 전에
-
-- 기존 Issue와 Pull Request를 확인합니다.
-- 큰 기능 변경이나 아키텍처 변경은 먼저 Issue를 등록합니다.
-- 변경을 작고 리뷰 가능한 단위로 유지합니다.
-
-### Pull Request
-
-- 목적이 명확한 Branch를 사용합니다.
-- Conventional Commits를 사용합니다.
-- 관련 Issue를 연결합니다.
-- 테스트와 문서 영향 범위를 설명합니다.
-- 사용자 문서의 English/Korean 버전을 동기화합니다.
+- Does this change alter a reusable OpenForge default?
+- Is a new ADR required or is an existing ADR authoritative?
+- Does the normative standard reflect the decision?
+- Can deterministic requirements be enforced in CI/policy/templates instead of prose only?
+- Are downstream adoption and exceptions documented?
+- Are English/Korean decision records synchronized?
