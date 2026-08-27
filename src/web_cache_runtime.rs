@@ -1,40 +1,12 @@
 use crate::Finding;
-use std::process::Command;
+use reqwest::{
+    blocking::Client,
+    header::{AGE, CACHE_CONTROL, ETAG, LAST_MODIFIED},
+    redirect::Policy,
+};
+use std::time::Duration;
 
 const WEIGHT: f64 = 6.0;
-
-#[derive(Debug, Default, PartialEq, Eq)]
-struct CacheHeaders {
-    cache_control: Option<String>,
-    age: Option<String>,
-    etag: Option<String>,
-    last_modified: Option<String>,
-}
-
-fn parse_final_headers(text: &str) -> CacheHeaders {
-    let normalized = text.replace("\r\n", "\n");
-    let block = normalized
-        .split("\n\n")
-        .rev()
-        .find(|part| part.trim_start().starts_with("HTTP/"))
-        .unwrap_or(&normalized);
-
-    let mut headers = CacheHeaders::default();
-    for line in block.lines().skip(1) {
-        let Some((name, value)) = line.split_once(':') else {
-            continue;
-        };
-        let value = value.trim().to_string();
-        match name.trim().to_ascii_lowercase().as_str() {
-            "cache-control" => headers.cache_control = Some(value),
-            "age" => headers.age = Some(value),
-            "etag" => headers.etag = Some(value),
-            "last-modified" => headers.last_modified = Some(value),
-            _ => {}
-        }
-    }
-    headers
-}
 
 fn max_age_seconds(cache_control: &str) -> Option<u64> {
     cache_control.split(',').find_map(|part| {
@@ -46,8 +18,8 @@ fn max_age_seconds(cache_control: &str) -> Option<u64> {
     })
 }
 
-fn cache_policy_passes(headers: &CacheHeaders) -> bool {
-    let Some(cache_control) = headers.cache_control.as_deref() else {
+fn cache_policy_passes(cache_control: Option<&str>) -> bool {
+    let Some(cache_control) = cache_control else {
         return false;
     };
     let lower = cache_control.to_ascii_lowercase();
@@ -82,55 +54,44 @@ pub(crate) fn finding(url: Option<&str>) -> Finding {
         return failed(vec![format!("probe_error={reason}")]);
     }
 
-    let output = Command::new("curl")
-        .args([
-            "--head",
-            "--silent",
-            "--show-error",
-            "--location",
-            "--max-redirs",
-            "3",
-            "--connect-timeout",
-            "5",
-            "--max-time",
-            "10",
-            url,
-        ])
-        .output();
-
-    let output = match output {
-        Ok(output) if output.status.success() => output,
-        Ok(output) => {
-            let stderr = String::from_utf8_lossy(&output.stderr).trim().to_string();
-            return failed(vec![format!(
-                "probe_error=curl exited with status {}{}",
-                output.status,
-                if stderr.is_empty() {
-                    String::new()
-                } else {
-                    format!(" stderr={stderr}")
-                }
-            )]);
-        }
-        Err(error) => return failed(vec![format!("probe_error=cannot execute curl: {error}")]),
+    let client = match Client::builder()
+        .connect_timeout(Duration::from_secs(5))
+        .timeout(Duration::from_secs(10))
+        .redirect(Policy::none())
+        .build()
+    {
+        Ok(client) => client,
+        Err(_) => return failed(vec!["probe_error=http_client_initialization_failed".to_string()]),
     };
 
-    let headers = parse_final_headers(&String::from_utf8_lossy(&output.stdout));
-    let passed = cache_policy_passes(&headers);
-    let mut evidence = Vec::new();
-    if let Some(value) = headers.cache_control {
-        evidence.push(format!("cache-control={value}"));
-    } else {
-        evidence.push("cache-control=missing".to_string());
+    let response = match client.head(url).send() {
+        Ok(response) => response,
+        Err(_) => return failed(vec!["probe_error=head_request_failed".to_string()]),
+    };
+
+    let status = response.status();
+    if !status.is_success() {
+        return failed(vec![format!("http_status={}", status.as_u16())]);
     }
-    if let Some(value) = headers.age {
-        evidence.push(format!("age={value}"));
+
+    let headers = response.headers();
+    let cache_control = headers
+        .get(CACHE_CONTROL)
+        .and_then(|value| value.to_str().ok());
+    let passed = cache_policy_passes(cache_control);
+    let mut evidence = vec![format!("http_status={}", status.as_u16())];
+    match cache_control {
+        Some(value) => evidence.push(format!("cache-control={value}")),
+        None => evidence.push("cache-control=missing".to_string()),
     }
-    if let Some(value) = headers.etag {
-        evidence.push(format!("etag={value}"));
-    }
-    if let Some(value) = headers.last_modified {
-        evidence.push(format!("last-modified={value}"));
+    for (name, header) in [
+        ("age", AGE),
+        ("etag", ETAG),
+        ("last-modified", LAST_MODIFIED),
+    ] {
+        if let Some(value) = headers.get(header).and_then(|value| value.to_str().ok()) {
+            evidence.push(format!("{name}={value}"));
+        }
     }
 
     Finding {
@@ -160,31 +121,18 @@ fn failed(evidence: Vec<String>) -> Finding {
 
 #[cfg(test)]
 mod tests {
-    use super::{cache_policy_passes, max_age_seconds, parse_final_headers, validate_url};
-
-    #[test]
-    fn parses_last_redirect_response_headers() {
-        let headers = parse_final_headers(
-            "HTTP/1.1 301 Moved Permanently\r\nlocation: https://cdn.example/a.webp\r\n\r\nHTTP/2 200\r\ncache-control: public, max-age=31536000, immutable\r\nage: 42\r\netag: abc\r\n\r\n",
-        );
-        assert_eq!(
-            headers.cache_control.as_deref(),
-            Some("public, max-age=31536000, immutable")
-        );
-        assert_eq!(headers.age.as_deref(), Some("42"));
-    }
+    use super::{cache_policy_passes, max_age_seconds, validate_url};
 
     #[test]
     fn requires_immutable_and_at_least_one_day() {
-        let headers = parse_final_headers(
-            "HTTP/2 200\ncache-control: public, max-age=86400, immutable\n\n",
-        );
-        assert!(cache_policy_passes(&headers));
-
-        let short = parse_final_headers(
-            "HTTP/2 200\ncache-control: public, max-age=60, immutable\n\n",
-        );
-        assert!(!cache_policy_passes(&short));
+        assert!(cache_policy_passes(Some(
+            "public, max-age=86400, immutable"
+        )));
+        assert!(!cache_policy_passes(Some(
+            "public, max-age=60, immutable"
+        )));
+        assert!(!cache_policy_passes(Some("public, max-age=31536000")));
+        assert!(!cache_policy_passes(None));
     }
 
     #[test]
