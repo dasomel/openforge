@@ -1,0 +1,7 @@
+{
+  "profile": {
+    "name": "runtime-gitops-fixture",
+    "include_rules": ["RT-015"]
+  },
+  "waivers": []
+}
