@@ -25,7 +25,13 @@ struct AssessArgs {
 
     #[arg(
         long,
-        help = "JSON policy defining rule applicability and time-bounded waivers."
+        help = "Built-in applicability profile: production, kubernetes-platform, oss-library, or repository."
+    )]
+    profile: Option<String>,
+
+    #[arg(
+        long,
+        help = "JSON policy defining rule applicability and time-bounded waivers. When --profile is also set, explicit policy profile fields override the preset and waivers are added."
     )]
     policy: Option<PathBuf>,
 
@@ -120,20 +126,40 @@ struct LegacyCli {
     assess: AssessArgs,
 }
 
+fn resolved_policy_path(args: &AssessArgs) -> Result<(Option<PathBuf>, bool)> {
+    let Some(profile) = args.profile.as_deref() else {
+        return Ok((args.policy.clone(), false));
+    };
+
+    let json = openforge::resolve_profile_policy_json(profile, args.policy.as_deref())?;
+    let path = env::temp_dir().join(format!("openforge-policy-{}.json", std::process::id()));
+    fs::write(&path, json)
+        .with_context(|| format!("cannot materialize resolved profile policy: {}", path.display()))?;
+    Ok((Some(path), true))
+}
+
 fn run_assess(args: AssessArgs) -> Result<i32> {
-    let report = assessment::assess(
+    let (policy_path, temporary_policy) = resolved_policy_path(&args)?;
+    let result = assessment::assess(
         &args.path,
         &AssessOptions {
             rules: args.rules.as_deref(),
-            policy: args.policy.as_deref(),
+            policy: policy_path.as_deref(),
             run_execution: args.run_execution,
             runtime: args.runtime,
             kube_context: args.kube_context.as_deref(),
             namespace: args.namespace.as_deref(),
             post_restore_spec: args.post_restore_spec.as_deref(),
         },
-    )?;
+    );
 
+    if temporary_policy {
+        if let Some(path) = &policy_path {
+            let _ = fs::remove_file(path);
+        }
+    }
+
+    let report = result?;
     let json = serde_json::to_string_pretty(&report)?;
     if let Some(output) = &args.output {
         fs::write(output, &json).with_context(|| format!("cannot write {}", output.display()))?;
