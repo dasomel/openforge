@@ -107,9 +107,9 @@ Execution remains opt-in because OpenForge is intentionally executing code from 
 
 ## L3 runtime replay calibration
 
-Runtime detector development needs a deterministic layer before validation against a live production cluster. `examples/runtime-fixtures/healthy-core/` contains recorded Kubernetes API-shaped JSON plus a deliberately narrow `kubectl` replay shim. The fixture is used only by CI calibration; it is not presented as proof that a real cluster is healthy.
+Runtime detector development needs a deterministic regression layer before validation against a live cluster. `examples/runtime-fixtures/` contains reviewed Kubernetes API-shaped JSON plus deliberately narrow `kubectl` replay shims. These fixtures are CI test evidence only; fixture results must not be presented as proof that a real cluster is healthy or unhealthy.
 
-The first runtime replay contract scopes assessment to the six provider-independent core Kubernetes rules:
+The first runtime replay contract scopes assessment to six provider-independent Kubernetes core rules:
 
 - `RT-001` — Ready node state
 - `RT-002` — desired workload availability
@@ -118,9 +118,15 @@ The first runtime replay contract scopes assessment to the six provider-independ
 - `RT-005` — PodDisruptionBudget coverage
 - `RT-006` — NetworkPolicy coverage
 
-`examples/runtime-fixtures/healthy-core/policy.json` excludes every other rule from this fixture contract. Unsupported `kubectl` calls fail closed in the replay shim, so later component-specific runtime collectors cannot silently receive fabricated successful evidence.
+Two complementary fixtures exercise both sides of each detector. `healthy-core` contains Ready nodes, fully available workloads, probes/resources and matching PDB/NetworkPolicy coverage. `degraded-core` contains a NotReady node, an under-replicated Deployment, missing probes and resource limits, and no matching PDB or NetworkPolicy.
 
-`examples/calibration/runtime-core-healthy.json` then requires complete classification for only those six active rules. This creates a repeatable detector regression test without weakening the separate requirement for real-cluster evidence. Future runtime fixtures should add RT-007 and later rules in small component-specific groups (metrics, RBAC/security, storage, certificates/backup, observability/GitOps and recovery) rather than one synthetic cluster that claims to model everything.
+Each fixture's `policy.json` activates only `RT-001` through `RT-006`. Unsupported `kubectl` calls fail closed in the replay shim, so later component-specific runtime collectors cannot silently receive fabricated successful evidence.
+
+`examples/calibration/runtime-core-healthy.json` requires all six active rules to be `accepted`. `examples/calibration/runtime-core-degraded.json` requires all six to be `true_finding`. In CI, the healthy fixture classifies 6/6 active rules successfully, while the degraded fixture reports six reviewed failures with zero false positives, 100% classification coverage and 100% failure precision.
+
+This symmetric test prevents a detector from passing calibration merely because it always returns PASS. It verifies both correct recognition of healthy evidence and correct detection of known defects.
+
+Future runtime fixtures should add RT-007 and later rules in small component-specific groups (metrics, RBAC/security, storage, certificates/backup, observability/GitOps and recovery) rather than one synthetic cluster that claims to model everything.
 
 The intended evidence ladder is therefore:
 
