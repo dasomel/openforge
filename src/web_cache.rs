@@ -4,8 +4,8 @@ use walkdir::WalkDir;
 
 const CACHE_WEIGHT: f64 = 5.0;
 const TEXT_EXTENSIONS: &[&str] = &[
-    "html", "htm", "jsx", "tsx", "vue", "svelte", "astro", "md", "mdx", "js", "ts",
-    "json", "yaml", "yml", "toml", "conf",
+    "html", "htm", "jsx", "tsx", "vue", "svelte", "astro", "md", "mdx", "js", "ts", "json", "yaml",
+    "yml", "toml", "conf",
 ];
 
 fn candidate_files(root: &Path) -> Vec<(String, String)> {
@@ -93,7 +93,10 @@ mod tests {
 
     #[test]
     fn requires_image_usage_for_applicability() {
-        let files = vec![("config.js".to_string(), "max-age=31536000, immutable".to_string())];
+        let files = vec![(
+            "config.js".to_string(),
+            "max-age=31536000, immutable".to_string(),
+        )];
         assert!(!has_image_usage(&files));
     }
 
