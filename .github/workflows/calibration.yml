@@ -84,3 +84,62 @@ jobs:
           path: |
             ${{ matrix.output_prefix }}-assessment.json
             ${{ matrix.output_prefix }}-calibration.json
+
+  execution-reference:
+    name: NFS Quota Agent execution
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Checkout NFS Quota Agent
+        uses: actions/checkout@v4
+        with:
+          repository: dasomel/nfs-quota-agent
+          path: reference
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache-dependency-path: reference/go.sum
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Assess trusted execution evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./reference \
+            --profile kubernetes-platform \
+            --run-execution \
+            --format json \
+            --output nfs-quota-agent-execution-assessment.json
+
+      - name: Calibrate trusted execution expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            nfs-quota-agent-execution-assessment.json \
+            openforge/examples/calibration/nfs-quota-agent-execution.json \
+            --format json \
+            --output nfs-quota-agent-execution-calibration.json \
+            --require-complete
+
+      - name: Execution calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            nfs-quota-agent-execution-assessment.json \
+            openforge/examples/calibration/nfs-quota-agent-execution.json
+
+      - name: Upload execution calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfs-quota-agent-openforge-execution-calibration
+          path: |
+            nfs-quota-agent-execution-assessment.json
+            nfs-quota-agent-execution-calibration.json
