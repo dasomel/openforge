@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/healthy-scheduling",
+  "profile": "runtime-scheduling-fixture",
+  "expectations": {
+    "RT-022": {"classification": "accepted", "rationale": "Recorded Pods are scheduled and running without Unschedulable conditions."},
+    "RT-023": {"classification": "accepted", "rationale": "Recorded Nodes report no active memory, disk, PID, or network pressure conditions."},
+    "RT-024": {"classification": "accepted", "rationale": "All recorded replicated Deployment and StatefulSet workloads declare topology spread or Pod anti-affinity protection."}
+  }
+}
