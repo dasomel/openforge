@@ -1,5 +1,6 @@
 {
   "project": "dasomel/nfs-quota-agent",
+  "commit": "2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c",
   "profile": "kubernetes-platform+execution",
   "expectations": {
     "DOC-001": {"classification":"accepted","rationale":"NFS Quota Agent has a substantive canonical README with problem statement, prerequisites, installation and usage."},
