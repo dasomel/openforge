@@ -1,5 +1,5 @@
 version: openforge-portfolio/v1
-workspaceRoot: ".."
+workspaceRoot: "../.."
 
 # OpenForge Portfolio Configuration Baseline
 # Defines the list of active repositories evaluated by the compliance audit engine.

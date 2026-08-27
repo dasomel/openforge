@@ -1,7 +1,7 @@
 {
   "schemaVersion": "openforge-portfolio-audit/v1",
-  "generatedAt": "2026-08-27T16:00:26.839279+00:00",
-  "openforgeCommit": "3e0727bca8898187921a88a36e328e68b095543f",
+  "generatedAt": "2026-08-27T16:02:14.467960+00:00",
+  "openforgeCommit": "d2c1ca303a00ce0f5254735128f2e3e75913ec65",
   "metricSetVersion": "2026.08",
   "totalMetricsDefined": 35,
   "overallScore": 52.5,
@@ -19,10 +19,10 @@
       "profile": "documentation",
       "status": "audited",
       "exists": true,
-      "commitSha": "3e0727bca8898187921a88a36e328e68b095543f",
+      "commitSha": "d2c1ca303a00ce0f5254735128f2e3e75913ec65",
       "branch": "feat/portable-compliance-audit",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:23.019759+00:00",
+      "auditTimestamp": "2026-08-27T16:02:10.484810+00:00",
       "score": {
         "earned": 62,
         "possible": 64,
@@ -493,7 +493,7 @@
           "related_adr": "ADR-0007",
           "related_standard": "docs/design-system.md",
           "score": 2,
-          "evidence": "Archetype declared: Admin Console",
+          "evidence": "Archetype declared: Operations Dashboard",
           "gap": "",
           "exception_hint": ""
         },
@@ -584,7 +584,7 @@
       "commitSha": "6fdb3dd6e13b2214998f8add65c6d410690a6219",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:26.032545+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.652590+00:00",
       "score": {
         "earned": 51,
         "possible": 68,
@@ -1306,7 +1306,7 @@
       "commitSha": "011d0191cb64791b4e2382a0c571ba2eb7ac0253",
       "branch": "main",
       "dirty": false,
-      "auditTimestamp": "2026-08-27T16:00:25.268669+00:00",
+      "auditTimestamp": "2026-08-27T16:02:12.839933+00:00",
       "score": {
         "earned": 45,
         "possible": 68,
@@ -2099,7 +2099,7 @@
       "commitSha": "0d31f6b9ab56e013c1812437f85975dd18719828",
       "branch": "security/egress-block-ci",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:25.682899+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.280728+00:00",
       "score": {
         "earned": 42,
         "possible": 66,
@@ -2882,7 +2882,7 @@
       "commitSha": "39da69cf6602e1a9e906f413c6d85a0c714b5c74",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:25.097861+00:00",
+      "auditTimestamp": "2026-08-27T16:02:12.661069+00:00",
       "score": {
         "earned": 42,
         "possible": 68,
@@ -3698,7 +3698,7 @@
       "commitSha": "a6bc6bbcccd38bef68bc4ddb519f94137b18da31",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:23.385829+00:00",
+      "auditTimestamp": "2026-08-27T16:02:10.905693+00:00",
       "score": {
         "earned": 38,
         "possible": 62,
@@ -4490,7 +4490,7 @@
       "commitSha": "0c686b4894ffde99094d567031a92928d1b6c2fb",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:26.113418+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.734963+00:00",
       "score": {
         "earned": 32,
         "possible": 58,
@@ -5282,7 +5282,7 @@
       "commitSha": "352a88d63a32f422788fc1d2af62dfddb10571c6",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:25.602604+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.200595+00:00",
       "score": {
         "earned": 35,
         "possible": 66,
@@ -6131,7 +6131,7 @@
       "commitSha": "a0aaa76e69a820b2a1dd3a226f58692b0a8bae7b",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:26.646943+00:00",
+      "auditTimestamp": "2026-08-27T16:02:14.293712+00:00",
       "score": {
         "earned": 32,
         "possible": 66,
@@ -6975,7 +6975,7 @@
       "commitSha": "1a7e1e6eecb58bedab72445c10bafb54c7da5c11",
       "branch": "main",
       "dirty": false,
-      "auditTimestamp": "2026-08-27T16:00:26.839259+00:00",
+      "auditTimestamp": "2026-08-27T16:02:14.467935+00:00",
       "score": {
         "earned": 25,
         "possible": 62,
@@ -7866,7 +7866,7 @@
       "commitSha": "07ea4ec12ce0197d2184755dc617b269d4078353",
       "branch": "main",
       "dirty": false,
-      "auditTimestamp": "2026-08-27T16:00:26.778640+00:00",
+      "auditTimestamp": "2026-08-27T16:02:14.407338+00:00",
       "score": {
         "earned": 23,
         "possible": 64,
@@ -8780,7 +8780,7 @@
       "commitSha": "7e0d5ad03fbfcc5fbfdb32ea102c8a5e320c8b7a",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:25.755442+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.354524+00:00",
       "score": {
         "earned": 20,
         "possible": 60,
@@ -9647,7 +9647,7 @@
       "commitSha": "29e211649dc8ce37acd6a516c11b9ea14d8dcdcf",
       "branch": "main",
       "dirty": true,
-      "auditTimestamp": "2026-08-27T16:00:26.168226+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.790889+00:00",
       "score": {
         "earned": 11,
         "possible": 56,
@@ -10570,7 +10570,7 @@
       "commitSha": "562c15848f6ecf42017d5e97c7b0fe7339fed359",
       "branch": "main",
       "dirty": false,
-      "auditTimestamp": "2026-08-27T16:00:25.828604+00:00",
+      "auditTimestamp": "2026-08-27T16:02:13.422942+00:00",
       "score": {
         "earned": 10,
         "possible": 64,

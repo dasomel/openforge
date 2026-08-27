@@ -1515,7 +1515,8 @@ def main():
             portfolio_list = config_data.get("repositories", [])
             if "workspaceRoot" in config_data and not args.workspace_root and not workspace_root_env:
                 cfg_ws = config_data["workspaceRoot"]
-                workspace_root = (Path.cwd() / cfg_ws).resolve()
+                cfg_dir = Path(config_path).resolve().parent
+                workspace_root = (cfg_dir / cfg_ws).resolve()
     else:
         # Fallback to current directory as single target
         portfolio_list = [{

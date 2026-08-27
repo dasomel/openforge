@@ -44,15 +44,14 @@ fi
 echo "Latest Commit: $commit_sha"
 
 # Fetch check runs for the latest commit
-check_runs_json=$(gh api "repos/$repo/commits/$commit_sha/check-runs" 2>/dev/null || echo "{\"check_runs\":[]}")
-detected_checks=$(echo "$check_runs_json" | gh api --input - --jq '.check_runs[].name' 2>/dev/null | sort -u || true)
+detected_checks=$(gh api "repos/$repo/commits/$commit_sha/check-runs" --jq '.check_runs[].name' 2>/dev/null | sort -u || true)
 
 # Standard requested checks for OpenForge Tier 1 repositories
 standard_requested=(
   "repository-check"
   "adr-validation"
   "supply-chain"
-  "compliance-test"
+  "compliance-tests"
   "markdown"
 )
 
