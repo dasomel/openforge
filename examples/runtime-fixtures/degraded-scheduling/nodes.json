@@ -1,0 +1,15 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"name": "worker-a"},
+      "status": {"conditions": [
+        {"type": "Ready", "status": "True"},
+        {"type": "MemoryPressure", "status": "False"},
+        {"type": "DiskPressure", "status": "True", "reason": "KubeletHasDiskPressure"},
+        {"type": "PIDPressure", "status": "False"},
+        {"type": "NetworkUnavailable", "status": "False"}
+      ]}
+    }
+  ]
+}
