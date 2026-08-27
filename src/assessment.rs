@@ -2,7 +2,7 @@ use crate::{
     execution, policy, runtime, runtime_alertmanager, runtime_backup, runtime_certificates,
     runtime_csi, runtime_csi_nodes, runtime_gitops, runtime_metrics, runtime_observability,
     runtime_pod_security, runtime_post_restore, runtime_rbac, runtime_restore, runtime_storage,
-    runtime_targets, web_assets,
+    runtime_targets, web_assets, web_cache,
 };
 use anyhow::{Context, Result};
 use globset::{Glob, GlobSetBuilder};
@@ -247,6 +247,7 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     }
 
     findings.extend(web_assets::findings(&root));
+    findings.push(web_cache::finding(&root));
     findings.extend(execution::findings(&root, options.run_execution));
     findings.extend(runtime::findings(
         options.runtime,
@@ -319,7 +320,7 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.14",
+        schema: "openforge-assessment/v0.15",
         ruleset: rules.version,
         root: root.display().to_string(),
         execution_enabled: options.run_execution,
