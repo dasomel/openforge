@@ -35,8 +35,9 @@ The optimizer may be application-native, self-hosted, or managed. OpenForge does
 | WEB-004 | WebP/AVIF or equivalent modern delivery is referenced | 4 |
 | WEB-005 | external images use an optimization/CDN path | 6 |
 | WEB-006 | external image origins are constrained | 6 |
+| WEB-007 | image assets have immutable cache strategy evidence | 5 |
 
-If no image usage is detected in supported web source files, all WEB rules are `SKIP` and do not affect the score.
+If no image usage is detected in supported web source files, the applicable WEB rules are `SKIP` and do not affect the score.
 
 The analyzer scans HTML, JSX, TSX, Vue, Svelte, Astro, Markdown/MDX, JavaScript, and TypeScript source. It intentionally favors explainable static evidence over heuristic browser simulation.
 
@@ -109,6 +110,24 @@ A rule is `PASS` only when every detected external image origin is represented b
 
 This remains a static source assessment. It does not prove that runtime requests cannot reach other destinations, so SSRF prevention and proxy runtime policy can be added as deeper provider/runtime checks later.
 
+## Immutable cache strategy
+
+`WEB-007` is an applicability-aware executable check rather than a generic prose/static rule. It first verifies that the repository actually contains image usage. Projects without images receive `SKIP` rather than an artificial cache penalty.
+
+For projects with images, the first implementation looks for source-level evidence of either:
+
+- long-lived immutable caching such as `max-age=31536000` or `s-maxage=31536000` together with `immutable`, or
+- framework fingerprint evidence such as `/_next/static/`.
+
+Example:
+
+```text
+PASS [WEB-007] Image assets have immutable cache strategy evidence
+cache_evidence=next.config.js
+```
+
+This evidence demonstrates a declared/static strategy only. It does **not** prove CDN cache hit rate, browser cache behavior, response headers in production, or origin revalidation behavior. Those belong to later runtime checks.
+
 ## Why origin control matters
 
 Image proxy services fetch origin URLs on behalf of clients. Projects that accept arbitrary external image origins can unintentionally create SSRF-like fetch paths, uncontrolled bandwidth use, or privacy exposure. An allow-list or equivalent origin policy is therefore treated as a maturity signal when an external image path is present.
@@ -156,12 +175,12 @@ For private images, authenticated assets, closed networks, or workloads requirin
 
 Further improvements can add:
 
-- cache-control and immutable asset URL analysis
 - framework-specific image configuration adapters
 - exact parser adapters for Next.js and common image proxy configs
 - fallback behavior for failed external origins
 - self-hosted proxy runtime health
 - cache hit ratio / origin latency evidence
+- production response-header verification
 - image payload size and format effectiveness
 - HTML report integration and score history
 
