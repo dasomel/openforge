@@ -82,11 +82,7 @@ fn skipped(reason: String) -> Finding {
     }
 }
 
-pub(crate) fn finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+pub(crate) fn finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     if !enabled {
         return skipped("runtime assessment disabled; use --runtime".to_string());
     }
