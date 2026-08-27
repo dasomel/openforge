@@ -24,7 +24,7 @@ pub(crate) fn builtin(name: &str) -> Result<Policy> {
         "kubernetes-platform" => Ok(profile(
             "kubernetes-platform",
             &[
-                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "WEB-*", "EXE-*", "RT-*",
+                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "EXE-*", "RT-*",
             ],
             &[],
         )),
@@ -71,6 +71,14 @@ mod tests {
         assert!(policy.profile.include_rules.contains(&"DOC-*".to_string()));
         assert!(policy.profile.include_rules.contains(&"WEB-*".to_string()));
         assert!(!policy.profile.include_rules.contains(&"RT-*".to_string()));
+    }
+
+    #[test]
+    fn kubernetes_platform_does_not_score_documentation_images_as_web_application_assets() {
+        let policy = builtin("kubernetes-platform").unwrap();
+        assert!(policy.profile.include_rules.contains(&"PLT-*".to_string()));
+        assert!(policy.profile.include_rules.contains(&"RT-*".to_string()));
+        assert!(!policy.profile.include_rules.contains(&"WEB-*".to_string()));
     }
 
     #[test]
