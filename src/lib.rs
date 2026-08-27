@@ -1,5 +1,26 @@
+pub mod assessment;
 pub mod baseline;
 pub mod compare;
+
+mod execution;
+mod policy;
+mod runtime;
+mod runtime_alertmanager;
+mod runtime_backup;
+mod runtime_certificates;
+mod runtime_csi;
+mod runtime_csi_nodes;
+mod runtime_gitops;
+mod runtime_metrics;
+mod runtime_observability;
+mod runtime_pod_security;
+mod runtime_post_restore;
+mod runtime_rbac;
+mod runtime_restore;
+mod runtime_storage;
+mod runtime_targets;
+
+pub(crate) use assessment::Finding;
 
 use anyhow::{Context, Result};
 use std::{fs, path::Path};
