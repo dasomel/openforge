@@ -126,9 +126,8 @@ fn collect_files(root: &Path) -> Vec<PathBuf> {
 fn matches(files: &[PathBuf], patterns: &[String]) -> Result<Vec<String>> {
     let mut builder = GlobSetBuilder::new();
     for pattern in patterns {
-        builder.add(
-            Glob::new(pattern).with_context(|| format!("invalid glob pattern: {pattern}"))?,
-        );
+        builder
+            .add(Glob::new(pattern).with_context(|| format!("invalid glob pattern: {pattern}"))?);
     }
 
     let set = builder.build()?;
@@ -311,10 +310,7 @@ fn print_text(report: &Report) {
         .iter()
         .filter(|finding| finding.status == "FAIL" || finding.status == "SKIP")
     {
-        println!(
-            "{} [{}] {}",
-            finding.status, finding.rule_id, finding.title
-        );
+        println!("{} [{}] {}", finding.status, finding.rule_id, finding.title);
         if finding.status == "FAIL" && !finding.remediation.is_empty() {
             println!("     {}", finding.remediation);
         }
@@ -339,8 +335,7 @@ fn run() -> Result<i32> {
     let json = serde_json::to_string_pretty(&report)?;
 
     if let Some(output) = &cli.output {
-        fs::write(output, &json)
-            .with_context(|| format!("cannot write {}", output.display()))?;
+        fs::write(output, &json).with_context(|| format!("cannot write {}", output.display()))?;
     }
 
     match cli.format {
@@ -348,14 +343,16 @@ fn run() -> Result<i32> {
         OutputFormat::Json => println!("{json}"),
     }
 
-    Ok(if cli
-        .fail_under
-        .is_some_and(|threshold| report.overall < threshold)
-    {
-        2
-    } else {
-        0
-    })
+    Ok(
+        if cli
+            .fail_under
+            .is_some_and(|threshold| report.overall < threshold)
+        {
+            2
+        } else {
+            0
+        },
+    )
 }
 
 fn main() -> ExitCode {
