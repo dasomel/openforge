@@ -9,6 +9,7 @@ mod runtime_pod_security;
 mod runtime_rbac;
 mod runtime_restore;
 mod runtime_storage;
+mod runtime_targets;
 
 use anyhow::{Context, Result};
 use clap::{Parser, ValueEnum};
@@ -330,11 +331,12 @@ fn assess(
     ));
     findings.push(runtime_gitops::finding(runtime_enabled, runtime_context));
     findings.push(runtime_restore::finding(runtime_enabled, runtime_context));
+    findings.push(runtime_targets::finding(runtime_enabled, runtime_context));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.6",
+        schema: "openforge-assessment/v0.7",
         ruleset: rules.version,
         root: root
             .canonicalize()
