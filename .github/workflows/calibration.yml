@@ -33,7 +33,7 @@ jobs:
 
       - name: Build OpenForge
         working-directory: openforge
-        run: cargo build --locked --bin openforge
+        run: cargo build --bin openforge
 
       - name: Assess Narwhal repository evidence
         run: |
