@@ -1,0 +1,30 @@
+{
+  "project": "openforge/runtime-fixture/healthy-core",
+  "profile": "runtime-core-fixture",
+  "expectations": {
+    "RT-001": {
+      "classification": "accepted",
+      "rationale": "The replay fixture contains two Kubernetes nodes and both report Ready=True."
+    },
+    "RT-002": {
+      "classification": "accepted",
+      "rationale": "Deployment, StatefulSet and DaemonSet availability in the replay fixture matches their desired replica counts."
+    },
+    "RT-003": {
+      "classification": "accepted",
+      "rationale": "Every replayed workload container defines at least one readiness, liveness or startup probe."
+    },
+    "RT-004": {
+      "classification": "accepted",
+      "rationale": "Every replayed workload container defines non-empty CPU/memory requests and limits."
+    },
+    "RT-005": {
+      "classification": "accepted",
+      "rationale": "Both replicated non-DaemonSet workloads are selected by a PodDisruptionBudget in the same namespace."
+    },
+    "RT-006": {
+      "classification": "accepted",
+      "rationale": "All three replayed workloads are selected by a NetworkPolicy in the same namespace."
+    }
+  }
+}
