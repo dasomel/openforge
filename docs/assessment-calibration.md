@@ -109,7 +109,11 @@ Execution remains opt-in because OpenForge is intentionally executing code from 
 
 Runtime detector development needs a deterministic regression layer before validation against a live cluster. `examples/runtime-fixtures/` contains reviewed Kubernetes API-shaped JSON plus deliberately narrow `kubectl` replay shims. These fixtures are CI test evidence only; fixture results must not be presented as proof that a real cluster is healthy or unhealthy.
 
-The first runtime replay contract scopes assessment to six provider-independent Kubernetes core rules:
+Runtime replay is split into small evidence groups instead of one synthetic cluster that claims to model every provider and failure mode.
+
+### Core: RT-001 through RT-006
+
+The core contract covers provider-independent Kubernetes behavior:
 
 - `RT-001` — Ready node state
 - `RT-002` — desired workload availability
@@ -118,17 +122,36 @@ The first runtime replay contract scopes assessment to six provider-independent 
 - `RT-005` — PodDisruptionBudget coverage
 - `RT-006` — NetworkPolicy coverage
 
-Two complementary fixtures exercise both sides of each detector. `healthy-core` contains Ready nodes, fully available workloads, probes/resources and matching PDB/NetworkPolicy coverage. `degraded-core` contains a NotReady node, an under-replicated Deployment, missing probes and resource limits, and no matching PDB or NetworkPolicy.
+`healthy-core` contains Ready nodes, fully available workloads, probes/resources and matching PDB/NetworkPolicy coverage. `degraded-core` contains a NotReady node, an under-replicated Deployment, missing probes and resource limits, and no matching PDB or NetworkPolicy. CI requires 6/6 `accepted` for the healthy fixture and 6/6 `true_finding` for the degraded fixture; the degraded contract has zero false positives with 100% coverage and failure precision.
 
-Each fixture's `policy.json` activates only `RT-001` through `RT-006`. Unsupported `kubectl` calls fail closed in the replay shim, so later component-specific runtime collectors cannot silently receive fabricated successful evidence.
+### Compatibility and security: RT-007 through RT-010
 
-`examples/calibration/runtime-core-healthy.json` requires all six active rules to be `accepted`. `examples/calibration/runtime-core-degraded.json` requires all six to be `true_finding`. In CI, the healthy fixture classifies 6/6 active rules successfully, while the degraded fixture reports six reviewed failures with zero false positives, 100% classification coverage and 100% failure precision.
+A separate runtime-security contract covers:
 
-This symmetric test prevents a detector from passing calibration merely because it always returns PASS. It verifies both correct recognition of healthy evidence and correct detection of known defects.
+- `RT-007` — active deprecated Kubernetes API requests
+- `RT-008` — non-system `cluster-admin` bindings
+- `RT-009` — bound wildcard/escalation RBAC privileges
+- `RT-010` — explicitly high-risk Pod security settings
 
-Future runtime fixtures should add RT-007 and later rules in small component-specific groups (metrics, RBAC/security, storage, certificates/backup, observability/GitOps and recovery) rather than one synthetic cluster that claims to model everything.
+`healthy-security` contains no active deprecated API metric, only system-safe administration evidence, bounded RBAC, and no explicitly high-risk workload security settings. `degraded-security` deliberately records one defect for each detector. CI requires 4/4 `accepted` for healthy evidence and records 4/4 reviewed `true_finding` results for degraded evidence with zero false positives and 100% coverage/failure precision.
 
-The intended evidence ladder is therefore:
+### Storage, certificate and backup resilience: RT-011 through RT-013
+
+The resilience contract activates only:
+
+- `RT-011` — PVC Bound/volume health
+- `RT-012` — cert-manager Certificate remaining lifetime
+- `RT-013` — Velero completed-backup freshness
+
+`healthy-resilience` contains a Bound PVC, a Certificate outside the 30-day risk window, and a completed Velero backup inside the seven-day freshness window. `degraded-resilience` contains a Pending PVC with no bound volume, a Certificate with eight days remaining, and a completed backup 408 hours old. CI requires 3/3 `accepted` for healthy evidence and reports 3/3 `true_finding` for degraded evidence, again with zero false positives and 100% classification coverage/failure precision.
+
+RT-012 and RT-013 are time-sensitive. Normal runtime assessment uses the real UTC clock. Replay CI sets `OPENFORGE_NOW=2026-08-27T07:00:00Z` so recorded expiry and backup timestamps remain deterministic. `OPENFORGE_NOW` is a replay/test evidence-time override; using it does not turn recorded fixture evidence into proof about a live cluster.
+
+Each fixture's `policy.json` activates only its intended rules. Unsupported `kubectl` calls fail closed in every replay shim, so unrelated collectors cannot silently receive fabricated successful evidence. The healthy/degraded symmetry also prevents a detector from passing calibration merely because it always returns PASS.
+
+The next replay groups start at `RT-014` and should continue to be split by external API/provider boundary: observability, GitOps/restore, Prometheus targets/Alertmanager, CSI/storage, and post-restore functional verification.
+
+The intended evidence ladder remains:
 
 ```text
 recorded API-shaped fixture
