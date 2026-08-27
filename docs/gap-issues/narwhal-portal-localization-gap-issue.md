@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, localization`
 
-## Current Score: `61.8%` (Developing / improvement recommended)
+## Current Score: `83.8%` (Healthy / minor gaps)
 - **Repository:** `dasomel/narwhal-portal`
 - **Area:** `Localization`
 

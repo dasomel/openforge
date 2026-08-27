@@ -1,9 +1,9 @@
-# chore(openforge): close localization compliance gaps (ldapium)
+# chore(openforge): close localization compliance gaps (nfs-quota-agent)
 
 **Labels:** `openforge, compliance, engineering, localization`
 
-## Current Score: `89.7%` (Healthy / minor gaps)
-- **Repository:** `dasomel/ldapium`
+## Current Score: `82.4%` (Healthy / minor gaps)
+- **Repository:** `local/nfs-quota-agent`
 - **Area:** `Localization`
 
 ## Target

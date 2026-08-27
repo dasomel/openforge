@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, localization`
 
-## Current Score: `66.2%` (Developing / improvement recommended)
+## Current Score: `82.4%` (Healthy / minor gaps)
 - **Repository:** `dasomel/clusterdeck`
 - **Area:** `Localization`
 

@@ -2,34 +2,28 @@
 
 **Labels:** `openforge, compliance, engineering, documentation`
 
-## Current Score: `63.6%` (Developing / improvement recommended)
+## Current Score: `81.8%` (Healthy / minor gaps)
 - **Repository:** `dasomel/nfs-quota-agent`
 - **Area:** `Documentation`
 
 ## Target
-Close 4 compliance gap(s) in `Documentation` to align with OpenForge standards.
+Close 3 compliance gap(s) in `Documentation` to align with OpenForge standards.
 
 ## Gaps
 
-### 1. [DOC-002] Korean README
-- **Current Evidence:** Legacy filename: README_ko.md
-- **Required Action:** Rename README_ko.md -> README-ko.md per ADR-0002.
-- **Related ADR:** `ADR-0002` | **Standard:** `docs/i18n.md`
-- **Acceptance Criteria:** README-ko.md present at repository root
-
-### 2. [DOC-003] Korean Filename Standard
-- **Current Evidence:** Found 3 legacy files (README_ko.md, docs/feature-guide_ko.md)
-- **Required Action:** Migrate legacy Korean filenames (3 files) to *-ko.md.
+### 1. [DOC-003] Korean Filename Standard
+- **Current Evidence:** Found 2 legacy files (docs/feature-guide_ko.md, docs/web-ui_ko.md)
+- **Required Action:** Migrate legacy Korean filenames (2 files) to *-ko.md.
 - **Related ADR:** `ADR-0002` | **Standard:** `docs/documentation.md`
 - **Acceptance Criteria:** Use <name>-ko.md format without legacy _ko.md or .ko.md
 
-### 3. [DOC-004] Language-paired Docs Ratio
+### 2. [DOC-004] Language-paired Docs Ratio
 - **Current Evidence:** Only 4/25 docs paired
 - **Required Action:** Provide Korean translations for documents in docs/.
 - **Related ADR:** `ADR-0002` | **Standard:** `docs/i18n.md`
 - **Acceptance Criteria:** User-facing markdown documentation in docs/ has Korean pairs
 
-### 4. [DOC-009] Lessons & Mistakes Log
+### 3. [DOC-009] Lessons & Mistakes Log
 - **Current Evidence:** No dedicated lessons log (optional reference practice)
 - **Required Action:** Maintain a lessons/mistakes log for operational retention.
 - **Related ADR:** `ADR-0009` | **Standard:** `docs/reference-practices.md`
@@ -37,7 +31,6 @@ Close 4 compliance gap(s) in `Documentation` to align with OpenForge standards.
 
 ## Acceptance Checklist
 
-- [ ] Close [DOC-002] Korean README
 - [ ] Close [DOC-003] Korean Filename Standard
 - [ ] Close [DOC-004] Language-paired Docs Ratio
 - [ ] Close [DOC-009] Lessons & Mistakes Log

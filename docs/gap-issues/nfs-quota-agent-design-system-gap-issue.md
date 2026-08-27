@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, design-system`
 
-## Current Score: `63.6%` (Developing / improvement recommended)
+## Current Score: `81.8%` (Healthy / minor gaps)
 - **Repository:** `dasomel/nfs-quota-agent`
 - **Area:** `Design System`
 

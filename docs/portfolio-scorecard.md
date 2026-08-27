@@ -4,20 +4,24 @@
 > Evaluates 35 standard metrics with project-specific applicability (scored 0/1/2; non-applicable metrics are N/A).
 
 **OpenForge Standard Maturity:** `96.9%`  
-**Portfolio Adoption Baseline:** `52.5%`  
-*(Note: 52.5% is portfolio adoption of OpenForge standards across 14 active projects, not the implementation completeness of OpenForge itself.)*
+**Portfolio Adoption Baseline:** `61.6%`  
+*(Note: 61.6% is portfolio adoption of OpenForge standards across 14 active projects, not the implementation completeness of OpenForge itself.)*
+
+## Baseline Comparison
+
+- **Portfolio Score:** `82.4%` → `61.6%` (**-20.8%**)
 
 ## 1. Portfolio Maturity Ranking
 
 | Repository | Category | Archetype | Score | Metrics (Earned/Possible) | Maturity Status |
 |---|---|---|---:|---:|---|
 | **dasomel/openforge** | Standards & Blueprints | `Developer Tool` | 🟢 **96.9%** | 62/64 (32 applicable) | Production-ready OSS foundation |
-| **dasomel/ldapium** | Identity & Directory Service | `Admin Console` | 🟡 **75.0%** | 51/68 (34 applicable) | Healthy / minor gaps |
-| **dasomel/clusterdeck** | Kubernetes Operations | `Operations Dashboard` | 🟠 **66.2%** | 45/68 (34 applicable) | Developing / improvement recommended |
-| **dasomel/nfs-quota-agent** | Storage & Kubernetes Controllers | `Developer Tool` | 🟠 **63.6%** | 42/66 (33 applicable) | Developing / improvement recommended |
-| **dasomel/narwhal-portal** | Internal Developer Platform | `Platform Portal` | 🟠 **61.8%** | 42/68 (34 applicable) | Developing / improvement recommended |
-| **dasomel/narwhal** | Internal Developer Platform | `Platform Portal` | 🟠 **61.3%** | 38/62 (31 applicable) | Developing / improvement recommended |
-| **dasomel/kube-ready-box** | OS & VM Infrastructure | `Developer Tool` | 🔴 **55.2%** | 32/58 (29 applicable) | Foundation work required |
+| **dasomel/ldapium** | Identity & Directory Service | `Admin Console` | 🟡 **89.7%** | 61/68 (34 applicable) | Healthy / minor gaps |
+| **dasomel/kube-ready-box** | OS & VM Infrastructure | `Developer Tool` | 🟡 **87.1%** | 54/62 (31 applicable) | Healthy / minor gaps |
+| **dasomel/narwhal-portal** | Internal Developer Platform | `Platform Portal` | 🟡 **83.8%** | 57/68 (34 applicable) | Healthy / minor gaps |
+| **dasomel/clusterdeck** | Kubernetes Operations | `Operations Dashboard` | 🟡 **82.4%** | 56/68 (34 applicable) | Healthy / minor gaps |
+| **dasomel/narwhal** | Internal Developer Platform | `Platform Portal` | 🟡 **81.8%** | 54/66 (33 applicable) | Healthy / minor gaps |
+| **dasomel/nfs-quota-agent** | Storage & Kubernetes Controllers | `Developer Tool` | 🟡 **81.8%** | 54/66 (33 applicable) | Healthy / minor gaps |
 | **dasomel/kubemetal** | Apple Silicon Hybrid MLOps | `Desktop Operator` | 🔴 **53.0%** | 35/66 (33 applicable) | Foundation work required |
 | **dasomel/dasomel.github.io** | Community Tech Blog | `Platform Portal` | 🔴 **48.5%** | 32/66 (33 applicable) | Foundation work required |
 | **dasomel/egovframe-launcher** | eGovFrame Developer Tooling | `Developer Tool` | 🔴 **40.3%** | 25/62 (31 applicable) | Foundation work required |
@@ -30,14 +34,14 @@
 
 | Priority | Metric ID | Area | Action Item | Related ADR | Affected Projects |
 |---|---|---|---|---|---|
-| `P0` | `SEC-002` | Security | **SECURITY Policy (Bilingual)** | `ADR-0003` | `clusterdeck`, `nfs-quota-agent`, `narwhal-portal`, `narwhal` +8 (12 repos) |
-| `P0` | `SEC-001` | Security | **Dependency Update Automation** | `ADR-0006` | `clusterdeck`, `kube-ready-box`, `kubemetal`, `dasomel.github.io` +5 (9 repos) |
 | `P0` | `CI-006` | CI | **Supply Chain & Security Gates in CI** | `ADR-0006` | `clusterdeck`, `dasomel.github.io`, `egovframe-launcher`, `kairos` +3 (7 repos) |
+| `P0` | `SEC-001` | Security | **Dependency Update Automation** | `ADR-0006` | `kubemetal`, `dasomel.github.io`, `egovframe-launcher`, `kairos` +3 (7 repos) |
+| `P0` | `SEC-002` | Security | **SECURITY Policy (Bilingual)** | `ADR-0003` | `kubemetal`, `dasomel.github.io`, `egovframe-launcher`, `kairos` +3 (7 repos) |
 | `P0` | `CI-001` | CI | **Automated CI Workflows** | `ADR-0011` | `kairos`, `beluga`, `cka-lab`, `beluga-manager` (4 repos) |
 | `P0` | `CI-003` | CI | **Automated Tests in CI** | `ADR-0009` | `kairos`, `beluga`, `cka-lab`, `beluga-manager` (4 repos) |
 | `P0` | `GH-005` | GitHub | **License** | `ADR-0003` | `cka-lab`, `beluga-manager` (2 repos) |
 | `P0` | `CI-004` | CI | **Automated Build in CI** | `ADR-0006` | `cka-lab`, `beluga-manager` (2 repos) |
-| `P1` | `ARCH-004` | Architecture | **DESIGN.md Contract** | `ADR-0007` | `ldapium`, `clusterdeck`, `nfs-quota-agent`, `narwhal-portal` +9 (13 repos) |
+| `P1` | `ARCH-001` | Architecture | **ADR Process Presence** | `ADR-0001` | `ldapium`, `kube-ready-box`, `narwhal-portal`, `narwhal` +8 (12 repos) |
 
 ## 3. Requirement Traceability & Gap Summary
 
@@ -48,152 +52,105 @@
 
 | Metric ID | Priority | Area | Current Evidence | Required Action |
 |---|---|---|---|---|
-| `DOC-004` (🟡 1) | `P2` | Documentation | 83/176 docs have Korean counterparts (47%) | Add Korean pairs for key docs. |
+| `DOC-004` (🟡 1) | `P2` | Documentation | 83/179 docs have Korean counterparts (46%) | Add Korean pairs for key docs. |
 | `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
 
-### dasomel/ldapium (`75.0%`)
+### dasomel/ldapium (`89.7%`)
 - **Path:** `<workspace>/ldapium`
 - **Archetype:** `Admin Console` | **Profile:** `standard` | **Category:** Identity & Directory Service
-- **Gaps Identified:** 12
+- **Gaps Identified:** 6
 
 | Metric ID | Priority | Area | Current Evidence | Required Action |
 |---|---|---|---|---|
-| `DOC-002` (🟡 1) | `P1` | Documentation | Legacy filename: README_ko.md | Rename README_ko.md -> README-ko.md per ADR-0002. |
-| `DOC-003` (🔴 0) | `P2` | Documentation | Found 8 legacy files (CONTRIBUTING_ko.md, RELEASING_ko.md) | Migrate legacy Korean filenames (8 files) to *-ko.md. |
 | `DOC-004` (🔴 0) | `P2` | Documentation | Only 2/12 docs paired | Provide Korean translations for documents in docs/. |
 | `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
 | `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
 | `ARCH-001` (🟡 1) | `P1` | Architecture | No ADR records found (single-purpose project) | Adopt docs/adr/ when cross-cutting decisions arise. |
 | `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🔴 0) | `P1` | Architecture | Missing DESIGN.md in UI project | Create DESIGN.md using OpenForge template with archetype and token mapping. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
-| `DESIGN-001` (🔴 0) | `P1` | Design System | Missing archetype declaration | Declare Admin Console in DESIGN.md. |
-| `DESIGN-002` (🔴 0) | `P2` | Design System | No token mapping found | Map UI tokens to OpenForge semantic tokens in DESIGN.md. |
 | `I18N-001` (🟡 1) | `P2` | Localization | UI project without explicit locale resource directory | Configure en-US and ko-KR i18n resources. |
 
-### dasomel/clusterdeck (`66.2%`)
-- **Path:** `<workspace>/clusterdeck`
-- **Archetype:** `Operations Dashboard` | **Profile:** `desktop` | **Category:** Kubernetes Operations
-- **Gaps Identified:** 16
+### dasomel/kube-ready-box (`87.1%`)
+- **Path:** `<workspace>/kube-ready-box`
+- **Archetype:** `Developer Tool` | **Profile:** `standard` | **Category:** OS & VM Infrastructure
+- **Gaps Identified:** 7
 
 | Metric ID | Priority | Area | Current Evidence | Required Action |
 |---|---|---|---|---|
-| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/14 docs paired | Provide Korean translations for documents in docs/. |
+| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/44 docs paired | Provide Korean translations for documents in docs/. |
+| `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
+| `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
+| `ARCH-001` (🟡 1) | `P1` | Architecture | No ADR records found (single-purpose project) | Adopt docs/adr/ when cross-cutting decisions arise. |
+| `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
+| `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
+| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
+
+### dasomel/narwhal-portal (`83.8%`)
+- **Path:** `<workspace>/idp/narwhal-portal`
+- **Archetype:** `Platform Portal` | **Profile:** `desktop` | **Category:** Internal Developer Platform
+- **Gaps Identified:** 8
+
+| Metric ID | Priority | Area | Current Evidence | Required Action |
+|---|---|---|---|---|
+| `DOC-003` (🔴 0) | `P2` | Documentation | Found 4 legacy files (.claude/worktrees/agent-afae34fa5970eab3f/README_ko.md, .claude/worktrees/agent-afae34fa5970eab3f/CHANGELOG_ko.md) | Migrate legacy Korean filenames (4 files) to *-ko.md. |
+| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/26 docs paired | Provide Korean translations for documents in docs/. |
+| `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
+| `ARCH-001` (🔴 0) | `P1` | Architecture | No ADR records found | Introduce docs/adr/ and record durable cross-cutting decisions. |
+| `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
+| `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
+| `DESIGN-002` (🟡 1) | `P2` | Design System | DESIGN.md present without complete token mapping | Map project color/surface tokens to OpenForge semantic roles. |
+| `I18N-001` (🟡 1) | `P2` | Localization | UI project without explicit locale resource directory | Configure en-US and ko-KR i18n resources. |
+
+### dasomel/clusterdeck (`82.4%`)
+- **Path:** `<workspace>/clusterdeck`
+- **Archetype:** `Operations Dashboard` | **Profile:** `desktop` | **Category:** Kubernetes Operations
+- **Gaps Identified:** 10
+
+| Metric ID | Priority | Area | Current Evidence | Required Action |
+|---|---|---|---|---|
+| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/11 docs paired | Provide Korean translations for documents in docs/. |
 | `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
 | `ARCH-002` (🔴 0) | `P1` | Architecture | 1/1 ADRs missing Korean pair | Add Korean translations for docs/adr/0001-macos-first-tauri-architecture.md. |
 | `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🔴 0) | `P1` | Architecture | Missing DESIGN.md in UI project | Create DESIGN.md using OpenForge template with archetype and token mapping. |
 | `GH-003` (🟡 1) | `P2` | GitHub | Found CONTRIBUTING.md (missing Korean pair) | Add CONTRIBUTING-ko.md. |
 | `CI-005` (🟡 1) | `P2` | CI | Workflows present without dedicated doc check | Add documentation / ADR pair verification to CI. |
 | `CI-006` (🟡 1) | `P0` | CI | Standard CI present without supply chain gate | Add supply-chain and SBOM/dependency verification workflow. |
-| `SEC-001` (🔴 0) | `P0` | Security | Missing Dependabot/Renovate configuration | Add .github/dependabot.yml for automated dependency security updates. |
-| `SEC-002` (🟡 1) | `P0` | Security | Found SECURITY.md (missing Korean pair) | Add SECURITY-ko.md per ADR-0002. |
 | `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
-| `SEC-005` (🔴 0) | `P1` | Security | Missing .env.example | Provide .env.example with sanitized placeholder secrets. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
-| `DESIGN-001` (🔴 0) | `P1` | Design System | Missing archetype declaration | Declare Operations Dashboard in DESIGN.md. |
-| `DESIGN-002` (🔴 0) | `P2` | Design System | No token mapping found | Map UI tokens to OpenForge semantic tokens in DESIGN.md. |
+| `AGENT-002` (🟡 1) | `P2` | Agent Engineering | Single contract without layered separation | Consider splitting detailed rules to CODING_STANDARDS.md. |
 | `I18N-001` (🟡 1) | `P2` | Localization | UI project without explicit locale resource directory | Configure en-US and ko-KR i18n resources. |
 
-### dasomel/nfs-quota-agent (`63.6%`)
-- **Path:** `<workspace>/nfs-quota-agent`
-- **Archetype:** `Developer Tool` | **Profile:** `controller` | **Category:** Storage & Kubernetes Controllers
-- **Gaps Identified:** 16
-
-| Metric ID | Priority | Area | Current Evidence | Required Action |
-|---|---|---|---|---|
-| `DOC-002` (🟡 1) | `P1` | Documentation | Legacy filename: README_ko.md | Rename README_ko.md -> README-ko.md per ADR-0002. |
-| `DOC-003` (🔴 0) | `P2` | Documentation | Found 3 legacy files (README_ko.md, docs/feature-guide_ko.md) | Migrate legacy Korean filenames (3 files) to *-ko.md. |
-| `DOC-004` (🔴 0) | `P2` | Documentation | Only 4/25 docs paired | Provide Korean translations for documents in docs/. |
-| `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
-| `ARCH-001` (🔴 0) | `P1` | Architecture | No ADR records found | Introduce docs/adr/ and record durable cross-cutting decisions. |
-| `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🟡 1) | `P1` | Architecture | Found DESIGN.md (partial token/archetype declaration) | Expand DESIGN.md with product archetype and OpenForge semantic token map. |
-| `GH-001` (🔴 0) | `P2` | GitHub | Missing PR template | Add .github/pull_request_template.md. |
-| `GH-002` (🔴 0) | `P2` | GitHub | No issue templates found | Create .github/ISSUE_TEMPLATE/ for bug reports and features. |
-| `GH-003` (🟡 1) | `P2` | GitHub | Found CONTRIBUTING.md (missing Korean pair) | Add CONTRIBUTING-ko.md. |
-| `GH-004` (🔴 0) | `P2` | GitHub | Missing CODE_OF_CONDUCT.md | Add CODE_OF_CONDUCT.md. |
-| `SEC-002` (🔴 0) | `P0` | Security | Missing SECURITY.md | Add SECURITY.md outlining responsible vulnerability disclosure. |
-| `SEC-005` (🔴 0) | `P1` | Security | Missing .env.example | Provide .env.example with sanitized placeholder secrets. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
-| `DESIGN-001` (🟡 1) | `P1` | Design System | DESIGN.md present without explicit archetype | Declare primary archetype (Developer Tool) in DESIGN.md. |
-| `DESIGN-002` (🟡 1) | `P2` | Design System | DESIGN.md present without complete token mapping | Map project color/surface tokens to OpenForge semantic roles. |
-
-### dasomel/narwhal-portal (`61.8%`)
-- **Path:** `<workspace>/idp/narwhal-portal`
-- **Archetype:** `Platform Portal` | **Profile:** `desktop` | **Category:** Internal Developer Platform
-- **Gaps Identified:** 18
-
-| Metric ID | Priority | Area | Current Evidence | Required Action |
-|---|---|---|---|---|
-| `DOC-002` (🟡 1) | `P1` | Documentation | Legacy filename: README_ko.md | Rename README_ko.md -> README-ko.md per ADR-0002. |
-| `DOC-003` (🔴 0) | `P2` | Documentation | Found 6 legacy files (README_ko.md, CHANGELOG_ko.md) | Migrate legacy Korean filenames (6 files) to *-ko.md. |
-| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/26 docs paired | Provide Korean translations for documents in docs/. |
-| `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
-| `DOC-006` (🔴 0) | `P2` | Documentation | No development guide found | Add local development and contribution instructions. |
-| `ARCH-001` (🔴 0) | `P1` | Architecture | No ADR records found | Introduce docs/adr/ and record durable cross-cutting decisions. |
-| `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🟡 1) | `P1` | Architecture | Found DESIGN.md (partial token/archetype declaration) | Expand DESIGN.md with product archetype and OpenForge semantic token map. |
-| `GH-001` (🔴 0) | `P2` | GitHub | Missing PR template | Add .github/pull_request_template.md. |
-| `GH-002` (🔴 0) | `P2` | GitHub | No issue templates found | Create .github/ISSUE_TEMPLATE/ for bug reports and features. |
-| `GH-003` (🔴 0) | `P2` | GitHub | Missing CONTRIBUTING.md | Add CONTRIBUTING.md and CONTRIBUTING-ko.md. |
-| `GH-004` (🔴 0) | `P2` | GitHub | Missing CODE_OF_CONDUCT.md | Add CODE_OF_CONDUCT.md. |
-| `SEC-002` (🟡 1) | `P0` | Security | Found SECURITY.md (missing Korean pair) | Add SECURITY-ko.md per ADR-0002. |
-| `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
-| `DESIGN-001` (🟡 1) | `P1` | Design System | DESIGN.md present without explicit archetype | Declare primary archetype (Platform Portal) in DESIGN.md. |
-| `DESIGN-002` (🟡 1) | `P2` | Design System | DESIGN.md present without complete token mapping | Map project color/surface tokens to OpenForge semantic roles. |
-| `I18N-001` (🟡 1) | `P2` | Localization | UI project without explicit locale resource directory | Configure en-US and ko-KR i18n resources. |
-
-### dasomel/narwhal (`61.3%`)
+### dasomel/narwhal (`81.8%`)
 - **Path:** `<workspace>/idp/narwhal`
 - **Archetype:** `Platform Portal` | **Profile:** `platform` | **Category:** Internal Developer Platform
-- **Gaps Identified:** 17
+- **Gaps Identified:** 9
 
 | Metric ID | Priority | Area | Current Evidence | Required Action |
 |---|---|---|---|---|
-| `DOC-002` (🟡 1) | `P1` | Documentation | Legacy filename: README_ko.md | Rename README_ko.md -> README-ko.md per ADR-0002. |
-| `DOC-003` (🔴 0) | `P2` | Documentation | Found 4 legacy files (README_ko.md, CHANGELOG_ko.md) | Migrate legacy Korean filenames (4 files) to *-ko.md. |
+| `DOC-003` (🔴 0) | `P2` | Documentation | Found 1 legacy files (csp/kakao-cloud/terraform/README.ko.md) | Migrate legacy Korean filenames (1 files) to *-ko.md. |
 | `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/54 docs paired | Provide Korean translations for documents in docs/. |
 | `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
 | `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
 | `ARCH-001` (🔴 0) | `P1` | Architecture | No ADR records found | Introduce docs/adr/ and record durable cross-cutting decisions. |
 | `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🟡 1) | `P1` | Architecture | No DESIGN.md in headless/non-UI project | Consider adding DESIGN.md declaring CLI/tool archetype. |
-| `GH-001` (🔴 0) | `P2` | GitHub | Missing PR template | Add .github/pull_request_template.md. |
-| `GH-002` (🔴 0) | `P2` | GitHub | No issue templates found | Create .github/ISSUE_TEMPLATE/ for bug reports and features. |
 | `GH-003` (🟡 1) | `P2` | GitHub | Found CONTRIBUTING.md (missing Korean pair) | Add CONTRIBUTING-ko.md. |
-| `GH-004` (🔴 0) | `P2` | GitHub | Missing CODE_OF_CONDUCT.md | Add CODE_OF_CONDUCT.md. |
-| `SEC-002` (🟡 1) | `P0` | Security | Found SECURITY.md (missing Korean pair) | Add SECURITY-ko.md per ADR-0002. |
 | `SEC-003` (🟡 1) | `P1` | Security | Dockerfile present without explicit container scanner in CI | Add Trivy container scanning step to CI. |
 | `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
-| `SEC-005` (🔴 0) | `P1` | Security | Missing .env.example | Provide .env.example with sanitized placeholder secrets. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
 
-### dasomel/kube-ready-box (`55.2%`)
-- **Path:** `<workspace>/kube-ready-box`
-- **Archetype:** `Developer Tool` | **Profile:** `standard` | **Category:** OS & VM Infrastructure
-- **Gaps Identified:** 17
+### dasomel/nfs-quota-agent (`81.8%`)
+- **Path:** `<workspace>/nfs-quota-agent`
+- **Archetype:** `Developer Tool` | **Profile:** `controller` | **Category:** Storage & Kubernetes Controllers
+- **Gaps Identified:** 9
 
 | Metric ID | Priority | Area | Current Evidence | Required Action |
 |---|---|---|---|---|
-| `DOC-002` (🟡 1) | `P1` | Documentation | Legacy filename: README.ko.md | Rename README.ko.md -> README-ko.md per ADR-0002. |
-| `DOC-003` (🔴 0) | `P2` | Documentation | Found 1 legacy files (README.ko.md) | Migrate legacy Korean filenames (1 files) to *-ko.md. |
-| `DOC-004` (🔴 0) | `P2` | Documentation | Only 0/44 docs paired | Provide Korean translations for documents in docs/. |
-| `DOC-005` (🟡 1) | `P1` | Documentation | docs/ exists without dedicated architecture doc | Add architecture documentation in docs/architecture.md. |
-| `DOC-006` (🔴 0) | `P2` | Documentation | No development guide found | Add local development and contribution instructions. |
+| `DOC-003` (🔴 0) | `P2` | Documentation | Found 2 legacy files (docs/feature-guide_ko.md, docs/web-ui_ko.md) | Migrate legacy Korean filenames (2 files) to *-ko.md. |
+| `DOC-004` (🔴 0) | `P2` | Documentation | Only 4/25 docs paired | Provide Korean translations for documents in docs/. |
 | `DOC-009` (🟡 1) | `P3` | Documentation | No dedicated lessons log (optional reference practice) | Maintain a lessons/mistakes log for operational retention. |
-| `ARCH-001` (🟡 1) | `P1` | Architecture | No ADR records found (single-purpose project) | Adopt docs/adr/ when cross-cutting decisions arise. |
+| `ARCH-001` (🔴 0) | `P1` | Architecture | No ADR records found | Introduce docs/adr/ and record durable cross-cutting decisions. |
 | `ARCH-003` (🟡 1) | `P3` | Architecture | Decision map/standard not separate | Maintain decision traceability index in docs/adr/README.md. |
-| `ARCH-004` (🟡 1) | `P1` | Architecture | No DESIGN.md in headless/non-UI project | Consider adding DESIGN.md declaring CLI/tool archetype. |
-| `GH-001` (🔴 0) | `P2` | GitHub | Missing PR template | Add .github/pull_request_template.md. |
-| `GH-002` (🔴 0) | `P2` | GitHub | No issue templates found | Create .github/ISSUE_TEMPLATE/ for bug reports and features. |
-| `GH-003` (🔴 0) | `P2` | GitHub | Missing CONTRIBUTING.md | Add CONTRIBUTING.md and CONTRIBUTING-ko.md. |
-| `GH-004` (🔴 0) | `P2` | GitHub | Missing CODE_OF_CONDUCT.md | Add CODE_OF_CONDUCT.md. |
-| `SEC-001` (🔴 0) | `P0` | Security | Missing Dependabot/Renovate configuration | Add .github/dependabot.yml for automated dependency security updates. |
-| `SEC-002` (🔴 0) | `P0` | Security | Missing SECURITY.md | Add SECURITY.md outlining responsible vulnerability disclosure. |
-| `SEC-004` (🟡 1) | `P1` | Security | CI present without automated SAST | Add CodeQL or language-specific static analysis. |
-| `AGENT-003` (🟡 1) | `P1` | Agent Engineering | Agent contract present without explicit convergence rules | Update AGENTS.md with stop conditions (A/B/C) and evidence-first rules. |
+| `ARCH-004` (🟡 1) | `P1` | Architecture | Found DESIGN.md (partial token/archetype declaration) | Expand DESIGN.md with product archetype and OpenForge semantic token map. |
+| `GH-003` (🟡 1) | `P2` | GitHub | Found CONTRIBUTING.md (missing Korean pair) | Add CONTRIBUTING-ko.md. |
+| `DESIGN-001` (🟡 1) | `P1` | Design System | DESIGN.md present without explicit archetype | Declare primary archetype (Developer Tool) in DESIGN.md. |
+| `DESIGN-002` (🟡 1) | `P2` | Design System | DESIGN.md present without complete token mapping | Map project color/surface tokens to OpenForge semantic roles. |
 
 ### dasomel/kubemetal (`53.0%`)
 - **Path:** `<workspace>/kubemetal`

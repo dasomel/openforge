@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, agent-engineering`
 
-## Current Score: `55.2%` (Foundation work required)
+## Current Score: `87.1%` (Healthy / minor gaps)
 - **Repository:** `dasomel/kube-ready-box`
 - **Area:** `Agent Engineering`
 

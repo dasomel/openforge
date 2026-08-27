@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, documentation`
 
-## Current Score: `66.2%` (Developing / improvement recommended)
+## Current Score: `82.4%` (Healthy / minor gaps)
 - **Repository:** `dasomel/clusterdeck`
 - **Area:** `Documentation`
 
@@ -12,7 +12,7 @@ Close 2 compliance gap(s) in `Documentation` to align with OpenForge standards.
 ## Gaps
 
 ### 1. [DOC-004] Language-paired Docs Ratio
-- **Current Evidence:** Only 0/14 docs paired
+- **Current Evidence:** Only 0/11 docs paired
 - **Required Action:** Provide Korean translations for documents in docs/.
 - **Related ADR:** `ADR-0002` | **Standard:** `docs/i18n.md`
 - **Acceptance Criteria:** User-facing markdown documentation in docs/ has Korean pairs

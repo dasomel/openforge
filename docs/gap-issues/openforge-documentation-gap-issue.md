@@ -12,7 +12,7 @@ Close 2 compliance gap(s) in `Documentation` to align with OpenForge standards.
 ## Gaps
 
 ### 1. [DOC-004] Language-paired Docs Ratio
-- **Current Evidence:** 83/176 docs have Korean counterparts (47%)
+- **Current Evidence:** 83/179 docs have Korean counterparts (46%)
 - **Required Action:** Add Korean pairs for key docs.
 - **Related ADR:** `ADR-0002` | **Standard:** `docs/i18n.md`
 - **Acceptance Criteria:** User-facing markdown documentation in docs/ has Korean pairs
