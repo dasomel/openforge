@@ -42,13 +42,14 @@ jobs:
             --format json \
             --output narwhal-assessment.json
 
-      - name: Calibrate known Narwhal expectations
+      - name: Calibrate reviewed Narwhal expectations
         run: |
           ./openforge/target/debug/openforge calibrate \
             narwhal-assessment.json \
             openforge/examples/calibration/narwhal.json \
             --format json \
-            --output narwhal-calibration.json
+            --output narwhal-calibration.json \
+            --require-complete
 
       - name: Calibration summary
         run: |
