@@ -55,7 +55,9 @@ fn compile_globs(patterns: &[String]) -> Result<Option<GlobSet>> {
     }
     let mut builder = GlobSetBuilder::new();
     for pattern in patterns {
-        builder.add(Glob::new(pattern).with_context(|| format!("invalid policy rule glob: {pattern}"))?);
+        builder.add(
+            Glob::new(pattern).with_context(|| format!("invalid policy rule glob: {pattern}"))?,
+        );
     }
     Ok(Some(builder.build()?))
 }
@@ -90,7 +92,11 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
             continue;
         }
 
-        let Some(waiver) = policy.waivers.iter().find(|waiver| waiver.rule_id == finding.rule_id) else {
+        let Some(waiver) = policy
+            .waivers
+            .iter()
+            .find(|waiver| waiver.rule_id == finding.rule_id)
+        else {
             continue;
         };
 
@@ -98,7 +104,9 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
             continue;
         }
         if waiver.reason.trim().is_empty() {
-            finding.evidence.push("waiver_ignored=empty_reason".to_string());
+            finding
+                .evidence
+                .push("waiver_ignored=empty_reason".to_string());
             summary.invalid_waivers += 1;
             continue;
         }
@@ -106,9 +114,10 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
         let expires = match NaiveDate::parse_from_str(&waiver.expires, "%Y-%m-%d") {
             Ok(date) => date,
             Err(_) => {
-                finding
-                    .evidence
-                    .push(format!("waiver_ignored=invalid_expiry expiry={}", waiver.expires));
+                finding.evidence.push(format!(
+                    "waiver_ignored=invalid_expiry expiry={}",
+                    waiver.expires
+                ));
                 summary.invalid_waivers += 1;
                 continue;
             }
