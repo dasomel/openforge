@@ -32,7 +32,10 @@ fn object_name(item: &Value) -> String {
         .pointer("/metadata/namespace")
         .and_then(Value::as_str)
         .unwrap_or("default");
-    let kind = item.get("kind").and_then(Value::as_str).unwrap_or("Workload");
+    let kind = item
+        .get("kind")
+        .and_then(Value::as_str)
+        .unwrap_or("Workload");
     let name = item
         .pointer("/metadata/name")
         .and_then(Value::as_str)
@@ -91,9 +94,7 @@ fn risky_workloads(value: &Value) -> Vec<String> {
                     .and_then(Value::as_bool)
                     == Some(true)
                 {
-                    evidence.push(format!(
-                        "{workload}:{name} allowPrivilegeEscalation=true"
-                    ));
+                    evidence.push(format!("{workload}:{name} allowPrivilegeEscalation=true"));
                 }
                 if security.get("runAsUser").and_then(Value::as_u64) == Some(0) {
                     evidence.push(format!("{workload}:{name} runAsUser=0"));
@@ -112,9 +113,7 @@ fn risky_workloads(value: &Value) -> Vec<String> {
                                 | "SYS_MODULE"
                                 | "DAC_READ_SEARCH"
                         ) {
-                            evidence.push(format!(
-                                "{workload}:{name} capability_add={capability}"
-                            ));
+                            evidence.push(format!("{workload}:{name} capability_add={capability}"));
                         }
                     }
                 }
@@ -140,11 +139,7 @@ fn skipped(reason: String) -> Finding {
     }
 }
 
-pub(crate) fn finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+pub(crate) fn finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     if !enabled {
         return skipped("runtime assessment disabled; use --runtime".to_string());
     }
