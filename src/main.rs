@@ -102,6 +102,16 @@ enum Command {
         #[arg(long)]
         fail_on_regression: bool,
     },
+    Calibrate {
+        assessment: PathBuf,
+        expectations: PathBuf,
+        #[arg(long, default_value = "text")]
+        format: String,
+        #[arg(long)]
+        output: Option<PathBuf>,
+        #[arg(long, help = "Exit with code 2 while any assessment rules remain unclassified.")]
+        require_complete: bool,
+    },
     Baseline {
         #[command(subcommand)]
         command: BaselineCommand,
@@ -216,6 +226,19 @@ fn run_unified(cli: UnifiedCli) -> Result<i32> {
             output.as_deref(),
             fail_on_regression,
         ),
+        Command::Calibrate {
+            assessment,
+            expectations,
+            format,
+            output,
+            require_complete,
+        } => openforge::calibrate_files(
+            &assessment,
+            &expectations,
+            &format,
+            output.as_deref(),
+            require_complete,
+        ),
         Command::Baseline { command } => match command {
             BaselineCommand::Create { assessment, output } => {
                 openforge::baseline_create(&assessment, &output)?;
@@ -240,9 +263,12 @@ fn run_unified(cli: UnifiedCli) -> Result<i32> {
 
 fn run() -> Result<i32> {
     let args: Vec<String> = env::args().collect();
-    let is_subcommand = args
-        .get(1)
-        .is_some_and(|arg| matches!(arg.as_str(), "assess" | "compare" | "baseline"));
+    let is_subcommand = args.get(1).is_some_and(|arg| {
+        matches!(
+            arg.as_str(),
+            "assess" | "compare" | "calibrate" | "baseline"
+        )
+    });
 
     if is_subcommand {
         run_unified(UnifiedCli::parse_from(args))
