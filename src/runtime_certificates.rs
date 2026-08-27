@@ -1,7 +1,7 @@
 use crate::Finding;
 use chrono::{DateTime, Utc};
 use serde_json::Value;
-use std::process::Command;
+use std::{env, process::Command};
 
 fn kubectl_json(
     context: Option<&str>,
@@ -26,6 +26,14 @@ fn kubectl_json(
         return Err(String::from_utf8_lossy(&output.stderr).trim().to_string());
     }
     serde_json::from_slice(&output.stdout).map_err(|error| format!("invalid kubectl JSON: {error}"))
+}
+
+fn assessment_now() -> DateTime<Utc> {
+    env::var("OPENFORGE_NOW")
+        .ok()
+        .and_then(|value| DateTime::parse_from_rfc3339(&value).ok())
+        .map(|value| value.with_timezone(&Utc))
+        .unwrap_or_else(Utc::now)
 }
 
 fn skipped(reason: String) -> Finding {
@@ -91,7 +99,7 @@ pub(crate) fn finding(enabled: bool, context: Option<&str>, namespace: Option<&s
         Err(error) => return skipped(format!("cert-manager Certificate API unavailable: {error}")),
     };
 
-    let (total, risky) = certificate_findings(&value, Utc::now());
+    let (total, risky) = certificate_findings(&value, assessment_now());
     if total == 0 {
         return skipped(
             "no cert-manager Certificate resources with status.notAfter found".to_string(),
