@@ -13,7 +13,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 ## 핵심 원칙
 
 - English를 canonical project language로 사용하고 Korean을 first-class translation으로 제공합니다.
-- 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md` 규칙을 사용합니다.
+- 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md>` 규칙을 사용합니다.
 - 프로젝트는 기본적으로 재현 가능하고, 문서화되고, 테스트 가능하며, 관측 가능하고, 접근 가능하며, 안전해야 합니다.
 - GitHub Issue와 Pull Request를 주요 변경 관리 수단으로 사용합니다.
 - Architecture Decision은 ADR로 기록합니다.
@@ -28,6 +28,29 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
 - UI의 의미와 Accessibility는 공통 표준을 따르되 Product Personality, Density, Platform Convention은 프로젝트 특성에 따라 의도적으로 달라질 수 있습니다.
 - 의도적인 예외는 범위와 만료를 기록합니다.
+
+## 실행 가능한 성숙도 진단
+
+OpenForge는 표준을 문서로만 남기지 않고 deterministic evidence로 진단하는 독립 Rust CLI도 제공합니다.
+
+```bash
+openforge assess . --format json
+openforge assess . --run-execution --format json
+openforge assess . --runtime --kube-context my-cluster --format json
+openforge compare baseline.json current.json --fail-on-regression
+```
+
+진단 계층은 의도적으로 분리합니다.
+
+- **L1 Repository** — 문서, 거버넌스, 보안, CI/CD, 릴리스, 플랫폼, Web Asset의 source evidence
+- **L2 Execution** — 지원 ecosystem에 대한 trusted built-in build/test/lint probe
+- **L3 Runtime** — Kubernetes의 availability, policy coverage, RBAC/security, storage/CSI, certificate, backup/restore, observability, GitOps를 read-only로 진단
+- **Web runtime evidence** — immutable cache policy(`WEB-008`)와 실제 cache-hit evidence(`WEB-009`)를 명시적 opt-in 방식으로 확인
+- **Optional AI analysis** — AI는 완료된 결과를 해석할 수 있지만 점수, PASS/FAIL, evidence를 변경하지 않음
+
+Profile, applicability, 기간이 있는 waiver, baseline, compare/regression gate를 지원하므로 프로젝트 특성이 다른 경우에도 동일한 규칙을 억지로 적용하지 않습니다.
+
+자세한 내용은 [Maturity Assessment](docs/maturity-assessment-ko.md), [Assessment Profiles](docs/assessment-profiles.md), [Assessment Comparison](docs/assessment-comparison.md), [Web Asset / Image Delivery](docs/web-asset-image-delivery.md), [Runtime Web Cache Verification](docs/web-cache-runtime-verification.md), [Runtime Cache Effectiveness](docs/web-cache-effectiveness.md)를 참고하세요.
 
 ## 표준
 
