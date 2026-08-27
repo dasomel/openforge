@@ -1,6 +1,10 @@
 use anyhow::{Context, Result};
 use serde::{Deserialize, Serialize};
-use std::{collections::{BTreeMap, BTreeSet}, fs, path::Path};
+use std::{
+    collections::{BTreeMap, BTreeSet},
+    fs,
+    path::Path,
+};
 
 #[derive(Debug, Deserialize)]
 struct Assessment {
@@ -27,7 +31,6 @@ struct Finding {
     title: String,
     status: String,
     score: f64,
-    weight: f64,
 }
 
 #[derive(Debug, Serialize)]
@@ -79,11 +82,11 @@ pub(crate) struct RuleDelta {
 
 #[derive(Debug, Serialize)]
 pub(crate) struct Summary {
-    improved: usize,
-    regressed: usize,
-    unchanged: usize,
-    added: usize,
-    removed: usize,
+    pub(crate) improved: usize,
+    pub(crate) regressed: usize,
+    pub(crate) unchanged: usize,
+    pub(crate) added: usize,
+    pub(crate) removed: usize,
 }
 
 fn round1(value: f64) -> f64 {
@@ -271,10 +274,15 @@ pub(crate) fn print_text(comparison: &Comparison) {
     for category in &comparison.categories {
         match (category.before, category.after, category.delta) {
             (Some(before), Some(after), Some(delta)) => {
-                println!("{:<28} {:>5.1} -> {:>5.1} ({:+.1})", category.name, before, after, delta);
+                println!(
+                    "{:<28} {:>5.1} -> {:>5.1} ({:+.1})",
+                    category.name, before, after, delta
+                );
             }
             (None, Some(after), _) => println!("{:<28}   NEW -> {:>5.1}", category.name, after),
-            (Some(before), None, _) => println!("{:<28} {:>5.1} -> REMOVED", category.name, before),
+            (Some(before), None, _) => {
+                println!("{:<28} {:>5.1} -> REMOVED", category.name, before);
+            }
             _ => {}
         }
     }
@@ -317,7 +325,6 @@ mod tests {
             title: "Rule".to_string(),
             status: status.to_string(),
             score,
-            weight: 10.0,
         }
     }
 
