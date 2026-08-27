@@ -1,0 +1,12 @@
+{
+  "profile": {
+    "name": "runtime-security-fixture",
+    "include_rules": [
+      "RT-007",
+      "RT-008",
+      "RT-009",
+      "RT-010"
+    ]
+  },
+  "waivers": []
+}

@@ -1,0 +1,29 @@
+{
+  "apiVersion": "v1",
+  "kind": "List",
+  "items": [
+    {
+      "apiVersion": "apps/v1",
+      "kind": "Deployment",
+      "metadata": {"namespace": "platform", "name": "api"},
+      "spec": {
+        "replicas": 2,
+        "template": {
+          "metadata": {"labels": {"app": "api"}},
+          "spec": {
+            "containers": [
+              {
+                "name": "api",
+                "image": "example.invalid/api:v1",
+                "resources": {
+                  "requests": {"cpu": "100m", "memory": "128Mi"}
+                }
+              }
+            ]
+          }
+        }
+      },
+      "status": {"availableReplicas": 1}
+    }
+  ]
+}

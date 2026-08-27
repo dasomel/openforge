@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+set -euo pipefail
+fixture_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+args=()
+while (($#)); do
+  case "$1" in
+    --context|-n|--namespace) shift 2 ;;
+    -A|--all-namespaces) shift ;;
+    -o|--output) shift 2 ;;
+    *) args+=("$1"); shift ;;
+  esac
+done
+key="${args[*]}"
+case "$key" in
+  "get storageclasses.storage.k8s.io") cat "$fixture_dir/storageclasses.json" ;;
+  "get csidrivers.storage.k8s.io") cat "$fixture_dir/csidrivers.json" ;;
+  "get volumeattachments.storage.k8s.io") cat "$fixture_dir/volumeattachments.json" ;;
+  "get nodes") cat "$fixture_dir/nodes.json" ;;
+  "get csinodes.storage.k8s.io") cat "$fixture_dir/csinodes.json" ;;
+  *) echo "runtime CSI fixture does not provide: kubectl $key" >&2; exit 1 ;;
+esac

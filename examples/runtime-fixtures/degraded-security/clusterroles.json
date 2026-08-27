@@ -1,0 +1,16 @@
+{
+  "fixture": true,
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"name": "fixture-risky-role"},
+      "rules": [
+        {
+          "apiGroups": ["rbac.authorization.k8s.io"],
+          "resources": ["clusterroles"],
+          "verbs": ["bind"]
+        }
+      ]
+    }
+  ]
+}

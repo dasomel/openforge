@@ -1,0 +1,1 @@
+{"apiVersion":"helm.toolkit.fluxcd.io/v2","kind":"HelmReleaseList","items":[{"metadata":{"namespace":"flux-system","name":"monitoring"},"status":{"conditions":[{"type":"Ready","status":"True","reason":"ReconciliationSucceeded"}]}}]}

@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+fixture_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+args=()
+while (($#)); do
+  case "$1" in
+    --context|-n|--namespace)
+      shift 2
+      ;;
+    -A|--all-namespaces)
+      shift
+      ;;
+    -o|--output)
+      shift 2
+      ;;
+    *)
+      args+=("$1")
+      shift
+      ;;
+  esac
+done
+
+key="${args[*]}"
+case "$key" in
+  "get persistentvolumeclaims")
+    cat "$fixture_dir/persistentvolumeclaims.json"
+    ;;
+  "get certificates.cert-manager.io")
+    cat "$fixture_dir/certificates.json"
+    ;;
+  "get backups.velero.io")
+    cat "$fixture_dir/backups.json"
+    ;;
+  *)
+    echo "runtime resilience fixture does not provide: kubectl $key" >&2
+    exit 1
+    ;;
+esac

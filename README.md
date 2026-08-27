@@ -46,6 +46,29 @@ ADR -> Standard -> Template / CI / Policy -> Adoption record / Issue / PR
 
 See the [ADR index](docs/adr/README.md). The initial retrospective ADR set captures major common decisions already reflected across OpenForge standards, including language policy, risk-based governance, AI/plugin trust, upgrade impact analysis, lifecycle security, design-system boundaries, agent-engineering context management, evidence-first verification, reusable-template policy, CI resilience, and exception governance.
 
+## Executable Maturity Assessment
+
+OpenForge also provides a standalone Rust CLI that converts the standards into deterministic, evidence-based assessment results instead of leaving them as documentation-only guidance.
+
+```bash
+openforge assess . --format json
+openforge assess . --run-execution --format json
+openforge assess . --runtime --kube-context my-cluster --format json
+openforge compare baseline.json current.json --fail-on-regression
+```
+
+The assessment layers are intentionally separated:
+
+- **L1 Repository** — documentation, governance, security, CI/CD, release, platform and web-asset source evidence.
+- **L2 Execution** — trusted built-in build/test/lint probes for supported ecosystems.
+- **L3 Runtime** — read-only Kubernetes evidence for availability, policy coverage, RBAC/security, storage/CSI, certificates, backup/restore, observability and GitOps.
+- **Web runtime evidence** — explicit opt-in checks for immutable cache policy (`WEB-008`) and observable cache effectiveness (`WEB-009`).
+- **Optional AI analysis** — AI may interpret a completed report, but does not change deterministic scores, PASS/FAIL status, or collected evidence.
+
+Profiles, applicability, time-bounded waivers, baselines and comparison/regression gates are supported so unlike projects are not forced into the same scoring scope.
+
+See [Maturity Assessment](docs/maturity-assessment.md), [Assessment Profiles](docs/assessment-profiles.md), [Assessment Comparison](docs/assessment-comparison.md), [Web Asset / Image Delivery](docs/web-asset-image-delivery.md), [Runtime Web Cache Verification](docs/web-cache-runtime-verification.md), and [Runtime Cache Effectiveness](docs/web-cache-effectiveness.md).
+
 ## Standards
 
 - [Documentation Standard](docs/documentation.md)

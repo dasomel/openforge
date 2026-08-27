@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/degraded-scheduling",
+  "profile": "runtime-scheduling-fixture",
+  "expectations": {
+    "RT-022": {"classification": "true_finding", "rationale": "The recorded Pod is Pending with PodScheduled=False and reason Unschedulable."},
+    "RT-023": {"classification": "true_finding", "rationale": "The recorded Node reports active DiskPressure."},
+    "RT-024": {"classification": "true_finding", "rationale": "The recorded three-replica Deployment has no topology spread or Pod anti-affinity protection."}
+  }
+}

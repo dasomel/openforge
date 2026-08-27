@@ -1,0 +1,14 @@
+{
+  "profile": {
+    "name": "kubernetes-platform",
+    "include_rules": ["*"],
+    "exclude_rules": ["RT-021"]
+  },
+  "waivers": [
+    {
+      "rule_id": "RT-005",
+      "reason": "Legacy singleton workload cannot use a PDB until the Q4 HA migration is complete.",
+      "expires": "2026-12-31"
+    }
+  ]
+}

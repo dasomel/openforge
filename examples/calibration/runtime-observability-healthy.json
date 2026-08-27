@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/healthy-observability",
+  "profile": "runtime-observability-fixture",
+  "expectations": {
+    "RT-014": {"classification": "accepted", "rationale": "The recorded Prometheus instance has all desired replicas available."},
+    "RT-017": {"classification": "accepted", "rationale": "All recorded Prometheus scrape targets are up."},
+    "RT-018": {"classification": "accepted", "rationale": "The recorded Alertmanager instance has all desired replicas available."}
+  }
+}

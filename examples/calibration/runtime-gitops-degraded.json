@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/degraded-gitops",
+  "profile": "runtime-gitops-fixture",
+  "expectations": {
+    "RT-015": {"classification": "true_finding", "rationale": "The recorded Argo CD application is OutOfSync/Degraded and the Flux Kustomization reports Ready=False."}
+  }
+}

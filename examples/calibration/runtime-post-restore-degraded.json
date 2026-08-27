@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/degraded-post-restore",
+  "profile": "runtime-post-restore-fixture",
+  "expectations": {
+    "RT-021": {"classification": "true_finding", "rationale": "The health probe succeeds but the restored data probe is missing its declared content marker."}
+  }
+}

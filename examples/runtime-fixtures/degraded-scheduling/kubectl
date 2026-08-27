@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+set -euo pipefail
+fixture_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+args=()
+while (($#)); do
+  case "$1" in
+    --context|-n|--namespace|-o|--output) shift 2 ;;
+    -A|--all-namespaces) shift ;;
+    *) args+=("$1"); shift ;;
+  esac
+done
+key="${args[*]}"
+case "$key" in
+  "get pods") cat "$fixture_dir/pods.json" ;;
+  "get nodes") cat "$fixture_dir/nodes.json" ;;
+  "get deployments,statefulsets") cat "$fixture_dir/workloads.json" ;;
+  *) echo "runtime scheduling fixture does not provide: kubectl $key" >&2; exit 1 ;;
+esac

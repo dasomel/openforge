@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/healthy-resilience",
+  "profile": "runtime-resilience-fixture",
+  "expectations": {
+    "RT-011": {"classification": "accepted", "rationale": "The recorded PVC is Bound and references a volume."},
+    "RT-012": {"classification": "accepted", "rationale": "The recorded cert-manager Certificate remains valid beyond the 30-day threshold at the fixed replay time."},
+    "RT-013": {"classification": "accepted", "rationale": "The recorded Velero backup completed within the seven-day freshness window at the fixed replay time."}
+  }
+}

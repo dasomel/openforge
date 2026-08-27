@@ -1,0 +1,27 @@
+{
+  "project": "dasomel/nfs-quota-agent",
+  "commit": "2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c",
+  "profile": "kubernetes-platform",
+  "expectations": {
+    "DOC-001": {"classification":"accepted","rationale":"NFS Quota Agent has a substantive canonical README with problem statement, prerequisites, installation and usage."},
+    "DOC-002": {"classification":"accepted","rationale":"CONTRIBUTING.md is present with contribution guidance."},
+    "DOC-003": {"classification":"accepted","rationale":"CHANGELOG.md is maintained."},
+    "GOV-001": {"classification":"true_finding","rationale":"No repository Code of Conduct is currently present."},
+    "GOV-002": {"classification":"true_finding","rationale":"The .github directory contains Dependabot configuration and workflows but no ISSUE_TEMPLATE directory."},
+    "GOV-003": {"classification":"true_finding","rationale":"No pull request template is currently present under .github."},
+    "SEC-001": {"classification":"true_finding","rationale":"No SECURITY.md vulnerability reporting policy is currently present at repository root."},
+    "SEC-002": {"classification":"accepted","rationale":"The repository has .github/dependabot.yml dependency update automation."},
+    "SEC-003": {"classification":"accepted","rationale":"CI runs Trivy filesystem scanning and govulncheck, and uploads SARIF findings to GitHub Security."},
+    "CI-001": {"classification":"accepted","rationale":"The repository has dedicated CI and release GitHub Actions workflows."},
+    "CI-002": {"classification":"accepted","rationale":"CI runs go test with race detection and coverage."},
+    "CI-003": {"classification":"accepted","rationale":"CI runs golangci-lint plus Helm and generated-artifact validation."},
+    "REL-001": {"classification":"accepted","rationale":"A dedicated release GitHub Actions workflow is present."},
+    "REL-002": {"classification":"true_finding","rationale":"The static versioning-policy rule does not find an explicit semantic-versioning or compatibility-versioning policy in its documented scope."},
+    "PLT-001": {"classification":"accepted","rationale":"A repeatable Helm chart exists at charts/nfs-quota-agent."},
+    "PLT-002": {"classification":"accepted","rationale":"The Helm DaemonSet defines startup, liveness and readiness probes."},
+    "PLT-003": {"classification":"accepted","rationale":"The Helm DaemonSet applies configurable container resource requests and limits."},
+    "PLT-004": {"classification":"true_finding","rationale":"No NetworkPolicy template is currently present in the chart templates."},
+    "PLT-005": {"classification":"accepted","rationale":"The Helm chart contains a PodDisruptionBudget template and CI renders it in the chart smoke test."},
+    "PLT-006": {"classification":"accepted","rationale":"The chart includes ServiceMonitor and PrometheusRule resources and CI explicitly renders both."}
+  }
+}

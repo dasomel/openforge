@@ -1,0 +1,1 @@
+{"status":"success","data":{"activeTargets":[{"scrapePool":"api","scrapeUrl":"http://api:9100/metrics","health":"up","lastError":""},{"scrapePool":"db","scrapeUrl":"http://db:9100/metrics","health":"down","lastError":"connection refused"}]}}

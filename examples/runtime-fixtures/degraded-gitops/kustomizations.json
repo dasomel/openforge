@@ -1,0 +1,1 @@
+{"apiVersion":"kustomize.toolkit.fluxcd.io/v1","kind":"KustomizationList","items":[{"metadata":{"namespace":"flux-system","name":"apps"},"status":{"conditions":[{"type":"Ready","status":"False","reason":"ReconciliationFailed"}]}}]}

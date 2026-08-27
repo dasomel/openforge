@@ -1,0 +1,19 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"namespace": "apps", "name": "blocked"},
+      "status": {
+        "phase": "Pending",
+        "conditions": [
+          {
+            "type": "PodScheduled",
+            "status": "False",
+            "reason": "Unschedulable",
+            "message": "0/2 nodes are available: insufficient cpu"
+          }
+        ]
+      }
+    }
+  ]
+}
