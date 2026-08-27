@@ -282,3 +282,72 @@ jobs:
           path: |
             ${{ matrix.output_prefix }}-assessment.json
             ${{ matrix.output_prefix }}-calibration.json
+
+  runtime-resilience-reference:
+    name: ${{ matrix.name }} runtime resilience replay
+    runs-on: ubuntu-24.04
+    env:
+      OPENFORGE_NOW: "2026-08-27T07:00:00Z"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-resilience
+            manifest: openforge/examples/calibration/runtime-resilience-healthy.json
+            output_prefix: runtime-resilience-healthy
+            artifact: openforge-runtime-resilience-healthy-calibration
+          - name: Degraded
+            fixture: degraded-resilience
+            manifest: openforge/examples/calibration/runtime-resilience-degraded.json
+            output_prefix: runtime-resilience-degraded
+            artifact: openforge-runtime-resilience-degraded-calibration
+
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Enable recorded runtime resilience fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+
+      - name: Assess recorded storage, certificate and backup evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+
+      - name: Calibrate resilience expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+
+      - name: Runtime resilience calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
+
+      - name: Upload runtime resilience calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
