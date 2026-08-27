@@ -38,7 +38,15 @@ pub fn baseline_create(assessment: &Path, output: &Path) -> Result<()> {
 pub fn baseline_check(
     baseline_path: &Path,
     current: &Path,
+    fail_on_regression: bool,
     require_compatible: bool,
+    json: bool,
 ) -> Result<i32> {
-    baseline::check(baseline_path, current, require_compatible)
+    baseline::check(
+        baseline_path,
+        current,
+        fail_on_regression,
+        require_compatible,
+        json,
+    )
 }
