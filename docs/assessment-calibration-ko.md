@@ -105,16 +105,49 @@ Static Repository Evidence와 Trusted Execution Evidence는 별도 Contract로 �
 
 Execution은 대상 Repository의 코드를 실제 실행하기 때문에 계속 명시적 opt-in으로 유지합니다. Static Calibration에서 비활성 Execution probe를 Coverage를 높이기 위해 억지로 분류하지 않습니다.
 
-Kubernetes Runtime Rule은 실제 Cluster Evidence를 확보하기 전까지 Repository/Execution Reference와 분리합니다.
+## L3 Runtime Replay Calibration
+
+Runtime Detector는 실제 운영 Cluster에 적용하기 전에 결정론적인 회귀검증 계층이 필요합니다. `examples/runtime-fixtures/` 아래 fixture는 Kubernetes API 형태의 JSON과 제한된 `kubectl` replay shim으로 구성하며 **CI 테스트 전용 증거**입니다. Fixture PASS를 실제 Cluster 건강 상태의 증거로 사용하지 않습니다.
+
+첫 Runtime Replay Contract는 공급자와 무관한 Kubernetes Core 규칙 6개만 대상으로 합니다.
+
+- `RT-001` — Node Ready 상태
+- `RT-002` — Workload desired availability
+- `RT-003` — Workload health probe
+- `RT-004` — CPU/Memory request 및 limit
+- `RT-005` — PodDisruptionBudget coverage
+- `RT-006` — NetworkPolicy coverage
+
+`healthy-core`는 모든 규칙이 PASS하는 정상 입력이며 `degraded-core`는 NotReady node, 부족한 replica, probe/resource limit 누락, PDB/NetworkPolicy 미구성 상태를 포함합니다. 따라서 Calibration은 정상 판별뿐 아니라 실제 결함을 FAIL로 탐지하는지도 함께 검증합니다.
+
+각 fixture의 `policy.json`은 RT-001~006만 활성화합니다. Replay shim이 지원하지 않는 `kubectl` 호출은 즉시 실패하도록 만들어 RT-007 이후 Collector가 가짜 성공 증거를 받지 못하게 했습니다.
+
+Healthy fixture는 6/6 `accepted`, Classification Coverage 100%를 요구하고, Degraded fixture는 6/6 `true_finding`을 요구해 Failure Precision까지 검증합니다.
+
+Evidence 단계는 다음처럼 구분합니다.
+
+```text
+recorded API-shaped fixture
+    ↓ detector regression
+controlled test cluster
+    ↓ integration validation
+real reference cluster
+    ↓ reviewed operational evidence
+production maturity conclusion
+```
+
+Replay PASS는 “검토된 fixture를 Detector가 올바르게 해석했다”는 의미일 뿐 실제 Cluster가 동일 규칙을 통과했다는 의미는 아닙니다.
+
+향후 RT-007 이후 규칙은 metrics, RBAC/security, storage, certificate/backup, observability/GitOps, recovery처럼 외부 API 특성별로 작은 fixture group으로 추가합니다. 모든 컴포넌트를 한 synthetic cluster에 억지로 넣는 방식은 피합니다.
 
 ## Reference 추가 원칙
 
-새 Reference는 기존 프로젝트와 언어, packaging 또는 deployment layout이 실질적으로 다른 프로젝트를 우선합니다. Expectation을 작성하기 전에 실제 증거를 검토하고, 실제 Gap은 `true_finding`으로 유지하며, 진짜 Detector/Appplicability 결함이 확인될 때만 OpenForge를 수정합니다. 기존 Reference와 같은 구조를 반복하는 프로젝트보다 기존 가정을 반증할 가능성이 있는 프로젝트가 더 가치 있습니다.
+새 Reference는 기존 프로젝트와 언어, packaging 또는 deployment layout이 실질적으로 다른 프로젝트를 우선합니다. Expectation을 작성하기 전에 실제 증거를 검토하고, 실제 Gap은 `true_finding`으로 유지하며, 진짜 Detector/Applicability 결함이 확인될 때만 OpenForge를 수정합니다. 기존 Reference와 같은 구조를 반복하는 프로젝트보다 기존 가정을 반증할 가능성이 있는 프로젝트가 더 가치 있습니다.
 
 ## 규칙 개선 Loop
 
 ```text
-실제 프로젝트
+실제 프로젝트 또는 검토된 fixture
     ↓
 assessment
     ↓
