@@ -24,18 +24,23 @@ pub(crate) fn builtin(name: &str) -> Result<Policy> {
         "kubernetes-platform" => Ok(profile(
             "kubernetes-platform",
             &[
-                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "EXE-*", "RT-*",
+                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "WEB-*", "EXE-*",
+                "RT-*",
             ],
             &[],
         )),
         "oss-library" => Ok(profile(
             "oss-library",
-            &["DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "EXE-*"],
+            &[
+                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "WEB-*", "EXE-*",
+            ],
             &[],
         )),
         "repository" => Ok(profile(
             "repository",
-            &["DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "EXE-*"],
+            &[
+                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "WEB-*", "EXE-*",
+            ],
             &[],
         )),
         other => bail!(
@@ -67,6 +72,7 @@ mod tests {
     fn oss_library_excludes_runtime_by_inclusion_scope() {
         let policy = builtin("oss-library").unwrap();
         assert!(policy.profile.include_rules.contains(&"DOC-*".to_string()));
+        assert!(policy.profile.include_rules.contains(&"WEB-*".to_string()));
         assert!(!policy.profile.include_rules.contains(&"RT-*".to_string()));
     }
 
