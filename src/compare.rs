@@ -14,9 +14,18 @@ struct Assessment {
     grade: String,
     level: String,
     #[serde(default)]
+    policy: Option<AssessmentPolicy>,
+    #[serde(default)]
     categories: BTreeMap<String, Category>,
     #[serde(default)]
     findings: Vec<Finding>,
+}
+
+#[derive(Debug, Deserialize)]
+struct AssessmentPolicy {
+    profile: String,
+    #[serde(default)]
+    fingerprint: Option<String>,
 }
 
 #[derive(Debug, Deserialize)]
@@ -40,12 +49,20 @@ pub(crate) struct Comparison {
     pub(crate) after_schema: String,
     pub(crate) before_ruleset: String,
     pub(crate) after_ruleset: String,
+    pub(crate) before_policy: Option<PolicyIdentity>,
+    pub(crate) after_policy: Option<PolicyIdentity>,
     pub(crate) compatible: bool,
     pub(crate) warnings: Vec<String>,
     pub(crate) overall: OverallDelta,
     pub(crate) categories: Vec<CategoryDelta>,
     pub(crate) rules: Vec<RuleDelta>,
     pub(crate) summary: Summary,
+}
+
+#[derive(Debug, Serialize)]
+pub(crate) struct PolicyIdentity {
+    profile: String,
+    fingerprint: Option<String>,
 }
 
 #[derive(Debug, Serialize)]
@@ -100,6 +117,51 @@ fn read_assessment(path: &Path) -> Result<Assessment> {
         .with_context(|| format!("invalid assessment JSON: {}", path.display()))
 }
 
+fn policy_identity(policy: &Option<AssessmentPolicy>) -> Option<PolicyIdentity> {
+    policy.as_ref().map(|policy| PolicyIdentity {
+        profile: policy.profile.clone(),
+        fingerprint: policy.fingerprint.clone(),
+    })
+}
+
+fn add_policy_warnings(
+    before: &Option<AssessmentPolicy>,
+    after: &Option<AssessmentPolicy>,
+    warnings: &mut Vec<String>,
+) {
+    match (before, after) {
+        (None, None) => {}
+        (None, Some(after)) => warnings.push(format!(
+            "assessment policy introduced: profile={} fingerprint={}",
+            after.profile,
+            after.fingerprint.as_deref().unwrap_or("<unavailable>")
+        )),
+        (Some(before), None) => warnings.push(format!(
+            "assessment policy removed: profile={} fingerprint={}",
+            before.profile,
+            before.fingerprint.as_deref().unwrap_or("<unavailable>")
+        )),
+        (Some(before), Some(after)) => {
+            if before.profile != after.profile {
+                warnings.push(format!(
+                    "policy profile changed: {} -> {}",
+                    before.profile, after.profile
+                ));
+            }
+            match (&before.fingerprint, &after.fingerprint) {
+                (Some(left), Some(right)) if left != right => warnings.push(format!(
+                    "policy fingerprint changed: {left} -> {right}"
+                )),
+                (None, Some(_)) | (Some(_), None) => warnings.push(
+                    "policy fingerprint availability changed; policy equivalence cannot be proven"
+                        .to_string(),
+                ),
+                _ => {}
+            }
+        }
+    }
+}
+
 fn rule_map(findings: Vec<Finding>) -> BTreeMap<String, Finding> {
     findings
         .into_iter()
@@ -147,6 +209,7 @@ pub(crate) fn compare(before_path: &Path, after_path: &Path) -> Result<Compariso
             before.ruleset, after.ruleset
         ));
     }
+    add_policy_warnings(&before.policy, &after.policy, &mut warnings);
     let compatible = warnings.is_empty();
 
     let mut category_names: BTreeSet<String> = before.categories.keys().cloned().collect();
@@ -169,6 +232,8 @@ pub(crate) fn compare(before_path: &Path, after_path: &Path) -> Result<Compariso
         })
         .collect();
 
+    let before_policy = policy_identity(&before.policy);
+    let after_policy = policy_identity(&after.policy);
     let before_rules = rule_map(before.findings);
     let after_rules = rule_map(after.findings);
     let mut rule_ids: BTreeSet<String> = before_rules.keys().cloned().collect();
@@ -229,11 +294,13 @@ pub(crate) fn compare(before_path: &Path, after_path: &Path) -> Result<Compariso
     });
 
     Ok(Comparison {
-        schema: "openforge-comparison/v0.1",
+        schema: "openforge-comparison/v0.2",
         before_schema: before.schema,
         after_schema: after.schema,
         before_ruleset: before.ruleset,
         after_ruleset: after.ruleset,
+        before_policy,
+        after_policy,
         compatible,
         warnings,
         overall: OverallDelta {
@@ -318,7 +385,7 @@ pub(crate) fn print_text(comparison: &Comparison) {
 
 #[cfg(test)]
 mod tests {
-    use super::{Finding, classify};
+    use super::{AssessmentPolicy, Finding, add_policy_warnings, classify};
 
     fn finding(status: &str, score: f64) -> Finding {
         Finding {
@@ -344,5 +411,21 @@ mod tests {
         assert_eq!(classify(None, Some(&pass)), "ADDED");
         assert_eq!(classify(Some(&pass), None), "REMOVED");
         assert_eq!(classify(Some(&pass), Some(&pass)), "UNCHANGED");
+    }
+
+    #[test]
+    fn warns_when_policy_fingerprint_changes() {
+        let before = Some(AssessmentPolicy {
+            profile: "platform".to_string(),
+            fingerprint: Some("fnv1a64:aaa".to_string()),
+        });
+        let after = Some(AssessmentPolicy {
+            profile: "platform".to_string(),
+            fingerprint: Some("fnv1a64:bbb".to_string()),
+        });
+        let mut warnings = Vec::new();
+        add_policy_warnings(&before, &after, &mut warnings);
+        assert_eq!(warnings.len(), 1);
+        assert!(warnings[0].contains("policy fingerprint changed"));
     }
 }
