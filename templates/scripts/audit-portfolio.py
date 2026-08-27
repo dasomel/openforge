@@ -419,22 +419,32 @@ IGNORED_DIRS = {
 # Helper functions for portable config loading (PyYAML + Stdlib fallback)
 # ==============================================================================
 
-def load_yaml_safe(content: str) -> Dict[str, Any]:
-    try:
-        import yaml
-        return yaml.safe_load(content) or {}
-    except ImportError:
-        pass
+def load_yaml_safe(content: str, force_fallback: bool = False) -> Dict[str, Any]:
+    if not force_fallback:
+        try:
+            import yaml
+            return yaml.safe_load(content) or {}
+        except ImportError:
+            pass
 
-    # Lightweight stdlib YAML parser for basic key-value / lists
+    # Restricted, zero-dependency subset YAML parser for OpenForge portfolio configs
+    # Explicitly rejects complex YAML features (anchors, aliases, multiline scalars, tabs)
     data: Dict[str, Any] = {"repositories": []}
     current_repo: Optional[Dict[str, Any]] = None
     in_repos = False
 
-    for line in content.splitlines():
+    for idx, line in enumerate(content.splitlines(), 1):
+        if "\t" in line:
+            raise ValueError(f"Malformed YAML on line {idx}: tabs are not permitted for indentation")
+
         trimmed = line.strip()
         if not trimmed or trimmed.startswith("#"):
             continue
+
+        # Reject unsupported advanced YAML constructs
+        if any(unsupported in trimmed for unsupported in ["&", "*", "|", ">", "<<:"]):
+            raise ValueError(f"Unsupported YAML construct on line {idx}: '{trimmed}'. OpenForge portfolio parser supports standard key-value scalars and lists.")
+
         if line.startswith("version:"):
             data["version"] = trimmed.split(":", 1)[1].strip().strip('"\'')
         elif line.startswith("workspaceRoot:"):
@@ -454,6 +464,10 @@ def load_yaml_safe(content: str) -> Dict[str, Any]:
                 if ":" in trimmed:
                     k, v = trimmed.split(":", 1)
                     current_repo[k.strip()] = _parse_val(v.strip())
+                else:
+                    raise ValueError(f"Malformed YAML on line {idx}: expected key-value mapping under repository entry")
+            else:
+                raise ValueError(f"Malformed YAML indentation on line {idx}: '{line}'")
 
     if current_repo:
         data["repositories"].append(current_repo)
@@ -1144,6 +1158,11 @@ def run_portfolio_audit(portfolio: List[Dict[str, Any]], workspace_root: Path) -
 
 
 def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> Dict[str, Any]:
+    curr_v = current.get("metricSetVersion", "unknown")
+    base_v = baseline.get("metricSetVersion", "unknown")
+    is_compatible = curr_v == base_v
+    warning = None if is_compatible else f"Metric set versions differ: current '{curr_v}' vs baseline '{base_v}'. Score deltas may reflect changed metric definitions."
+
     prev_overall = baseline.get("overallScore", 0.0)
     curr_overall = current.get("overallScore", 0.0)
     delta_overall = round(curr_overall - prev_overall, 1)
@@ -1206,6 +1225,8 @@ def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> 
         })
 
     return {
+        "metricSetVersionStatus": "compatible" if is_compatible else "incompatible",
+        "warning": warning,
         "portfolio": {
             "previous": prev_overall,
             "current": curr_overall,
