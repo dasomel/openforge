@@ -37,6 +37,12 @@ jobs:
             exit 1
           fi
 
+      - name: Verify agent engineering contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          bash templates/scripts/verify-agent-contract.sh
+
       - name: Verify supply-chain baseline contracts
         shell: bash
         run: |
