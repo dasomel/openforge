@@ -70,10 +70,7 @@ fn coverage_finding(
     let coverage = covered as f64 / total as f64;
     evidence.insert(
         0,
-        format!(
-            "coverage={:.1}% ({covered}/{total})",
-            coverage * 100.0
-        ),
+        format!("coverage={:.1}% ({covered}/{total})", coverage * 100.0),
     );
 
     Finding {
@@ -375,7 +372,9 @@ fn selector_matches(selector: &Value, workload_labels: &Map<String, Value>) -> b
 
                 match operator {
                     "In" => actual.is_some_and(|actual| values.iter().any(|value| value == actual)),
-                    "NotIn" => actual.is_some_and(|actual| values.iter().all(|value| value != actual)),
+                    "NotIn" => {
+                        actual.is_some_and(|actual| values.iter().all(|value| value != actual))
+                    }
                     "Exists" => actual.is_some(),
                     "DoesNotExist" => actual.is_none(),
                     _ => false,
@@ -384,10 +383,7 @@ fn selector_matches(selector: &Value, workload_labels: &Map<String, Value>) -> b
         })
 }
 
-fn workload_items(
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Result<Vec<Value>, String> {
+fn workload_items(context: Option<&str>, namespace: Option<&str>) -> Result<Vec<Value>, String> {
     let value = kubectl_json(
         context,
         namespace,
