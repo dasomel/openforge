@@ -1,5 +1,7 @@
 # ADR-0001: Record cross-project decisions as ADRs
 
+English | [한국어](0001-record-cross-project-decisions-ko.md)
+
 - Status: Accepted
 - Date: 2026-08-27
 
