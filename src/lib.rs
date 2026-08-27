@@ -24,6 +24,7 @@ mod runtime_targets;
 pub(crate) use assessment::Finding;
 
 use anyhow::{Context, Result};
+use serde_json::json;
 use std::{fs, path::Path};
 
 pub fn compare_files(
@@ -71,4 +72,36 @@ pub fn baseline_check(
         require_compatible,
         json,
     )
+}
+
+pub fn resolve_profile_policy_json(
+    profile_name: &str,
+    override_policy_path: Option<&Path>,
+) -> Result<String> {
+    let base = profiles::builtin(profile_name)?;
+    let resolved = match override_policy_path {
+        Some(path) => profiles::overlay(base, policy::load(path)?),
+        None => base,
+    };
+
+    let waivers: Vec<_> = resolved
+        .waivers
+        .iter()
+        .map(|waiver| {
+            json!({
+                "rule_id": waiver.rule_id,
+                "reason": waiver.reason,
+                "expires": waiver.expires,
+            })
+        })
+        .collect();
+
+    Ok(serde_json::to_string_pretty(&json!({
+        "profile": {
+            "name": resolved.profile.name,
+            "include_rules": resolved.profile.include_rules,
+            "exclude_rules": resolved.profile.exclude_rules,
+        },
+        "waivers": waivers,
+    }))?)
 }
