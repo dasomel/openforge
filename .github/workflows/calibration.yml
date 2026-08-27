@@ -23,6 +23,7 @@ jobs:
         include:
           - name: Narwhal
             repository: dasomel/narwhal
+            ref: 5e7dd392d8fe443681d6363028e9069c070ad1c9
             checkout_path: reference
             profile: kubernetes-platform
             manifest: openforge/examples/calibration/narwhal.json
@@ -30,6 +31,7 @@ jobs:
             output_prefix: narwhal
           - name: NFS Quota Agent
             repository: dasomel/nfs-quota-agent
+            ref: 2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c
             checkout_path: reference
             profile: kubernetes-platform
             manifest: openforge/examples/calibration/nfs-quota-agent.json
@@ -46,6 +48,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: ${{ matrix.repository }}
+          ref: ${{ matrix.ref }}
           path: ${{ matrix.checkout_path }}
 
       - name: Install Rust
@@ -98,6 +101,7 @@ jobs:
         uses: actions/checkout@v4
         with:
           repository: dasomel/nfs-quota-agent
+          ref: 2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c
           path: reference
 
       - name: Install Rust
