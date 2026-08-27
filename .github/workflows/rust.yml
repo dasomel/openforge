@@ -6,6 +6,7 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'src/**'
+      - 'tests/**'
       - 'rules/**'
       - '.github/workflows/rust.yml'
       - '.github/workflows/release-rust.yml'
@@ -15,6 +16,7 @@ on:
       - 'Cargo.toml'
       - 'Cargo.lock'
       - 'src/**'
+      - 'tests/**'
       - 'rules/**'
 
 permissions:
@@ -32,9 +34,9 @@ jobs:
       - run: cargo clippy --all-targets --all-features -- -D warnings
       - run: cargo test --all-targets --all-features
       - name: Static self-assessment
-        run: cargo run -- . --format json --fail-under 1
+        run: cargo run --bin openforge -- . --format json --fail-under 1
       - name: L2 execution self-assessment
-        run: cargo run -- . --run-execution --format json --fail-under 1
+        run: cargo run --bin openforge -- . --run-execution --format json --fail-under 1
 
   native-build:
     strategy:
