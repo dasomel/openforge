@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, localization`
 
-## Current Score: `53.0%` (Foundation work required)
+## Current Score: `88.2%` (Healthy / minor gaps)
 - **Repository:** `dasomel/kubemetal`
 - **Area:** `Localization`
 

@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, ci`
 
-## Current Score: `40.3%` (Foundation work required)
+## Current Score: `87.9%` (Healthy / minor gaps)
 - **Repository:** `dasomel/egovframe-launcher`
 - **Area:** `CI`
 

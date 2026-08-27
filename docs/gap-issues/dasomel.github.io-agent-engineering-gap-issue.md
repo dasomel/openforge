@@ -2,7 +2,7 @@
 
 **Labels:** `openforge, compliance, engineering, agent-engineering`
 
-## Current Score: `48.5%` (Foundation work required)
+## Current Score: `89.7%` (Healthy / minor gaps)
 - **Repository:** `dasomel/dasomel.github.io`
 - **Area:** `Agent Engineering`
 
