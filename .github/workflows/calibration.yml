@@ -1,0 +1,70 @@
+name: Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/**"
+      - "rules/**"
+      - "examples/calibration/**"
+      - ".github/workflows/calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  narwhal-static:
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Checkout Narwhal
+        uses: actions/checkout@v4
+        with:
+          repository: dasomel/narwhal
+          path: narwhal
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --locked --bin openforge
+
+      - name: Assess Narwhal repository evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./narwhal \
+            --profile kubernetes-platform \
+            --format json \
+            --output narwhal-assessment.json
+
+      - name: Calibrate known Narwhal expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            narwhal-assessment.json \
+            openforge/examples/calibration/narwhal.json \
+            --format json \
+            --output narwhal-calibration.json
+
+      - name: Calibration summary
+        run: |
+          python3 - <<'PY'
+          import json
+          report = json.load(open('narwhal-calibration.json'))
+          summary = report['summary']
+          print(f"classified={summary['classified_rules']}/{summary['assessed_rules']}")
+          print(f"coverage={summary['classification_coverage_percent']:.1f}%")
+          print(f"false_positives={summary['false_positives']}")
+          print(f"true_findings={summary['true_findings']}")
+          PY
+
+      - name: Upload calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: narwhal-openforge-calibration
+          path: |
+            narwhal-assessment.json
+            narwhal-calibration.json
