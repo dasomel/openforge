@@ -3,7 +3,11 @@ use chrono::{DateTime, Utc};
 use serde_json::Value;
 use std::process::Command;
 
-fn kubectl_json(context: Option<&str>, namespace: Option<&str>, args: &[&str]) -> Result<Value, String> {
+fn kubectl_json(
+    context: Option<&str>,
+    namespace: Option<&str>,
+    args: &[&str],
+) -> Result<Value, String> {
     let mut command = Command::new("kubectl");
     if let Some(context) = context {
         command.arg("--context").arg(context);
@@ -68,18 +72,16 @@ fn certificate_findings(value: &Value, now: DateTime<Utc>) -> (usize, Vec<String
         let remaining = expiry.with_timezone(&Utc) - now;
         let days = remaining.num_days();
         if days < 30 {
-            risky.push(format!("{namespace}/{name} expires_in_days={days} notAfter={not_after}"));
+            risky.push(format!(
+                "{namespace}/{name} expires_in_days={days} notAfter={not_after}"
+            ));
         }
     }
 
     (total, risky)
 }
 
-pub(crate) fn finding(
-    enabled: bool,
-    context: Option<&str>,
-    namespace: Option<&str>,
-) -> Finding {
+pub(crate) fn finding(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Finding {
     if !enabled {
         return skipped("runtime assessment disabled; use --runtime".to_string());
     }
@@ -91,7 +93,9 @@ pub(crate) fn finding(
 
     let (total, risky) = certificate_findings(&value, Utc::now());
     if total == 0 {
-        return skipped("no cert-manager Certificate resources with status.notAfter found".to_string());
+        return skipped(
+            "no cert-manager Certificate resources with status.notAfter found".to_string(),
+        );
     }
 
     Finding {
