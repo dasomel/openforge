@@ -16,7 +16,7 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          legacy=$(find . -type f \( -name '*_ko.md' -o -name '*.ko.md' \) -not -path './.git/*' || true)
+          legacy=$(find . -type f \( -name '*_ko.md' -o -name '*.ko.md' \) -not -path './.git/*' -not -path './tests/fixtures/*' || true)
           if [ -n "$legacy" ]; then
             echo 'Legacy Korean Markdown names detected:'
             echo "$legacy"

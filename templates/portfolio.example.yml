@@ -1,0 +1,146 @@
+version: openforge-portfolio/v1
+workspaceRoot: "../.."
+
+# OpenForge Portfolio Configuration Baseline
+# Defines the list of active repositories evaluated by the compliance audit engine.
+
+repositories:
+  - id: openforge
+    repository: dasomel/openforge
+    path: openforge
+    category: Standards & Blueprints
+    archetype: Developer Tool
+    profile: documentation
+    ui: false
+    container: false
+    env: false
+
+  - id: narwhal
+    repository: dasomel/narwhal
+    path: idp/narwhal
+    category: Internal Developer Platform
+    archetype: Platform Portal
+    profile: platform
+    ui: false
+    container: true
+    env: true
+
+  - id: narwhal-portal
+    repository: dasomel/narwhal-portal
+    path: idp/narwhal-portal
+    category: Internal Developer Platform
+    archetype: Platform Portal
+    profile: desktop
+    ui: true
+    container: true
+    env: true
+
+  - id: clusterdeck
+    repository: dasomel/clusterdeck
+    path: clusterdeck
+    category: Kubernetes Operations
+    archetype: Operations Dashboard
+    profile: desktop
+    ui: true
+    container: false
+    env: true
+
+  - id: kubemetal
+    repository: dasomel/kubemetal
+    path: kubemetal
+    category: Apple Silicon Hybrid MLOps
+    archetype: Desktop Operator
+    profile: desktop
+    ui: true
+    container: false
+    env: true
+
+  - id: nfs-quota-agent
+    repository: dasomel/nfs-quota-agent
+    path: nfs-quota-agent
+    category: Storage & Kubernetes Controllers
+    archetype: Developer Tool
+    profile: controller
+    ui: false
+    container: true
+    env: true
+
+  - id: beluga
+    repository: dasomel/beluga
+    path: beluga
+    category: Data Platform IaC
+    archetype: Data Control Plane
+    profile: platform
+    ui: false
+    container: false
+    env: true
+
+  - id: beluga-manager
+    repository: dasomel/beluga-manager
+    path: beluga-manager
+    category: Data Platform Management
+    archetype: Data Control Plane
+    profile: standard
+    ui: true
+    container: false
+    env: true
+
+  - id: ldapium
+    repository: dasomel/ldapium
+    path: ldapium
+    category: Identity & Directory Service
+    archetype: Admin Console
+    profile: standard
+    ui: true
+    container: true
+    env: true
+
+  - id: kube-ready-box
+    repository: dasomel/kube-ready-box
+    path: kube-ready-box
+    category: OS & VM Infrastructure
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: false
+
+  - id: cka-lab
+    repository: dasomel/cka-lab
+    path: cka-lab
+    category: Certification & Lab Simulator
+    archetype: Developer Tool
+    profile: lab
+    ui: false
+    container: false
+    env: false
+
+  - id: dasomel.github.io
+    repository: dasomel/dasomel.github.io
+    path: dasomel.github.io
+    category: Community Tech Blog
+    archetype: Platform Portal
+    profile: documentation
+    ui: true
+    container: false
+    env: true
+
+  - id: kairos
+    repository: dasomel/kairos
+    path: kairos
+    category: Automated Trading Bot
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: true
+
+  - id: egovframe-launcher
+    repository: dasomel/egovframe-launcher
+    path: ../21.egov/egovframe-launcher
+    category: eGovFrame Developer Tooling
+    archetype: Developer Tool
+    profile: standard
+    ui: true
+    container: false
+    env: false

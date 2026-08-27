@@ -27,13 +27,14 @@ main
 
 ### Check Definitions
 
-| Status Check Context | Workflow / Tool | Scope | Criticality |
+| Status Check Context | Workflow Job / Tool | Scope | Criticality |
 |---|---|---|---|
 | `markdown` | `.github/workflows/markdown.yml` | Validates `-ko.md` naming convention and root bilingual pairings | High |
-| `repository-check` | `.github/workflows/ci.yml` | Validates mandatory OSS files (`README.md`, `LICENSE`, `SECURITY.md`, etc.) | Critical |
-| `Validate ADR decision history` | `templates/scripts/validate-adrs.sh` | Enforces ADR pair consistency, status, date, and index synchronization | Critical for ADR repos |
-| `Verify supply-chain baseline` | `templates/scripts/verify-supply-chain.sh` | Enforces dependency intake policy, immutable action SHA pins | Critical |
-| `test` / `build` | Project CI workflows | Unit tests, static analysis, artifact build validation | Critical |
+| `repository-check` | `.github/workflows/ci.yml` (`repository-check`) | Validates mandatory OSS files (`README.md`, `LICENSE`, `SECURITY.md`, etc.) | Critical |
+| `adr-validation` | `.github/workflows/ci.yml` (`adr-validation`) | Enforces ADR pair consistency, status, date, and index synchronization | Critical for ADR repos |
+| `supply-chain` | `.github/workflows/ci.yml` (`supply-chain`) | Enforces dependency intake policy, immutable action SHA pins | Critical |
+| `compliance-tests` | `.github/workflows/ci.yml` (`compliance-tests`) | Unit tests and smoke tests for the compliance engine | Critical |
+| `test` / `build` | Project-specific CI workflows | Unit tests, static analysis, artifact build validation | Critical |
 
 ## 3. Governance Models by Project Tier
 
@@ -57,28 +58,14 @@ In alignment with [ADR-0003 (Risk-Based OSS Security Governance)](adr/0003-risk-
 
 ## 4. Verification and Enforcement via `gh` CLI
 
-OpenForge provides a verification script (`templates/scripts/check-branch-protection.sh`) to audit branch protection status via the GitHub CLI:
+OpenForge provides planning and verification scripts (`templates/scripts/plan-branch-protection.sh`, `check-branch-protection.sh`) to audit and safely apply branch protection status via the GitHub CLI:
 
 ```bash
-# Check branch protection status
-bash templates/scripts/check-branch-protection.sh dasomel/openforge
+# Dry-run plan: inspect active check runs and verify readiness
+bash templates/scripts/plan-branch-protection.sh dasomel/openforge main
 
 # Apply OpenForge baseline protection rule (requires admin repository permissions)
-gh api -X PUT "repos/dasomel/openforge/branches/main/protection" \
-  --input - <<'EOF'
-{
-  "required_status_checks": {
-    "strict": true,
-    "contexts": [
-      "markdown",
-      "repository-check"
-    ]
-  },
-  "enforce_admins": false,
-  "required_pull_request_reviews": null,
-  "restrictions": null
-}
-EOF
+bash templates/scripts/plan-branch-protection.sh dasomel/openforge main --apply
 ```
 
 ## 5. Traceability

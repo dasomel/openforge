@@ -32,17 +32,49 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if find . -type f -name '*_ko.md' -o -type f -name '*.ko.md' | grep -q .; then
+          if find . -type f \( -name '*_ko.md' -o -name '*.ko.md' \) -not -path './.git/*' -not -path './tests/fixtures/*' | grep -q .; then
             echo 'Legacy Korean Markdown filename detected. Use <name>-ko.md.'
             exit 1
           fi
 
+  adr-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
       - name: Validate ADR decision history
         shell: bash
         run: bash templates/scripts/validate-adrs.sh
+
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Verify supply-chain baseline contracts
         shell: bash
         run: |
           set -euo pipefail
           bash templates/scripts/verify-supply-chain.sh
+
+  compliance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Run compliance audit engine unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -v
+
+      - name: Smoke test portfolio audit CLI with fixture config
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only

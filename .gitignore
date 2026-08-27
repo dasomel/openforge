@@ -22,3 +22,5 @@ node_modules/
 # Temporary files
 tmp/
 temp/
+__pycache__/
+*.pyc

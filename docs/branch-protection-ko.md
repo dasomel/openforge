@@ -27,13 +27,14 @@ main
 
 ### 필수 상태 검사 항목
 
-| 상태 검사 컨텍스트 | 워크플로 / 도구 | 범위 | 중요도 |
+| 상태 검사 컨텍스트 | 워크플로 Job / 도구 | 범위 | 중요도 |
 |---|---|---|---|
 | `markdown` | `.github/workflows/markdown.yml` | `-ko.md` 파일명 규칙 및 루트 영한 문서 쌍 검증 | 높음 |
-| `repository-check` | `.github/workflows/ci.yml` | 필수 파일(`README.md`, `LICENSE`, `SECURITY.md` 등) 검증 | 필수 (Critical) |
-| `Validate ADR decision history` | `templates/scripts/validate-adrs.sh` | ADR 영한 쌍, Status, Date, 색인 동기화 검증 | ADR 저장소 필수 |
-| `Verify supply-chain baseline` | `templates/scripts/verify-supply-chain.sh` | 의존성 정책, Action 불변 커밋 SHA 고정 검증 | 필수 (Critical) |
-| `test` / `build` | 프로젝트 CI 워크플로 | 단위 테스트, 정적 분석, 빌드 성공 검증 | 필수 (Critical) |
+| `repository-check` | `.github/workflows/ci.yml` (`repository-check`) | 필수 파일(`README.md`, `LICENSE`, `SECURITY.md` 등) 검증 | 필수 (Critical) |
+| `adr-validation` | `.github/workflows/ci.yml` (`adr-validation`) | ADR 영한 쌍, Status, Date, 색인 동기화 검증 | ADR 저장소 필수 |
+| `supply-chain` | `.github/workflows/ci.yml` (`supply-chain`) | 의존성 정책, Action 불변 커밋 SHA 고정 검증 | 필수 (Critical) |
+| `compliance-tests` | `.github/workflows/ci.yml` (`compliance-tests`) | 컴플라이언스 감사 엔진 단위/스모크 테스트 | 필수 (Critical) |
+| `test` / `build` | 프로젝트별 CI 워크플로 | 단위 테스트, 정적 분석, 빌드 성공 검증 | 필수 (Critical) |
 
 ## 3. 프로젝트 계층별 거버넌스 모델
 
@@ -57,28 +58,14 @@ main
 
 ## 4. `gh` CLI를 통한 검증 및 설정
 
-OpenForge는 GitHub CLI를 통해 Branch Protection 상태를 확인하는 스크립트(`templates/scripts/check-branch-protection.sh`)를 제공합니다.
+OpenForge는 GitHub CLI를 통해 Branch Protection 상태를 계획하고 안전하게 적용하는 스크립트(`templates/scripts/plan-branch-protection.sh`, `check-branch-protection.sh`)를 제공합니다.
 
 ```bash
-# Branch Protection 상태 확인
-bash templates/scripts/check-branch-protection.sh dasomel/openforge
+# Dry-run 계획: 활성 CI 검사 컨텍스트 확인
+bash templates/scripts/plan-branch-protection.sh dasomel/openforge main
 
 # OpenForge 베이스라인 보호 규칙 적용 (관리자 권한 필요)
-gh api -X PUT "repos/dasomel/openforge/branches/main/protection" \
-  --input - <<'EOF'
-{
-  "required_status_checks": {
-    "strict": true,
-    "contexts": [
-      "markdown",
-      "repository-check"
-    ]
-  },
-  "enforce_admins": false,
-  "required_pull_request_reviews": null,
-  "restrictions": null
-}
-EOF
+bash templates/scripts/plan-branch-protection.sh dasomel/openforge main --apply
 ```
 
 ## 5. 추적성 및 연결 문서
