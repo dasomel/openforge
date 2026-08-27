@@ -88,19 +88,56 @@ pub(crate) fn findings(root: &Path) -> Vec<Finding> {
     let files = source_files(root);
     if !has_image_usage(&files) {
         return vec![
-            skipped("WEB-001", "Images use lazy loading", "no image usage detected"),
-            skipped("WEB-002", "Images declare dimensions", "no image usage detected"),
-            skipped("WEB-003", "Responsive image strategy is present", "no image usage detected"),
-            skipped("WEB-004", "Modern image formats are referenced", "no image usage detected"),
-            skipped("WEB-005", "Image optimization or CDN path is present", "no image usage detected"),
-            skipped("WEB-006", "External image origins are constrained", "no image usage detected"),
+            skipped(
+                "WEB-001",
+                "Images use lazy loading",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-002",
+                "Images declare dimensions",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-003",
+                "Responsive image strategy is present",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-004",
+                "Modern image formats are referenced",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-005",
+                "Image optimization or CDN path is present",
+                "no image usage detected",
+            ),
+            skipped(
+                "WEB-006",
+                "External image origins are constrained",
+                "no image usage detected",
+            ),
         ];
     }
 
-    let lazy = evidence_for(&files, &["loading=\"lazy\"", "loading='lazy'", "loading={\"lazy\"}"]);
+    let lazy = evidence_for(
+        &files,
+        &["loading=\"lazy\"", "loading='lazy'", "loading={\"lazy\"}"],
+    );
     let dimensions = evidence_for(&files, &[" width=", " width={", " height=", " height={"]);
     let responsive = evidence_for(&files, &["srcset=", "sizes=", "<picture", "next/image"]);
-    let modern = evidence_for(&files, &[".webp", ".avif", "output=webp", "output=avif", "format=webp", "format=avif"]);
+    let modern = evidence_for(
+        &files,
+        &[
+            ".webp",
+            ".avif",
+            "output=webp",
+            "output=avif",
+            "format=webp",
+            "format=avif",
+        ],
+    );
     let optimization = evidence_for(
         &files,
         &[
