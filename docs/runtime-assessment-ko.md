@@ -23,6 +23,7 @@ L3 v0.3은 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfi
 | RT-004 | Runtime Operations | workload container CPU/memory requests/limits 존재 여부 |
 | RT-005 | Runtime Reliability | 복제 workload 대비 PodDisruptionBudget selector coverage |
 | RT-006 | Runtime Security | workload 대비 NetworkPolicy podSelector coverage |
+| RT-007 | Runtime Compatibility | API server에서 실제 요청된 deprecated API metric |
 
 `--namespace`를 지정하지 않으면 namespaced workload 진단은 전체 namespace를 대상으로 합니다. Node 진단은 항상 cluster scope입니다.
 
@@ -48,6 +49,17 @@ PDB coverage의 기본 대상은 replicas가 2개 이상인 Deployment/StatefulS
 
 Selector 비교는 Kubernetes의 `matchLabels`와 `matchExpressions` (`In`, `NotIn`, `Exists`, `DoesNotExist`)를 지원합니다.
 
+## Deprecated API 사용 진단
+
+RT-007은 manifest에서 deprecated 문자열을 검색하지 않습니다. API server의 `/metrics`에서 `apiserver_requested_deprecated_apis`를 읽고 실제 요청 이력이 있는 API만 FAIL evidence로 기록합니다.
+
+```text
+RT-007 No deprecated Kubernetes APIs are actively requested
+apiserver_requested_deprecated_apis{group="...",version="...",resource="...",removed_release="..."}
+```
+
+API server metrics를 읽을 권한이 없거나 해당 endpoint에 접근할 수 없으면 점수를 임의로 낮추지 않고 `SKIP` 처리합니다.
+
 ## Evidence 원칙
 
 - Kubernetes API에서 읽은 관측 결과만 사용합니다.
@@ -61,4 +73,6 @@ Selector 비교는 Kubernetes의 `matchLabels`와 `matchExpressions` (`In`, `Not
 
 현재 NetworkPolicy coverage는 selector가 workload pod template labels를 선택하는지 평가합니다. ingress/egress 규칙의 실제 허용 범위나 CNI datapath enforcement까지 검증하는 것은 아닙니다.
 
-RBAC privilege 분석, deprecated API discovery, backup/restore verification, certificate expiry, GitOps drift, observability health는 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
+RT-007은 API server 프로세스가 노출하는 deprecated API 요청 metric을 기준으로 하므로, API server 재시작 이후의 관측 상태에 영향을 받을 수 있습니다.
+
+RBAC privilege 분석, backup/restore verification, certificate expiry, GitOps drift, observability health는 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
