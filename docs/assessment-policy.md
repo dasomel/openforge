@@ -44,11 +44,28 @@ A waiver requires a rule ID, a non-empty reason, and an ISO date (`YYYY-MM-DD`) 
 }
 ```
 
-A valid waiver changes the finding status to `WAIVED`. The finding and evidence remain visible, but the rule is excluded from scoring.
+A valid waiver changes a failing finding status to `WAIVED`. The finding and evidence remain visible, but the rule is excluded from scoring. Waivers are only applied to `FAIL` findings; they never remove credit for a `PASS` finding.
 
 Expired waivers are automatically ignored. Invalid expiry dates and empty reasons are also ignored. In each case OpenForge preserves an evidence message explaining why the waiver was not applied.
 
 A waiver does not turn a failure into a pass. It documents a temporary accepted exception.
+
+## Policy identity and fingerprint
+
+When a policy is used, the report includes both the profile name and a deterministic policy fingerprint:
+
+```json
+{
+  "policy": {
+    "profile": "kubernetes-platform",
+    "fingerprint": "fnv1a64:..."
+  }
+}
+```
+
+The fingerprint is intended for change detection, not cryptographic verification. OpenForge canonicalizes the include/exclude rule lists and waiver entries before fingerprinting, so reordering equivalent entries does not create a false policy change.
+
+`openforge compare` checks policy identity in addition to assessment schema and ruleset. It emits compatibility warnings when a policy is introduced, removed, the profile changes, or the fingerprint changes. This prevents a score change caused by applicability or waiver changes from being mistaken for a platform improvement or regression.
 
 ## Scoring semantics
 
@@ -60,7 +77,7 @@ Only `PASS` and `FAIL` findings contribute to score calculation.
 - `NOT_APPLICABLE`: explicitly excluded by profile; excluded from scoring.
 - `WAIVED`: explicit, unexpired exception; excluded from scoring.
 
-The report includes a policy summary with the profile name and counts of excluded, waived, expired, and invalid waiver entries.
+The report includes a policy summary with the profile name, fingerprint, and counts of excluded, waived, expired, and invalid waiver entries.
 
 ## CI guidance
 
@@ -79,4 +96,4 @@ openforge . \
 openforge compare baseline.json current.json --fail-on-regression
 ```
 
-When comparing assessments, keep the same policy whenever possible. A later comparison enhancement can record policy identity directly in compatibility checks.
+For the cleanest trend signal, compare assessments generated with the same ruleset and the same policy fingerprint.
