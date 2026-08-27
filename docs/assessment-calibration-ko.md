@@ -109,7 +109,11 @@ Execution은 대상 Repository의 코드를 실제 실행하기 때문에 계속
 
 Runtime Detector는 실제 운영 Cluster에 적용하기 전에 결정론적인 회귀검증 계층이 필요합니다. `examples/runtime-fixtures/` 아래 fixture는 Kubernetes API 형태의 JSON과 제한된 `kubectl` replay shim으로 구성하며 **CI 테스트 전용 증거**입니다. Fixture PASS를 실제 Cluster 건강 상태의 증거로 사용하지 않습니다.
 
-첫 Runtime Replay Contract는 공급자와 무관한 Kubernetes Core 규칙 6개만 대상으로 합니다.
+하나의 synthetic cluster에 모든 공급자와 장애를 억지로 넣는 대신, Runtime Replay를 작은 evidence group으로 분리합니다.
+
+### Core: RT-001~006
+
+공급자와 무관한 Kubernetes 핵심 동작을 검증합니다.
 
 - `RT-001` — Node Ready 상태
 - `RT-002` — Workload desired availability
@@ -118,11 +122,34 @@ Runtime Detector는 실제 운영 Cluster에 적용하기 전에 결정론적인
 - `RT-005` — PodDisruptionBudget coverage
 - `RT-006` — NetworkPolicy coverage
 
-`healthy-core`는 모든 규칙이 PASS하는 정상 입력이며 `degraded-core`는 NotReady node, 부족한 replica, probe/resource limit 누락, PDB/NetworkPolicy 미구성 상태를 포함합니다. 따라서 Calibration은 정상 판별뿐 아니라 실제 결함을 FAIL로 탐지하는지도 함께 검증합니다.
+`healthy-core`는 Ready node, 정상 replica, probe/resource, PDB/NetworkPolicy coverage를 포함하고 `degraded-core`는 NotReady node, 부족한 replica, probe/resource limit 누락, PDB/NetworkPolicy 미구성 상태를 포함합니다. CI는 Healthy 6/6 `accepted`, Degraded 6/6 `true_finding`을 요구하며 Degraded 결과는 false positive 0, Coverage와 Failure Precision 100%입니다.
 
-각 fixture의 `policy.json`은 RT-001~006만 활성화합니다. Replay shim이 지원하지 않는 `kubectl` 호출은 즉시 실패하도록 만들어 RT-007 이후 Collector가 가짜 성공 증거를 받지 못하게 했습니다.
+### Compatibility / Security: RT-007~010
 
-Healthy fixture는 6/6 `accepted`, Classification Coverage 100%를 요구하고, Degraded fixture는 6/6 `true_finding`을 요구해 Failure Precision까지 검증합니다.
+별도 Runtime Security Contract에서 다음을 검증합니다.
+
+- `RT-007` — 활성 deprecated Kubernetes API request
+- `RT-008` — non-system `cluster-admin` binding
+- `RT-009` — 실제 binding된 wildcard/escalation 계열 고위험 RBAC
+- `RT-010` — 명시적으로 고위험인 Pod security 설정
+
+`healthy-security`는 활성 deprecated API metric이 없고 system-safe administration, 제한된 RBAC, 고위험 workload security 설정이 없는 상태입니다. `degraded-security`는 각 detector가 잡아야 하는 결함을 하나씩 기록합니다. CI는 Healthy 4/4 `accepted`, Degraded 4/4 `true_finding`을 검증하며 false positive 0, Coverage/Failure Precision 100%를 유지합니다.
+
+### Storage / Certificate / Backup Resilience: RT-011~013
+
+Resilience Contract는 아래 세 규칙만 활성화합니다.
+
+- `RT-011` — PVC Bound/volume 상태
+- `RT-012` — cert-manager Certificate 잔여 유효기간
+- `RT-013` — Velero Completed Backup 최신성
+
+`healthy-resilience`에는 Bound PVC, 30일 위험 구간 밖의 Certificate, 7일 freshness window 안의 Velero backup이 들어 있습니다. `degraded-resilience`에는 volume이 없는 Pending PVC, 잔여 8일 Certificate, 408시간 지난 Completed backup이 들어 있습니다. CI는 Healthy 3/3 `accepted`, Degraded 3/3 `true_finding`을 검증하며 false positive 0, Classification Coverage와 Failure Precision 100%입니다.
+
+RT-012와 RT-013은 시간에 민감합니다. 일반 Runtime Assessment는 실제 UTC 현재시각을 사용합니다. Replay CI에서는 `OPENFORGE_NOW=2026-08-27T07:00:00Z`를 설정해 기록된 인증서 만료시각과 backup timestamp를 시간이 지나도 결정론적으로 해석합니다. `OPENFORGE_NOW`는 **replay/test evidence-time override**이며, 이를 사용했다고 해서 fixture 결과가 실제 운영 Cluster의 시간 기반 증거로 바뀌는 것은 아닙니다.
+
+각 fixture의 `policy.json`은 해당 그룹의 규칙만 활성화합니다. Replay shim이 지원하지 않는 `kubectl` 호출은 fail-closed로 종료해 다른 Collector가 가짜 성공 증거를 받지 못하게 합니다. Healthy/Degraded 대칭 검증으로 Detector가 항상 PASS만 반환해도 Calibration을 통과하는 문제도 방지합니다.
+
+다음 Runtime Replay group은 `RT-014`부터 시작하며 observability, GitOps/restore, Prometheus target/Alertmanager, CSI/storage, post-restore functional verification처럼 외부 API/provider 경계에 따라 계속 작게 분리합니다.
 
 Evidence 단계는 다음처럼 구분합니다.
 
@@ -137,8 +164,6 @@ production maturity conclusion
 ```
 
 Replay PASS는 “검토된 fixture를 Detector가 올바르게 해석했다”는 의미일 뿐 실제 Cluster가 동일 규칙을 통과했다는 의미는 아닙니다.
-
-향후 RT-007 이후 규칙은 metrics, RBAC/security, storage, certificate/backup, observability/GitOps, recovery처럼 외부 API 특성별로 작은 fixture group으로 추가합니다. 모든 컴포넌트를 한 synthetic cluster에 억지로 넣는 방식은 피합니다.
 
 ## Reference 추가 원칙
 
