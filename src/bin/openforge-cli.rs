@@ -64,7 +64,9 @@ struct Passthrough {
 
 fn sibling_binary(name: &str) -> Result<PathBuf> {
     let current = env::current_exe().context("cannot resolve current executable")?;
-    let dir = current.parent().context("cannot resolve executable directory")?;
+    let dir = current
+        .parent()
+        .context("cannot resolve executable directory")?;
     let candidate = dir.join(name);
     if candidate.exists() {
         Ok(candidate)
