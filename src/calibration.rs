@@ -147,7 +147,9 @@ pub fn calibrate(assessment_path: &Path, manifest_path: &Path) -> Result<Calibra
 
     for rule_id in manifest.expectations.keys() {
         if !rules.iter().any(|rule| &rule.rule_id == rule_id) {
-            bail!("calibration manifest references rule '{rule_id}' that is absent from the assessment");
+            bail!(
+                "calibration manifest references rule '{rule_id}' that is absent from the assessment"
+            );
         }
     }
 
@@ -232,7 +234,11 @@ pub fn print_text(report: &CalibrationReport) {
 #[cfg(test)]
 mod tests {
     use super::{Classification, calibrate};
-    use std::{fs, path::PathBuf, time::{SystemTime, UNIX_EPOCH}};
+    use std::{
+        fs,
+        path::PathBuf,
+        time::{SystemTime, UNIX_EPOCH},
+    };
 
     fn temp(name: &str) -> PathBuf {
         let nonce = SystemTime::now()
@@ -261,7 +267,10 @@ mod tests {
         assert_eq!(report.summary.classified_rules, 2);
         assert_eq!(report.summary.unclassified_rules, 1);
         assert_eq!(report.summary.failure_precision_percent, Some(50.0));
-        assert_eq!(report.rules[0].classification, Some(Classification::TrueFinding));
+        assert_eq!(
+            report.rules[0].classification,
+            Some(Classification::TrueFinding)
+        );
     }
 
     #[test]
