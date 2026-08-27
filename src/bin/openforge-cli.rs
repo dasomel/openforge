@@ -1,9 +1,17 @@
 use anyhow::{Context, Result};
 use clap::{Args, Parser, Subcommand};
-use std::{env, path::PathBuf, process::{Command, ExitCode}};
+use std::{
+    env,
+    path::{Path, PathBuf},
+    process::{Command, ExitCode},
+};
 
 #[derive(Parser, Debug)]
-#[command(name = "openforge-cli", version, about = "Unified OpenForge command frontend")]
+#[command(
+    name = "openforge-cli",
+    version,
+    about = "Unified OpenForge command frontend"
+)]
 struct Cli {
     #[command(subcommand)]
     command: Commands,
@@ -12,7 +20,16 @@ struct Cli {
 #[derive(Subcommand, Debug)]
 enum Commands {
     Assess(Passthrough),
-    Compare(Passthrough),
+    Compare {
+        before: PathBuf,
+        after: PathBuf,
+        #[arg(long, default_value = "text")]
+        format: String,
+        #[arg(long)]
+        output: Option<PathBuf>,
+        #[arg(long)]
+        fail_on_regression: bool,
+    },
     Baseline {
         #[command(subcommand)]
         command: BaselineCommand,
@@ -21,8 +38,21 @@ enum Commands {
 
 #[derive(Subcommand, Debug)]
 enum BaselineCommand {
-    Create(Passthrough),
-    Check(Passthrough),
+    Create {
+        assessment: PathBuf,
+        #[arg(default_value = ".openforge/baseline.json")]
+        output: PathBuf,
+    },
+    Check {
+        baseline: PathBuf,
+        current: PathBuf,
+        #[arg(long)]
+        fail_on_regression: bool,
+        #[arg(long)]
+        require_compatible: bool,
+        #[arg(long)]
+        json: bool,
+    },
 }
 
 #[derive(Args, Debug)]
@@ -43,34 +73,49 @@ fn sibling_binary(name: &str) -> Result<PathBuf> {
     }
 }
 
-fn run_child(binary: &str, args: &[String]) -> Result<i32> {
-    let status = Command::new(sibling_binary(binary)?)
+fn run_assess(args: &[String]) -> Result<i32> {
+    let status = Command::new(sibling_binary("openforge")?)
         .args(args)
         .status()
-        .with_context(|| format!("cannot execute {binary}"))?;
+        .context("cannot execute openforge assessment engine")?;
     Ok(status.code().unwrap_or(1))
 }
 
 fn run() -> Result<i32> {
     let cli = Cli::parse();
     match cli.command {
-        Commands::Assess(input) => run_child("openforge", &input.args),
-        Commands::Compare(input) => {
-            let mut args = vec!["compare".to_string()];
-            args.extend(input.args);
-            run_child("openforge", &args)
-        }
+        Commands::Assess(input) => run_assess(&input.args),
+        Commands::Compare {
+            before,
+            after,
+            format,
+            output,
+            fail_on_regression,
+        } => openforge::compare_files(
+            &before,
+            &after,
+            &format,
+            output.as_deref(),
+            fail_on_regression,
+        ),
         Commands::Baseline { command } => match command {
-            BaselineCommand::Create(input) => {
-                let mut args = vec!["create".to_string()];
-                args.extend(input.args);
-                run_child("openforge-baseline", &args)
+            BaselineCommand::Create { assessment, output } => {
+                openforge::baseline_create(&assessment, &output)?;
+                Ok(0)
             }
-            BaselineCommand::Check(input) => {
-                let mut args = vec!["check".to_string()];
-                args.extend(input.args);
-                run_child("openforge-baseline", &args)
-            }
+            BaselineCommand::Check {
+                baseline,
+                current,
+                fail_on_regression,
+                require_compatible,
+                json,
+            } => openforge::baseline_check(
+                Path::new(&baseline),
+                Path::new(&current),
+                fail_on_regression,
+                require_compatible,
+                json,
+            ),
         },
     }
 }
