@@ -106,7 +106,9 @@ struct Rule {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Check {
-    AnyFile { patterns: Vec<String> },
+    AnyFile {
+        patterns: Vec<String>,
+    },
     Contains {
         patterns: Vec<String>,
         needles: Vec<String>,
@@ -473,11 +475,13 @@ fn run_compare(args: &[String]) -> Result<Option<i32>> {
         compare::print_text(&comparison);
     }
 
-    Ok(Some(if fail_on_regression && comparison.summary.regressed > 0 {
-        2
-    } else {
-        0
-    }))
+    Ok(Some(
+        if fail_on_regression && comparison.summary.regressed > 0 {
+            2
+        } else {
+            0
+        },
+    ))
 }
 
 fn run() -> Result<i32> {
