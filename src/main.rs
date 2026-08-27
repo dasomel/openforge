@@ -109,7 +109,10 @@ enum Command {
         format: String,
         #[arg(long)]
         output: Option<PathBuf>,
-        #[arg(long, help = "Exit with code 2 while any assessment rules remain unclassified.")]
+        #[arg(
+            long,
+            help = "Exit with code 2 while any assessment rules remain unclassified."
+        )]
         require_complete: bool,
     },
     Baseline {
