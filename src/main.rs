@@ -133,8 +133,12 @@ fn resolved_policy_path(args: &AssessArgs) -> Result<(Option<PathBuf>, bool)> {
 
     let json = openforge::resolve_profile_policy_json(profile, args.policy.as_deref())?;
     let path = env::temp_dir().join(format!("openforge-policy-{}.json", std::process::id()));
-    fs::write(&path, json)
-        .with_context(|| format!("cannot materialize resolved profile policy: {}", path.display()))?;
+    fs::write(&path, json).with_context(|| {
+        format!(
+            "cannot materialize resolved profile policy: {}",
+            path.display()
+        )
+    })?;
     Ok((Some(path), true))
 }
 
