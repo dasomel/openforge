@@ -54,10 +54,11 @@ pub(crate) fn create(assessment_path: &Path, output_path: &Path) -> Result<()> {
         assessment_schema: identity.schema,
         ruleset: identity.ruleset,
         overall: identity.overall,
-        policy_profile: identity.policy.as_ref().map(|policy| policy.profile.clone()),
-        policy_fingerprint: identity
+        policy_profile: identity
             .policy
-            .and_then(|policy| policy.fingerprint),
+            .as_ref()
+            .map(|policy| policy.profile.clone()),
+        policy_fingerprint: identity.policy.and_then(|policy| policy.fingerprint),
     };
     object.insert("_baseline".to_string(), serde_json::to_value(metadata)?);
 
@@ -67,8 +68,11 @@ pub(crate) fn create(assessment_path: &Path, output_path: &Path) -> Result<()> {
                 .with_context(|| format!("cannot create {}", parent.display()))?;
         }
     }
-    fs::write(output_path, serde_json::to_string_pretty(&Value::Object(object))?)
-        .with_context(|| format!("cannot write baseline: {}", output_path.display()))?;
+    fs::write(
+        output_path,
+        serde_json::to_string_pretty(&Value::Object(object))?,
+    )
+    .with_context(|| format!("cannot write baseline: {}", output_path.display()))?;
     Ok(())
 }
 
