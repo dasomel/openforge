@@ -66,11 +66,7 @@ fn skipped(reason: String) -> Finding {
     }
 }
 
-pub(crate) fn finding(
-    enabled: bool,
-    context: Option<&str>,
-    spec_path: Option<&Path>,
-) -> Finding {
+pub(crate) fn finding(enabled: bool, context: Option<&str>, spec_path: Option<&Path>) -> Finding {
     if !enabled {
         return skipped("runtime assessment disabled; use --runtime".to_string());
     }
@@ -143,7 +139,7 @@ pub(crate) fn finding(
 
 #[cfg(test)]
 mod tests {
-    use super::{service_proxy_path, ServiceProbe};
+    use super::{ServiceProbe, service_proxy_path};
 
     #[test]
     fn builds_namespaced_service_proxy_path() {
