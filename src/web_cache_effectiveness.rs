@@ -1,7 +1,7 @@
 use crate::Finding;
 use reqwest::{
     blocking::Client,
-    header::{HeaderMap, AGE},
+    header::{AGE, HeaderMap},
     redirect::Policy,
 };
 use std::time::Duration;
@@ -126,7 +126,11 @@ pub(crate) fn finding(url: Option<&str>) -> Finding {
 
     let client = match client() {
         Ok(client) => client,
-        Err(()) => return failed(vec!["probe_error=http_client_initialization_failed".to_string()]),
+        Err(()) => {
+            return failed(vec![
+                "probe_error=http_client_initialization_failed".to_string(),
+            ]);
+        }
     };
 
     let first = match probe(&client, url) {
@@ -177,7 +181,7 @@ fn failed(evidence: Vec<String>) -> Finding {
 
 #[cfg(test)]
 mod tests {
-    use super::{indicates_hit, text_indicates_hit, CacheSignal};
+    use super::{CacheSignal, indicates_hit, text_indicates_hit};
 
     #[test]
     fn recognizes_common_hit_headers() {
