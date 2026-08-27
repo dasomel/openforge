@@ -41,7 +41,10 @@ fn driver_names(drivers: &Value) -> BTreeSet<String> {
         .collect()
 }
 
-fn volume_attachment_health(attachments: &Value, provisioners: &BTreeSet<String>) -> (usize, Vec<String>) {
+fn volume_attachment_health(
+    attachments: &Value,
+    provisioners: &BTreeSet<String>,
+) -> (usize, Vec<String>) {
     let mut total = 0usize;
     let mut unhealthy = Vec::new();
 
