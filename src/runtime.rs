@@ -2,6 +2,8 @@ use crate::Finding;
 use serde_json::{Map, Value};
 use std::process::Command;
 
+const COVERAGE_WEIGHT: f64 = 8.0;
+
 fn kubectl_json(
     context: Option<&str>,
     namespace: Option<&str>,
@@ -54,7 +56,6 @@ fn coverage_finding(
     title: &str,
     covered: usize,
     total: usize,
-    weight: f64,
     mut evidence: Vec<String>,
     remediation: &str,
 ) -> Finding {
@@ -78,8 +79,8 @@ fn coverage_finding(
         category: category.to_string(),
         title: title.to_string(),
         status: if covered == total { "PASS" } else { "FAIL" },
-        score: (weight * coverage * 10.0).round() / 10.0,
-        weight,
+        score: (COVERAGE_WEIGHT * coverage * 10.0).round() / 10.0,
+        weight: COVERAGE_WEIGHT,
         evidence,
         remediation: remediation.to_string(),
     }
@@ -476,7 +477,6 @@ fn pdb_coverage(context: Option<&str>, namespace: Option<&str>) -> Finding {
         "PodDisruptionBudget workload coverage",
         covered,
         eligible.len(),
-        8.0,
         uncovered,
         "Add or adjust PodDisruptionBudget selectors for replicated workloads that require disruption protection.",
     )
@@ -537,7 +537,6 @@ fn network_policy_coverage(context: Option<&str>, namespace: Option<&str>) -> Fi
         "NetworkPolicy workload coverage",
         covered,
         workloads.len(),
-        8.0,
         uncovered,
         "Add or adjust NetworkPolicy pod selectors for workloads that require network isolation.",
     )
