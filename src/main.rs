@@ -1,3 +1,4 @@
+mod compare;
 mod execution;
 mod runtime;
 mod runtime_alertmanager;
@@ -21,7 +22,7 @@ use globset::{Glob, GlobSetBuilder};
 use serde::{Deserialize, Serialize};
 use std::{
     collections::BTreeMap,
-    fs,
+    env, fs,
     path::{Path, PathBuf},
     process::ExitCode,
 };
@@ -420,7 +421,71 @@ fn print_text(report: &Report) {
     }
 }
 
+fn run_compare(args: &[String]) -> Result<Option<i32>> {
+    if args.get(1).map(String::as_str) != Some("compare") {
+        return Ok(None);
+    }
+    if args.len() < 4 {
+        anyhow::bail!(
+            "usage: openforge compare <before.json> <after.json> [--format text|json] [--output <path>] [--fail-on-regression]"
+        );
+    }
+
+    let before = PathBuf::from(&args[2]);
+    let after = PathBuf::from(&args[3]);
+    let mut format = "text";
+    let mut output: Option<PathBuf> = None;
+    let mut fail_on_regression = false;
+    let mut index = 4;
+    while index < args.len() {
+        match args[index].as_str() {
+            "--format" => {
+                let value = args
+                    .get(index + 1)
+                    .context("--format requires text or json")?;
+                if value != "text" && value != "json" {
+                    anyhow::bail!("unsupported compare format: {value}");
+                }
+                format = value;
+                index += 2;
+            }
+            "--output" => {
+                let value = args.get(index + 1).context("--output requires a path")?;
+                output = Some(PathBuf::from(value));
+                index += 2;
+            }
+            "--fail-on-regression" => {
+                fail_on_regression = true;
+                index += 1;
+            }
+            option => anyhow::bail!("unknown compare option: {option}"),
+        }
+    }
+
+    let comparison = compare::compare(&before, &after)?;
+    let json = serde_json::to_string_pretty(&comparison)?;
+    if let Some(path) = output {
+        fs::write(&path, &json).with_context(|| format!("cannot write {}", path.display()))?;
+    }
+    if format == "json" {
+        println!("{json}");
+    } else {
+        compare::print_text(&comparison);
+    }
+
+    Ok(Some(if fail_on_regression && comparison.summary.regressed > 0 {
+        2
+    } else {
+        0
+    }))
+}
+
 fn run() -> Result<i32> {
+    let args: Vec<String> = env::args().collect();
+    if let Some(code) = run_compare(&args)? {
+        return Ok(code);
+    }
+
     let cli = Cli::parse();
     let root = cli
         .path
