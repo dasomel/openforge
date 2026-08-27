@@ -105,7 +105,36 @@ Static repository evidence and trusted execution evidence are separate contracts
 
 Execution remains opt-in because OpenForge is intentionally executing code from the target repository. Static calibration never classifies disabled execution probes merely to raise coverage.
 
-Kubernetes runtime rules remain outside these repository/execution references until real cluster evidence is available.
+## L3 runtime replay calibration
+
+Runtime detector development needs a deterministic layer before validation against a live production cluster. `examples/runtime-fixtures/healthy-core/` contains recorded Kubernetes API-shaped JSON plus a deliberately narrow `kubectl` replay shim. The fixture is used only by CI calibration; it is not presented as proof that a real cluster is healthy.
+
+The first runtime replay contract scopes assessment to the six provider-independent core Kubernetes rules:
+
+- `RT-001` — Ready node state
+- `RT-002` — desired workload availability
+- `RT-003` — workload health probes
+- `RT-004` — CPU/memory requests and limits
+- `RT-005` — PodDisruptionBudget coverage
+- `RT-006` — NetworkPolicy coverage
+
+`examples/runtime-fixtures/healthy-core/policy.json` excludes every other rule from this fixture contract. Unsupported `kubectl` calls fail closed in the replay shim, so later component-specific runtime collectors cannot silently receive fabricated successful evidence.
+
+`examples/calibration/runtime-core-healthy.json` then requires complete classification for only those six active rules. This creates a repeatable detector regression test without weakening the separate requirement for real-cluster evidence. Future runtime fixtures should add RT-007 and later rules in small component-specific groups (metrics, RBAC/security, storage, certificates/backup, observability/GitOps and recovery) rather than one synthetic cluster that claims to model everything.
+
+The intended evidence ladder is therefore:
+
+```text
+recorded API-shaped fixture
+    ↓ detector regression
+controlled test cluster
+    ↓ integration validation
+real reference cluster
+    ↓ reviewed operational evidence
+production maturity conclusion
+```
+
+A replay PASS means the detector correctly interpreted the reviewed fixture. It does **not** mean a live cluster passed the same rule.
 
 ## Adding another reference
 
@@ -114,7 +143,7 @@ Choose a project that differs materially in language, packaging or deployment la
 ## Rule improvement loop
 
 ```text
-real project
+real project or reviewed fixture
     ↓
 assessment
     ↓
