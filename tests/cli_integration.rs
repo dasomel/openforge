@@ -73,7 +73,7 @@ fn assess_subcommand_outputs_assessment_json() {
     );
 
     let report: Value = serde_json::from_slice(&output.stdout).expect("valid assessment JSON");
-    assert_eq!(report["schema"], "openforge-assessment/v0.19");
+    assert_eq!(report["schema"], "openforge-assessment/v0.20");
     assert!(report["overall"].as_f64().is_some());
     assert!(
         report["findings"]
@@ -93,7 +93,7 @@ fn legacy_assess_alias_remains_supported() {
     );
 
     let report: Value = serde_json::from_slice(&output.stdout).expect("valid assessment JSON");
-    assert_eq!(report["schema"], "openforge-assessment/v0.19");
+    assert_eq!(report["schema"], "openforge-assessment/v0.20");
 }
 
 #[test]

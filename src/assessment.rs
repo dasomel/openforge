@@ -1,9 +1,9 @@
 use crate::{
-    execution, policy, runtime, runtime_alertmanager, runtime_backup, runtime_certificates,
-    runtime_csi, runtime_csi_nodes, runtime_gitops, runtime_metrics, runtime_observability,
-    runtime_pod_security, runtime_post_restore, runtime_rbac, runtime_restore, runtime_scheduling,
-    runtime_stability, runtime_storage, runtime_targets, web_assets, web_cache,
-    web_cache_effectiveness, web_cache_runtime,
+    execution, policy, runtime, runtime_alertmanager, runtime_autoscaling, runtime_backup,
+    runtime_certificates, runtime_csi, runtime_csi_nodes, runtime_gitops, runtime_metrics,
+    runtime_observability, runtime_pod_security, runtime_post_restore, runtime_rbac,
+    runtime_restore, runtime_scheduling, runtime_stability, runtime_storage, runtime_targets,
+    web_assets, web_cache, web_cache_effectiveness, web_cache_runtime,
 };
 use anyhow::{Context, Result};
 use globset::{Glob, GlobSetBuilder};
@@ -329,6 +329,11 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
         options.kube_context,
         options.namespace,
     ));
+    findings.extend(runtime_autoscaling::findings(
+        options.runtime,
+        options.kube_context,
+        options.namespace,
+    ));
 
     let policy_summary = assessment_policy
         .as_ref()
@@ -337,7 +342,7 @@ pub fn assess(root: &Path, options: &AssessOptions<'_>) -> Result<Report> {
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.19",
+        schema: "openforge-assessment/v0.20",
         ruleset: rules.version,
         root: root.display().to_string(),
         execution_enabled: options.run_execution,

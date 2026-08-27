@@ -8,6 +8,7 @@ mod policy;
 mod profiles;
 mod runtime;
 mod runtime_alertmanager;
+mod runtime_autoscaling;
 mod runtime_backup;
 mod runtime_certificates;
 mod runtime_csi;

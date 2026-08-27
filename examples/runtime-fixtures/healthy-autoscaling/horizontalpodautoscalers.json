@@ -1,0 +1,19 @@
+{
+  "apiVersion": "autoscaling/v2",
+  "kind": "HorizontalPodAutoscalerList",
+  "items": [
+    {
+      "metadata": {"namespace": "apps", "name": "api"},
+      "spec": {"minReplicas": 2, "maxReplicas": 10},
+      "status": {
+        "currentReplicas": 4,
+        "desiredReplicas": 4,
+        "conditions": [
+          {"type": "AbleToScale", "status": "True", "reason": "ReadyForNewScale"},
+          {"type": "ScalingActive", "status": "True", "reason": "ValidMetricFound"},
+          {"type": "ScalingLimited", "status": "False", "reason": "DesiredWithinRange"}
+        ]
+      }
+    }
+  ]
+}

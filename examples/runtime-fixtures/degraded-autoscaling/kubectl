@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+set -euo pipefail
+
+if [[ "$*" == *"get horizontalpodautoscalers.autoscaling"* ]]; then
+  cat "$(dirname "$0")/horizontalpodautoscalers.json"
+  exit 0
+fi
+
+echo "unsupported recorded kubectl call: $*" >&2
+exit 1
