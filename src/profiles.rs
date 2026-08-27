@@ -24,16 +24,13 @@ pub(crate) fn builtin(name: &str) -> Result<Policy> {
         "kubernetes-platform" => Ok(profile(
             "kubernetes-platform",
             &[
-                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "WEB-*", "EXE-*",
-                "RT-*",
+                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "PLT-*", "WEB-*", "EXE-*", "RT-*",
             ],
             &[],
         )),
         "oss-library" => Ok(profile(
             "oss-library",
-            &[
-                "DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "WEB-*", "EXE-*",
-            ],
+            &["DOC-*", "GOV-*", "SEC-*", "CI-*", "REL-*", "WEB-*", "EXE-*"],
             &[],
         )),
         "repository" => Ok(profile(
