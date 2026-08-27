@@ -6,9 +6,57 @@
       "classification": "accepted",
       "rationale": "Narwhal has a canonical project README with purpose, architecture, installation and operational context."
     },
+    "DOC-002": {
+      "classification": "accepted",
+      "rationale": "Narwhal provides CONTRIBUTING.md with contribution guidance."
+    },
+    "DOC-003": {
+      "classification": "accepted",
+      "rationale": "Narwhal maintains CHANGELOG.md and tagged release history."
+    },
+    "GOV-001": {
+      "classification": "true_finding",
+      "rationale": "No repository Code of Conduct is currently present."
+    },
+    "GOV-002": {
+      "classification": "true_finding",
+      "rationale": "The .github directory currently contains Dependabot configuration and workflows but no ISSUE_TEMPLATE directory."
+    },
+    "GOV-003": {
+      "classification": "true_finding",
+      "rationale": "No pull request template is currently present under .github."
+    },
+    "SEC-001": {
+      "classification": "accepted",
+      "rationale": "SECURITY.md documents private vulnerability reporting, supported versions, scope and known limitations."
+    },
+    "SEC-002": {
+      "classification": "accepted",
+      "rationale": "Narwhal has .github/dependabot.yml dependency update automation."
+    },
+    "SEC-003": {
+      "classification": "true_finding",
+      "rationale": "Narwhal documents that CodeQL is not useful for its Bash/YAML codebase and workflow-level security analysis remains a roadmap item; no applicable security scan job is currently present in CI."
+    },
+    "CI-001": {
+      "classification": "accepted",
+      "rationale": "Narwhal has multiple GitHub Actions workflows."
+    },
     "CI-002": {
       "classification": "accepted",
       "rationale": "Narwhal CI runs scripts/test/regression-check-kakao.sh --static as an automated regression suite."
+    },
+    "CI-003": {
+      "classification": "accepted",
+      "rationale": "Narwhal CI runs ShellCheck, YAML validation, kubeconform and Markdown lint/static validation."
+    },
+    "REL-001": {
+      "classification": "accepted",
+      "rationale": "Narwhal has a dedicated GitHub Actions release workflow."
+    },
+    "REL-002": {
+      "classification": "accepted",
+      "rationale": "Narwhal documents version and compatibility authority through VERSIONS.md and release documentation."
     },
     "PLT-001": {
       "classification": "accepted",
