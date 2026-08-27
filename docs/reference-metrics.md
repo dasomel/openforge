@@ -20,7 +20,10 @@ These are **reference metrics, not mandatory universal thresholds**. A project m
 | Documentation | Release guide | 1 | Release-oriented repositories | `RELEASING*.md` |
 | Documentation | Version inventory | 1 for platform projects | Narwhal-style practice | `VERSIONS.md` |
 | Documentation | Lessons / mistakes log | Recommended | Narwhal / KubeMetal practice | `lessons-log*.md` / `mistakes-log*.md` |
-| Architecture | ADR process | 1 | Narwhal Portal practice | `docs/adr/` |
+| Architecture | ADR process | 1 | OpenForge / Narwhal Portal practice | `docs/adr/` |
+| Architecture | Decision management standard | Recommended for multi-project standards | OpenForge | `docs/decision-management*.md` |
+| Architecture | ADR English/Korean pairs | 100% user-facing ADRs | OpenForge | ADR CI validation |
+| Architecture | Decision map / traceability | Recommended for standards repositories | OpenForge | `docs/decision-map*.md` |
 | GitHub | PR template | 1 | ldapium / others | `.github/pull_request_template.md` |
 | GitHub | Bug template | 1 | Common project practice | `.github/ISSUE_TEMPLATE/` |
 | GitHub | Feature template | 1 | Common project practice | `.github/ISSUE_TEMPLATE/` |
@@ -30,6 +33,7 @@ These are **reference metrics, not mandatory universal thresholds**. A project m
 | CI | Test | 1 | Code repositories | workflow |
 | CI | Build | 1 | Application/library repositories | workflow |
 | CI | Documentation validation | Recommended | OpenForge standard | workflow |
+| CI | ADR pair/index validation | Recommended when ADRs are bilingual | OpenForge | `templates/scripts/validate-adrs.sh` |
 | Security | Dependency update automation | 1 | Dependabot practice | `.github/dependabot.yml` |
 | Security | Container scanning | Required when containers exist | Trivy-oriented practice | CI |
 | Security | Code scanning | Recommended | CodeQL / equivalent | CI |
@@ -75,6 +79,7 @@ The percentage is calculated only over applicable metrics.
 
 The matrix is informed by existing repositories rather than invented from scratch. Reference repositories include:
 
+- `openforge` — cross-project ADR governance, bilingual decision history, CI validation, standards/templates traceability
 - `narwhal` — platform architecture, versions, lessons, AI instructions, release/deployment documentation
 - `narwhal-portal` — ADR, roadmap, design system, AI instructions
 - `nfs-quota-agent` — bilingual documentation and development/release conventions
@@ -92,6 +97,7 @@ When bootstrapping a new OSS repository:
 3. Mark each metric `2`, `1`, `0`, or `N/A`.
 4. Create issues for all missing `0` items that apply.
 5. Record intentional deviations in an ADR.
-6. Re-run the matrix before the first stable release.
+6. For durable shared defaults, link ADR → Standard → enforcement → adoption evidence.
+7. Re-run the matrix before the first stable release.
 
 The matrix should evolve when existing projects demonstrate a better repeatable practice.

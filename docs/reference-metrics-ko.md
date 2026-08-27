@@ -20,7 +20,10 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 | Documentation | Release guide | 1 | 릴리스 중심 저장소 | `RELEASING*.md` |
 | Documentation | Version inventory | 플랫폼 프로젝트는 1 | Narwhal 사례 | `VERSIONS.md` |
 | Documentation | Lessons / mistakes log | 권장 | Narwhal / KubeMetal 사례 | `lessons-log*.md` / `mistakes-log*.md` |
-| Architecture | ADR 체계 | 1 | Narwhal Portal 사례 | `docs/adr/` |
+| Architecture | ADR 체계 | 1 | OpenForge / Narwhal Portal 사례 | `docs/adr/` |
+| Architecture | Decision Management Standard | 여러 프로젝트 공통 표준 저장소 권장 | OpenForge | `docs/decision-management*.md` |
+| Architecture | ADR 영/한 쌍 | 사용자 대상 ADR 100% | OpenForge | ADR CI validation |
+| Architecture | Decision Map / Traceability | Standards Repository 권장 | OpenForge | `docs/decision-map*.md` |
 | GitHub | PR template | 1 | ldapium 등 | `.github/pull_request_template.md` |
 | GitHub | Bug template | 1 | 일반적인 OSS 관행 | `.github/ISSUE_TEMPLATE/` |
 | GitHub | Feature template | 1 | 일반적인 OSS 관행 | `.github/ISSUE_TEMPLATE/` |
@@ -30,6 +33,7 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 | CI | Test | 1 | 코드 저장소 | workflow |
 | CI | Build | 애플리케이션/라이브러리는 1 | 코드 저장소 | workflow |
 | CI | Documentation validation | 권장 | OpenForge 표준 | workflow |
+| CI | ADR pair/index validation | Bilingual ADR 사용 시 권장 | OpenForge | `templates/scripts/validate-adrs.sh` |
 | Security | Dependency update 자동화 | 1 | Dependabot 사례 | `.github/dependabot.yml` |
 | Security | Container scanning | 컨테이너가 있으면 필수 | Trivy 계열 사례 | CI |
 | Security | Code scanning | 권장 | CodeQL / 동등 도구 | CI |
@@ -75,6 +79,7 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 
 이 매트릭스는 처음부터 임의로 만든 것이 아니라 기존 저장소의 실제 관행을 기반으로 한다.
 
+- `openforge` — Cross-project ADR Governance, 영/한 Decision History, CI Validation, Standard/Template Traceability
 - `narwhal` — 플랫폼 아키텍처, 버전, lessons, AI 지침, release/deployment 문서
 - `narwhal-portal` — ADR, roadmap, design system, AI 지침
 - `nfs-quota-agent` — 영/한 문서 및 개발/release 관행
@@ -92,6 +97,7 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 3. 각 항목을 `2`, `1`, `0`, `N/A`로 표시한다.
 4. 적용 대상 중 `0`인 항목은 issue로 등록한다.
 5. 의도적인 예외는 ADR에 기록한다.
-6. 첫 stable release 전에 다시 matrix를 실행한다.
+6. 장기적인 공통 Default는 ADR → Standard → Enforcement → Adoption Evidence로 연결한다.
+7. 첫 stable release 전에 다시 matrix를 실행한다.
 
 기존 프로젝트에서 더 나은 반복 가능한 관행이 발견되면 이 매트릭스도 함께 발전시킨다.

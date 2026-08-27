@@ -37,6 +37,10 @@ jobs:
             exit 1
           fi
 
+      - name: Validate ADR decision history
+        shell: bash
+        run: bash templates/scripts/validate-adrs.sh
+
       - name: Verify supply-chain baseline contracts
         shell: bash
         run: |
