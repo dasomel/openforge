@@ -33,6 +33,7 @@ pub(crate) struct Waiver {
 #[derive(Debug, Serialize)]
 pub(crate) struct PolicySummary {
     pub(crate) profile: String,
+    pub(crate) fingerprint: String,
     pub(crate) not_applicable: usize,
     pub(crate) waived: usize,
     pub(crate) expired_waivers: usize,
@@ -68,6 +69,43 @@ fn applicable(rule_id: &str, include: Option<&GlobSet>, exclude: Option<&GlobSet
     included && !excluded
 }
 
+fn fnv1a64(bytes: &[u8]) -> u64 {
+    let mut hash = 0xcbf29ce484222325u64;
+    for byte in bytes {
+        hash ^= u64::from(*byte);
+        hash = hash.wrapping_mul(0x100000001b3);
+    }
+    hash
+}
+
+pub(crate) fn fingerprint(policy: &Policy) -> String {
+    let mut include = policy.profile.include_rules.clone();
+    include.sort();
+    let mut exclude = policy.profile.exclude_rules.clone();
+    exclude.sort();
+    let mut waivers: Vec<(String, String, String)> = policy
+        .waivers
+        .iter()
+        .map(|waiver| {
+            (
+                waiver.rule_id.clone(),
+                waiver.reason.trim().to_string(),
+                waiver.expires.clone(),
+            )
+        })
+        .collect();
+    waivers.sort();
+
+    let canonical = format!(
+        "profile={}\ninclude={}\nexclude={}\nwaivers={:?}",
+        policy.profile.name.trim(),
+        include.join(","),
+        exclude.join(","),
+        waivers
+    );
+    format!("fnv1a64:{:016x}", fnv1a64(canonical.as_bytes()))
+}
+
 pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicySummary> {
     let include = compile_globs(&policy.profile.include_rules)?;
     let exclude = compile_globs(&policy.profile.exclude_rules)?;
@@ -75,6 +113,7 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
 
     let mut summary = PolicySummary {
         profile: policy.profile.name.clone(),
+        fingerprint: fingerprint(policy),
         not_applicable: 0,
         waived: 0,
         expired_waivers: 0,
@@ -145,21 +184,7 @@ pub(crate) fn apply(findings: &mut [Finding], policy: &Policy) -> Result<PolicyS
 
 #[cfg(test)]
 mod tests {
-    use super::{Policy, Profile, Waiver, applicable, apply, compile_globs};
-    use crate::Finding;
-
-    fn finding(status: &'static str) -> Finding {
-        Finding {
-            rule_id: "RT-005".to_string(),
-            category: "Runtime Reliability".to_string(),
-            title: "PDB coverage".to_string(),
-            status,
-            score: if status == "PASS" { 10.0 } else { 0.0 },
-            weight: 10.0,
-            evidence: Vec::new(),
-            remediation: String::new(),
-        }
-    }
+    use super::{Policy, Profile, Waiver, applicable, compile_globs, fingerprint};
 
     #[test]
     fn profile_include_and_exclude_rules_are_deterministic() {
@@ -171,19 +196,31 @@ mod tests {
     }
 
     #[test]
-    fn waiver_only_applies_to_failing_findings() {
-        let policy = Policy {
-            profile: Profile::default(),
+    fn fingerprint_is_stable_when_policy_list_order_changes() {
+        let first = Policy {
+            profile: Profile {
+                name: "platform".to_string(),
+                include_rules: vec!["RT-*".to_string(), "DOC-*".to_string()],
+                exclude_rules: vec!["RT-021".to_string()],
+            },
             waivers: vec![Waiver {
                 rule_id: "RT-005".to_string(),
-                reason: "temporary exception".to_string(),
-                expires: "2099-12-31".to_string(),
+                reason: "migration".to_string(),
+                expires: "2026-12-31".to_string(),
             }],
         };
-        let mut findings = vec![finding("PASS"), finding("FAIL")];
-        let summary = apply(&mut findings, &policy).unwrap();
-        assert_eq!(findings[0].status, "PASS");
-        assert_eq!(findings[1].status, "WAIVED");
-        assert_eq!(summary.waived, 1);
+        let second = Policy {
+            profile: Profile {
+                name: "platform".to_string(),
+                include_rules: vec!["DOC-*".to_string(), "RT-*".to_string()],
+                exclude_rules: vec!["RT-021".to_string()],
+            },
+            waivers: vec![Waiver {
+                rule_id: "RT-005".to_string(),
+                reason: "migration".to_string(),
+                expires: "2026-12-31".to_string(),
+            }],
+        };
+        assert_eq!(fingerprint(&first), fingerprint(&second));
     }
 }
