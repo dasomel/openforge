@@ -94,7 +94,9 @@ struct Rule {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Check {
-    AnyFile { patterns: Vec<String> },
+    AnyFile {
+        patterns: Vec<String>,
+    },
     Contains {
         patterns: Vec<String>,
         needles: Vec<String>,
