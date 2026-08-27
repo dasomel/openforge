@@ -89,7 +89,11 @@ fn is_active(status: &str) -> bool {
     matches!(status, "PASS" | "FAIL")
 }
 
-fn validate_classification(rule_id: &str, status: &str, classification: Classification) -> Result<()> {
+fn validate_classification(
+    rule_id: &str,
+    status: &str,
+    classification: Classification,
+) -> Result<()> {
     let valid = match classification {
         Classification::TrueFinding | Classification::FalsePositive => status == "FAIL",
         Classification::NotApplicable => matches!(status, "FAIL" | "NOT_APPLICABLE"),
