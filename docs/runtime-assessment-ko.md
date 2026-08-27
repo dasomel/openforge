@@ -25,6 +25,8 @@ L3 v0.3은 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfi
 | RT-006 | Runtime Security | workload 대비 NetworkPolicy podSelector coverage |
 | RT-007 | Runtime Compatibility | API server에서 실제 요청된 deprecated API metric |
 | RT-008 | Runtime Security | built-in cluster-admin에 연결된 비시스템 subject |
+| RT-009 | Runtime Security | 비시스템 subject에 바인딩된 ClusterRole의 wildcard/escalate/bind/impersonate 권한 |
+| RT-010 | Runtime Security | privileged, host namespace, hostPath, root, privilege escalation, 위험 capability 등 명시적 Pod 보안 위험 |
 
 `--namespace`를 지정하지 않으면 namespaced workload 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다.
 
@@ -63,16 +65,45 @@ API server metrics를 읽을 권한이 없거나 해당 endpoint에 접근할 �
 
 ## RBAC 최소 권한 진단
 
-RT-008은 모든 ClusterRole을 추정 분석하지 않습니다. 우선 오탐이 적고 영향도가 큰 built-in `cluster-admin` ClusterRoleBinding만 검사합니다.
-
-`system:*` 주체, `system:masters`, `kube-system` ServiceAccount는 Kubernetes 시스템 주체로 간주해 기본 경고 대상에서 제외합니다. 그 외 User, Group, ServiceAccount가 `cluster-admin`에 직접 연결되어 있으면 evidence로 기록합니다.
+RT-008은 오탐이 적고 영향도가 큰 built-in `cluster-admin` ClusterRoleBinding을 검사합니다. `system:*` 주체, `system:masters`, `kube-system` ServiceAccount는 Kubernetes 시스템 주체로 간주해 기본 경고 대상에서 제외합니다.
 
 ```text
 RT-008 No non-system subjects are bound to cluster-admin
 binding=platform-admins subject=Group/platform-team
 ```
 
-이 규칙은 직접적인 `cluster-admin` binding만 검사하며, 다른 ClusterRole을 통한 실질적 동등 권한 분석은 후속 단계에서 별도 규칙으로 확장합니다.
+RT-009는 미사용 ClusterRole을 실패시키지 않습니다. 비시스템 subject가 실제 ClusterRoleBinding을 통해 사용 중인 ClusterRole만 분석하고, 다음과 같은 고위험 권한을 evidence로 기록합니다.
+
+- verbs, resources 또는 apiGroups의 `*` wildcard
+- `escalate`
+- `bind`
+- `impersonate`
+
+```text
+RT-009 No high-risk wildcard or RBAC escalation privileges are bound to non-system subjects
+clusterrole=rbac-manager rule=0 verbs=bind resources=clusterroles apiGroups=rbac.authorization.k8s.io
+```
+
+RT-008의 `cluster-admin` 직접 binding은 별도 규칙으로 이미 평가하므로 RT-009에서는 중복 evidence를 피하기 위해 해당 ClusterRole을 제외합니다.
+
+## Pod Security 위험 진단
+
+RT-010은 hardening 필드가 빠졌다는 이유만으로 FAIL 처리하지 않습니다. 초기 버전에서는 해석이 명확한 다음 고위험 설정만 탐지합니다.
+
+- `privileged: true`
+- `allowPrivilegeEscalation: true`
+- `runAsUser: 0`
+- `hostNetwork`, `hostPID`, `hostIPC`
+- `hostPath` volume
+- `SYS_ADMIN`, `NET_ADMIN`, `SYS_PTRACE`, `SYS_MODULE`, `DAC_READ_SEARCH` capability 추가
+
+```text
+RT-010 No explicitly high-risk Pod security settings are configured
+production/Deployment/api:api privileged=true
+production/Deployment/api hostPath_volume=host
+```
+
+`runAsNonRoot`, seccomp, readOnlyRootFilesystem 등 hardening 미설정 여부는 정책 성숙도 관점의 별도 coverage 규칙으로 확장할 수 있으며, 현재 RT-010의 명시적 위험 진단과 분리합니다.
 
 ## Evidence 원칙
 
@@ -82,7 +113,7 @@ binding=platform-admins subject=Group/platform-team
 - Runtime FAIL은 정적 manifest 존재 여부가 아니라 현재 cluster 상태를 의미합니다.
 - 적용률을 계산할 수 있는 정책은 단순 존재 여부보다 coverage 기반 evidence를 우선합니다.
 - coverage 계산의 분모와 제외 기준을 명시해 동일 입력에 대해 동일 결과가 나오도록 합니다.
-- 권한 진단은 해석이 명확한 고위험 상태부터 단계적으로 추가합니다.
+- 권한 및 보안 진단은 해석이 명확한 고위험 상태부터 단계적으로 추가합니다.
 
 ## 제한사항과 후속 범위
 
@@ -90,6 +121,8 @@ binding=platform-admins subject=Group/platform-team
 
 RT-007은 API server 프로세스가 노출하는 deprecated API 요청 metric을 기준으로 하므로, API server 재시작 이후의 관측 상태에 영향을 받을 수 있습니다.
 
-RT-008은 built-in `cluster-admin` 직접 binding을 우선 대상으로 합니다. wildcard verbs/resources, aggregation rule, impersonate/escalate/bind 권한 등을 포함하는 일반화된 RBAC privilege graph 분석은 후속 범위입니다.
+RT-009는 현재 ClusterRoleBinding을 통한 cluster-scoped 권한을 우선 분석합니다. namespaced RoleBinding, aggregated ClusterRole의 최종 권한 전개, transitive privilege graph는 후속 범위입니다.
+
+RT-010은 명시적으로 위험한 PodSpec 설정을 우선 감지합니다. Pod Security Admission namespace labels나 전체 Restricted/Baseline 준수율은 후속 coverage 규칙으로 분리합니다.
 
 backup/restore verification, certificate expiry, GitOps drift, observability health도 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
