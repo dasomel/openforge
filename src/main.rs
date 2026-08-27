@@ -52,7 +52,10 @@ struct Cli {
     #[arg(long, help = "Kubernetes context used by runtime assessment.")]
     kube_context: Option<String>,
 
-    #[arg(long, help = "Limit namespaced runtime checks to one Kubernetes namespace.")]
+    #[arg(
+        long,
+        help = "Limit namespaced runtime checks to one Kubernetes namespace."
+    )]
     namespace: Option<String>,
 }
 
