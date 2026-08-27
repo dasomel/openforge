@@ -149,9 +149,9 @@ fn add_policy_warnings(
                 ));
             }
             match (&before.fingerprint, &after.fingerprint) {
-                (Some(left), Some(right)) if left != right => warnings.push(format!(
-                    "policy fingerprint changed: {left} -> {right}"
-                )),
+                (Some(left), Some(right)) if left != right => {
+                    warnings.push(format!("policy fingerprint changed: {left} -> {right}"))
+                }
                 (None, Some(_)) | (Some(_), None) => warnings.push(
                     "policy fingerprint availability changed; policy equivalence cannot be proven"
                         .to_string(),
