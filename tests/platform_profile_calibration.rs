@@ -107,8 +107,8 @@ spec:
         assert_eq!(finding(&report, rule_id)["status"], "PASS", "{rule_id}");
     }
     for rule_id in [
-        "WEB-001", "WEB-002", "WEB-003", "WEB-004", "WEB-005", "WEB-006", "WEB-007",
-        "WEB-008", "WEB-009",
+        "WEB-001", "WEB-002", "WEB-003", "WEB-004", "WEB-005", "WEB-006", "WEB-007", "WEB-008",
+        "WEB-009",
     ] {
         assert_eq!(
             finding(&report, rule_id)["status"],
