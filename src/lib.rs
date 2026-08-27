@@ -4,6 +4,7 @@ pub mod compare;
 
 mod execution;
 mod policy;
+mod profiles;
 mod runtime;
 mod runtime_alertmanager;
 mod runtime_backup;
