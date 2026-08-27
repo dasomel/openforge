@@ -9,6 +9,7 @@ mod runtime_gitops;
 mod runtime_metrics;
 mod runtime_observability;
 mod runtime_pod_security;
+mod runtime_post_restore;
 mod runtime_rbac;
 mod runtime_restore;
 mod runtime_storage;
@@ -70,6 +71,12 @@ struct Cli {
         help = "Limit namespaced runtime checks to one Kubernetes namespace."
     )]
     namespace: Option<String>,
+
+    #[arg(
+        long,
+        help = "JSON spec containing explicit GET-only Kubernetes Service probes for post-restore functional verification."
+    )]
+    post_restore_spec: Option<PathBuf>,
 }
 
 #[derive(Copy, Clone, Debug, ValueEnum)]
@@ -98,9 +105,7 @@ struct Rule {
 #[derive(Debug, Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 enum Check {
-    AnyFile {
-        patterns: Vec<String>,
-    },
+    AnyFile { patterns: Vec<String> },
     Contains {
         patterns: Vec<String>,
         needles: Vec<String>,
@@ -135,6 +140,7 @@ struct Report {
     runtime_enabled: bool,
     runtime_context: Option<String>,
     runtime_namespace: Option<String>,
+    post_restore_spec: Option<String>,
     overall: f64,
     grade: &'static str,
     level: &'static str,
@@ -292,6 +298,7 @@ fn assess(
     runtime_enabled: bool,
     runtime_context: Option<&str>,
     runtime_namespace: Option<&str>,
+    post_restore_spec: Option<&Path>,
 ) -> Result<Report> {
     let files = collect_files(root);
     let mut findings = Vec::new();
@@ -341,11 +348,16 @@ fn assess(
     ));
     findings.push(runtime_csi::finding(runtime_enabled, runtime_context));
     findings.push(runtime_csi_nodes::finding(runtime_enabled, runtime_context));
+    findings.push(runtime_post_restore::finding(
+        runtime_enabled,
+        runtime_context,
+        post_restore_spec,
+    ));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.10",
+        schema: "openforge-assessment/v0.11",
         ruleset: rules.version,
         root: root
             .canonicalize()
@@ -356,6 +368,7 @@ fn assess(
         runtime_enabled,
         runtime_context: runtime_context.map(str::to_string),
         runtime_namespace: runtime_namespace.map(str::to_string),
+        post_restore_spec: post_restore_spec.map(|path| path.display().to_string()),
         overall,
         grade: grade(overall),
         level: level(overall),
@@ -428,6 +441,7 @@ fn run() -> Result<i32> {
         cli.runtime,
         cli.kube_context.as_deref(),
         cli.namespace.as_deref(),
+        cli.post_restore_spec.as_deref(),
     )?;
     let json = serde_json::to_string_pretty(&report)?;
 
