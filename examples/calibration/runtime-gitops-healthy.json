@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/healthy-gitops",
+  "profile": "runtime-gitops-fixture",
+  "expectations": {
+    "RT-015": {"classification": "accepted", "rationale": "The recorded Argo CD application is Synced/Healthy and the Flux resources report Ready=True."}
+  }
+}
