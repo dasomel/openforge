@@ -79,13 +79,37 @@ true_findings / (true_findings + false_positives)
 
 Only manually reviewed classifications should be added. A high coverage number created from guessed classifications is worse than a low but trustworthy coverage number.
 
-## Reference calibration: Narwhal
+## Reference calibration set
 
-`examples/calibration/narwhal.json` is the first reference calibration manifest. The `Calibration` GitHub Actions workflow checks out both OpenForge and Narwhal, runs a static `kubernetes-platform` assessment, applies the reviewed expectations, requires complete classification of all active static rules, and uploads both JSON reports as workflow artifacts.
+OpenForge uses multiple deliberately different real projects rather than tuning rules against one preferred repository. The `Calibration` workflow runs each static reference independently with `fail-fast: false`, requires complete classification of every active rule, and uploads the assessment and calibration reports as artifacts.
 
-The first Narwhal run exposed detector gaps rather than project gaps: shell regression scripts were not recognized by `CI-002`, GitOps manifests were outside `PLT-002` through `PLT-005` path scopes, and documentation badges/screenshots were being scored as web-application image assets. Those cases are now regression-tested so future rules cannot silently reintroduce them.
+### Narwhal
 
-Runtime rules remain outside this static calibration until real cluster evidence is collected.
+`examples/calibration/narwhal.json` covers a shell/GitOps-heavy Kubernetes platform. Its first calibration exposed detector gaps rather than project gaps: shell regression scripts were not recognized by `CI-002`, GitOps manifests were outside `PLT-002` through `PLT-005` path scopes, and documentation badges/screenshots were being scored as web-application image assets. Those cases are regression-tested so future rules cannot silently reintroduce them.
+
+After those detector corrections, the static `kubernetes-platform` assessment is 82.6 (`B`, `L4 Resilient`) with 20/20 active rules classified, four reviewed true findings, zero false positives, and 100% classification coverage/failure precision.
+
+### NFS Quota Agent
+
+`examples/calibration/nfs-quota-agent.json` provides a structurally different Go + Helm reference. It independently exercises conventional Go test/lint/security workflows, Helm workload probes/resources/PDBs, Prometheus resources and Kubernetes packaging instead of Narwhal's GitOps layout.
+
+Its static `kubernetes-platform` assessment is 73.4 (`C`, `L3 Production`) with 20/20 active rules classified. Six reviewed failures remain real project gaps and no false positive is required to make the reference pass. This is evidence that the Narwhal detector corrections generalize to a second implementation style rather than merely fitting one repository.
+
+## L2 execution calibration
+
+Static repository evidence and trusted execution evidence are separate contracts. `examples/calibration/nfs-quota-agent-execution.json` extends the NFS Quota Agent reference only for the explicit `--run-execution` job. The execution calibration activates and verifies:
+
+- `EXE-GO-001` — `go build ./...`
+- `EXE-GO-002` — `go test ./...`
+- `EXE-GO-003` — `go vet ./...`
+
+Execution remains opt-in because OpenForge is intentionally executing code from the target repository. Static calibration never classifies disabled execution probes merely to raise coverage.
+
+Kubernetes runtime rules remain outside these repository/execution references until real cluster evidence is available.
+
+## Adding another reference
+
+Choose a project that differs materially in language, packaging or deployment layout. Review its evidence before writing expectations, keep real gaps as `true_finding`, and change OpenForge only when a genuine detector/applicability defect is demonstrated. A new reference is valuable when it can disprove an assumption made by existing references, not when it merely repeats the same repository shape.
 
 ## Rule improvement loop
 
@@ -102,7 +126,7 @@ false-positive / applicability analysis
     ↓
 small rule change + regression test
     ↓
-re-assessment
+re-assessment across the reference set
 ```
 
 Do not modify a target repository merely to make OpenForge's score look better. If the rule is wrong, fix the rule. If the project has a real gap, keep the finding and improve the project separately.
