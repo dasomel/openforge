@@ -11,7 +11,7 @@ openforge . --runtime --kube-context my-cluster --namespace production
 openforge . --runtime --format json --output openforge-runtime.json
 ```
 
-L3 v0.4는 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfig/context가 접근 가능해야 하며 OpenForge는 리소스 생성, 수정, 삭제 명령을 실행하지 않습니다.
+L3 v0.5는 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfig/context가 접근 가능해야 하며 OpenForge는 리소스 생성, 수정, 삭제 명령을 실행하지 않습니다.
 
 ## 현재 진단 항목
 
@@ -30,8 +30,10 @@ L3 v0.4는 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfi
 | RT-011 | Runtime Storage | PersistentVolumeClaim의 Bound 상태와 실제 volume binding |
 | RT-012 | Runtime Reliability | cert-manager Certificate의 실제 `status.notAfter`와 30일 만료 임계치 |
 | RT-013 | Runtime Recovery | Velero Backup의 최근 성공 완료 evidence와 7일 freshness 임계치 |
+| RT-014 | Runtime Observability | Prometheus Operator Prometheus 인스턴스 desired/available replica 상태 |
+| RT-015 | Runtime GitOps | Argo CD Application sync/health 및 Flux Kustomization/HelmRelease Ready 상태 |
 
-`--namespace`를 지정하지 않으면 namespaced workload/PVC/Certificate/Backup 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다.
+`--namespace`를 지정하지 않으면 namespaced workload/PVC/Certificate/Backup 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다. RT-014와 RT-015는 provider 자체의 namespace와 관계없이 전체 클러스터에서 지원 리소스를 탐지합니다.
 
 ## Coverage 기반 점수
 
@@ -65,13 +67,6 @@ RT-012는 특정 인증서 관리 방식을 강제하지 않습니다. cert-mana
 - 30일 미만 또는 이미 만료된 인증서는 FAIL
 - cert-manager API가 없거나 평가 가능한 Certificate가 없으면 SKIP
 
-```text
-RT-012 Managed certificates have safe remaining lifetime
-production/api-tls expires_in_days=14 notAfter=2026-09-10T00:00:00Z
-```
-
-이는 Secret 내부 인증서를 추정 파싱하는 규칙이 아니라 cert-manager가 제공하는 실제 status evidence를 기준으로 합니다.
-
 ## Backup evidence 진단
 
 RT-013 역시 특정 백업 솔루션을 플랫폼 요구사항으로 강제하지 않습니다. Velero `Backup` API가 존재하는 경우에만 평가합니다.
@@ -80,12 +75,40 @@ RT-013 역시 특정 백업 솔루션을 플랫폼 요구사항으로 강제하�
 - Backup 리소스는 있으나 성공 완료 이력이 없거나 마지막 성공 Backup이 7일보다 오래되면 FAIL
 - Velero API 또는 Backup 리소스 자체가 없으면 SKIP
 
+현재 RT-013은 backup existence/freshness evidence이며 실제 restore 성공을 보장하지 않습니다. restore drill은 별도 후속 규칙으로 분리합니다.
+
+## Observability health 진단
+
+RT-014는 관측 도구의 단순 설치 여부를 점수화하지 않습니다. 현재 첫 provider adapter는 Prometheus Operator이며 `Prometheus` CR의 `spec.replicas`와 `status.availableReplicas`를 비교해 실제 control-plane 가용성을 판단합니다.
+
 ```text
-RT-013 Recent successful platform backup evidence exists
-latest_completed_backup=velero/daily-20260826 age_hours=20 threshold_hours=168
+RT-014 Observability control plane is healthy
+prometheus=monitoring/main desired=2 available=1
 ```
 
-현재 RT-013은 backup existence/freshness evidence이며 실제 restore 성공을 보장하지 않습니다. restore drill은 별도 후속 규칙으로 분리합니다.
+- 모든 Prometheus 인스턴스가 desired replica를 만족하면 PASS
+- 하나라도 available replica가 부족하면 FAIL
+- Prometheus Operator API가 없거나 Prometheus 리소스가 없으면 SKIP
+
+현재 RT-014는 Prometheus 자체의 가용성 evidence입니다. scrape target success ratio, alert pipeline, metrics freshness, ServiceMonitor/PodMonitor coverage는 후속 세부 규칙으로 분리합니다.
+
+## GitOps reconciliation / drift 진단
+
+RT-015는 GitOps 제품 자체를 강제하지 않고 지원 provider가 실제 탐지될 때만 평가합니다. 현재 Argo CD와 Flux를 지원합니다.
+
+Argo CD는 `Application.status.sync.status == Synced`와 `Application.status.health.status == Healthy`를 모두 요구합니다. Flux는 `Kustomization`과 `HelmRelease`의 `Ready=True` condition을 평가합니다.
+
+```text
+RT-015 GitOps resources are reconciled and healthy
+argocd_application=argocd/platform sync=OutOfSync health=Healthy
+flux_kustomization=flux-system/apps ready=False reason=ReconciliationFailed
+```
+
+- 지원되는 GitOps 리소스가 모두 정상 reconciliation 상태면 PASS
+- OutOfSync, unhealthy, Ready=False/Unknown 상태가 있으면 FAIL
+- Argo CD/Flux 리소스가 하나도 탐지되지 않으면 SKIP
+
+Argo CD와 Flux가 함께 존재하면 탐지된 모든 지원 리소스를 하나의 deterministic evidence set으로 평가합니다.
 
 ## Evidence 원칙
 
@@ -94,13 +117,13 @@ latest_completed_backup=velero/daily-20260826 age_hours=20 threshold_hours=168
 - `SKIP`은 점수 분모에서 제외합니다.
 - Runtime FAIL은 정적 manifest 존재 여부가 아니라 현재 cluster 상태를 의미합니다.
 - 적용률을 계산할 수 있는 정책은 단순 존재 여부보다 coverage 기반 evidence를 우선합니다.
-- 특정 구현(cert-manager, Velero)이 없는 경우 해당 구현을 사용하지 않는다는 이유만으로 감점하지 않습니다.
+- 특정 구현(cert-manager, Velero, Prometheus Operator, Argo CD, Flux)이 없는 경우 해당 구현을 사용하지 않는다는 이유만으로 감점하지 않습니다.
 - 권한 및 보안 진단은 해석이 명확한 고위험 상태부터 단계적으로 추가합니다.
 
 ## 제한사항과 후속 범위
 
 현재 NetworkPolicy coverage는 selector가 workload pod template labels를 선택하는지 평가하며 실제 CNI datapath enforcement까지 검증하지 않습니다. RT-009는 ClusterRoleBinding 기반 cluster-scoped 권한을 우선 분석하고, aggregated ClusterRole과 transitive privilege graph는 후속 범위입니다. RT-010은 명시적 위험 설정을 우선 탐지하며 전체 Restricted/Baseline 준수율은 별도 coverage 규칙으로 확장할 수 있습니다.
 
-RT-011은 PVC/PV binding 건강 상태를 우선 평가합니다. RT-012는 현재 cert-manager Certificate status를, RT-013은 Velero Backup status를 provider-specific evidence adapter로 사용합니다. 향후 다른 certificate/backup provider도 동일한 evidence semantics 아래 adapter 방식으로 추가할 수 있습니다.
+RT-011은 PVC/PV binding 건강 상태를 우선 평가합니다. RT-012~015는 provider-specific evidence adapter를 사용하되 provider 미사용 자체를 실패로 간주하지 않습니다. 향후 동일 evidence semantics 아래 다른 certificate, backup, observability, GitOps provider를 adapter 방식으로 추가할 수 있습니다.
 
-다음 후보는 restore verification, observability health, GitOps drift입니다.
+다음 후보는 restore verification, observability target coverage/health, GitOps provider 세부 drift 원인, StorageClass/CSI health입니다.
