@@ -23,7 +23,10 @@ struct AssessArgs {
     #[arg(long)]
     rules: Option<PathBuf>,
 
-    #[arg(long, help = "JSON policy defining rule applicability and time-bounded waivers.")]
+    #[arg(
+        long,
+        help = "JSON policy defining rule applicability and time-bounded waivers."
+    )]
     policy: Option<PathBuf>,
 
     #[arg(long)]
@@ -44,7 +47,10 @@ struct AssessArgs {
     #[arg(long, help = "Kubernetes context used by runtime assessment.")]
     kube_context: Option<String>,
 
-    #[arg(long, help = "Limit namespaced runtime checks to one Kubernetes namespace.")]
+    #[arg(
+        long,
+        help = "Limit namespaced runtime checks to one Kubernetes namespace."
+    )]
     namespace: Option<String>,
 
     #[arg(
@@ -130,8 +136,7 @@ fn run_assess(args: AssessArgs) -> Result<i32> {
 
     let json = serde_json::to_string_pretty(&report)?;
     if let Some(output) = &args.output {
-        fs::write(output, &json)
-            .with_context(|| format!("cannot write {}", output.display()))?;
+        fs::write(output, &json).with_context(|| format!("cannot write {}", output.display()))?;
     }
 
     match args.format {
@@ -139,14 +144,16 @@ fn run_assess(args: AssessArgs) -> Result<i32> {
         OutputFormat::Json => println!("{json}"),
     }
 
-    Ok(if args
-        .fail_under
-        .is_some_and(|threshold| report.overall < threshold)
-    {
-        2
-    } else {
-        0
-    })
+    Ok(
+        if args
+            .fail_under
+            .is_some_and(|threshold| report.overall < threshold)
+        {
+            2
+        } else {
+            0
+        },
+    )
 }
 
 fn run_unified(cli: UnifiedCli) -> Result<i32> {
