@@ -70,6 +70,12 @@ struct AssessArgs {
         help = "Explicit HTTP(S) image URL to probe with a read-only HEAD request for runtime cache headers."
     )]
     web_cache_url: Option<String>,
+
+    #[arg(
+        long,
+        help = "Explicit HTTP(S) image URL to probe twice with read-only HEAD requests for observable cache-hit evidence."
+    )]
+    web_cache_effectiveness_url: Option<String>,
 }
 
 #[derive(Parser, Debug)]
@@ -161,6 +167,7 @@ fn run_assess(args: AssessArgs) -> Result<i32> {
             namespace: args.namespace.as_deref(),
             post_restore_spec: args.post_restore_spec.as_deref(),
             web_cache_url: args.web_cache_url.as_deref(),
+            web_cache_effectiveness_url: args.web_cache_effectiveness_url.as_deref(),
         },
     );
 
