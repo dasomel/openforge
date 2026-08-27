@@ -1,6 +1,7 @@
 mod execution;
 mod runtime;
 mod runtime_metrics;
+mod runtime_pod_security;
 mod runtime_rbac;
 
 use anyhow::{Context, Result};
@@ -296,7 +297,12 @@ fn assess(
         runtime_namespace,
     ));
     findings.push(runtime_metrics::finding(runtime_enabled, runtime_context));
-    findings.push(runtime_rbac::finding(runtime_enabled, runtime_context));
+    findings.extend(runtime_rbac::findings(runtime_enabled, runtime_context));
+    findings.push(runtime_pod_security::finding(
+        runtime_enabled,
+        runtime_context,
+        runtime_namespace,
+    ));
 
     let (categories, overall) = score_findings(&findings);
 
