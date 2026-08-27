@@ -1,5 +1,6 @@
 mod execution;
 mod runtime;
+mod runtime_alertmanager;
 mod runtime_backup;
 mod runtime_certificates;
 mod runtime_gitops;
@@ -332,11 +333,15 @@ fn assess(
     findings.push(runtime_gitops::finding(runtime_enabled, runtime_context));
     findings.push(runtime_restore::finding(runtime_enabled, runtime_context));
     findings.push(runtime_targets::finding(runtime_enabled, runtime_context));
+    findings.push(runtime_alertmanager::finding(
+        runtime_enabled,
+        runtime_context,
+    ));
 
     let (categories, overall) = score_findings(&findings);
 
     Ok(Report {
-        schema: "openforge-assessment/v0.7",
+        schema: "openforge-assessment/v0.8",
         ruleset: rules.version,
         root: root
             .canonicalize()
