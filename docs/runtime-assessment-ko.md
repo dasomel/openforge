@@ -27,8 +27,9 @@ L3 v0.3은 `kubectl`을 read-only transport로 사용합니다. 대상 kubeconfi
 | RT-008 | Runtime Security | built-in cluster-admin에 연결된 비시스템 subject |
 | RT-009 | Runtime Security | 비시스템 subject에 바인딩된 ClusterRole의 wildcard/escalate/bind/impersonate 권한 |
 | RT-010 | Runtime Security | privileged, host namespace, hostPath, root, privilege escalation, 위험 capability 등 명시적 Pod 보안 위험 |
+| RT-011 | Runtime Storage | PersistentVolumeClaim의 Bound 상태와 실제 volume binding |
 
-`--namespace`를 지정하지 않으면 namespaced workload 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다.
+`--namespace`를 지정하지 않으면 namespaced workload/PVC 진단은 전체 namespace를 대상으로 합니다. Node와 cluster-scoped RBAC 진단은 항상 cluster scope입니다.
 
 ## Coverage 기반 점수
 
@@ -105,6 +106,22 @@ production/Deployment/api hostPath_volume=host
 
 `runAsNonRoot`, seccomp, readOnlyRootFilesystem 등 hardening 미설정 여부는 정책 성숙도 관점의 별도 coverage 규칙으로 확장할 수 있으며, 현재 RT-010의 명시적 위험 진단과 분리합니다.
 
+## Storage/PVC 상태 진단
+
+RT-011은 PVC 리소스가 존재한다는 사실만 보지 않고 현재 상태와 binding을 검사합니다. assessment scope에 PVC가 없다면 저장소를 사용하지 않는 플랫폼일 수 있으므로 `SKIP` 처리합니다.
+
+다음 상태는 FAIL evidence가 됩니다.
+
+- PVC phase가 `Bound`가 아님 (`Pending`, `Lost`, `Unknown` 등)
+- `spec.volumeName`이 비어 있어 실제 PV binding을 확인할 수 없음
+
+```text
+RT-011 PersistentVolumeClaims are healthy and bound
+production/data phase=Pending volume=<none>
+```
+
+이 규칙은 CSI backend 자체의 성능/복제/장애 복구 능력을 추정하지 않으며, Kubernetes가 관측하는 PVC binding 상태만 deterministic evidence로 사용합니다.
+
 ## Evidence 원칙
 
 - Kubernetes API에서 읽은 관측 결과만 사용합니다.
@@ -124,5 +141,7 @@ RT-007은 API server 프로세스가 노출하는 deprecated API 요청 metric�
 RT-009는 현재 ClusterRoleBinding을 통한 cluster-scoped 권한을 우선 분석합니다. namespaced RoleBinding, aggregated ClusterRole의 최종 권한 전개, transitive privilege graph는 후속 범위입니다.
 
 RT-010은 명시적으로 위험한 PodSpec 설정을 우선 감지합니다. Pod Security Admission namespace labels나 전체 Restricted/Baseline 준수율은 후속 coverage 규칙으로 분리합니다.
+
+RT-011은 PVC/PV binding 건강 상태를 우선 평가합니다. StorageClass 정책, reclaimPolicy, volume expansion, topology/replication, CSI controller/node health는 후속 저장소 진단으로 확장합니다.
 
 backup/restore verification, certificate expiry, GitOps drift, observability health도 후속 버전에서 evidence semantics를 정의한 뒤 추가합니다.
