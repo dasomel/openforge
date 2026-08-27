@@ -2,6 +2,10 @@ use crate::Finding;
 use serde_json::Value;
 use std::process::Command;
 
+mod previous {
+    include!("runtime_autoscaling.rs");
+}
+
 const WEIGHT: f64 = 8.0;
 
 fn kubectl_json(context: Option<&str>, namespace: Option<&str>, resource: &str) -> Result<Value, String> {
@@ -32,8 +36,7 @@ fn weighted(id: &str, title: &str, ok: usize, total: usize, mut evidence: Vec<St
 }
 
 fn deployment_revisions(items: &[Value]) -> Finding {
-    let mut ok = 0;
-    let mut evidence = Vec::new();
+    let mut ok = 0; let mut evidence = Vec::new();
     for d in items {
         let generation = d.pointer("/metadata/generation").and_then(Value::as_u64).unwrap_or(0);
         let observed = d.pointer("/status/observedGeneration").and_then(Value::as_u64).unwrap_or(0);
@@ -43,9 +46,8 @@ fn deployment_revisions(items: &[Value]) -> Finding {
     weighted("RT-034", "Deployments expose an observed rollout revision", ok, items.len(), evidence, "Wait for the Deployment controller to observe the latest generation and preserve rollout revision metadata for rollback diagnostics.")
 }
 
-fn statefulsets(items: &[Value]) -> Finding {
-    let mut ok = 0;
-    let mut evidence = Vec::new();
+fn evaluate_statefulsets(items: &[Value]) -> Finding {
+    let mut ok = 0; let mut evidence = Vec::new();
     for s in items {
         let desired = s.pointer("/spec/replicas").and_then(Value::as_u64).unwrap_or(1);
         let ready = s.pointer("/status/readyReplicas").and_then(Value::as_u64).unwrap_or(0);
@@ -58,10 +60,8 @@ fn statefulsets(items: &[Value]) -> Finding {
     weighted("RT-035", "StatefulSet rollouts are converged and ready", ok, items.len(), evidence, "Investigate StatefulSets with unavailable replicas, stale controller observations, or mismatched current/update revisions.")
 }
 
-fn jobs(jobs: &[Value], cronjobs: &[Value]) -> Finding {
-    let total = jobs.len() + cronjobs.len();
-    let mut ok = 0;
-    let mut evidence = Vec::new();
+fn evaluate_jobs(jobs: &[Value], cronjobs: &[Value]) -> Finding {
+    let total = jobs.len() + cronjobs.len(); let mut ok = 0; let mut evidence = Vec::new();
     for j in jobs {
         let failed = j.pointer("/status/failed").and_then(Value::as_u64).unwrap_or(0);
         let active = j.pointer("/status/active").and_then(Value::as_u64).unwrap_or(0);
@@ -78,20 +78,21 @@ fn jobs(jobs: &[Value], cronjobs: &[Value]) -> Finding {
     weighted("RT-036", "Jobs and CronJobs report healthy execution state", ok, total, evidence, "Investigate failed Jobs and CronJobs that have scheduled without a recorded successful execution; review pod logs, backoff limits, schedules, and dependencies.")
 }
 
-pub fn findings(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Vec<Finding> {
+fn workload_findings(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Vec<Finding> {
     let titles = [("RT-034", "Deployments expose an observed rollout revision"), ("RT-035", "StatefulSet rollouts are converged and ready"), ("RT-036", "Jobs and CronJobs report healthy execution state")];
     if !enabled { return titles.into_iter().map(|(id, title)| skipped(id, title, "runtime assessment disabled; use --runtime".into())).collect(); }
-
-    let deployments = kubectl_json(context, namespace, "deployments.apps");
-    let statefulsets = kubectl_json(context, namespace, "statefulsets.apps");
+    let deployments_result = kubectl_json(context, namespace, "deployments.apps");
+    let statefulsets_result = kubectl_json(context, namespace, "statefulsets.apps");
     let jobs_result = kubectl_json(context, namespace, "jobs.batch");
     let cronjobs_result = kubectl_json(context, namespace, "cronjobs.batch");
-
-    let d = match deployments { Ok(v) => deployment_revisions(v.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])), Err(e) => skipped(titles[0].0, titles[0].1, e) };
-    let s = match statefulsets { Ok(v) => statefulsets(v.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])), Err(e) => skipped(titles[1].0, titles[1].1, e) };
-    let j = match (jobs_result, cronjobs_result) {
-        (Ok(jv), Ok(cv)) => jobs(jv.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[]), cv.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])),
-        (Err(e), _) | (_, Err(e)) => skipped(titles[2].0, titles[2].1, e),
-    };
+    let d = match deployments_result { Ok(v) => deployment_revisions(v.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])), Err(e) => skipped(titles[0].0, titles[0].1, e) };
+    let s = match statefulsets_result { Ok(v) => evaluate_statefulsets(v.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])), Err(e) => skipped(titles[1].0, titles[1].1, e) };
+    let j = match (jobs_result, cronjobs_result) { (Ok(jv), Ok(cv)) => evaluate_jobs(jv.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[]), cv.get("items").and_then(Value::as_array).map(Vec::as_slice).unwrap_or(&[])), (Err(e), _) | (_, Err(e)) => skipped(titles[2].0, titles[2].1, e) };
     vec![d, s, j]
+}
+
+pub fn findings(enabled: bool, context: Option<&str>, namespace: Option<&str>) -> Vec<Finding> {
+    let mut out = previous::findings(enabled, context, namespace);
+    out.extend(workload_findings(enabled, context, namespace));
+    out
 }
