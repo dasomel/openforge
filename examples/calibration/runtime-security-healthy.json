@@ -1,0 +1,22 @@
+{
+  "project": "openforge/runtime-fixture/healthy-security",
+  "profile": "runtime-security-fixture",
+  "expectations": {
+    "RT-007": {
+      "classification": "accepted",
+      "rationale": "The recorded API-server metrics contain no active deprecated API request series."
+    },
+    "RT-008": {
+      "classification": "accepted",
+      "rationale": "The fixture contains no non-system subject bound to cluster-admin."
+    },
+    "RT-009": {
+      "classification": "accepted",
+      "rationale": "The fixture contains no high-risk wildcard, bind, escalate or impersonate ClusterRole rule bound to a non-system subject."
+    },
+    "RT-010": {
+      "classification": "accepted",
+      "rationale": "The replayed workload has no explicitly high-risk Pod security setting."
+    }
+  }
+}
