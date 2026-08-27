@@ -1,5 +1,7 @@
 # OpenForge Architecture Decision Records
 
+English | [한국어](README-ko.md)
+
 OpenForge is a standards repository. A change can affect many downstream OSS projects, so important decisions must preserve not only **what** the current rule is, but **why** it was selected, which alternatives were rejected, and how a future maintainer can supersede it safely.
 
 ## When an ADR is required
@@ -46,18 +48,18 @@ The first ADR pass retrospectively captures high-impact common decisions already
 
 | ADR | Decision | Status | Primary standards |
 |---|---|---|---|
-| [0001](0001-record-cross-project-decisions.md) | Record cross-project decisions as ADRs | Accepted | governance, change management |
-| [0002](0002-english-canonical-korean-first-class.md) | English canonical; Korean first-class translation | Accepted | documentation, i18n |
-| [0003](0003-risk-based-oss-security-governance.md) | Use risk-based security/governance for OSS | Accepted | security, governance, exceptions |
-| [0004](0004-treat-ai-and-plugins-as-untrusted-input.md) | Treat AI instructions/plugins as untrusted execution inputs | Accepted | AI security, plugin supply chain |
-| [0005](0005-require-workflow-impact-analysis-for-upgrades.md) | Require workflow-wide impact analysis for upgrades | Accepted | change management, compatibility |
-| [0006](0006-build-security-into-release-supply-chain.md) | Integrate security and supply-chain controls into lifecycle | Accepted | CI, release, supply chain |
-| [0007](0007-design-system-standardizes-semantics-not-identity.md) | Standardize UI semantics, not product identity | Accepted | design system |
-| [0008](0008-layer-agent-instructions-and-keep-root-context-small.md) | Layer agent instructions and keep root context small | Accepted | agent engineering |
-| [0009](0009-evidence-first-agent-verification-and-convergence.md) | Require evidence-first verification and convergence | Accepted | agent engineering |
-| [0010](0010-reusable-templates-are-adaptable-baselines.md) | Treat reusable templates as adaptable baselines | Accepted | templates, repository standard |
-| [0011](0011-ci-resilience-must-not-encourage-security-bypass.md) | CI resilience must not encourage blind security bypass | Accepted | CI resilience, CI security |
-| [0012](0012-document-and-time-bound-intentional-exceptions.md) | Document and time-bound intentional exceptions | Accepted | security exceptions, governance |
+| [0001](0001-record-cross-project-decisions.md) ([한국어](0001-record-cross-project-decisions-ko.md)) | Record cross-project decisions as ADRs | Accepted | governance, change management |
+| [0002](0002-english-canonical-korean-first-class.md) ([한국어](0002-english-canonical-korean-first-class-ko.md)) | English canonical; Korean first-class translation | Accepted | documentation, i18n |
+| [0003](0003-risk-based-oss-security-governance.md) ([한국어](0003-risk-based-oss-security-governance-ko.md)) | Use risk-based security/governance for OSS | Accepted | security, governance, exceptions |
+| [0004](0004-treat-ai-and-plugins-as-untrusted-input.md) ([한국어](0004-treat-ai-and-plugins-as-untrusted-input-ko.md)) | Treat AI instructions/plugins as untrusted execution inputs | Accepted | AI security, plugin supply chain |
+| [0005](0005-require-workflow-impact-analysis-for-upgrades.md) ([한국어](0005-require-workflow-impact-analysis-for-upgrades-ko.md)) | Require workflow-wide impact analysis for upgrades | Accepted | change management, compatibility |
+| [0006](0006-build-security-into-release-supply-chain.md) ([한국어](0006-build-security-into-release-supply-chain-ko.md)) | Integrate security and supply-chain controls into lifecycle | Accepted | CI, release, supply chain |
+| [0007](0007-design-system-standardizes-semantics-not-identity.md) ([한국어](0007-design-system-standardizes-semantics-not-identity-ko.md)) | Standardize UI semantics, not product identity | Accepted | design system |
+| [0008](0008-layer-agent-instructions-and-keep-root-context-small.md) ([한국어](0008-layer-agent-instructions-and-keep-root-context-small-ko.md)) | Layer agent instructions and keep root context small | Accepted | agent engineering |
+| [0009](0009-evidence-first-agent-verification-and-convergence.md) ([한국어](0009-evidence-first-agent-verification-and-convergence-ko.md)) | Require evidence-first verification and convergence | Accepted | agent engineering |
+| [0010](0010-reusable-templates-are-adaptable-baselines.md) ([한국어](0010-reusable-templates-are-adaptable-baselines-ko.md)) | Treat reusable templates as adaptable baselines | Accepted | templates, repository standard |
+| [0011](0011-ci-resilience-must-not-encourage-security-bypass.md) ([한국어](0011-ci-resilience-must-not-encourage-security-bypass-ko.md)) | CI resilience must not encourage blind security bypass | Accepted | CI resilience, CI security |
+| [0012](0012-document-and-time-bound-intentional-exceptions.md) ([한국어](0012-document-and-time-bound-intentional-exceptions-ko.md)) | Document and time-bound intentional exceptions | Accepted | security exceptions, governance |
 
 ## Relationship to standards and adoption records
 
