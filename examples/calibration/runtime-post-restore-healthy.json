@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/healthy-post-restore",
+  "profile": "runtime-post-restore-fixture",
+  "expectations": {
+    "RT-021": {"classification": "accepted", "rationale": "Both declared read-only Service proxy probes return the expected post-restore health and data markers."}
+  }
+}
