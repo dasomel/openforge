@@ -65,8 +65,14 @@ fn risky_cluster_admin_subjects(value: &Value) -> Vec<String> {
             if is_system_subject(subject) {
                 continue;
             }
-            let kind = subject.get("kind").and_then(Value::as_str).unwrap_or("Unknown");
-            let name = subject.get("name").and_then(Value::as_str).unwrap_or("unknown");
+            let kind = subject
+                .get("kind")
+                .and_then(Value::as_str)
+                .unwrap_or("Unknown");
+            let name = subject
+                .get("name")
+                .and_then(Value::as_str)
+                .unwrap_or("unknown");
             let namespace = subject
                 .get("namespace")
                 .and_then(Value::as_str)
@@ -156,9 +162,8 @@ fn risky_bound_role_rules(bindings: &Value, roles: &Value) -> Vec<String> {
             let privileged_verb = verbs
                 .iter()
                 .any(|verb| matches!(*verb, "escalate" | "bind" | "impersonate"));
-            let wildcard = verbs.contains(&"*")
-                || resources.contains(&"*")
-                || api_groups.contains(&"*");
+            let wildcard =
+                verbs.contains(&"*") || resources.contains(&"*") || api_groups.contains(&"*");
 
             if privileged_verb || wildcard {
                 risky.push(format!(
