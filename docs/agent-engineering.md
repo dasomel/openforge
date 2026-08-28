@@ -15,11 +15,16 @@ CODING_STANDARDS.md
 CONTRIBUTING.md / DESIGN.md / architecture docs
   -> project-specific process and design context
 
+.agents/behaviors/
+  -> recurring conduct used for trace review and evaluation
+
 formatter / linter / tests / policy-as-code / CI
   -> deterministic enforcement
 ```
 
 Keep `AGENTS.md` short enough to remain salient in long sessions. Do not duplicate rules already enforced reliably by tools.
+
+Behavior specifications are a separate evaluation layer. They describe recurring conduct that should remain visible across long-running agent work; they are not automatically injected into every runtime prompt. See `docs/agent-behaviors.md` and `.agents/behaviors/`.
 
 ## Root AGENTS.md rules
 
@@ -105,6 +110,19 @@ The task is not complete, but one verified blocker was removed and the next bloc
 Further work would require unjustified scope expansion, fragile patches, unsupported assumptions, or unacceptable risk. Report the evidence and stop.
 
 Activity is not progress. A failed attempt is useful only when it narrows the problem, improves evidence, or justifies stopping.
+
+## Behavior evaluation layer
+
+OpenForge separates runtime instructions from recurring behavior expectations:
+
+- `AGENTS.md` defines the concise execution contract.
+- Skills define task-specific methods.
+- `.agents/behaviors/` defines recurring conduct suitable for trace review and evals.
+- Tests, CI, linters, and policy-as-code enforce deterministic rules.
+
+The baseline behavior profile currently covers evidence-before-claim, scope discipline, bug-fix verification, task convergence, and trust/provenance. Projects may add domain-specific behaviors when they represent recurring cross-task expectations rather than one-off procedures.
+
+Behavior evaluation should rely on observable trace evidence. Human review, rubric-based evaluation, and automated scorers may all be used; OpenForge does not mandate a single scorer.
 
 ## Context-dilution control
 
