@@ -23,14 +23,7 @@ Narwhal, KubeMetal, nfs-quota-agent에 동일한 5개 Behavior를 적용하되 r
 
 이제 high-risk 작업에서 trace 파일과 verification event가 존재하는 것만으로 완료를 인정하지 않습니다.
 
-`consistencyMode: strict` trace의 `A` 완료 상태는 다음을 요구합니다.
-
-- `completion_claim` 존재
-- scope와 typed evidence를 가진 verification 존재
-- verification에 `passed`, `success`, `ok`, `verified` 등 명시적 성공 status 존재
-- failed/pending/unknown/skipped/unverified 또는 status 미지정 relevant verification이 없음
-
-조건이 맞지 않으면 `task-convergence`가 `false`가 되고, 실패 또는 미확정 verification 상태에서 완료를 주장하면 `evidence-before-claim`도 `false`가 됩니다.
+`consistencyMode: strict` trace의 `A` 완료 상태는 `completion_claim`, scope와 typed evidence를 가진 verification, 그리고 `passed`, `success`, `ok`, `verified` 등 명시적 성공 status를 요구합니다. failed/pending/unknown/skipped/unverified 또는 status 미지정 relevant verification이 있으면 `task-convergence`가 `false`가 되고, 실패 또는 미확정 verification 상태에서 완료를 주장하면 `evidence-before-claim`도 `false`가 됩니다.
 
 strict bug fix에서는 `regression_verification`도 명시적으로 성공해야 합니다. `B/C` 상태는 next action이 있으면 유효하지만 strict mode에서는 `completion_claim`과 동시에 존재할 수 없습니다.
 
@@ -44,7 +37,7 @@ High-risk evidence checker도 관련 trace에 strict mode와 최소 하나의 �
 
 ## 검증
 
-OpenForge CI/Markdown과 세 downstream의 Agent Behavior workflow가 strict contract 적용 상태에서 통과했습니다. KubeMetal의 repository CI와 Narwhal Version Check 등 기존 workflow는 Agent Behavior와 별도 evidence class로 계속 관리합니다.
+OpenForge CI/Markdown과 세 downstream의 Agent Behavior workflow가 strict contract 적용 상태에서 통과했습니다. KubeMetal repository CI와 Narwhal Version Check 등 기존 workflow는 Agent Behavior와 별도 evidence class로 계속 관리합니다.
 
 ## AGENT-005 판단
 
