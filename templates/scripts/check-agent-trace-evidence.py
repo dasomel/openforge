@@ -71,6 +71,36 @@ def validate_trace(trace, high_risk_paths):
     return failures
 
 
+def assess_traces(sources, traces, high_risk):
+    failures = []
+    uncovered = [path for path in high_risk if not any(trace_covers(trace, path) for trace in traces)]
+    if uncovered:
+        failures.append("no operational trace covers high-risk paths: " + ", ".join(uncovered))
+
+    trace_results = []
+    for source, trace in zip(sources, traces):
+        covered = [path for path in high_risk if trace_covers(trace, path)]
+        if not covered:
+            trace_results.append({
+                "trace": source,
+                "traceId": trace.get("traceId"),
+                "status": "not-applicable",
+                "coveredHighRiskPaths": [],
+                "failures": [],
+            })
+            continue
+        trace_failures = validate_trace(trace, covered)
+        trace_results.append({
+            "trace": source,
+            "traceId": trace.get("traceId"),
+            "status": "evaluated",
+            "coveredHighRiskPaths": covered,
+            "failures": trace_failures,
+        })
+        failures.extend(f"{source}: {item}" for item in trace_failures)
+    return trace_results, failures
+
+
 def main():
     parser = argparse.ArgumentParser(description="OpenForge trace/change evidence correlation gate")
     parser.add_argument("--policy", required=True)
@@ -83,20 +113,7 @@ def main():
     changed = read_changed(args.changed_files)
     high_risk = classify_high_risk(changed, policy)
     traces = [load_json(path) for path in args.trace]
-
-    failures = []
-    uncovered = []
-    for path in high_risk:
-        if not any(trace_covers(trace, path) for trace in traces):
-            uncovered.append(path)
-    if uncovered:
-        failures.append("no operational trace covers high-risk paths: " + ", ".join(uncovered))
-
-    trace_results = []
-    for source, trace in zip(args.trace, traces):
-        trace_failures = validate_trace(trace, [p for p in high_risk if trace_covers(trace, p)])
-        trace_results.append({"trace": source, "traceId": trace.get("traceId"), "failures": trace_failures})
-        failures.extend(f"{source}: {item}" for item in trace_failures)
+    trace_results, failures = assess_traces(args.trace, traces, high_risk)
 
     report = {
         "schemaVersion": "openforge-agent-evidence-quality/v1",
