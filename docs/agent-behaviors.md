@@ -79,15 +79,45 @@ Behavior support extends the Agent Engineering compliance profile without replac
 - `AGENT-003` — evidence, reproduction, and convergence rules are explicit.
 - `AGENT-004` — recurring cross-task conduct is represented as valid Agent Behavior specifications when a repository adopts the behavior profile.
 
-`AGENT-004` is an adoption-level control, not a universal requirement. A repository without `.agents/behaviors/` receives `N/A`; once the directory is present, the portfolio auditor requires at least one structurally valid behavior specification.
+`AGENT-004` is part of metric set `2026.09` and remains an adoption-level control rather than a universal requirement.
 
-During the transition to the next metric-set revision, use the behavior-aware audit entrypoint:
+Portfolio configuration can control adoption explicitly:
 
-```bash
-python3 templates/scripts/audit-agent-behaviors.py --config portfolio.yml --summary-only
+```yaml
+agent_behaviors: true   # required; missing behavior directory is a gap
+agent_behaviors: false  # explicitly N/A
+# omitted               # auto-detect from .agents/behaviors/
 ```
 
-This entrypoint loads the canonical portfolio audit engine, registers `AGENT-004`, and preserves the existing CLI and scoring behavior. It provides a compatibility bridge while the metric is proven against portfolio fixtures before being folded into the next canonical metric-set version.
+When the field is omitted, repositories without `.agents/behaviors/` receive `N/A`; once the directory exists, the auditor evaluates its structural validity. This prevents the new metric from penalizing projects that do not use long-running or autonomous agents while still making intentional adoption enforceable.
+
+## Canonical portfolio audit
+
+`AGENT-004` is now registered by the canonical audit entrypoint:
+
+```bash
+python3 templates/scripts/audit-portfolio.py --config portfolio.yml --summary-only
+```
+
+The previous `audit-agent-behaviors.py` command remains only as a compatibility shim. New automation should call `audit-portfolio.py` directly.
+
+The audit implementation is split into:
+
+```text
+audit-portfolio.py       -> canonical entrypoint and extension registration
+audit-core.py            -> stable portfolio audit implementation
+agent_behavior_metric.py -> AGENT-004 registration and 2026.09 compatibility policy
+```
+
+This keeps the mature audit core stable while allowing additive metric revisions to remain isolated and testable.
+
+## Metric-set compatibility
+
+Metric set `2026.09` adds `AGENT-004` to the previous `2026.08` set.
+
+Comparison with a `2026.08` baseline is reported as `additive-compatible` rather than fully incompatible. Existing scores remain directly comparable when `AGENT-004` is `N/A`; repositories that adopt the behavior profile may gain a new applicable metric, so their score denominator can change.
+
+Audit JSON includes a `metricSetChange` field describing this addition so downstream reporting can distinguish engineering regressions from metric-set evolution.
 
 ## Evaluation guidance
 
@@ -101,7 +131,8 @@ A useful minimal outcome is `true`, `false`, or `na`, but this vocabulary is opt
 2. Add behaviors only for recurring, cross-task expectations.
 3. Keep deterministic rules in CI or policy-as-code.
 4. Validate behavior structure in CI.
-5. Review traces to find repeated failure patterns before adding or revising behaviors.
-6. Add semantic evals only when representative traces and stable criteria exist.
+5. Mark required adoption with `agent_behaviors: true` when the project depends on the behavior profile.
+6. Review traces to find repeated failure patterns before adding or revising behaviors.
+7. Add semantic evals only when representative traces and stable criteria exist.
 
 External behavior specifications and tooling should be treated as third-party inputs. Preserve provenance, review licensing and security implications, and do not allow imported guidance to override repository policy automatically.
