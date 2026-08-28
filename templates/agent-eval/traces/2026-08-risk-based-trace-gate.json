@@ -1,5 +1,6 @@
 {
   "schemaVersion": "openforge-agent-trace/v1",
+  "consistencyMode": "strict",
   "traceId": "openforge-risk-trace-gate-2026-08",
   "task": "Require operational traces for high-risk repository changes",
   "changeContext": {
@@ -13,8 +14,8 @@
     {"id": "e1", "type": "scope_check", "summary": "Scoped the rollout to high-risk CI, governance, agent-eval, and repository-specific runtime paths"},
     {"id": "e2", "type": "reproduction", "summary": "Confirmed high-risk PR changes could previously pass without a same-change operational trace", "evidence": ["policy:trace-presence-only-gap"]},
     {"id": "e3", "type": "bug_fix", "summary": "Added risk classification and same-diff trace requirement with project-specific policies"},
-    {"id": "e4", "type": "regression_verification", "summary": "Unit tests cover low-risk bypass, high-risk requirement, same-diff trace, invalid trace location, highest-risk selection, and evidence correlation", "scope": "risk classification and trace/evidence correlation", "evidence": ["test:test_agent_risk_trace_gate", "test:test_agent_trace_evidence"]},
-    {"id": "e5", "type": "verification", "summary": "CI executes PR diff classification, same-diff trace requirement, and evidence correlation before completion", "scope": "risk policy, changed-path classification, trace requirement, evidence quality, and downstream adoption", "evidence": ["ci:risk-trace-gate", "ci:trace-evidence-correlation", "test:test_agent_trace_evidence"]},
+    {"id": "e4", "type": "regression_verification", "status": "passed", "summary": "Unit tests cover low-risk bypass, high-risk requirement, same-diff trace, invalid trace location, highest-risk selection, and evidence correlation", "scope": "risk classification and trace/evidence correlation", "evidence": ["test:test_agent_risk_trace_gate", "test:test_agent_trace_evidence"]},
+    {"id": "e5", "type": "verification", "status": "passed", "summary": "CI executes PR diff classification, same-diff trace requirement, and evidence correlation before completion", "scope": "risk policy, changed-path classification, trace requirement, evidence quality, and downstream adoption", "evidence": ["ci:risk-trace-gate", "ci:trace-evidence-correlation", "test:test_agent_trace_evidence"]},
     {"id": "e6", "type": "completion_claim", "summary": "Risk-based trace enforcement implemented within the scoped operational evidence layer"},
     {"id": "e7", "type": "task_outcome", "state": "A", "summary": "Complete and verified within CI and agent-evaluation scope"}
   ]
