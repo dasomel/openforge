@@ -2,7 +2,7 @@
   "schemaVersion": "openforge-agent-risk-policy/v1",
   "defaultRisk": "low",
   "traceRequiredAt": ["high"],
-  "tracePathPrefix": ".agents/evals/traces/",
+  "tracePathPrefix": "templates/agent-eval/traces/",
   "rules": [
     {"risk": "high", "pattern": ".github/workflows/**", "reason": "CI and release behavior"},
     {"risk": "high", "pattern": "templates/scripts/**", "reason": "reusable governance and compliance execution"},
