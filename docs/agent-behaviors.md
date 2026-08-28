@@ -39,7 +39,7 @@ A behavior file contains YAML frontmatter with `name` and `description`. The bod
 | behaviors | recurring quality expectations | evidence discipline, safe recovery, source trust, cost/safety judgment |
 | tests / CI / policy | deterministic enforcement | syntax, formatting, security rules, API and policy checks |
 | traces | observed execution | tool calls, decisions, outcomes, failures |
-| evals | assessment | human review, rubrics, automated behavior scoring |
+| evals | assessment | deterministic evidence checks, human review, rubric/model evaluation |
 
 ## OpenForge baseline behavior profile
 
@@ -93,7 +93,7 @@ When the field is omitted, repositories without `.agents/behaviors/` receive `N/
 
 ## Canonical portfolio audit
 
-`AGENT-004` is now registered by the canonical audit entrypoint:
+`AGENT-004` is registered by the canonical audit entrypoint:
 
 ```bash
 python3 templates/scripts/audit-portfolio.py --config portfolio.yml --summary-only
@@ -119,11 +119,34 @@ Comparison with a `2026.08` baseline is reported as `additive-compatible` rather
 
 Audit JSON includes a `metricSetChange` field describing this addition so downstream reporting can distinguish engineering regressions from metric-set evolution.
 
+## Trace evaluation pipeline
+
+Behavior files define expected recurring conduct, but they do not prove that an execution followed that conduct. OpenForge therefore provides a separate trace/eval pipeline:
+
+```text
+BEHAVIOR.md
+  -> openforge-agent-trace/v1
+  -> evaluate-agent-trace.py
+  -> openforge-agent-eval/v1
+  -> compare-agent-evals.py
+  -> regression report
+```
+
+Use the reference trace to exercise the deterministic baseline evaluator:
+
+```bash
+python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
+```
+
+The baseline evaluator scores only properties visible in structured events. It does not infer hidden reasoning or semantic quality. Representative eval results can be persisted and compared with `compare-agent-evals.py`; true-to-false and other downward transitions are reported as regressions.
+
+See [Agent Evaluation Standard](agent-evaluation.md) ([한국어](agent-evaluation-ko.md)) for the trace schema, event vocabulary, exit codes, regression policy, privacy guidance, and maturity path.
+
 ## Evaluation guidance
 
-Behavior evaluation should focus on observable evidence in a trace rather than hidden intent. A project may use human review, rubric-based model evaluation, or automated checks. OpenForge does not prescribe a single scorer.
+Behavior evaluation should focus on observable evidence in a trace rather than hidden intent. Deterministic evaluation should be preferred where an invariant is directly observable. Human review or model-based eval can supplement that layer when semantic judgment is necessary, but should cite trace evidence and must not silently override deterministic failures.
 
-A useful minimal outcome is `true`, `false`, or `na`, but this vocabulary is optional. The canonical requirement is that evaluation criteria remain anchored to the behavior specification.
+A useful minimal outcome is `true`, `false`, or `na`. `na` means the behavior was not exercised by the trace; it is not equivalent to a pass.
 
 ## Adoption strategy
 
@@ -132,7 +155,10 @@ A useful minimal outcome is `true`, `false`, or `na`, but this vocabulary is opt
 3. Keep deterministic rules in CI or policy-as-code.
 4. Validate behavior structure in CI.
 5. Mark required adoption with `agent_behaviors: true` when the project depends on the behavior profile.
-6. Review traces to find repeated failure patterns before adding or revising behaviors.
-7. Add semantic evals only when representative traces and stable criteria exist.
+6. Instrument representative tasks with minimal structured trace events.
+7. Run deterministic evals and retain trusted baselines for stable scenarios.
+8. Review regressions and repeated failure patterns before adding or revising behaviors.
+9. Add semantic evals only when deterministic trace evidence is insufficient.
+10. Promote eval controls into portfolio compliance only after cross-project operational evidence exists.
 
-External behavior specifications and tooling should be treated as third-party inputs. Preserve provenance, review licensing and security implications, and do not allow imported guidance to override repository policy automatically.
+External behavior specifications, traces, baselines, and tooling should be treated as third-party inputs. Preserve provenance, review licensing and security implications, and do not allow imported guidance to override repository policy automatically.
