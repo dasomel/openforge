@@ -20,6 +20,9 @@ The baseline is applied to three OSS repositories with materially different runt
 4. Repository risk policies began requiring same-diff traces for high-risk changes.
 5. Trace/change evidence correlation required current high-risk paths, scoped verification, and typed evidence to agree.
 6. Outcome/evidence consistency now requires current high-risk traces to use `consistencyMode: strict`.
+7. Live command results are now bound into strict trace verification status and evaluated before completion claims are accepted.
+8. Two naturally occurring maintenance defects in materially different runtime domains were blocked by the same Behavior regression contract.
+9. AGENT-005 was promoted as an adoption-level executable operational profile in metric set `2026.10`.
 
 ## Phase 6 — outcome/evidence consistency
 
@@ -33,13 +36,31 @@ Historical traces remain compatible in legacy mode. The high-risk evidence-corre
 
 ### Cross-project rollout
 
-OpenForge, Narwhal, KubeMetal, and nfs-quota-agent evaluators implement the strict consistency semantics. The current operational maintenance trace in each repository was upgraded to `consistencyMode: strict` with explicit `status: passed` verification and regression-verification events.
+OpenForge, Narwhal, KubeMetal, and nfs-quota-agent evaluators implement the strict consistency semantics. The current operational maintenance trace in each repository was upgraded to `consistencyMode: strict` with explicit verification status.
 
 The high-risk evidence checker additionally requires a relevant trace to be strict and to contain at least one explicitly passed verification event.
 
-### Verification evidence
+## Phase 7 — live evidence and natural regressions
 
-The strict implementation was exercised by the real stacked PRs. OpenForge CI/Markdown and the Agent Behavior workflows in Narwhal, KubeMetal, and nfs-quota-agent passed after the evaluator, evidence checker, and operational traces were upgraded. KubeMetal repository CI is reported separately, while Narwhal Version Check remains a separate evidence class.
+The next step replaced static verification prose with observable command results. A live verification binder executes a real maintenance/runtime command and writes its result into strict verification events as `status: passed|failed`, `commandExitCode`, and typed runtime evidence. The binder itself does not decide policy; the evaluator and trusted baseline gate do.
+
+### Natural regression 1 — Narwhal
+
+Narwhal PR #173 exposed an existing Kubernetes version source-of-truth drift: `VERSIONS.md` declared `1.35.5` while `Vagrantfile` pinned `1.35.7`. The shared consistency command exited 1, the trace was hydrated as failed, and the baseline gate detected three regressions before merge:
+
+- `bug-fix-verification`: `true -> false`
+- `evidence-before-claim`: `true -> false`
+- `task-convergence`: `true -> false`
+
+After the source-of-truth repair, the same command/evaluator/baseline path passed without weakening policy.
+
+### Natural regression 2 — nfs-quota-agent
+
+nfs-quota-agent PR #86 exercised a different runtime boundary: commands available inside the actual shipped container image. The repository already documented Btrfs as a known gap because `internal/quota/btrfs.go` invokes the `btrfs` CLI while the image did not install `btrfs-progs`.
+
+The live check built the real image and verified commands in-container. `xfs_quota`, `setquota`, `chattr`, and `findmnt` were present while `btrfs` was missing. The binder recorded exit 1 and the same three Behavior regressions blocked the gate.
+
+The repair added `btrfs-progs`, updated NOTICE/package-license evidence, and changed Btrfs compatibility from `known-gap` to `build-verified`. It was deliberately not promoted to `verified` because a real Btrfs filesystem E2E has not yet been performed. The same live image check passed after the repair.
 
 ## Findings
 
@@ -48,9 +69,17 @@ The strict implementation was exercised by the real stacked PRs. OpenForge CI/Ma
 - Behavior CI and repository/runtime CI must remain separate evidence classes.
 - Historical trace compatibility is important; only traces relevant to current high-risk work should be forced onto the newest operational contract.
 - Completion semantics must be tied to actual verification state, not only to the presence of verification prose.
+- Live command binding is portable across repository consistency and built-container runtime verification.
+- Compatibility claims must preserve evidence strength; fixing an image dependency can justify `build-verified` without implying real filesystem E2E verification.
 
 ## AGENT-005 decision
 
-Do **not** add `AGENT-005` yet.
+**Promote AGENT-005.**
 
-The system can now deterministically map inconsistent completion claims into existing Behavior regressions (`true -> false`) without inventing a new score. The remaining strongest promotion evidence is a naturally occurring development regression that this strict baseline gate blocks before merge, rather than a synthetic negative fixture or governance-tool implementation defect.
+The previously required promotion evidence is now satisfied by two naturally occurring regressions in different runtime domains. AGENT-005 is included in canonical metric set `2026.10` as an adoption-level **Operational Agent Evaluation Profile**.
+
+AGENT-005 does not score `.agents/evals/` directory presence. A passing profile requires an executable contract: evaluator, trusted baseline, regression gate, live verification binder, at least one strict trace with explicit status and typed evidence, completion/outcome semantics, and CI wiring that actually executes live binding and regression gating.
+
+Repositories that have not adopted the profile remain `N/A`; `agent_evals: true` makes it required and `agent_evals: false` explicitly disables the optional profile.
+
+See `docs/agent-005-promotion-2026-08.md` for the promotion evidence record.
