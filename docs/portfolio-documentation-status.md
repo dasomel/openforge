@@ -29,6 +29,27 @@ The target is not to create more files. The target is to make existing documenta
 | **KubeMetal** | Rich README, design/architecture/research/user/E2E docs, measured external-cluster notes | **Strong engineering evidence / high complexity** | Add a short “local first success” path before advanced D26/D30 material; consolidate architecture entry points and improve Korean coverage for user-facing docs |
 | **OpenForge** | Extensive standards, ADRs, templates, audit/scorecard and design-system documentation | **Strong standards corpus / adoption path can be simpler** | Lead with “apply one standard/template to one repository” Quick Start; treat portfolio scores as standards-compliance evidence, not product maturity |
 
+## 2026-08 adoption-guide rollout
+
+The review has moved from analysis into repository-level implementation. Draft adoption-guide PRs now encode a project-specific first-success contract without rewriting each project into a generic template:
+
+| Project | Draft PR | First verified success focus |
+|---|---:|---|
+| Narwhal | #174 | cluster readiness + GitOps/identity/platform verification |
+| Narwhal Portal | #77 | authenticated Day-2 workspace with backend evidence |
+| NFS Quota Agent | #87 | real filesystem quota enforcement |
+| ldapium | #107 | LDAP bind/read/write/deny with TLS/ACL/audit behavior |
+| kube-ready-box | #37 | reproducible guest OS/storage/Kubernetes readiness |
+| ClusterDeck | #11 | Profile -> SSH -> kubeconfig -> Kubernetes API |
+| Beluga | #112 | deterministic E2E data path |
+| Beluga Manager | #48 | one implemented/integrated vertical slice |
+| KubeMetal | #53 | local Kubernetes control plane + native MLX/Metal compute |
+| OpenForge | #35 | apply one standard and verify it before expanding |
+
+The CnE blog has a matching bilingual portfolio article in `dasomel.github.io` PR #310 so public narrative and repository documentation evolve from the same evidence model.
+
+These PRs are intentionally Draft. They establish the adoption contract first; README restructuring, screenshots, localized parity and executable copy/paste validation can then be reviewed project by project without mixing product changes into the documentation baseline.
+
 ## Cross-portfolio findings
 
 ### 1. File presence is no longer the main problem
