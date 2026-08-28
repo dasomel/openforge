@@ -22,8 +22,10 @@ sys.modules[spec.name] = core
 spec.loader.exec_module(core)
 
 from agent_behavior_metric import register as register_agent_behavior_metric
+from agent_operational_metric import register as register_agent_operational_metric
 
 register_agent_behavior_metric(core)
+register_agent_operational_metric(core)
 
 
 def __getattr__(name: str):
