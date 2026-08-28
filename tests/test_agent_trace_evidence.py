@@ -1,6 +1,4 @@
 import importlib.util
-import json
-import tempfile
 import unittest
 from pathlib import Path
 
@@ -61,6 +59,21 @@ class AgentTraceEvidenceTests(unittest.TestCase):
     def test_rejects_uncovered_high_risk_path(self):
         failures = mod.validate_trace(self.trace(), ["src/security/policy.py"])
         self.assertTrue(any("uncovered high-risk paths" in item for item in failures))
+
+    def test_unrelated_historical_trace_is_not_applicable(self):
+        legacy = {
+            "schemaVersion": "openforge-agent-trace/v1",
+            "traceId": "legacy",
+            "task": "old pilot",
+            "events": [],
+        }
+        results, failures = mod.assess_traces(
+            ["current.json", "legacy.json"],
+            [self.trace(), legacy],
+            [".github/workflows/ci.yml"],
+        )
+        self.assertEqual(failures, [])
+        self.assertEqual(results[1]["status"], "not-applicable")
 
     def test_valid_trace_passes(self):
         self.assertEqual(mod.validate_trace(self.trace(), [".github/workflows/ci.yml"]), [])
