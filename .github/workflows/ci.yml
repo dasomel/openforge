@@ -41,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Validate Agent Behavior specifications
         shell: bash
@@ -59,6 +61,27 @@ jobs:
             --baseline templates/agent-eval/baseline.eval.json \
             --current-out /tmp/current-agent-eval.json \
             --comparison-out /tmp/agent-eval-comparison.json
+
+      - name: Collect PR changed paths
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only \
+            "${{ github.event.pull_request.base.sha }}" \
+            "${{ github.event.pull_request.head.sha }}" \
+            > /tmp/agent-changed-files.txt
+          cat /tmp/agent-changed-files.txt
+
+      - name: Require operational trace for high-risk PR changes
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/check-agent-trace-requirement.py \
+            --policy templates/agent-eval/risk-policy.json \
+            --changed-files /tmp/agent-changed-files.txt \
+            --report-out /tmp/agent-risk-result.json
 
   adr-validation:
     runs-on: ubuntu-latest
