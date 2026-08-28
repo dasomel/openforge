@@ -37,6 +37,19 @@ jobs:
             exit 1
           fi
 
+  behavior-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate Agent Behavior specifications
+        shell: bash
+        run: bash templates/scripts/validate-behaviors.sh
+
+      - name: Evaluate reference agent trace
+        shell: bash
+        run: python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
+
   adr-validation:
     runs-on: ubuntu-latest
     steps:
@@ -67,13 +80,13 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Run compliance audit engine unit tests
+      - name: Run compliance and agent evaluation tests
         shell: bash
         run: |
           set -euo pipefail
           python3 -m unittest discover -s tests -v
 
-      - name: Smoke test portfolio audit CLI with fixture config
+      - name: Smoke test canonical portfolio audit CLI with fixture config
         shell: bash
         run: |
           set -euo pipefail

@@ -8,6 +8,8 @@ OpenForge defines standards, but standards are easier to apply when maintainers 
 
 These are **reference metrics, not mandatory universal thresholds**. A project may mark an item N/A when it does not apply and should record intentional deviations in an ADR.
 
+The automated portfolio auditor currently publishes **metric set `2026.09` with 36 stable compliance metrics**. `AGENT-004` was added in `2026.09` as an opt-in Agent Behavior profile metric; repositories that do not adopt the profile receive `N/A`.
+
 ## 2. Repository Maturity Matrix
 
 | Area | Metric | Target | Reference practice | Evidence to check |
@@ -46,6 +48,7 @@ These are **reference metrics, not mandatory universal thresholds**. A project m
 | Development | Unified task runner | Recommended | Makefile practice in KubeMetal | `Makefile` |
 | Development | Code graph | Recommended for complex codebases | codegraph / graphify use case | generated graph/artifact |
 | Development | AI agent instructions | Recommended | Narwhal / KubeMetal / Portal practice | `AGENTS.md`, `CLAUDE.md`, etc. |
+| Agent Engineering | Agent Behavior specification profile | Opt-in | OpenForge long-running agent governance | `.agents/behaviors/*/BEHAVIOR.md` + `AGENT-004` |
 | Release | Changelog | 1 | Existing OSS practice | `CHANGELOG.md` |
 | Release | Versioning policy | 1 | Existing OSS practice | `VERSION*` / release docs |
 | Release | Release workflow | Recommended | KubeMetal / active projects | `.github/workflows/` |
@@ -75,11 +78,17 @@ Suggested interpretation:
 
 The percentage is calculated only over applicable metrics.
 
+For `AGENT-004`, applicability is controlled as follows:
+
+- `agent_behaviors: true` — the profile is required; a missing behavior directory is a gap.
+- `agent_behaviors: false` — the metric is explicitly `N/A`.
+- field omitted — adoption is auto-detected from `.agents/behaviors/`.
+
 ## 4. Reference Projects
 
 The matrix is informed by existing repositories rather than invented from scratch. Reference repositories include:
 
-- `openforge` — cross-project ADR governance, bilingual decision history, CI validation, standards/templates traceability
+- `openforge` — cross-project ADR governance, bilingual decision history, CI validation, standards/templates traceability, Agent Behavior profile
 - `narwhal` — platform architecture, versions, lessons, AI instructions, release/deployment documentation
 - `narwhal-portal` — ADR, roadmap, design system, AI instructions
 - `nfs-quota-agent` — bilingual documentation and development/release conventions
@@ -114,8 +123,10 @@ python3 templates/scripts/audit-portfolio.py
 python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
 ```
 
+The canonical entrypoint registers metric set `2026.09`. Audit JSON records both `metricSetVersion` and `metricSetChange`, allowing baseline consumers to recognize the additive `AGENT-004` revision. A `2026.08` baseline is reported as `additive-compatible` when compared with `2026.09`.
+
 - **Portfolio Scorecard (English):** [docs/portfolio-scorecard.md](portfolio-scorecard.md)
 - **Portfolio Scorecard (Korean):** [docs/portfolio-scorecard-ko.md](portfolio-scorecard-ko.md)
+- **Agent Behavior Standard:** [docs/agent-behaviors.md](agent-behaviors.md)
 - **Branch Protection Standard:** [docs/branch-protection.md](branch-protection.md)
 - **Actionable Gap Issues:** `docs/gap-issues/`
-

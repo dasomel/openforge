@@ -3,6 +3,11 @@ workspaceRoot: "../.."
 
 # OpenForge Portfolio Configuration Baseline
 # Defines the list of active repositories evaluated by the compliance audit engine.
+#
+# agent_behaviors:
+#   true  = AGENT-004 is required even if .agents/behaviors/ is missing
+#   false = AGENT-004 is explicitly N/A
+#   unset = auto-detect adoption from .agents/behaviors/
 
 repositories:
   - id: openforge
@@ -14,6 +19,7 @@ repositories:
     ui: false
     container: false
     env: false
+    agent_behaviors: true
 
   - id: narwhal
     repository: dasomel/narwhal

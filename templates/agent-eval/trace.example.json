@@ -1,0 +1,14 @@
+{
+  "schemaVersion": "openforge-agent-trace/v1",
+  "traceId": "example-agent-task-001",
+  "task": "Fix a regression and verify the result",
+  "events": [
+    {"id": "e1", "type": "scope_check", "summary": "Confirmed requested change scope"},
+    {"id": "e2", "type": "reproduction", "summary": "Reproduced the reported failure", "evidence": ["test:failure-before-fix"]},
+    {"id": "e3", "type": "bug_fix", "summary": "Applied the smallest coherent fix"},
+    {"id": "e4", "type": "regression_verification", "summary": "Regression test passed", "evidence": ["test:regression-pass"]},
+    {"id": "e5", "type": "verification", "summary": "Relevant checks passed", "scope": "targeted regression and related unit tests", "evidence": ["test:regression-pass", "test:unit-pass"]},
+    {"id": "e6", "type": "completion_claim", "summary": "Task complete within verified scope"},
+    {"id": "e7", "type": "task_outcome", "state": "A", "summary": "Complete and verified"}
+  ]
+}
