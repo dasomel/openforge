@@ -40,7 +40,8 @@ class TestBehaviorPortfolioAudit(unittest.TestCase):
     def test_metric_is_registered_canonically(self):
         ids = [m["id"] for m in audit_portfolio.METRIC_DEFINITIONS]
         self.assertIn("AGENT-004", ids)
-        self.assertEqual(len(ids), 36)
+        self.assertIn("AGENT-005", ids)
+        self.assertEqual(len(ids), 37)
         self.assertEqual(len(ids), len(set(ids)))
 
     def test_profile_not_adopted_is_na(self):
@@ -106,14 +107,14 @@ class TestBehaviorPortfolioAudit(unittest.TestCase):
             self.assertEqual(check["score"], 0)
             self.assertIn("contains no BEHAVIOR.md", check["evidence"])
 
-    def test_audit_report_declares_2026_09_metric_set(self):
+    def test_audit_report_declares_2026_10_metric_set(self):
         with tempfile.TemporaryDirectory() as td:
             repo = Path(td)
             result = audit_portfolio.run_portfolio_audit(
                 [self._repo_info(repo)], repo.parent
             )
-            self.assertEqual(result["metricSetVersion"], "2026.09")
-            self.assertEqual(result["metricSetChange"]["added"], ["AGENT-004"])
+            self.assertEqual(result["metricSetVersion"], "2026.10")
+            self.assertEqual(result["metricSetChange"]["added"], ["AGENT-005"])
 
 
 if __name__ == "__main__":
