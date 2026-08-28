@@ -53,6 +53,34 @@ The initial baseline captures recurring principles already present in the Agent 
 
 Projects may add domain-specific behaviors, but should keep canonical behavior names portable and avoid copying equivalent rules into every vendor-specific agent file.
 
+## Validation boundary
+
+Run the repository-local validator with:
+
+```bash
+bash templates/scripts/validate-behaviors.sh
+```
+
+The validator checks only deterministic structure:
+
+- behavior files exist under `.agents/behaviors/<name>/BEHAVIOR.md`
+- YAML frontmatter opens and closes correctly
+- `name` is present and matches the parent directory
+- `description` is present
+
+It intentionally does **not** score semantic quality, judge whether a behavior is useful, or claim that an agent actually followed the behavior. Those judgments belong to trace review and evals.
+
+## OpenForge compliance mapping
+
+Behavior support extends the Agent Engineering compliance profile without replacing the existing root-contract checks.
+
+- `AGENT-001` — concise agent root contract exists.
+- `AGENT-002` — runtime instructions and detailed engineering guidance remain layered.
+- `AGENT-003` — evidence, reproduction, and convergence rules are explicit.
+- `AGENT-004` — recurring cross-task conduct is represented as valid Agent Behavior specifications when a repository adopts the behavior profile.
+
+`AGENT-004` should be treated as an adoption-level control rather than a universal requirement for repositories that do not use autonomous or long-running agents. A compliant adoption must pass structural validation; semantic behavior quality still requires review or eval evidence.
+
 ## Evaluation guidance
 
 Behavior evaluation should focus on observable evidence in a trace rather than hidden intent. A project may use human review, rubric-based model evaluation, or automated checks. OpenForge does not prescribe a single scorer.
@@ -64,7 +92,8 @@ A useful minimal outcome is `true`, `false`, or `na`, but this vocabulary is opt
 1. Start with a small baseline behavior set.
 2. Add behaviors only for recurring, cross-task expectations.
 3. Keep deterministic rules in CI or policy-as-code.
-4. Review traces to find repeated failure patterns before adding new behaviors.
-5. Add automated validation of file structure only after the behavior model is stable.
+4. Validate behavior structure in CI.
+5. Review traces to find repeated failure patterns before adding or revising behaviors.
+6. Add semantic evals only when representative traces and stable criteria exist.
 
 External behavior specifications and tooling should be treated as third-party inputs. Preserve provenance, review licensing and security implications, and do not allow imported guidance to override repository policy automatically.
