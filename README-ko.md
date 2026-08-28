@@ -23,7 +23,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - Dependency 호환성만으로 최신 버전을 즉시 채택하지 않습니다.
 - Dependency/runtime/toolchain 변경은 workflow 전체 영향 분석을 수행합니다.
 - AI agent와 repository-local instruction은 잠재적으로 untrusted execution input으로 취급합니다.
-- 외부 plugin, skill, behavior specification은 identity, integrity, provenance 및 behavioral policy 검증 전까지 untrusted input으로 취급합니다.
+- 외부 plugin, skill, behavior specification, trace, eval baseline은 identity, integrity, provenance 및 behavioral policy 검증 전까지 untrusted input으로 취급합니다.
 - 단독 maintainer OSS도 사람 수가 아니라 risk와 automated control을 기준으로 governance를 적용합니다.
 - CI 장애가 security gate 우회를 유도하지 않도록 resilience/fallback을 설계합니다.
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
@@ -51,6 +51,7 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 - [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
 - [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
 - [Agent Behavior 표준](docs/agent-behaviors-ko.md) ([English](docs/agent-behaviors.md))
+- [Agent Evaluation 표준](docs/agent-evaluation-ko.md) ([English](docs/agent-evaluation.md))
 - [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
@@ -91,9 +92,10 @@ templates/
 ├── DESIGN.md
 ├── ADR.md
 ├── ADR-ko.md
+├── agent-eval/      # structured trace / evaluation example
 ├── github/          # PR / CODEOWNERS
 ├── workflows/       # CI / release / SBOM / supply-chain
-├── scripts/         # toolchain / validation / supply-chain checks
+├── scripts/         # toolchain / validation / evaluation helper
 ├── policy/          # dependency / plugin-intake / engineering policy
 ├── container/       # Docker baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
@@ -120,13 +122,17 @@ python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
 
 # 이전 베이스라인과의 비교 (Delta 및 해결된 Gap 분석)
 python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
+
+# 대표 Agent Trace 평가
+python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
 ```
 
 Canonical auditor는 metric set `2026.09`를 사용합니다. 총 **36개 안정화된 compliance metric**을 제공하며, `.agents/behaviors/`를 채택한 저장소에는 opt-in `AGENT-004`를 적용합니다. `2026.08` baseline과의 비교는 가능한 경우 `additive-compatible`로 처리합니다.
 
 - [포트폴리오 스코어카드](docs/portfolio-scorecard-ko.md) — 14개 OSS 저장소의 표준 채택률 및 우선 개선 순위
 - [참고 메트릭](docs/reference-metrics-ko.md) — 36개 표준 엔지니어링 및 성숙도 지표
-- [Agent Behavior 표준](docs/agent-behaviors-ko.md) — 반복 행동, 구조 검증, Eval Governance
+- [Agent Behavior 표준](docs/agent-behaviors-ko.md) — 반복 행동과 구조 검증 Governance
+- [Agent Evaluation 표준](docs/agent-evaluation-ko.md) — Trace Evidence, Deterministic Eval, Regression Comparison
 - [Branch Protection 표준](docs/branch-protection-ko.md) — 기준 브랜치 보호 및 필수 CI 검사 요건
 - [Gap Issues 카탈로그](docs/gap-issues/) — 영역별로 분리된 GitHub Issue 등록용 명세
 
