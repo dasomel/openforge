@@ -127,7 +127,7 @@ python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-rep
 python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
 ```
 
-Canonical auditor는 metric set `2026.09`를 사용합니다. 총 **36개 안정화된 compliance metric**을 제공하며, `.agents/behaviors/`를 채택한 저장소에는 opt-in `AGENT-004`를 적용합니다. `2026.08` baseline과의 비교는 가능한 경우 `additive-compatible`로 처리합니다.
+Canonical auditor는 metric set `2026.09`를 사용합니다. 총 **36개 안정화된 compliance metric**을 제공하며, `.agents/behaviors/`를 채택한 저장소에는 opt-in `AGENT-004`를 적용합니다. `2026.08` baseline과의 비교는 가능한 경우 `additive-compatible`로 처리합니다. Trace/Eval Adoption은 아직 새 Portfolio Metric으로 승격하지 않고, 여러 Repository와 대표 Workflow에서 반복성이 입증된 이후에 검토합니다.
 
 - [포트폴리오 스코어카드](docs/portfolio-scorecard-ko.md) — 14개 OSS 저장소의 표준 채택률 및 우선 개선 순위
 - [참고 메트릭](docs/reference-metrics-ko.md) — 36개 표준 엔지니어링 및 성숙도 지표
