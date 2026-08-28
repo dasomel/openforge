@@ -25,21 +25,21 @@ The baseline is applied to three OSS repositories with materially different runt
 
 A trace file and a verification event are no longer sufficient for high-risk completion.
 
-Strict traces encode verification status structurally. A convergence state `A` now requires a completion claim plus explicitly passed scoped verification. Failed, pending, unknown, skipped, unverified, or status-less relevant verification makes `task-convergence` false. A completion claim against failed/non-passed verification also makes `evidence-before-claim` false.
+Strict traces encode verification status structurally. A convergence state `A` requires a completion claim plus explicitly passed scoped verification. Failed, pending, unknown, skipped, unverified, or status-less relevant verification makes `task-convergence` false. A completion claim against failed/non-passed verification also makes `evidence-before-claim` false.
 
-Strict bug-fix traces require `regression_verification` to be explicitly passed. States `B` and `C` still support meaningful progress/stop, but require a next action and must not coexist with a completion claim in strict mode.
+Strict bug-fix traces require `regression_verification` to be explicitly passed. States `B` and `C` support meaningful progress/stop, but require a next action and must not coexist with a completion claim in strict mode.
 
 Historical traces remain compatible in legacy mode. The high-risk evidence-correlation gate requires strict mode only for traces relevant to the current high-risk diff, avoiding forced migration of unrelated historical evidence.
 
 ### Cross-project rollout
 
-OpenForge, Narwhal, KubeMetal, and nfs-quota-agent evaluators now implement the strict consistency semantics. The current operational maintenance trace in each repository was upgraded to `consistencyMode: strict` with explicit `status: passed` verification and regression-verification events.
+OpenForge, Narwhal, KubeMetal, and nfs-quota-agent evaluators implement the strict consistency semantics. The current operational maintenance trace in each repository was upgraded to `consistencyMode: strict` with explicit `status: passed` verification and regression-verification events.
 
 The high-risk evidence checker additionally requires a relevant trace to be strict and to contain at least one explicitly passed verification event.
 
-### Verification
+### Verification evidence
 
-OpenForge CI and Markdown passed after the strict evaluator, tests, evidence checker, and operational trace update. Narwhal, KubeMetal, and nfs-quota-agent Agent Behavior workflows also passed with the strict contract enabled. KubeMetal repository CI is tracked separately; Narwhal Version Check remains a separate evidence class.
+The strict implementation was exercised by the real stacked PRs. OpenForge CI/Markdown and the Agent Behavior workflows in Narwhal, KubeMetal, and nfs-quota-agent passed after the evaluator, evidence checker, and operational traces were upgraded. KubeMetal repository CI is reported separately, while Narwhal Version Check remains a separate evidence class.
 
 ## Findings
 
