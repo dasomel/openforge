@@ -82,8 +82,14 @@ jobs:
           set -euo pipefail
           python3 -m unittest discover -s tests -v
 
-      - name: Smoke test portfolio audit CLI with fixture config
+      - name: Smoke test canonical portfolio audit CLI with fixture config
         shell: bash
         run: |
           set -euo pipefail
           python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only
+
+      - name: Smoke test behavior-aware portfolio audit CLI
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/audit-agent-behaviors.py --config tests/fixtures/compliance/portfolio.yml --summary-only
