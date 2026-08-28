@@ -83,6 +83,25 @@ jobs:
             --changed-files /tmp/agent-changed-files.txt \
             --report-out /tmp/agent-risk-result.json
 
+      - name: Gate canonical operational traces against trusted baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          for trace in templates/agent-eval/traces/*.json; do
+            [ -f "$trace" ] || continue
+            found=1
+            echo "Evaluating $trace"
+            python3 templates/scripts/agent-eval-gate.py \
+              --trace "$trace" \
+              --baseline templates/agent-eval/baseline.eval.json \
+              --current-out /tmp/current-agent-eval.json \
+              --comparison-out /tmp/agent-eval-comparison.json
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "No canonical operational traces committed; regression gate skipped."
+          fi
+
   adr-validation:
     runs-on: ubuntu-latest
     steps:
