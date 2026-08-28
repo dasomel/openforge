@@ -58,18 +58,61 @@ The local evaluators reliably validate event structure, completion evidence refe
 
 Cross-project adoption exposed an important reporting rule: a passing behavior-contract check must not mask unrelated repository CI failures, and an unrelated pre-existing CI failure must not be misreported as a behavior-evaluation regression. These are distinct evidence classes and should be surfaced independently.
 
+## Phase 2 — operational regression gate pilot
+
+The next stacked phase moved the model from reference evaluation to selective operational gating.
+
+Operational PRs:
+
+- `dasomel/narwhal#173`
+- `dasomel/kubemetal#52`
+- `dasomel/nfs-quota-agent#86`
+- `dasomel/openforge#24`
+
+The pilot added:
+
+- canonical `schemaVersion`-based trace/eval artifacts across all three repositories
+- incremental event recorders for real task traces
+- reviewed `baseline.eval.json` artifacts
+- regression gates using the ordering `false < na < true`
+- selective `.agents/evals/traces/*.json` gating instead of mandatory traces for every change
+- one committed operational pilot trace per downstream repository
+
+### Operational verification
+
+All three downstream `Agent Behavior` workflows executed the operational trace gate and passed at the job-step level.
+
+OpenForge's own regression-gate tests, reference gate, compliance tests, repository checks, ADR validation, supply-chain checks, and Markdown workflow also passed in the stacked operational PR.
+
+KubeMetal's existing repository CI additionally passed on the operational stacked PR. Narwhal and nfs-quota-agent operational stacked PR evidence remains scoped to the Agent Behavior workflow because unrelated repository workflows are tracked separately.
+
+### New finding — schema portability matters
+
+The first downstream evaluator implementations used a simplified local schema. The operational pilot exposed that this would make eval artifacts difficult to compare across repositories. Phase 2 therefore aligned downstream traces and eval results with the OpenForge canonical schemas before adding the regression gate.
+
+This is a positive example of the pilot doing useful work before metric promotion: portability issues were found while the model was still optional and inexpensive to change.
+
+### New finding — selective traces are preferable to universal logging
+
+The pilot intentionally gates only committed operational traces. This avoids creating low-signal process artifacts for ordinary changes while still allowing high-risk or agent-heavy work to gain regression protection.
+
+A future policy should preserve this risk-based adoption model unless evidence demonstrates that broader trace capture provides enough value to justify the cost.
+
 ## Decision on a future AGENT-005
 
 Do **not** add `AGENT-005` yet.
 
-Three repository adoptions provide meaningful implementation evidence, but not enough longitudinal evidence to make trace/eval adoption a portfolio-wide compliance metric. Before promotion, collect representative traces from real maintenance work and observe whether the baseline detects useful regressions without creating ritualized or low-signal trace data.
+Three repository adoptions plus the operational regression-gate pilot establish implementation portability and CI feasibility, but there is still not enough longitudinal evidence to make trace/eval adoption a portfolio-wide compliance metric.
+
+Before promotion, collect representative traces from real maintenance work and observe whether the baseline detects useful regressions without creating ritualized or low-signal trace data.
 
 A future metric should require operational evidence rather than the mere presence of `.agents/evals/` files.
 
 ## Next evidence to collect
 
 - real bug-fix traces from at least two repositories
-- at least one failed/regressed behavior result that produces an actionable finding
+- at least one genuine failed/regressed behavior result that produces an actionable finding before merge
 - evidence that the same event vocabulary can be produced without exposing secrets, customer data, or hidden reasoning
 - comparison of maintenance cost versus debugging/regression value
 - confirmation that project-specific runtime evidence classes can remain explicit without fragmenting the portable behavior names
+- evidence that baseline changes remain deliberate and are not used to suppress inconvenient regressions
