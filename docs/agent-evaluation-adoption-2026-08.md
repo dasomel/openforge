@@ -28,9 +28,13 @@ Each repository also adds:
 
 ## Initial results
 
-At the first PR-triggered execution, the new `Agent Behavior` workflow completed successfully in all three repositories.
+The first PR-triggered `Agent Behavior` workflow completed successfully in all three repositories.
 
-Existing repository CI remains a separate evidence class and must not be conflated with the Behavior-contract result. At the time this adoption record was created, existing CI was still running or queued in the three downstream PRs.
+Existing repository CI remains a separate evidence class and must not be conflated with the Behavior-contract result:
+
+- **KubeMetal** — existing `CI` and new `Agent Behavior` workflow both passed.
+- **Narwhal** — new `Agent Behavior` workflow passed. Existing `Lint & Validate` failed in `Mistakes Log format` and `kubeconform` jobs. The immediately preceding `main` run on the unchanged base commit also failed, so these failures are pre-existing and are not caused by the behavior adoption patch.
+- **nfs-quota-agent** — new `Agent Behavior` workflow passed; existing repository CI was still queued at the time of this record update.
 
 ## Findings
 
@@ -49,6 +53,10 @@ The behavior name remains shared, but design-level expansion differs by project:
 ### 4. Deterministic trace evaluation is useful as a baseline, not semantic proof
 
 The local evaluators reliably validate event structure, completion evidence references, reproduction/verification presence, convergence state, scope expansion markers, and external-input provenance markers. They intentionally do not infer semantic correctness from prose or inspect hidden reasoning.
+
+### 5. Behavior CI should stay separate from repository CI
+
+Cross-project adoption exposed an important reporting rule: a passing behavior-contract check must not mask unrelated repository CI failures, and an unrelated pre-existing CI failure must not be misreported as a behavior-evaluation regression. These are distinct evidence classes and should be surfaced independently.
 
 ## Decision on a future AGENT-005
 
