@@ -79,7 +79,15 @@ Behavior support extends the Agent Engineering compliance profile without replac
 - `AGENT-003` — evidence, reproduction, and convergence rules are explicit.
 - `AGENT-004` — recurring cross-task conduct is represented as valid Agent Behavior specifications when a repository adopts the behavior profile.
 
-`AGENT-004` should be treated as an adoption-level control rather than a universal requirement for repositories that do not use autonomous or long-running agents. A compliant adoption must pass structural validation; semantic behavior quality still requires review or eval evidence.
+`AGENT-004` is an adoption-level control, not a universal requirement. A repository without `.agents/behaviors/` receives `N/A`; once the directory is present, the portfolio auditor requires at least one structurally valid behavior specification.
+
+During the transition to the next metric-set revision, use the behavior-aware audit entrypoint:
+
+```bash
+python3 templates/scripts/audit-agent-behaviors.py --config portfolio.yml --summary-only
+```
+
+This entrypoint loads the canonical portfolio audit engine, registers `AGENT-004`, and preserves the existing CLI and scoring behavior. It provides a compatibility bridge while the metric is proven against portfolio fixtures before being folded into the next canonical metric-set version.
 
 ## Evaluation guidance
 
