@@ -8,6 +8,7 @@ import sys
 from pathlib import Path
 
 ACCEPTED_EVIDENCE_PREFIXES = ("test:", "ci:", "runtime:", "artifact:", "policy:")
+PASS_STATUSES = {"pass", "passed", "success", "successful", "ok", "verified"}
 
 
 def load_json(path):
@@ -40,6 +41,8 @@ def validate_trace(trace, high_risk_paths):
     failures = []
     if trace.get("schemaVersion") != "openforge-agent-trace/v1":
         failures.append("trace schemaVersion must be openforge-agent-trace/v1")
+    if trace.get("consistencyMode") != "strict":
+        failures.append("high-risk trace must set consistencyMode to strict")
 
     context = trace.get("changeContext")
     if not isinstance(context, dict):
@@ -64,6 +67,9 @@ def validate_trace(trace, high_risk_paths):
         typed = [ref for ref in evidence if ref.startswith(ACCEPTED_EVIDENCE_PREFIXES)]
         if not typed:
             failures.append("verification must include typed evidence (test:, ci:, runtime:, artifact:, or policy:)")
+        statuses = [str(e.get("status", "")).strip().lower() for e in verification_events]
+        if not any(status in PASS_STATUSES for status in statuses):
+            failures.append("at least one verification event must have explicit passed status")
 
     completion = [e for e in trace.get("events", []) if e.get("type") == "completion_claim"]
     if completion and not verification_events:
@@ -81,22 +87,10 @@ def assess_traces(sources, traces, high_risk):
     for source, trace in zip(sources, traces):
         covered = [path for path in high_risk if trace_covers(trace, path)]
         if not covered:
-            trace_results.append({
-                "trace": source,
-                "traceId": trace.get("traceId"),
-                "status": "not-applicable",
-                "coveredHighRiskPaths": [],
-                "failures": [],
-            })
+            trace_results.append({"trace": source, "traceId": trace.get("traceId"), "status": "not-applicable", "coveredHighRiskPaths": [], "failures": []})
             continue
         trace_failures = validate_trace(trace, covered)
-        trace_results.append({
-            "trace": source,
-            "traceId": trace.get("traceId"),
-            "status": "evaluated",
-            "coveredHighRiskPaths": covered,
-            "failures": trace_failures,
-        })
+        trace_results.append({"trace": source, "traceId": trace.get("traceId"), "status": "evaluated", "coveredHighRiskPaths": covered, "failures": trace_failures})
         failures.extend(f"{source}: {item}" for item in trace_failures)
     return trace_results, failures
 
@@ -108,20 +102,12 @@ def main():
     parser.add_argument("--trace", action="append", required=True)
     parser.add_argument("--report-out")
     args = parser.parse_args()
-
     policy = load_json(args.policy)
     changed = read_changed(args.changed_files)
     high_risk = classify_high_risk(changed, policy)
     traces = [load_json(path) for path in args.trace]
     trace_results, failures = assess_traces(args.trace, traces, high_risk)
-
-    report = {
-        "schemaVersion": "openforge-agent-evidence-quality/v1",
-        "highRiskPaths": high_risk,
-        "traceResults": trace_results,
-        "passed": not failures,
-        "failures": failures,
-    }
+    report = {"schemaVersion": "openforge-agent-evidence-quality/v1", "highRiskPaths": high_risk, "traceResults": trace_results, "passed": not failures, "failures": failures}
     rendered = json.dumps(report, indent=2)
     print(rendered)
     if args.report_out:
