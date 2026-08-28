@@ -174,7 +174,7 @@ python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-rep
 python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
 ```
 
-The canonical auditor publishes metric set `2026.09`. It contains **36 stable compliance metrics**, including opt-in `AGENT-004` for repositories that adopt `.agents/behaviors/`. Comparisons against `2026.08` are reported as additive-compatible when appropriate.
+The canonical auditor publishes metric set `2026.09`. It contains **36 stable compliance metrics**, including opt-in `AGENT-004` for repositories that adopt `.agents/behaviors/`. Comparisons against `2026.08` are reported as additive-compatible when appropriate. Trace/eval adoption is deliberately not a new portfolio metric yet; it must first demonstrate repeatability across multiple repositories and representative workflows.
 
 - [Portfolio Scorecard](docs/portfolio-scorecard.md) — 14-repository adoption scorecard and remediation ranking
 - [Reference Metrics](docs/reference-metrics.md) — 36 standard engineering and maturity metrics
