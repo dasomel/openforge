@@ -23,7 +23,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - Dependency 호환성만으로 최신 버전을 즉시 채택하지 않습니다.
 - Dependency/runtime/toolchain 변경은 workflow 전체 영향 분석을 수행합니다.
 - AI agent와 repository-local instruction은 잠재적으로 untrusted execution input으로 취급합니다.
-- 외부 plugin과 skill은 immutable identity, integrity 및 실행 행위 정책 검증을 통과하기 전까지 untrusted executable input으로 취급합니다.
+- 외부 plugin, skill, behavior specification은 identity, integrity, provenance 및 behavioral policy 검증 전까지 untrusted input으로 취급합니다.
 - 단독 maintainer OSS도 사람 수가 아니라 risk와 automated control을 기준으로 governance를 적용합니다.
 - CI 장애가 security gate 우회를 유도하지 않도록 resilience/fallback을 설계합니다.
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
@@ -50,6 +50,7 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
 - [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
 - [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
+- [Agent Behavior 표준](docs/agent-behaviors-ko.md) ([English](docs/agent-behaviors.md))
 - [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
@@ -80,11 +81,12 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 
 ## 재사용 가능한 템플릿
 
-OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md)입니다.
+OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`BEHAVIOR.md`](templates/BEHAVIOR.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md)입니다.
 
 ```text
 templates/
 ├── AGENTS.md
+├── BEHAVIOR.md
 ├── CODING_STANDARDS.md
 ├── DESIGN.md
 ├── ADR.md
@@ -120,8 +122,11 @@ python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
 python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
 ```
 
+Canonical auditor는 metric set `2026.09`를 사용합니다. 총 **36개 안정화된 compliance metric**을 제공하며, `.agents/behaviors/`를 채택한 저장소에는 opt-in `AGENT-004`를 적용합니다. `2026.08` baseline과의 비교는 가능한 경우 `additive-compatible`로 처리합니다.
+
 - [포트폴리오 스코어카드](docs/portfolio-scorecard-ko.md) — 14개 OSS 저장소의 표준 채택률 및 우선 개선 순위
-- [참고 메트릭](docs/reference-metrics-ko.md) — 35개 표준 엔지니어링 및 성숙도 지표
+- [참고 메트릭](docs/reference-metrics-ko.md) — 36개 표준 엔지니어링 및 성숙도 지표
+- [Agent Behavior 표준](docs/agent-behaviors-ko.md) — 반복 행동, 구조 검증, Eval Governance
 - [Branch Protection 표준](docs/branch-protection-ko.md) — 기준 브랜치 보호 및 필수 CI 검사 요건
 - [Gap Issues 카탈로그](docs/gap-issues/) — 영역별로 분리된 GitHub Issue 등록용 명세
 
