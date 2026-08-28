@@ -41,6 +41,8 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
 
       - name: Validate Agent Behavior specifications
         shell: bash
@@ -49,6 +51,76 @@ jobs:
       - name: Evaluate reference agent trace
         shell: bash
         run: python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
+
+      - name: Enforce reference behavior regression gate
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/agent-eval-gate.py \
+            --trace templates/agent-eval/trace.example.json \
+            --baseline templates/agent-eval/baseline.eval.json \
+            --current-out /tmp/current-agent-eval.json \
+            --comparison-out /tmp/agent-eval-comparison.json
+
+      - name: Collect PR changed paths
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          git diff --name-only \
+            "${{ github.event.pull_request.base.sha }}" \
+            "${{ github.event.pull_request.head.sha }}" \
+            > /tmp/agent-changed-files.txt
+          cat /tmp/agent-changed-files.txt
+
+      - name: Require operational trace for high-risk PR changes
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/check-agent-trace-requirement.py \
+            --policy templates/agent-eval/risk-policy.json \
+            --changed-files /tmp/agent-changed-files.txt \
+            --report-out /tmp/agent-risk-result.json
+
+      - name: Correlate high-risk changes with trace evidence
+        if: github.event_name == 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          args=()
+          for trace in templates/agent-eval/traces/*.json; do
+            [ -f "$trace" ] || continue
+            args+=(--trace "$trace")
+          done
+          if [ "${#args[@]}" -eq 0 ]; then
+            echo "No canonical operational traces found"
+            exit 1
+          fi
+          python3 templates/scripts/check-agent-trace-evidence.py \
+            --policy templates/agent-eval/risk-policy.json \
+            --changed-files /tmp/agent-changed-files.txt \
+            "${args[@]}" \
+            --report-out /tmp/agent-evidence-quality.json
+
+      - name: Gate canonical operational traces against trusted baseline
+        shell: bash
+        run: |
+          set -euo pipefail
+          found=0
+          for trace in templates/agent-eval/traces/*.json; do
+            [ -f "$trace" ] || continue
+            found=1
+            echo "Evaluating $trace"
+            python3 templates/scripts/agent-eval-gate.py \
+              --trace "$trace" \
+              --baseline templates/agent-eval/baseline.eval.json \
+              --current-out /tmp/current-agent-eval.json \
+              --comparison-out /tmp/agent-eval-comparison.json
+          done
+          if [ "$found" -eq 0 ]; then
+            echo "No canonical operational traces committed; regression gate skipped."
+          fi
 
   adr-validation:
     runs-on: ubuntu-latest
@@ -70,13 +142,21 @@ jobs:
           set -euo pipefail
           bash templates/scripts/verify-supply-chain.sh
 
+      - name: Guard immutable CI inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/check-mutable-inputs.py \
+            .github/workflows/ci.yml \
+            .github/workflows/markdown.yml
+
   compliance-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 

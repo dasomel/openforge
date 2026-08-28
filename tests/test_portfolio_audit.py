@@ -32,9 +32,9 @@ class TestPortfolioAuditor(unittest.TestCase):
         self.workspace_root = FIXTURES_DIR
 
     def test_stable_metric_ids_integrity(self):
-        """Verify all 36 standard metrics have unique, uppercase stable IDs with required fields and weight=1."""
+        """Verify all 37 standard metrics have unique, uppercase stable IDs with required fields and weight=1."""
         metrics = audit_portfolio.METRIC_DEFINITIONS
-        self.assertEqual(len(metrics), 36, f"Expected exactly 36 metrics, got {len(metrics)}")
+        self.assertEqual(len(metrics), 37, f"Expected exactly 37 metrics, got {len(metrics)}")
 
         seen_ids = set()
         for m in metrics:
@@ -73,7 +73,7 @@ class TestPortfolioAuditor(unittest.TestCase):
         self.assertIn("earned", res["score"])
         self.assertIn("possible", res["score"])
         self.assertIn("percent", res["score"])
-        self.assertEqual(res["metrics"]["totalDefined"], 36)
+        self.assertEqual(res["metrics"]["totalDefined"], 37)
 
         self.assertNotIn("/Users/", res["pathHint"])
         self.assertNotIn("/home/", res["pathHint"])
