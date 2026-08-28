@@ -29,7 +29,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - Dependency compatibility alone does not justify immediate adoption of the newest release.
 - Dependency/runtime/toolchain changes require workflow-wide impact analysis.
 - AI agents and repository-local instructions are treated as potentially untrusted execution inputs.
-- External plugins, skills, and behavior specifications are treated as untrusted inputs until identity, integrity, provenance, and behavioral policy checks pass.
+- External plugins, skills, behavior specifications, traces, and eval baselines are treated as untrusted inputs until identity, integrity, provenance, and behavioral policy checks pass.
 - Security controls are risk-based so single-maintainer OSS projects remain practical.
 - CI outages must not force maintainers to bypass security gates blindly.
 - Reusable templates provide implementation starting points but are not universal drop-in configuration.
@@ -56,6 +56,7 @@ See the [ADR index](docs/adr/README.md). The initial retrospective ADR set captu
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Agent Engineering Standard](docs/agent-engineering.md) ([한국어](docs/agent-engineering-ko.md))
 - [Agent Behavior Standard](docs/agent-behaviors.md) ([한국어](docs/agent-behaviors-ko.md))
+- [Agent Evaluation Standard](docs/agent-evaluation.md) ([한국어](docs/agent-evaluation-ko.md))
 - [Agent Engineering Adoption — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS Design System Standard](docs/design-system.md) ([한국어](docs/design-system-ko.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
@@ -95,9 +96,10 @@ templates/
 ├── CODING_STANDARDS.md
 ├── DESIGN.md        # project design-system contract
 ├── ADR.md           # durable decision record
+├── agent-eval/      # structured trace/evaluation examples
 ├── github/          # PR / CODEOWNERS patterns
 ├── workflows/       # CI / release / SBOM workflows
-├── scripts/         # toolchain / validation helpers
+├── scripts/         # toolchain / validation / evaluation helpers
 ├── policy/          # dependency / plugin-intake / engineering policies
 ├── container/       # Docker image baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
@@ -167,13 +169,17 @@ python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
 
 # Compare against historical baseline
 python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
+
+# Evaluate a representative agent trace
+python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/trace.example.json
 ```
 
 The canonical auditor publishes metric set `2026.09`. It contains **36 stable compliance metrics**, including opt-in `AGENT-004` for repositories that adopt `.agents/behaviors/`. Comparisons against `2026.08` are reported as additive-compatible when appropriate.
 
 - [Portfolio Scorecard](docs/portfolio-scorecard.md) — 14-repository adoption scorecard and remediation ranking
 - [Reference Metrics](docs/reference-metrics.md) — 36 standard engineering and maturity metrics
-- [Agent Behavior Standard](docs/agent-behaviors.md) — recurring agent conduct, validation, and evaluation governance
+- [Agent Behavior Standard](docs/agent-behaviors.md) — recurring agent conduct and structural validation governance
+- [Agent Evaluation Standard](docs/agent-evaluation.md) — trace evidence, deterministic behavior eval, and regression comparison
 - [Branch Protection Standard](docs/branch-protection.md) — canonical branch gates and status check requirements
 - [Gap Issues Catalog](docs/gap-issues/) — structured GitHub issue drafts grouped by area
 
