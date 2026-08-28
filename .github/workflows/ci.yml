@@ -80,13 +80,22 @@ jobs:
           set -euo pipefail
           bash templates/scripts/verify-supply-chain.sh
 
+      - name: Guard immutable CI and template inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/check-mutable-inputs.py \
+            .github/workflows/ci.yml \
+            .github/workflows/markdown.yml \
+            templates/scripts
+
   compliance-tests:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Set up Python
-        uses: actions/setup-python@v5
+        uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
         with:
           python-version: "3.11"
 
