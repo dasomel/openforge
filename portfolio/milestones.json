@@ -1,0 +1,45 @@
+{
+  "version": "openforge-milestones/v1",
+  "updated_at": "2026-09-07",
+  "milestones": [
+    {
+      "id": "portfolio-adoption-m2",
+      "name": "Portfolio Adoption M2",
+      "status": "implementing",
+      "metric": "portfolio_adoption_percent",
+      "current": 61.6,
+      "target": 70.0,
+      "unit": "%"
+    },
+    {
+      "id": "agent-execution-security-rollout",
+      "name": "Agent Execution Security Rollout",
+      "status": "implementing",
+      "projects": {
+        "narwhal-portal": "design-adopted",
+        "kubemetal": "design-adopted",
+        "beluga": "design-adopted",
+        "kube-ready-box": "design-adopted"
+      }
+    },
+    {
+      "id": "portfolio-control-plane",
+      "name": "OSS Portfolio Control Plane",
+      "status": "implementing",
+      "projects": {
+        "openforge": "implementing"
+      }
+    }
+  ],
+  "allowed_statuses": [
+    "planned",
+    "designing",
+    "implementing",
+    "verifying",
+    "implemented",
+    "adopted",
+    "maintenance",
+    "blocked",
+    "deprecated"
+  ]
+}
