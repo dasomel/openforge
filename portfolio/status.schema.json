@@ -16,7 +16,7 @@
       "additionalProperties": false,
       "required": ["status"],
       "properties": {
-        "status": {"enum": ["planned", "designing", "implementing", "verifying", "implemented", "adopted", "maintenance", "blocked", "deprecated"]},
+        "status": {"enum": ["planned", "designing", "implementing", "verifying", "implemented", "adopted", "active", "maintenance", "blocked", "deprecated"]},
         "milestone": {"type": ["string", "null"]},
         "progress_percent": {"type": ["number", "null"], "minimum": 0, "maximum": 100}
       }
