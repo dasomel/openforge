@@ -1,0 +1,39 @@
+{
+  "version": "openforge-project-status/v1",
+  "project": "narwhal",
+  "repository": "dasomel/narwhal",
+  "revision": "example-revision",
+  "updated_at": "2026-09-07",
+  "development": {
+    "status": "implemented",
+    "milestone": "example-capability",
+    "progress_percent": 100
+  },
+  "capabilities": {
+    "example-capability": {
+      "status": "implemented",
+      "standard": "openforge/example-standard",
+      "verification": {
+        "unit": "pass",
+        "integration": "pass",
+        "runtime": "pass",
+        "security": "pass"
+      }
+    }
+  },
+  "relationships": [
+    {
+      "target": "narwhal-portal",
+      "type": "provides",
+      "scope": "example capability"
+    }
+  ],
+  "evidence": {
+    "issue": 155,
+    "pull_request": 201,
+    "commit": "abcdef0123456789",
+    "ci": "pass",
+    "security": "pass",
+    "runtime": "pass"
+  }
+}

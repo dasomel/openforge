@@ -1,0 +1,103 @@
+name: Publish OpenForge Portfolio Status
+
+# Copy/adapt this workflow into a downstream repository.
+# It assumes the repository creates `.openforge/status.json` conforming to
+# openforge-project-status/v1 after its own required verification succeeds.
+#
+# Required secret:
+#   OPENFORGE_STATUS_TOKEN
+#     A GitHub App token or narrowly-scoped fine-grained token with only the
+#     permissions required to create a branch and pull request in dasomel/openforge.
+#     Do not use a broad maintainer/owner token.
+
+on:
+  workflow_dispatch:
+  # Prefer triggering after an explicit release/milestone verification workflow.
+  # workflow_run:
+  #   workflows: ["Release Verification"]
+  #   types: [completed]
+
+permissions:
+  contents: read
+
+jobs:
+  publish-status:
+    # When using workflow_run, add a condition that the upstream workflow succeeded.
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source repository
+        uses: actions/checkout@<APPROVED_IMMUTABLE_REVISION>
+
+      - name: Verify local status payload exists
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .openforge/status.json
+          python3 -m json.tool .openforge/status.json >/dev/null
+
+      - name: Checkout OpenForge
+        uses: actions/checkout@<APPROVED_IMMUTABLE_REVISION>
+        with:
+          repository: dasomel/openforge
+          path: openforge
+          token: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+          fetch-depth: 1
+
+      - name: Validate and apply status
+        shell: bash
+        run: |
+          set -euo pipefail
+          cp .openforge/status.json openforge/.project-status.json
+          cd openforge
+          python3 templates/scripts/generate-portfolio.py --validate-status .project-status.json
+          python3 templates/scripts/apply-portfolio-status.py .project-status.json
+          python3 templates/scripts/generate-portfolio.py --validate-only
+          rm .project-status.json
+
+      - name: Create status branch and push
+        id: push
+        env:
+          GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          project="$(python3 -c 'import json; print(json.load(open(".openforge/status.json"))["project"])')"
+          revision="$(python3 -c 'import json; print(json.load(open(".openforge/status.json"))["revision"])')"
+          branch="portfolio-status/${project}-${GITHUB_RUN_ID}"
+          cd openforge
+          git config user.name "openforge-status-bot"
+          git config user.email "openforge-status-bot@users.noreply.github.com"
+          git checkout -b "$branch"
+          git add portfolio/projects.json
+          if git diff --cached --quiet; then
+            echo "No portfolio state change to publish"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore(portfolio): update ${project} development status"
+          git push origin "$branch"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+          echo "project=$project" >> "$GITHUB_OUTPUT"
+          echo "revision=$revision" >> "$GITHUB_OUTPUT"
+
+      - name: Open portfolio status pull request
+        if: steps.push.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+          BRANCH: ${{ steps.push.outputs.branch }}
+          PROJECT: ${{ steps.push.outputs.project }}
+          REVISION: ${{ steps.push.outputs.revision }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          cd openforge
+          gh pr create \
+            --repo dasomel/openforge \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore(portfolio): update ${PROJECT} development status" \
+            --body "Automated portfolio status proposal from \`${GITHUB_REPOSITORY}\` at revision \`${REVISION}\`.\n\nOpenForge CI must validate the registry and the PR remains reviewable before merge."
+
+# Replace APPROVED_IMMUTABLE_REVISION with an approved immutable checkout SHA
+# before production use. This is a template, not a drop-in workflow.

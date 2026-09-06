@@ -1,0 +1,68 @@
+{
+  "version": "openforge-relationships/v1",
+  "updated_at": "2026-09-07",
+  "relationship_types": [
+    "standardizes",
+    "reference-implementation",
+    "implements",
+    "depends-on",
+    "consumes",
+    "provides",
+    "shared-contract",
+    "security-impact",
+    "control-surface"
+  ],
+  "relationships": [
+    {"source":"openforge","target":"narwhal","type":"standardizes","impact":"high","scope":"engineering standards and agent execution security"},
+    {"source":"openforge","target":"narwhal-portal","type":"standardizes","impact":"high","scope":"engineering standards and agent execution security"},
+    {"source":"openforge","target":"kubemetal","type":"standardizes","impact":"high","scope":"engineering standards and agent execution security"},
+    {"source":"openforge","target":"beluga","type":"standardizes","impact":"medium","scope":"engineering standards and agent execution security"},
+    {"source":"openforge","target":"kube-ready-box","type":"standardizes","impact":"medium","scope":"engineering standards and enforcement evidence"},
+    {"source":"openforge","target":"nfs-quota-agent","type":"standardizes","impact":"medium","scope":"engineering standards"},
+    {"source":"openforge","target":"ldapium","type":"standardizes","impact":"medium","scope":"engineering standards"},
+    {"source":"openforge","target":"clusterdeck","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
+    {"source":"openforge","target":"beluga-manager","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
+    {"source":"openforge","target":"egovframe-launcher","type":"standardizes","impact":"low","scope":"developer-tool standards"},
+    {"source":"openforge","target":"dasomel-github-io","type":"standardizes","impact":"low","scope":"documentation and presentation"},
+
+    {"source":"narwhal","target":"openforge","type":"reference-implementation","impact":"high","scope":"platform, security and agent execution patterns"},
+    {"source":"narwhal","target":"narwhal-portal","type":"provides","impact":"high","scope":"platform capabilities and execution contracts"},
+    {"source":"narwhal-portal","target":"narwhal","type":"control-surface","impact":"high","scope":"platform user and agent operations"},
+
+    {"source":"kubemetal","target":"kube-ready-box","type":"consumes","impact":"medium","scope":"runtime/sandbox capability and enforcement evidence"},
+    {"source":"narwhal","target":"kube-ready-box","type":"consumes","impact":"medium","scope":"runtime/sandbox capability and enforcement evidence"},
+    {"source":"kube-ready-box","target":"narwhal","type":"provides","impact":"medium","scope":"sandbox/runtime enforcement evidence"},
+    {"source":"kube-ready-box","target":"kubemetal","type":"provides","impact":"medium","scope":"sandbox/runtime enforcement evidence"},
+
+    {"source":"beluga","target":"beluga-manager","type":"provides","impact":"high","scope":"data-platform management capabilities"},
+    {"source":"beluga-manager","target":"beluga","type":"control-surface","impact":"high","scope":"data-platform management operations"},
+
+    {"source":"narwhal","target":"nfs-quota-agent","type":"consumes","impact":"medium","scope":"storage quota capability"},
+    {"source":"nfs-quota-agent","target":"narwhal","type":"provides","impact":"medium","scope":"storage quota capability"},
+    {"source":"narwhal","target":"ldapium","type":"consumes","impact":"medium","scope":"identity/directory capability"},
+    {"source":"ldapium","target":"narwhal","type":"provides","impact":"medium","scope":"identity/directory capability"},
+
+    {"source":"narwhal","target":"kubemetal","type":"shared-contract","impact":"medium","scope":"agent execution and remediation security patterns"},
+    {"source":"narwhal","target":"beluga","type":"shared-contract","impact":"medium","scope":"agent execution and operations-agent security patterns"},
+    {"source":"narwhal-portal","target":"kubemetal","type":"shared-contract","impact":"medium","scope":"exact-invocation approval and recomputable evidence"},
+
+    {"source":"clusterdeck","target":"narwhal","type":"consumes","impact":"low","scope":"Kubernetes operations UX patterns"},
+    {"source":"dasomel-github-io","target":"openforge","type":"consumes","impact":"low","scope":"portfolio documentation and infographic outputs"}
+  ],
+  "standards": [
+    {
+      "id": "adr-0013-agent-execution-security",
+      "source": "openforge",
+      "affected_projects": [
+        {"project":"narwhal","impact":"high"},
+        {"project":"narwhal-portal","impact":"high"},
+        {"project":"kubemetal","impact":"high"},
+        {"project":"beluga","impact":"medium"},
+        {"project":"kube-ready-box","impact":"medium"},
+        {"project":"nfs-quota-agent","impact":"low"},
+        {"project":"ldapium","impact":"low"},
+        {"project":"clusterdeck","impact":"low"}
+      ]
+    }
+  ]
+}

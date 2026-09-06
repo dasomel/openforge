@@ -6,9 +6,9 @@ English | [한국어](README-ko.md)
 
 OpenForge는 품질 높은 오픈소스 프로젝트를 만들고 발전시키고, 배포하고, 운영하고 유지하기 위한 재사용 가능한 Engineering Foundation입니다.
 
-Repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, engineering tooling, **UI/UX 디자인 시스템**, reusable implementation templates, deployment baseline, 디자인 템플릿과 프로젝트 lifecycle을 공통 기준으로 관리합니다.
+Repository structure, documentation, GitHub workflow, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, release, maintainer governance, resilience, localization, engineering tooling, **UI/UX 디자인 시스템**, reusable implementation templates, deployment baseline, 디자인 템플릿, 프로젝트 lifecycle과 **OSS 포트폴리오 governance / dependency intelligence**를 공통 기준으로 관리합니다.
 
-[소개](docs/about-ko.md) · [의사결정 기록 / ADR](docs/adr/README-ko.md) · [English README](README.md)
+[소개](docs/about-ko.md) · [의사결정 기록 / ADR](docs/adr/README-ko.md) · [OSS 포트폴리오](PORTFOLIO-ko.md) · [English README](README.md)
 
 ## 핵심 원칙
 
@@ -29,6 +29,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - Template은 출발점이며 모든 프로젝트에 그대로 적용되는 drop-in configuration이 아닙니다.
 - UI의 의미와 Accessibility는 공통 표준을 따르되 Product Personality, Density, Platform Convention은 프로젝트 특성에 따라 의도적으로 달라질 수 있습니다.
 - 의도적인 예외는 범위와 만료를 기록합니다.
+- Cross-project 완료 상태는 코드 활동을 추정하지 않고 각 OSS가 검증한 Evidence를 Status PR로 게시하여 관리합니다.
 
 ## 의사결정 관리
 
@@ -50,6 +51,7 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
 - [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
 - [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
+- [Agent Execution Security Contract](docs/agent-execution-security-ko.md) ([English](docs/agent-execution-security.md))
 - [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
@@ -78,6 +80,37 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 - [Reference Practices Audit](docs/reference-practices-ko.md)
 - [Reference Implementation Metrics](docs/reference-metrics-ko.md)
 
+## OSS 포트폴리오 컨트롤 플레인
+
+![OpenForge OSS Portfolio](docs/assets/openforge-portfolio.svg)
+
+OpenForge는 각 Repository의 구현 책임을 가져오지 않으면서 전체 OSS 포트폴리오의 Engineering State를 통합 관리합니다.
+
+```text
+Downstream Repository
+  구현 + 검증
+      ↓
+openforge-project-status/v1
+      ↓
+OpenForge Status PR
+      ↓
+Registry / Impact Validation
+      ↓
+Merge = 공식 Portfolio State
+      ↓
+Dashboard / Graph / Infographic
+```
+
+주요 화면:
+
+- [개발 현황판](docs/portfolio-dashboard.md)
+- [Ecosystem Architecture](docs/portfolio-architecture.md)
+- [Dependency & Impact Intelligence](docs/portfolio-impact.md)
+- [Portfolio Governance / Status PR Workflow](docs/portfolio-governance-ko.md)
+- [Portfolio Entry](PORTFOLIO-ko.md)
+
+Canonical portfolio state는 [`portfolio/`](portfolio/)에서 관리합니다. Cross-project 관계와 상태 변경은 단순 GitHub 활동을 추정하지 않고 PR로 검토합니다.
+
 ## 재사용 가능한 템플릿
 
 OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md)입니다.
@@ -90,8 +123,9 @@ templates/
 ├── ADR.md
 ├── ADR-ko.md
 ├── github/          # PR / CODEOWNERS
-├── workflows/       # CI / release / SBOM / supply-chain
-├── scripts/         # toolchain / validation / supply-chain checks
+├── workflows/       # CI / release / SBOM / supply-chain / portfolio status
+├── scripts/         # toolchain / validation / portfolio helpers
+├── portfolio/       # project status publication examples
 ├── policy/          # dependency / plugin-intake / engineering policy
 ├── container/       # Docker baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
@@ -130,11 +164,12 @@ python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-rep
 OpenForge의 디자인 시스템 표준은 현재 개발 중인 프로젝트의 서로 다른 UI 성격을 참고합니다.
 
 - Narwhal / Narwhal Portal — Platform Portal
-- Beluga Manager — Data Control Plane
+- Beluga / Beluga Manager — Data Platform / Control Plane
 - ClusterDeck — Desktop Operator
 - KubeMetal — Desktop ML Infrastructure
 - ldapium — Admin Console
 - nfs-quota-agent — Operations Dashboard
+- kube-ready-box — Runtime / Sandbox Foundation
 - eGovFrame Launcher — Developer Tool
 
 이 프로젝트들은 rigid dependency가 아니라 반복 가능한 Engineering 및 Design Practice를 추출하기 위한 Reference입니다.

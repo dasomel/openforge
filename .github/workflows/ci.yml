@@ -78,3 +78,25 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only
+
+  portfolio-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Validate portfolio registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --validate-only
+
+      - name: Validate project status example
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --validate-status templates/portfolio/status.example.json
