@@ -21,6 +21,12 @@ formatter / linter / test / policy-as-code / CI
 
 `AGENTS.md`는 긴 세션에서도 중요한 규칙이 묻히지 않도록 짧게 유지합니다. Tooling이 안정적으로 검사할 수 있는 규칙은 Prompt에 중복하지 않습니다.
 
+## Agent 실행 보안
+
+Agent가 Tool, API, Kubernetes, Host Operation, Data Egress 등 실제 Side Effect를 만들 수 있는 Capability를 호출할 경우 Repository Instruction만으로는 Authorization Boundary가 되지 않습니다.
+
+Canonical invocation resolution, capability attenuation, exact-call approval binding, sandbox enforcement, post-state verification, recomputable execution evidence는 [Agent Execution Security Contract](agent-execution-security-ko.md) ([English](agent-execution-security.md))를 따릅니다.
+
 ## AGENTS.md에 둘 내용
 
 - 수정 전에 읽어야 할 Source of Truth
