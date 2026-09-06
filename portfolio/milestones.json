@@ -38,6 +38,7 @@
     "verifying",
     "implemented",
     "adopted",
+    "active",
     "maintenance",
     "blocked",
     "deprecated"
