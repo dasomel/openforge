@@ -21,6 +21,12 @@ formatter / linter / tests / policy-as-code / CI
 
 Keep `AGENTS.md` short enough to remain salient in long sessions. Do not duplicate rules already enforced reliably by tools.
 
+## Agent execution security
+
+When an agent can call tools, APIs, Kubernetes, host operations, data-egress paths, or other side-effecting capabilities, repository instructions alone are not an authorization boundary.
+
+Use the [Agent Execution Security Contract](agent-execution-security.md) ([한국어](agent-execution-security-ko.md)) for canonical invocation resolution, capability attenuation, exact-call approval binding, sandbox enforcement, post-state verification, and recomputable execution evidence.
+
 ## Root AGENTS.md rules
 
 A project-level `AGENTS.md` should normally contain only the following classes of instruction:
