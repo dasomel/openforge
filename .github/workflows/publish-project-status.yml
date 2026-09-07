@@ -35,6 +35,16 @@ on:
         required: false
         default: '[]'
         type: string
+      revision:
+        description: Optional verified source revision; defaults to caller workflow SHA
+        required: false
+        default: ''
+        type: string
+      evidence_workflow_url:
+        description: Optional URL of the verification workflow run that produced the status
+        required: false
+        default: ''
+        type: string
     secrets:
       OPENFORGE_STATUS_TOKEN:
         description: Narrowly scoped token able to push a branch and open a PR in dasomel/openforge
@@ -69,6 +79,7 @@ jobs:
           fetch-depth: 1
 
       - name: Build verified status payload
+        id: payload
         env:
           PROJECT: ${{ inputs.project }}
           REPOSITORY: ${{ inputs.repository }}
@@ -77,8 +88,10 @@ jobs:
           PROGRESS_PERCENT: ${{ inputs.progress_percent }}
           CAPABILITIES_JSON: ${{ inputs.capabilities_json }}
           RELATIONSHIPS_JSON: ${{ inputs.relationships_json }}
-          REVISION: ${{ github.sha }}
-          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+          REVISION_OVERRIDE: ${{ inputs.revision }}
+          WORKFLOW_URL_OVERRIDE: ${{ inputs.evidence_workflow_url }}
+          CALLER_REVISION: ${{ github.sha }}
+          CALLER_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         shell: bash
         run: |
           set -euo pipefail
@@ -101,11 +114,18 @@ jobs:
               if not 0 <= progress <= 100:
                   raise SystemExit('progress_percent must be between 0 and 100')
 
+          revision = os.environ.get('REVISION_OVERRIDE', '').strip() or os.environ['CALLER_REVISION']
+          workflow_url = os.environ.get('WORKFLOW_URL_OVERRIDE', '').strip() or os.environ['CALLER_RUN_URL']
+          if not revision:
+              raise SystemExit('verified revision must not be empty')
+          if not workflow_url.startswith(('https://github.com/', 'https://github.example.com/')):
+              raise SystemExit('evidence workflow URL must be a GitHub HTTPS URL')
+
           payload = {
               'version': 'openforge-project-status/v1',
               'project': os.environ['PROJECT'],
               'repository': os.environ['REPOSITORY'],
-              'revision': os.environ['REVISION'],
+              'revision': revision,
               'updated_at': datetime.now(timezone.utc).date().isoformat(),
               'development': {
                   'status': os.environ['DEVELOPMENT_STATUS'],
@@ -116,13 +136,17 @@ jobs:
               'relationships': decode('RELATIONSHIPS_JSON', list),
               'evidence': {
                   'ci': 'pass',
-                  'commit': os.environ['REVISION'],
-                  'workflow': os.environ['RUN_URL'],
+                  'commit': revision,
+                  'workflow': workflow_url,
               },
           }
           Path('openforge/.project-status.json').write_text(
               json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
           )
+          output = Path(os.environ['GITHUB_OUTPUT'])
+          with output.open('a', encoding='utf-8') as handle:
+              handle.write(f'revision={revision}\n')
+              handle.write(f'evidence_workflow_url={workflow_url}\n')
           PY
 
       - name: Validate, apply, and regenerate portfolio state
@@ -140,7 +164,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
           PROJECT: ${{ inputs.project }}
-          REVISION: ${{ github.sha }}
         working-directory: openforge
         shell: bash
         run: |
@@ -172,7 +195,8 @@ jobs:
           GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
           BRANCH: ${{ steps.push.outputs.branch }}
           PROJECT: ${{ inputs.project }}
-          REVISION: ${{ github.sha }}
+          REVISION: ${{ steps.payload.outputs.revision }}
+          EVIDENCE_WORKFLOW_URL: ${{ steps.payload.outputs.evidence_workflow_url }}
           SOURCE_REPOSITORY: ${{ inputs.repository }}
         working-directory: openforge
         shell: bash
@@ -183,4 +207,4 @@ jobs:
             --base main \
             --head "$BRANCH" \
             --title "chore(portfolio): update ${PROJECT} development status" \
-            --body "Automated portfolio status proposal from \`${SOURCE_REPOSITORY}\` at revision \`${REVISION}\`.\n\nThe caller asserts that its required verification completed successfully. OpenForge CI independently validates registry integrity and generated-output freshness; merge remains the official portfolio state transition."
+            --body "Automated portfolio status proposal from \`${SOURCE_REPOSITORY}\` at verified revision \`${REVISION}\`.\n\nVerification evidence: ${EVIDENCE_WORKFLOW_URL}\n\nOpenForge CI independently validates registry integrity and generated-output freshness; merge remains the official portfolio state transition."
