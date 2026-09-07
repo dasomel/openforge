@@ -1,0 +1,524 @@
+{
+  "version": "openforge-dashboard/v1",
+  "generated_from": [
+    "portfolio/projects.json",
+    "portfolio/relationships.json",
+    "portfolio/milestones.json"
+  ],
+  "updated_at": "2026-09-07",
+  "portfolio": {
+    "standard_metrics": 35,
+    "standard_maturity_percent": 96.9,
+    "adoption_percent": 61.6,
+    "adoption_target_percent": 70.0,
+    "adr_count": 13
+  },
+  "projects": [
+    {
+      "id": "openforge",
+      "repository": "dasomel/openforge",
+      "name": "OpenForge",
+      "category": "Standards & Blueprints",
+      "archetype": "Engineering Control Plane",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "portfolio-governance",
+      "domains": [
+        "standards",
+        "governance",
+        "security",
+        "compliance",
+        "portfolio"
+      ],
+      "impact_score": 27
+    },
+    {
+      "id": "narwhal",
+      "repository": "dasomel/narwhal",
+      "name": "Narwhal",
+      "category": "Internal Developer Platform",
+      "archetype": "Platform",
+      "development_status": "active",
+      "adoption_percent": 81.8,
+      "role": "reference-implementation",
+      "domains": [
+        "kubernetes",
+        "platform-engineering",
+        "gitops",
+        "ai-agent"
+      ],
+      "impact_score": 29
+    },
+    {
+      "id": "narwhal-portal",
+      "repository": "dasomel/narwhal-portal",
+      "name": "Narwhal Portal",
+      "category": "Internal Developer Platform",
+      "archetype": "Platform Portal",
+      "development_status": "active",
+      "adoption_percent": 83.8,
+      "role": "control-surface",
+      "domains": [
+        "portal",
+        "kubernetes",
+        "ai-agent",
+        "operations"
+      ],
+      "impact_score": 11
+    },
+    {
+      "id": "kubemetal",
+      "repository": "dasomel/kubemetal",
+      "name": "KubeMetal",
+      "category": "Hybrid AI / MLOps",
+      "archetype": "AI Platform",
+      "development_status": "active",
+      "adoption_percent": 82.4,
+      "role": "adopter",
+      "domains": [
+        "kubernetes",
+        "local-ai",
+        "mlops",
+        "agent",
+        "remediation"
+      ],
+      "impact_score": 11
+    },
+    {
+      "id": "beluga",
+      "repository": "dasomel/beluga",
+      "name": "Beluga",
+      "category": "Data Platform IaC",
+      "archetype": "Data Platform",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "adopter",
+      "domains": [
+        "kubernetes",
+        "data-platform",
+        "operations-agent"
+      ],
+      "impact_score": 10
+    },
+    {
+      "id": "beluga-manager",
+      "repository": "dasomel/beluga-manager",
+      "name": "Beluga Manager",
+      "category": "Data Platform Management",
+      "archetype": "Data Control Plane",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "control-surface",
+      "domains": [
+        "data-platform",
+        "management",
+        "ui"
+      ],
+      "impact_score": 8
+    },
+    {
+      "id": "kube-ready-box",
+      "repository": "dasomel/kube-ready-box",
+      "name": "kube-ready-box",
+      "category": "OS & VM Infrastructure",
+      "archetype": "Runtime Foundation",
+      "development_status": "active",
+      "adoption_percent": 87.1,
+      "role": "enforcement-provider",
+      "domains": [
+        "kubernetes",
+        "runtime",
+        "sandbox",
+        "security",
+        "evidence"
+      ],
+      "impact_score": 10
+    },
+    {
+      "id": "nfs-quota-agent",
+      "repository": "dasomel/nfs-quota-agent",
+      "name": "nfs-quota-agent",
+      "category": "Storage & Kubernetes Controllers",
+      "archetype": "Storage Controller",
+      "development_status": "active",
+      "adoption_percent": 81.8,
+      "role": "service-provider",
+      "domains": [
+        "kubernetes",
+        "storage",
+        "quota",
+        "controller"
+      ],
+      "impact_score": 6
+    },
+    {
+      "id": "ldapium",
+      "repository": "dasomel/ldapium",
+      "name": "ldapium",
+      "category": "Identity & Directory Service",
+      "archetype": "Identity Service",
+      "development_status": "active",
+      "adoption_percent": 89.7,
+      "role": "service-provider",
+      "domains": [
+        "identity",
+        "ldap",
+        "admin"
+      ],
+      "impact_score": 6
+    },
+    {
+      "id": "clusterdeck",
+      "repository": "dasomel/clusterdeck",
+      "name": "ClusterDeck",
+      "category": "Kubernetes Operations",
+      "archetype": "Desktop Operator",
+      "development_status": "active",
+      "adoption_percent": 82.4,
+      "role": "operations-client",
+      "domains": [
+        "kubernetes",
+        "desktop",
+        "operations",
+        "ui"
+      ],
+      "impact_score": 3
+    },
+    {
+      "id": "egovframe-launcher",
+      "repository": "dasomel/egovframe-launcher",
+      "name": "eGovFrame Launcher",
+      "category": "Developer Tooling",
+      "archetype": "Developer Tool",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "developer-tool",
+      "domains": [
+        "developer-experience",
+        "egovframe"
+      ],
+      "impact_score": 1
+    },
+    {
+      "id": "cka-lab",
+      "repository": "dasomel/cka-lab",
+      "name": "CKA Lab",
+      "category": "Certification & Labs",
+      "archetype": "Lab Simulator",
+      "development_status": "maintenance",
+      "adoption_percent": null,
+      "role": "lab",
+      "domains": [
+        "kubernetes",
+        "education",
+        "lab"
+      ],
+      "impact_score": 0
+    },
+    {
+      "id": "dasomel-github-io",
+      "repository": "dasomel/dasomel.github.io",
+      "name": "dasomel.github.io",
+      "category": "Community & Documentation",
+      "archetype": "Portfolio Site",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "presentation",
+      "domains": [
+        "documentation",
+        "community",
+        "portfolio"
+      ],
+      "impact_score": 2
+    },
+    {
+      "id": "kairos",
+      "repository": "dasomel/kairos",
+      "name": "Kairos",
+      "category": "Automation",
+      "archetype": "Developer Tool",
+      "development_status": "maintenance",
+      "adoption_percent": null,
+      "role": "independent-adopter",
+      "domains": [
+        "automation"
+      ],
+      "impact_score": 0
+    }
+  ],
+  "relationships": [
+    {
+      "source": "openforge",
+      "target": "narwhal",
+      "type": "standardizes",
+      "impact": "high",
+      "scope": "engineering standards and agent execution security"
+    },
+    {
+      "source": "openforge",
+      "target": "narwhal-portal",
+      "type": "standardizes",
+      "impact": "high",
+      "scope": "engineering standards and agent execution security"
+    },
+    {
+      "source": "openforge",
+      "target": "kubemetal",
+      "type": "standardizes",
+      "impact": "high",
+      "scope": "engineering standards and agent execution security"
+    },
+    {
+      "source": "openforge",
+      "target": "beluga",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering standards and agent execution security"
+    },
+    {
+      "source": "openforge",
+      "target": "kube-ready-box",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering standards and enforcement evidence"
+    },
+    {
+      "source": "openforge",
+      "target": "nfs-quota-agent",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering standards"
+    },
+    {
+      "source": "openforge",
+      "target": "ldapium",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering standards"
+    },
+    {
+      "source": "openforge",
+      "target": "clusterdeck",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering and design-system standards"
+    },
+    {
+      "source": "openforge",
+      "target": "beluga-manager",
+      "type": "standardizes",
+      "impact": "medium",
+      "scope": "engineering and design-system standards"
+    },
+    {
+      "source": "openforge",
+      "target": "egovframe-launcher",
+      "type": "standardizes",
+      "impact": "low",
+      "scope": "developer-tool standards"
+    },
+    {
+      "source": "openforge",
+      "target": "dasomel-github-io",
+      "type": "standardizes",
+      "impact": "low",
+      "scope": "documentation and presentation"
+    },
+    {
+      "source": "narwhal",
+      "target": "openforge",
+      "type": "reference-implementation",
+      "impact": "high",
+      "scope": "platform, security and agent execution patterns"
+    },
+    {
+      "source": "narwhal",
+      "target": "narwhal-portal",
+      "type": "provides",
+      "impact": "high",
+      "scope": "platform capabilities and execution contracts"
+    },
+    {
+      "source": "narwhal-portal",
+      "target": "narwhal",
+      "type": "control-surface",
+      "impact": "high",
+      "scope": "platform user and agent operations"
+    },
+    {
+      "source": "kubemetal",
+      "target": "kube-ready-box",
+      "type": "consumes",
+      "impact": "medium",
+      "scope": "runtime/sandbox capability and enforcement evidence"
+    },
+    {
+      "source": "narwhal",
+      "target": "kube-ready-box",
+      "type": "consumes",
+      "impact": "medium",
+      "scope": "runtime/sandbox capability and enforcement evidence"
+    },
+    {
+      "source": "kube-ready-box",
+      "target": "narwhal",
+      "type": "provides",
+      "impact": "medium",
+      "scope": "sandbox/runtime enforcement evidence"
+    },
+    {
+      "source": "kube-ready-box",
+      "target": "kubemetal",
+      "type": "provides",
+      "impact": "medium",
+      "scope": "sandbox/runtime enforcement evidence"
+    },
+    {
+      "source": "beluga",
+      "target": "beluga-manager",
+      "type": "provides",
+      "impact": "high",
+      "scope": "data-platform management capabilities"
+    },
+    {
+      "source": "beluga-manager",
+      "target": "beluga",
+      "type": "control-surface",
+      "impact": "high",
+      "scope": "data-platform management operations"
+    },
+    {
+      "source": "narwhal",
+      "target": "nfs-quota-agent",
+      "type": "consumes",
+      "impact": "medium",
+      "scope": "storage quota capability"
+    },
+    {
+      "source": "nfs-quota-agent",
+      "target": "narwhal",
+      "type": "provides",
+      "impact": "medium",
+      "scope": "storage quota capability"
+    },
+    {
+      "source": "narwhal",
+      "target": "ldapium",
+      "type": "consumes",
+      "impact": "medium",
+      "scope": "identity/directory capability"
+    },
+    {
+      "source": "ldapium",
+      "target": "narwhal",
+      "type": "provides",
+      "impact": "medium",
+      "scope": "identity/directory capability"
+    },
+    {
+      "source": "narwhal",
+      "target": "kubemetal",
+      "type": "shared-contract",
+      "impact": "medium",
+      "scope": "agent execution and remediation security patterns"
+    },
+    {
+      "source": "narwhal",
+      "target": "beluga",
+      "type": "shared-contract",
+      "impact": "medium",
+      "scope": "agent execution and operations-agent security patterns"
+    },
+    {
+      "source": "narwhal-portal",
+      "target": "kubemetal",
+      "type": "shared-contract",
+      "impact": "medium",
+      "scope": "exact-invocation approval and recomputable evidence"
+    },
+    {
+      "source": "clusterdeck",
+      "target": "narwhal",
+      "type": "consumes",
+      "impact": "low",
+      "scope": "Kubernetes operations UX patterns"
+    },
+    {
+      "source": "dasomel-github-io",
+      "target": "openforge",
+      "type": "consumes",
+      "impact": "low",
+      "scope": "portfolio documentation and infographic outputs"
+    }
+  ],
+  "standards": [
+    {
+      "id": "adr-0013-agent-execution-security",
+      "source": "openforge",
+      "affected_projects": [
+        {
+          "project": "narwhal",
+          "impact": "high"
+        },
+        {
+          "project": "narwhal-portal",
+          "impact": "high"
+        },
+        {
+          "project": "kubemetal",
+          "impact": "high"
+        },
+        {
+          "project": "beluga",
+          "impact": "medium"
+        },
+        {
+          "project": "kube-ready-box",
+          "impact": "medium"
+        },
+        {
+          "project": "nfs-quota-agent",
+          "impact": "low"
+        },
+        {
+          "project": "ldapium",
+          "impact": "low"
+        },
+        {
+          "project": "clusterdeck",
+          "impact": "low"
+        }
+      ]
+    }
+  ],
+  "milestones": [
+    {
+      "id": "portfolio-adoption-m2",
+      "name": "Portfolio Adoption M2",
+      "status": "implementing",
+      "metric": "portfolio_adoption_percent",
+      "current": 61.6,
+      "target": 70.0,
+      "unit": "%"
+    },
+    {
+      "id": "agent-execution-security-rollout",
+      "name": "Agent Execution Security Rollout",
+      "status": "implementing",
+      "projects": {
+        "narwhal-portal": "design-adopted",
+        "kubemetal": "design-adopted",
+        "beluga": "design-adopted",
+        "kube-ready-box": "design-adopted"
+      }
+    },
+    {
+      "id": "portfolio-control-plane",
+      "name": "OSS Portfolio Control Plane",
+      "status": "implementing",
+      "projects": {
+        "openforge": "implementing"
+      }
+    }
+  ]
+}

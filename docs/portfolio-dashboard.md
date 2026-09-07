@@ -1,98 +1,72 @@
 # OpenForge OSS Portfolio Dashboard
 
-> Canonical data lives in `portfolio/*.json`. This dashboard is a portfolio view, not an independent source of truth.
+> Generated from `portfolio/*.json`. Do not hand-edit measured or relationship state in this document.
 
 ## Portfolio pulse
 
-| Metric | Current | Target / meaning |
-|---|---:|---|
-| Registered projects | 14 | OpenForge-managed OSS portfolio |
-| Engineering metrics | 35 | OpenForge reference metrics |
-| Standard maturity | 96.9% | OpenForge standard completeness |
-| Portfolio adoption | 61.6% | M2 target: **≥70%** |
-| ADRs | 13 | Durable cross-project decisions |
+- Projects: **14**
+- Engineering metrics: **35**
+- OpenForge standard maturity: **96.9%**
+- Portfolio adoption: **61.6%**
+- Adoption target: **70.0%**
+- ADRs: **13**
+- Active projects: **12**
 
 ## Development board
 
-| Project | Role | Development | OpenForge adoption | Primary domains |
+| Project | Role | Development | OpenForge adoption | Domains |
 |---|---|---|---:|---|
-| [OpenForge](https://github.com/dasomel/openforge) | portfolio-governance | **active** | — | standards, governance, security, compliance, portfolio |
-| [Narwhal](https://github.com/dasomel/narwhal) | reference-implementation | **active** | 81.8% | Kubernetes, platform engineering, GitOps, AI agent |
-| [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | control-surface | **active** | 83.8% | portal, Kubernetes, AI agent, operations |
-| [KubeMetal](https://github.com/dasomel/kubemetal) | adopter | **active** | 82.4% | Kubernetes, local AI, MLOps, agent, remediation |
-| [Beluga](https://github.com/dasomel/beluga) | adopter | **active** | — | Kubernetes, data platform, operations agent |
-| [Beluga Manager](https://github.com/dasomel/beluga-manager) | control-surface | **active** | — | data platform, management, UI |
-| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | enforcement-provider | **active** | 87.1% | Kubernetes, runtime, sandbox, security, evidence |
-| [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | service-provider | **active** | 81.8% | Kubernetes, storage, quota, controller |
-| [ldapium](https://github.com/dasomel/ldapium) | service-provider | **active** | 89.7% | identity, LDAP, admin |
-| [ClusterDeck](https://github.com/dasomel/clusterdeck) | operations-client | **active** | 82.4% | Kubernetes, desktop, operations, UI |
-| [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | developer-tool | **active** | — | developer experience, eGovFrame |
-| [CKA Lab](https://github.com/dasomel/cka-lab) | lab | **maintenance** | — | Kubernetes, education, lab |
-| [dasomel.github.io](https://github.com/dasomel/dasomel.github.io) | presentation | **active** | — | documentation, community, portfolio |
-| [Kairos](https://github.com/dasomel/kairos) | independent-adopter | **maintenance** | — | automation |
-
-`—` means the registry does not currently carry a project-level measured adoption value. It must not be interpreted as 0%.
+| [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio |
+| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent |
+| [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations |
+| [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 82.4% | kubernetes, local-ai, mlops, agent, remediation |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent |
+| [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui |
+| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence |
+| [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller |
+| [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin |
+| [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui |
+| [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe |
+| [CKA Lab](https://github.com/dasomel/cka-lab) | `lab` | **maintenance** | — | kubernetes, education, lab |
+| [dasomel.github.io](https://github.com/dasomel/dasomel.github.io) | `presentation` | **active** | — | documentation, community, portfolio |
+| [Kairos](https://github.com/dasomel/kairos) | `independent-adopter` | **maintenance** | — | automation |
 
 ## Adoption snapshot
 
-```text
-ldapium          89.7%  ██████████████████
-kube-ready-box   87.1%  █████████████████\innarwhal-portal   83.8%  █████████████████
-clusterdeck       82.4%  ████████████████
-kubemetal         82.4%  ████████████████
-narwhal           81.8%  ████████████████
-nfs-quota-agent   81.8%  ████████████████
-
-Portfolio         61.6%  ████████████
-M2 target         70.0%  ██████████████
-```
+| Project | Adoption |
+|---|---:|
+| ldapium | 89.7% |
+| kube-ready-box | 87.1% |
+| Narwhal Portal | 83.8% |
+| ClusterDeck | 82.4% |
+| KubeMetal | 82.4% |
+| Narwhal | 81.8% |
+| nfs-quota-agent | 81.8% |
 
 ## Current milestones
 
 | Milestone | Status | Progress |
 |---|---|---|
 | Portfolio Adoption M2 | **implementing** | 61.6% / 70.0% |
-| Agent Execution Security Rollout | **implementing** | Narwhal Portal, KubeMetal, Beluga, kube-ready-box: design adopted |
-| OSS Portfolio Control Plane | **implementing** | OpenForge registry / graph / dashboard / status PR workflow |
+| Agent Execution Security Rollout | **implementing** | narwhal-portal: design-adopted, kubemetal: design-adopted, beluga: design-adopted, kube-ready-box: design-adopted |
+| OSS Portfolio Control Plane | **implementing** | openforge: implementing |
 
-## Portfolio operating loop
+## Status publication workflow
 
-```mermaid
-flowchart LR
-    A[OSS implementation] --> B[Repository CI / verification]
-    B --> C[openforge-project-status/v1]
-    C --> D[OpenForge status PR]
-    D --> E[Portfolio validation]
-    E --> F[Merge]
-    F --> G[Dashboard / Graph / Infographic]
-    G --> H[Impact review]
-    H --> A
+```text
+Project change merged
+        ↓
+project CI + required verification
+        ↓
+openforge-project-status/v1 payload
+        ↓
+PR to OpenForge portfolio registry
+        ↓
+portfolio validation + impact review
+        ↓
+merge = official portfolio state change
+        ↓
+dashboard / graph / infographic regeneration
 ```
 
-The portfolio only changes officially after the OpenForge status PR is merged.
-
-## Current Agent Execution Security rollout
-
-```mermaid
-flowchart LR
-    OF[OpenForge\nADR-0013 + Agent Execution Security] -->|HIGH| N[Narwhal]
-    OF -->|HIGH| NP[Narwhal Portal]
-    OF -->|HIGH| KM[KubeMetal]
-    OF -->|MEDIUM| B[Beluga]
-    OF -->|MEDIUM| KRB[kube-ready-box]
-
-    N -->|reference implementation| OF
-    NP -->|exact invocation approval/evidence| KM
-    KRB -->|runtime enforcement evidence| N
-    KRB -->|runtime enforcement evidence| KM
-```
-
-## Navigation
-
-- [Portfolio Governance](portfolio-governance.md)
-- [Portfolio Architecture](portfolio-architecture.md)
-- [Dependency & Impact Intelligence](portfolio-impact.md)
-- [`portfolio/projects.json`](../portfolio/projects.json)
-- [`portfolio/relationships.json`](../portfolio/relationships.json)
-- [`portfolio/milestones.json`](../portfolio/milestones.json)
-- [`portfolio/status.schema.json`](../portfolio/status.schema.json)
+See [Portfolio Governance](portfolio-governance.md), [Architecture Graph](portfolio-architecture.md), and [Impact Graph](portfolio-impact.md).
