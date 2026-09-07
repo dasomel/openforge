@@ -18,7 +18,13 @@
       "development_status": "active",
       "adoption_percent": null,
       "role": "portfolio-governance",
-      "domains": ["standards", "governance", "security", "compliance", "portfolio"]
+      "domains": [
+        "standards",
+        "governance",
+        "security",
+        "compliance",
+        "portfolio"
+      ]
     },
     {
       "id": "narwhal",
@@ -29,7 +35,12 @@
       "development_status": "active",
       "adoption_percent": 81.8,
       "role": "reference-implementation",
-      "domains": ["kubernetes", "platform-engineering", "gitops", "ai-agent"]
+      "domains": [
+        "kubernetes",
+        "platform-engineering",
+        "gitops",
+        "ai-agent"
+      ]
     },
     {
       "id": "narwhal-portal",
@@ -40,7 +51,12 @@
       "development_status": "active",
       "adoption_percent": 83.8,
       "role": "control-surface",
-      "domains": ["portal", "kubernetes", "ai-agent", "operations"]
+      "domains": [
+        "portal",
+        "kubernetes",
+        "ai-agent",
+        "operations"
+      ]
     },
     {
       "id": "kubemetal",
@@ -51,7 +67,13 @@
       "development_status": "active",
       "adoption_percent": 82.4,
       "role": "adopter",
-      "domains": ["kubernetes", "local-ai", "mlops", "agent", "remediation"]
+      "domains": [
+        "kubernetes",
+        "local-ai",
+        "mlops",
+        "agent",
+        "remediation"
+      ]
     },
     {
       "id": "beluga",
@@ -62,7 +84,54 @@
       "development_status": "active",
       "adoption_percent": null,
       "role": "adopter",
-      "domains": ["kubernetes", "data-platform", "operations-agent"]
+      "domains": [
+        "kubernetes",
+        "data-platform",
+        "operations-agent"
+      ],
+      "status": {
+        "revision": "ae399e2",
+        "updated_at": "2026-09-07",
+        "milestone": "openforge-compliance-baseline",
+        "progress_percent": 85,
+        "capabilities": {
+          "compliance-baseline": {
+            "status": "implemented",
+            "standard": "openforge/compliance-baseline",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "not-applicable",
+              "security": "pass"
+            }
+          },
+          "stream-iceberg": {
+            "status": "implemented",
+            "standard": "openforge/data-platform",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "partial",
+              "security": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "issue": 114,
+          "pull_request": null,
+          "commit": "ae399e295b67cb7a0d3d343efe10b85df87c6347",
+          "ci": "pass",
+          "security": "pass",
+          "runtime": "partial"
+        },
+        "proposed_relationships": [
+          {
+            "target": "beluga-manager",
+            "type": "provides",
+            "scope": "data-platform management capabilities"
+          }
+        ]
+      }
     },
     {
       "id": "beluga-manager",
@@ -73,7 +142,44 @@
       "development_status": "active",
       "adoption_percent": null,
       "role": "control-surface",
-      "domains": ["data-platform", "management", "ui"]
+      "domains": [
+        "data-platform",
+        "management",
+        "ui"
+      ],
+      "status": {
+        "revision": "e2b966a",
+        "updated_at": "2026-09-07",
+        "milestone": "reconcile-history",
+        "progress_percent": 80,
+        "capabilities": {
+          "policy-compiler": {
+            "status": "implemented",
+            "standard": "openforge/agent-engineering",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
+              "security": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "issue": null,
+          "pull_request": 49,
+          "commit": "e2b966af1e0a64c22e6f3fea7dae95024564b65d",
+          "ci": "pass",
+          "security": "pass",
+          "runtime": "pass"
+        },
+        "proposed_relationships": [
+          {
+            "target": "beluga",
+            "type": "control-surface",
+            "scope": "data-platform management operations"
+          }
+        ]
+      }
     },
     {
       "id": "kube-ready-box",
@@ -84,7 +190,13 @@
       "development_status": "active",
       "adoption_percent": 87.1,
       "role": "enforcement-provider",
-      "domains": ["kubernetes", "runtime", "sandbox", "security", "evidence"]
+      "domains": [
+        "kubernetes",
+        "runtime",
+        "sandbox",
+        "security",
+        "evidence"
+      ]
     },
     {
       "id": "nfs-quota-agent",
@@ -95,7 +207,12 @@
       "development_status": "active",
       "adoption_percent": 81.8,
       "role": "service-provider",
-      "domains": ["kubernetes", "storage", "quota", "controller"]
+      "domains": [
+        "kubernetes",
+        "storage",
+        "quota",
+        "controller"
+      ]
     },
     {
       "id": "ldapium",
@@ -106,7 +223,11 @@
       "development_status": "active",
       "adoption_percent": 89.7,
       "role": "service-provider",
-      "domains": ["identity", "ldap", "admin"]
+      "domains": [
+        "identity",
+        "ldap",
+        "admin"
+      ]
     },
     {
       "id": "clusterdeck",
@@ -117,7 +238,12 @@
       "development_status": "active",
       "adoption_percent": 82.4,
       "role": "operations-client",
-      "domains": ["kubernetes", "desktop", "operations", "ui"]
+      "domains": [
+        "kubernetes",
+        "desktop",
+        "operations",
+        "ui"
+      ]
     },
     {
       "id": "egovframe-launcher",
@@ -128,7 +254,10 @@
       "development_status": "active",
       "adoption_percent": null,
       "role": "developer-tool",
-      "domains": ["developer-experience", "egovframe"]
+      "domains": [
+        "developer-experience",
+        "egovframe"
+      ]
     },
     {
       "id": "cka-lab",
@@ -139,7 +268,11 @@
       "development_status": "maintenance",
       "adoption_percent": null,
       "role": "lab",
-      "domains": ["kubernetes", "education", "lab"]
+      "domains": [
+        "kubernetes",
+        "education",
+        "lab"
+      ]
     },
     {
       "id": "dasomel-github-io",
@@ -150,7 +283,11 @@
       "development_status": "active",
       "adoption_percent": null,
       "role": "presentation",
-      "domains": ["documentation", "community", "portfolio"]
+      "domains": [
+        "documentation",
+        "community",
+        "portfolio"
+      ]
     },
     {
       "id": "kairos",
@@ -161,7 +298,9 @@
       "development_status": "maintenance",
       "adoption_percent": null,
       "role": "independent-adopter",
-      "domains": ["automation"]
+      "domains": [
+        "automation"
+      ]
     }
   ]
 }
