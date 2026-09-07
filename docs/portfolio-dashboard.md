@@ -20,8 +20,8 @@
 | [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent | — | — |
 | [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations | — | — |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 82.4% | kubernetes, local-ai, mlops, agent, remediation | — | — |
-| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent | [`ae399e2`](https://github.com/dasomel/beluga/commit/ae399e295b67cb7a0d3d343efe10b85df87c6347) | ci: pass · security: pass · runtime: partial |
-| [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui | [`e2b966a`](https://github.com/dasomel/beluga-manager/commit/e2b966af1e0a64c22e6f3fea7dae95024564b65d) | ci: pass · security: pass · runtime: pass |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent | [`8dedb46`](https://github.com/dasomel/beluga/commit/8dedb4614da34752f07c15736ea06d3c3cbe9c4b) | ci: pass · security: pass · runtime: partial |
+| [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui | [`670a076`](https://github.com/dasomel/beluga-manager/commit/670a076a86c84929ddb5eb83a057efea4ba26b27) | ci: pass · security: pass · runtime: pass |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | — | — |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
