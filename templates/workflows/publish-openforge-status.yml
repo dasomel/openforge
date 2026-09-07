@@ -43,7 +43,7 @@ jobs:
           token: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
           fetch-depth: 1
 
-      - name: Validate and apply status
+      - name: Validate, apply, and regenerate portfolio state
         shell: bash
         run: |
           set -euo pipefail
@@ -51,7 +51,8 @@ jobs:
           cd openforge
           python3 templates/scripts/generate-portfolio.py --validate-status .project-status.json
           python3 templates/scripts/apply-portfolio-status.py .project-status.json
-          python3 templates/scripts/generate-portfolio.py --validate-only
+          python3 templates/scripts/generate-portfolio.py
+          python3 templates/scripts/generate-portfolio.py --check
           rm .project-status.json
 
       - name: Create status branch and push
@@ -68,7 +69,12 @@ jobs:
           git config user.name "openforge-status-bot"
           git config user.email "openforge-status-bot@users.noreply.github.com"
           git checkout -b "$branch"
-          git add portfolio/projects.json
+          git add \
+            portfolio/projects.json \
+            portfolio/dashboard.json \
+            docs/portfolio-dashboard.md \
+            docs/portfolio-architecture.md \
+            docs/portfolio-impact.md
           if git diff --cached --quiet; then
             echo "No portfolio state change to publish"
             echo "changed=false" >> "$GITHUB_OUTPUT"
@@ -97,7 +103,7 @@ jobs:
             --base main \
             --head "$BRANCH" \
             --title "chore(portfolio): update ${PROJECT} development status" \
-            --body "Automated portfolio status proposal from \`${GITHUB_REPOSITORY}\` at revision \`${REVISION}\`.\n\nOpenForge CI must validate the registry and the PR remains reviewable before merge."
+            --body "Automated portfolio status proposal from \`${GITHUB_REPOSITORY}\` at revision \`${REVISION}\`.\n\nThe PR includes regenerated dashboard/report artifacts and remains reviewable. OpenForge CI must validate registry integrity and generated-output freshness before merge."
 
 # Replace APPROVED_IMMUTABLE_REVISION with an approved immutable checkout SHA
 # before production use. This is a template, not a drop-in workflow.
