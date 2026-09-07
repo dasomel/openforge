@@ -14,22 +14,30 @@
 
 ## Development board
 
-| Project | Role | Development | OpenForge adoption | Domains |
-|---|---|---|---:|---|
-| [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio |
-| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent |
-| [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations |
-| [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 82.4% | kubernetes, local-ai, mlops, agent, remediation |
-| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent |
-| [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui |
-| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence |
-| [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller |
-| [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin |
-| [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui |
-| [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe |
-| [CKA Lab](https://github.com/dasomel/cka-lab) | `lab` | **maintenance** | — | kubernetes, education, lab |
-| [dasomel.github.io](https://github.com/dasomel/dasomel.github.io) | `presentation` | **active** | — | documentation, community, portfolio |
-| [Kairos](https://github.com/dasomel/kairos) | `independent-adopter` | **maintenance** | — | automation |
+| Project | Role | Development | OpenForge adoption | Domains | Verified revision | Evidence (ci · security · runtime) |
+|---|---|---|---:|---|---|---|
+| [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio | — | — |
+| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent | — | — |
+| [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations | — | — |
+| [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 82.4% | kubernetes, local-ai, mlops, agent, remediation | — | — |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent | [`ae399e2`](https://github.com/dasomel/beluga/commit/ae399e295b67cb7a0d3d343efe10b85df87c6347) | ci: pass · security: pass · runtime: partial |
+| [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui | [`e2b966a`](https://github.com/dasomel/beluga-manager/commit/e2b966af1e0a64c22e6f3fea7dae95024564b65d) | ci: pass · security: pass · runtime: pass |
+| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | — | — |
+| [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
+| [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
+| [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | — | — |
+| [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe | — | — |
+| [CKA Lab](https://github.com/dasomel/cka-lab) | `lab` | **maintenance** | — | kubernetes, education, lab | — | — |
+| [dasomel.github.io](https://github.com/dasomel/dasomel.github.io) | `presentation` | **active** | — | documentation, community, portfolio | — | — |
+| [Kairos](https://github.com/dasomel/kairos) | `independent-adopter` | **maintenance** | — | automation | — | — |
+
+## Capability verification
+
+| Project | Capability | Verification (unit · integration · runtime · security) |
+|---|---|---|
+| Beluga | `compliance-baseline` | unit pass · integration pass · runtime not-applicable · security pass |
+| Beluga | `stream-iceberg` | unit pass · integration pass · runtime partial · security pass |
+| Beluga Manager | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
 
 ## Adoption snapshot
 

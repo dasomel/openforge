@@ -64,6 +64,36 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         self.assertIn("flowchart TB", architecture)
         self.assertIn("adr-0013-agent-execution-security", impact)
 
+    def test_dashboard_exposes_revision_evidence_and_capability_verification(self):
+        dashboard = portfolio.render_dashboard(self.projects, self.milestones)
+        # A project with a recorded status/evidence gets a linked short-SHA revision
+        # and a compact ci/security/runtime evidence summary.
+        beluga = portfolio.project_map(self.projects)["beluga"]
+        commit = beluga["status"]["evidence"]["commit"]
+        revision = beluga["status"]["revision"]
+        self.assertIn(f"[`{revision}`](https://github.com/{beluga['repository']}/commit/{commit})", dashboard)
+        self.assertIn("ci: pass · security: pass · runtime: partial", dashboard)
+        # Per-capability verification is rendered as a compact unit/integration/runtime/security summary.
+        self.assertIn(
+            "| Beluga Manager | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |",
+            dashboard,
+        )
+        # A project with no recorded status/evidence renders "—" rather than inventing a value.
+        self.assertIn(
+            "| [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | "
+            "— | standards, governance, security, compliance, portfolio | — | — |",
+            dashboard,
+        )
+
+    def test_fmt_revision_and_evidence_render_dash_when_absent(self):
+        self.assertEqual(portfolio.fmt_revision({"repository": "org/repo"}), "—")
+        self.assertEqual(portfolio.fmt_evidence({"repository": "org/repo"}), "—")
+        self.assertEqual(portfolio.capability_verification_rows({"name": "X"}), [])
+
+    def test_fmt_revision_without_commit_is_unlinked(self):
+        project = {"repository": "org/repo", "status": {"revision": "abc1234"}}
+        self.assertEqual(portfolio.fmt_revision(project), "`abc1234`")
+
 
 if __name__ == "__main__":
     unittest.main()

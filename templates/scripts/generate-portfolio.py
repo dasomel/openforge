@@ -143,6 +143,50 @@ def repo_link(project: dict[str, Any]) -> str:
     return f"[{project['name']}](https://github.com/{project['repository']})"
 
 
+EVIDENCE_FIELDS = ("ci", "security", "runtime")
+VERIFICATION_FIELDS = ("unit", "integration", "runtime", "security")
+
+
+def fmt_revision(project: dict[str, Any]) -> str:
+    """Short SHA for the last verified status update, linked to the commit when known."""
+    status = project.get("status")
+    revision = status.get("revision") if isinstance(status, dict) else None
+    if not revision:
+        return "—"
+    evidence = status.get("evidence") if isinstance(status, dict) else None
+    commit = evidence.get("commit") if isinstance(evidence, dict) else None
+    if commit:
+        return f"[`{revision}`](https://github.com/{project['repository']}/commit/{commit})"
+    return f"`{revision}`"
+
+
+def fmt_evidence(project: dict[str, Any]) -> str:
+    """Compact ci/security/runtime evidence summary; only fields actually present are shown."""
+    status = project.get("status")
+    evidence = status.get("evidence") if isinstance(status, dict) else None
+    if not isinstance(evidence, dict):
+        return "—"
+    parts = [f"{field}: {evidence[field]}" for field in EVIDENCE_FIELDS if evidence.get(field)]
+    return " · ".join(parts) if parts else "—"
+
+
+def capability_verification_rows(project: dict[str, Any]) -> list[tuple[str, str, str]]:
+    """(project name, capability id, compact verification summary) rows for capabilities with recorded verification."""
+    status = project.get("status")
+    capabilities = status.get("capabilities") if isinstance(status, dict) else None
+    if not isinstance(capabilities, dict):
+        return []
+    rows: list[tuple[str, str, str]] = []
+    for capability_id, capability in capabilities.items():
+        verification = capability.get("verification") if isinstance(capability, dict) else None
+        if not isinstance(verification, dict):
+            continue
+        parts = [f"{field} {verification[field]}" for field in VERIFICATION_FIELDS if verification.get(field)]
+        if parts:
+            rows.append((project["name"], capability_id, " · ".join(parts)))
+    return rows
+
+
 def render_dashboard(projects_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> str:
     projects = list(project_map(projects_doc).values())
     portfolio = projects_doc.get("portfolio", {})
@@ -167,14 +211,27 @@ def render_dashboard(projects_doc: dict[str, Any], milestones_doc: dict[str, Any
         "",
         "## Development board",
         "",
-        "| Project | Role | Development | OpenForge adoption | Domains |",
-        "|---|---|---|---:|---|",
+        "| Project | Role | Development | OpenForge adoption | Domains | Verified revision | Evidence (ci · security · runtime) |",
+        "|---|---|---|---:|---|---|---|",
     ]
     for project in projects:
         lines.append(
             f"| {repo_link(project)} | `{project['role']}` | **{project['development_status']}** | "
-            f"{fmt_percent(project.get('adoption_percent'))} | {', '.join(project.get('domains', []))} |"
+            f"{fmt_percent(project.get('adoption_percent'))} | {', '.join(project.get('domains', []))} | "
+            f"{fmt_revision(project)} | {fmt_evidence(project)} |"
         )
+
+    lines += ["", "## Capability verification", ""]
+    verification_rows = [row for project in projects for row in capability_verification_rows(project)]
+    if verification_rows:
+        lines += [
+            "| Project | Capability | Verification (unit · integration · runtime · security) |",
+            "|---|---|---|",
+        ]
+        for project_name, capability_id, summary in verification_rows:
+            lines.append(f"| {project_name} | `{capability_id}` | {summary} |")
+    else:
+        lines.append("No project-level capability verification records are currently registered.")
 
     lines += ["", "## Adoption snapshot", ""]
     if measured_sorted:
