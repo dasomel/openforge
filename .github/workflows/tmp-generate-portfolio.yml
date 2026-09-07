@@ -1,0 +1,32 @@
+name: Temporary Generate Portfolio Artifact
+
+on:
+  push:
+    branches:
+      - fix/portfolio-dashboard-artifact
+
+permissions:
+  contents: write
+
+jobs:
+  generate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: fix/portfolio-dashboard-artifact
+      - name: Generate portfolio outputs
+        run: python3 templates/scripts/generate-portfolio.py
+      - name: Commit generated artifact
+        shell: bash
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- docs/portfolio-dashboard.md docs/portfolio-architecture.md docs/portfolio-impact.md portfolio/dashboard.json; then
+            echo "No generated changes"
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add docs/portfolio-dashboard.md docs/portfolio-architecture.md docs/portfolio-impact.md portfolio/dashboard.json
+          git commit -m "chore(portfolio): refresh generated outputs"
+          git push origin HEAD:fix/portfolio-dashboard-artifact
