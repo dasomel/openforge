@@ -95,6 +95,12 @@ jobs:
           set -euo pipefail
           python3 templates/scripts/generate-portfolio.py --validate-only
 
+      - name: Verify generated portfolio outputs are current
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --check
+
       - name: Validate project status example
         shell: bash
         run: |
