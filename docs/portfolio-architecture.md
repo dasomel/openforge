@@ -1,107 +1,76 @@
 # OpenForge OSS Portfolio Architecture
 
-> The graph is derived from `portfolio/projects.json` and `portfolio/relationships.json`. Edges express engineering influence/integration, not necessarily build-time dependency.
+> Generated from `portfolio/projects.json` and `portfolio/relationships.json`.
 
-## Ecosystem map
+## Ecosystem graph
 
 ```mermaid
 flowchart TB
-    subgraph GOV[Standards & Governance]
-        OF[OpenForge\nPortfolio Governance / Standards]
-    end
-
-    subgraph PLATFORM[Platform Engineering]
-        N[Narwhal\nReference Implementation]
-        NP[Narwhal Portal\nControl Surface]
-        CD[ClusterDeck\nOperations Client]
-    end
-
-    subgraph AIDATA[AI / Data Platforms]
-        KM[KubeMetal\nAI Platform]
-        B[Beluga\nData Platform]
-        BM[Beluga Manager\nControl Surface]
-    end
-
-    subgraph FOUNDATION[Runtime / Shared Services]
-        KRB[kube-ready-box\nRuntime / Enforcement Provider]
-        NFS[nfs-quota-agent\nStorage Capability]
-        LDAP[ldapium\nIdentity Capability]
-    end
-
-    subgraph DEV[Developer / Community]
-        E[eGovFrame Launcher]
-        CKA[CKA Lab]
-        SITE[dasomel.github.io]
-        KAI[Kairos]
-    end
-
-    OF -->|standardizes| N
-    OF -->|standardizes| NP
-    OF -->|standardizes| KM
-    OF -->|standardizes| B
-    OF -->|standardizes| KRB
-    OF -->|standardizes| NFS
-    OF -->|standardizes| LDAP
-    OF -->|standardizes| CD
-    OF -->|standardizes| BM
-
-    N -->|reference implementation| OF
-    N -->|provides platform capability| NP
-    NP -->|control surface| N
-
-    KRB -->|enforcement evidence| N
-    KRB -->|enforcement evidence| KM
-    N -->|consumes| KRB
-    KM -->|consumes| KRB
-
-    B -->|provides platform capability| BM
-    BM -->|control surface| B
-
-    NFS -->|storage quota capability| N
-    LDAP -->|identity capability| N
-
-    N <-->|shared agent-security contract| KM
-    N <-->|shared operations-agent contract| B
-    NP -->|exact-invocation evidence pattern| KM
-
-    CD -->|operations UX patterns| N
-    SITE -->|portfolio presentation| OF
+  subgraph Governance["Standards & Governance"]
+    openforge["OpenForge\nportfolio-governance"]
+  end
+  subgraph Platform["Platform Engineering"]
+    narwhal["Narwhal\nreference-implementation"]
+    narwhal_portal["Narwhal Portal\ncontrol-surface"]
+    clusterdeck["ClusterDeck\noperations-client"]
+  end
+  subgraph AIData["AI / Data Platforms"]
+    kubemetal["KubeMetal\nadopter"]
+    beluga["Beluga\nadopter"]
+    beluga_manager["Beluga Manager\ncontrol-surface"]
+  end
+  subgraph Foundation["Runtime / Shared Services"]
+    kube_ready_box["kube-ready-box\nenforcement-provider"]
+    nfs_quota_agent["nfs-quota-agent\nservice-provider"]
+    ldapium["ldapium\nservice-provider"]
+  end
+  subgraph DeveloperCommunity["Developer / Community"]
+    egovframe_launcher["eGovFrame Launcher\ndeveloper-tool"]
+    cka_lab["CKA Lab\nlab"]
+    dasomel_github_io["dasomel.github.io\npresentation"]
+    kairos["Kairos\nindependent-adopter"]
+  end
+  openforge -->|standardizes| narwhal
+  openforge -->|standardizes| narwhal_portal
+  openforge -->|standardizes| kubemetal
+  openforge -->|standardizes| beluga
+  openforge -->|standardizes| kube_ready_box
+  openforge -->|standardizes| nfs_quota_agent
+  openforge -->|standardizes| ldapium
+  openforge -->|standardizes| clusterdeck
+  openforge -->|standardizes| beluga_manager
+  openforge -->|standardizes| egovframe_launcher
+  openforge -->|standardizes| dasomel_github_io
+  narwhal -->|reference-implementation| openforge
+  narwhal -->|provides| narwhal_portal
+  narwhal_portal -->|control-surface| narwhal
+  kubemetal -->|consumes| kube_ready_box
+  narwhal -->|consumes| kube_ready_box
+  kube_ready_box -->|provides| narwhal
+  kube_ready_box -->|provides| kubemetal
+  beluga -->|provides| beluga_manager
+  beluga_manager -->|control-surface| beluga
+  narwhal -->|consumes| nfs_quota_agent
+  nfs_quota_agent -->|provides| narwhal
+  narwhal -->|consumes| ldapium
+  ldapium -->|provides| narwhal
+  narwhal -->|shared-contract| kubemetal
+  narwhal -->|shared-contract| beluga
+  narwhal_portal -->|shared-contract| kubemetal
+  clusterdeck -->|consumes| narwhal
+  dasomel_github_io -->|consumes| openforge
 ```
-
-## Portfolio layers
-
-```text
-Layer 1  Governance / Standards
-         OpenForge
-             │
-Layer 2  Platform / AI / Data control planes
-         Narwhal · KubeMetal · Beluga
-             │
-Layer 3  Control surfaces
-         Narwhal Portal · Beluga Manager · ClusterDeck
-             │
-Layer 4  Runtime / shared platform capabilities
-         kube-ready-box · nfs-quota-agent · ldapium
-             │
-Layer 5  Developer/community surfaces
-         eGovFrame Launcher · CKA Lab · dasomel.github.io · Kairos
-```
-
-The layers are conceptual rather than strict runtime tiers. A project may participate in more than one layer.
 
 ## Relationship semantics
 
 | Type | Meaning |
 |---|---|
 | `standardizes` | OpenForge rule/contract is expected to influence the target |
-| `reference-implementation` | real project experience feeds reusable OpenForge standards |
-| `provides` | source exposes a capability used by the target |
-| `consumes` | source integrates or depends on a target capability |
-| `control-surface` | source is a user/operations control surface for target |
-| `shared-contract` | source and target share a portable contract without requiring a hard runtime dependency |
-| `security-impact` | a relationship crosses or influences a trust/authorization boundary |
-| `depends-on` | an explicit technical or lifecycle dependency exists |
+| `reference-implementation` | project experience feeds a reusable OpenForge rule |
+| `provides` | source exposes a capability consumed by target |
+| `consumes` | source depends on or integrates a target capability |
+| `control-surface` | source is an operational/user control surface for target |
+| `shared-contract` | projects share a portable contract without hard runtime dependency |
+| `security-impact` | changes may alter trust or authorization boundaries |
 
-## Design rule
-
-OpenForge should **describe and validate the relationship**, but should not turn all projects into one tightly coupled monorepo. Each OSS keeps independent release/version ownership and publishes verified state back to OpenForge through a status PR.
+Relationship edges express engineering influence and integration intent, not necessarily build-time package dependencies.
