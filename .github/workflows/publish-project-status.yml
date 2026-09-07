@@ -1,0 +1,186 @@
+name: Publish Project Portfolio Status
+
+on:
+  workflow_call:
+    inputs:
+      project:
+        description: OpenForge project id
+        required: true
+        type: string
+      repository:
+        description: Caller repository in owner/name form
+        required: true
+        type: string
+      development_status:
+        description: OpenForge development lifecycle status
+        required: true
+        type: string
+      milestone:
+        description: Project milestone or capability identifier
+        required: false
+        default: ''
+        type: string
+      progress_percent:
+        description: Optional progress percentage (0-100)
+        required: false
+        default: ''
+        type: string
+      capabilities_json:
+        description: Optional JSON object of verified capabilities
+        required: false
+        default: '{}'
+        type: string
+      relationships_json:
+        description: Optional JSON array of proposed relationship changes
+        required: false
+        default: '[]'
+        type: string
+    secrets:
+      OPENFORGE_STATUS_TOKEN:
+        description: Narrowly scoped token able to push a branch and open a PR in dasomel/openforge
+        required: true
+
+permissions:
+  contents: read
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - name: Validate caller identity
+        env:
+          EXPECTED_REPOSITORY: ${{ inputs.repository }}
+          ACTUAL_REPOSITORY: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$EXPECTED_REPOSITORY" = "$ACTUAL_REPOSITORY" || {
+            echo "repository input does not match caller: expected=$EXPECTED_REPOSITORY actual=$ACTUAL_REPOSITORY"
+            exit 1
+          }
+
+      - name: Checkout OpenForge
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dasomel/openforge
+          path: openforge
+          token: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+          fetch-depth: 1
+
+      - name: Build verified status payload
+        env:
+          PROJECT: ${{ inputs.project }}
+          REPOSITORY: ${{ inputs.repository }}
+          DEVELOPMENT_STATUS: ${{ inputs.development_status }}
+          MILESTONE: ${{ inputs.milestone }}
+          PROGRESS_PERCENT: ${{ inputs.progress_percent }}
+          CAPABILITIES_JSON: ${{ inputs.capabilities_json }}
+          RELATIONSHIPS_JSON: ${{ inputs.relationships_json }}
+          REVISION: ${{ github.sha }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          import json
+          import os
+          from datetime import datetime, timezone
+          from pathlib import Path
+
+          def decode(name, expected):
+              value = json.loads(os.environ[name])
+              if not isinstance(value, expected):
+                  raise SystemExit(f"{name} has wrong JSON type")
+              return value
+
+          progress_raw = os.environ.get('PROGRESS_PERCENT', '').strip()
+          progress = None
+          if progress_raw:
+              progress = float(progress_raw)
+              if not 0 <= progress <= 100:
+                  raise SystemExit('progress_percent must be between 0 and 100')
+
+          payload = {
+              'version': 'openforge-project-status/v1',
+              'project': os.environ['PROJECT'],
+              'repository': os.environ['REPOSITORY'],
+              'revision': os.environ['REVISION'],
+              'updated_at': datetime.now(timezone.utc).date().isoformat(),
+              'development': {
+                  'status': os.environ['DEVELOPMENT_STATUS'],
+                  'milestone': os.environ.get('MILESTONE') or None,
+                  'progress_percent': progress,
+              },
+              'capabilities': decode('CAPABILITIES_JSON', dict),
+              'relationships': decode('RELATIONSHIPS_JSON', list),
+              'evidence': {
+                  'ci': 'pass',
+                  'commit': os.environ['REVISION'],
+                  'workflow': os.environ['RUN_URL'],
+              },
+          }
+          Path('openforge/.project-status.json').write_text(
+              json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
+          )
+          PY
+
+      - name: Validate, apply, and regenerate portfolio state
+        working-directory: openforge
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --validate-status .project-status.json
+          python3 templates/scripts/apply-portfolio-status.py .project-status.json
+          python3 templates/scripts/generate-portfolio.py
+          python3 templates/scripts/generate-portfolio.py --check
+
+      - name: Create status branch and push
+        id: push
+        env:
+          GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+          PROJECT: ${{ inputs.project }}
+          REVISION: ${{ github.sha }}
+        working-directory: openforge
+        shell: bash
+        run: |
+          set -euo pipefail
+          branch="portfolio-status/${PROJECT}-${GITHUB_RUN_ID}"
+          git config user.name "openforge-status-bot"
+          git config user.email "openforge-status-bot@users.noreply.github.com"
+          git checkout -b "$branch"
+          rm .project-status.json
+          git add \
+            portfolio/projects.json \
+            portfolio/dashboard.json \
+            docs/portfolio-dashboard.md \
+            docs/portfolio-architecture.md \
+            docs/portfolio-impact.md
+          if git diff --cached --quiet; then
+            echo "No portfolio state change to publish"
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            exit 0
+          fi
+          git commit -m "chore(portfolio): update ${PROJECT} development status"
+          git push origin "$branch"
+          echo "changed=true" >> "$GITHUB_OUTPUT"
+          echo "branch=$branch" >> "$GITHUB_OUTPUT"
+
+      - name: Open reviewable portfolio status PR
+        if: steps.push.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN }}
+          BRANCH: ${{ steps.push.outputs.branch }}
+          PROJECT: ${{ inputs.project }}
+          REVISION: ${{ github.sha }}
+          SOURCE_REPOSITORY: ${{ inputs.repository }}
+        working-directory: openforge
+        shell: bash
+        run: |
+          set -euo pipefail
+          gh pr create \
+            --repo dasomel/openforge \
+            --base main \
+            --head "$BRANCH" \
+            --title "chore(portfolio): update ${PROJECT} development status" \
+            --body "Automated portfolio status proposal from \`${SOURCE_REPOSITORY}\` at revision \`${REVISION}\`.\n\nThe caller asserts that its required verification completed successfully. OpenForge CI independently validates registry integrity and generated-output freshness; merge remains the official portfolio state transition."
