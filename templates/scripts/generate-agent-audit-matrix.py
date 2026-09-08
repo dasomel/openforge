@@ -14,6 +14,7 @@ ROOT = Path(__file__).resolve().parents[2]
 AUDIT_SCRIPT = ROOT / "templates" / "scripts" / "audit-agent-engineering.py"
 OUTPUT_JSON = ROOT / "portfolio" / "agent-audit.json"
 OUTPUT_MD = ROOT / "docs" / "agent-audit-matrix.md"
+OUTPUT_MD_KO = ROOT / "docs" / "agent-audit-matrix-ko.md"
 SCHEMA = "openforge-agent-audit-matrix/v1"
 PRIORITY_REPOSITORIES = [
     "dasomel/narwhal",
@@ -96,12 +97,8 @@ def validate(matrix: dict[str, Any]) -> list[str]:
     return errors
 
 
-def render_markdown(matrix: dict[str, Any]) -> str:
+def render_table(matrix: dict[str, Any]) -> list[str]:
     lines = [
-        "# Agent Engineering Portfolio Audit Matrix",
-        "",
-        "> Generated from revision-bound repository scans. Machine-observable controls are recorded automatically; judgment fields remain explicit review work.",
-        "",
         "| Repository | Revision | Instructions | Verify / Build / Test / Lint | Deterministic controls | False-green | Manual review |",
         "|---|---|---|---|---|---|---|",
     ]
@@ -120,6 +117,36 @@ def render_markdown(matrix: dict[str, Any]) -> str:
             f"{', '.join(row.get('instructions', [])) or '—'} | {command_text} | {controls} | "
             f"{len(findings)} | {pending} review-required |"
         )
+    return lines
+
+
+def render_markdown(matrix: dict[str, Any], korean: bool = False) -> str:
+    if korean:
+        lines = [
+            "# Agent Engineering Portfolio Audit Matrix",
+            "",
+            "> 정확한 Git revision에 바인딩된 repository scan으로 생성합니다. 기계적으로 관찰 가능한 control은 자동 기록하고, 판단이 필요한 항목은 명시적인 review work로 남깁니다.",
+            "",
+        ]
+        lines.extend(render_table(matrix))
+        lines += [
+            "",
+            "## 해석",
+            "",
+            "- control이 탐지됐다는 것은 repository tooling에 executable owner가 존재한다는 뜻이며 모든 경로가 올바르게 검증된다는 의미는 아닙니다.",
+            "- `false-green`은 지침이 deterministic verification을 요구하지만 대응되는 executable owner를 찾지 못한 상태입니다.",
+            "- high-risk boundary, 실제 경로 bug reproduction 가능성, prompt debt, architecture guidance 품질은 keyword로 추론하지 않고 maintainer review로 남깁니다.",
+            "- 각 행은 정확한 Git commit에 바인딩되어 이후 동일 시점의 scan을 재현할 수 있습니다.",
+            "",
+        ]
+        return "\n".join(lines)
+    lines = [
+        "# Agent Engineering Portfolio Audit Matrix",
+        "",
+        "> Generated from revision-bound repository scans. Machine-observable controls are recorded automatically; judgment fields remain explicit review work.",
+        "",
+    ]
+    lines.extend(render_table(matrix))
     lines += [
         "",
         "## Interpretation",
@@ -160,18 +187,19 @@ def main() -> int:
         return 1
     json_text = json.dumps(matrix, ensure_ascii=False, indent=2) + "\n"
     md_text = render_markdown(matrix)
+    md_ko_text = render_markdown(matrix, korean=True)
     if args.check:
         stale = []
-        if not OUTPUT_JSON.exists() or OUTPUT_JSON.read_text(encoding="utf-8") != json_text:
-            stale.append(str(OUTPUT_JSON.relative_to(ROOT)))
-        if not OUTPUT_MD.exists() or OUTPUT_MD.read_text(encoding="utf-8") != md_text:
-            stale.append(str(OUTPUT_MD.relative_to(ROOT)))
+        for path, text in ((OUTPUT_JSON, json_text), (OUTPUT_MD, md_text), (OUTPUT_MD_KO, md_ko_text)):
+            if not path.exists() or path.read_text(encoding="utf-8") != text:
+                stale.append(str(path.relative_to(ROOT)))
         if stale:
             print("stale agent audit outputs: " + ", ".join(stale))
             return 1
         return 0
     OUTPUT_JSON.write_text(json_text, encoding="utf-8")
     OUTPUT_MD.write_text(md_text, encoding="utf-8")
+    OUTPUT_MD_KO.write_text(md_ko_text, encoding="utf-8")
     print(f"Generated agent audit matrix for {len(matrix['repositories'])} repositories")
     return 0
 
