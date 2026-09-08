@@ -11,6 +11,15 @@ Read the repository's README, CONTRIBUTING, DESIGN/architecture docs, and projec
 - Follow existing naming/style conventions; let formatter/linter rules own deterministic style.
 - Comments explain why, invariants, hazards, or non-obvious constraints; do not narrate obvious code.
 
+## Documentation impact
+
+For substantive changes, explicitly review whether README, architecture, operations, security, API/configuration, supported-version, or user-facing documentation must change in the same work unit.
+
+- Do not describe planned/experimental behavior as implemented.
+- Prefer generated/canonical sources for repeated numeric or version claims.
+- If documentation cannot safely be updated in the same change, identify the tracked follow-up rather than silently leaving known drift.
+- Review whether the change is also a blog/portfolio update candidate when it adds a user capability, architecture/operations lesson, platform support, or material security improvement.
+
 ## Bugs
 
 When feasible: reproduce -> failing regression test/evidence -> fix -> same test passes -> relevant regression suite.
