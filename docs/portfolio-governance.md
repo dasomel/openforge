@@ -196,3 +196,7 @@ python3 templates/scripts/generate-portfolio.py --check
 ```
 
 `--check` is intended for CI once generated outputs are committed. `--validate-status <file>` validates the core repository/project/state/evidence identity of a downstream payload; the JSON Schema remains the full machine-readable contract.
+
+## Downstream consumers
+
+`portfolio/dashboard.json` is fetched outside this repository. `dasomel.github.io` pulls it on a schedule via `.github/workflows/sync-openforge-portfolio.yml`, validates `version` and a non-empty `projects[]`, and renders it on the public `/oss` portfolio page. `version: openforge-dashboard/v1` and the `projects[]` shape are therefore a compatibility contract with that consumer, not an internal representation detail; changing `version` requires a coordinated migration on the consumer side.

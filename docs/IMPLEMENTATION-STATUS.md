@@ -73,6 +73,8 @@ Agent context is treated as engineering input, not free-form prompt text. Implem
 
 OpenForge standards have already been applied to active repositories including Narwhal, nfs-quota-agent and ldapium through documentation naming, security/GitHub templates and design-system/engineering contracts.
 
+`portfolio/dashboard.json` has a live downstream consumer: `dasomel.github.io` syncs it on a schedule and renders it on its public `/oss` page (see `docs/portfolio-governance.md#downstream-consumers`).
+
 ## Documentation freshness rule
 
 Implementation status should flow through:

@@ -188,3 +188,7 @@ python3 templates/scripts/apply-portfolio-status.py <payload.json>
 ```
 
 `templates/workflows/publish-openforge-status.yml`은 각 OSS가 자기 Status를 OpenForge PR로 게시하기 위한 재사용 가능한 Workflow Baseline입니다.
+
+## Downstream Consumer
+
+`portfolio/dashboard.json`은 이 Repository 외부에서 소비됩니다. `dasomel.github.io`는 `.github/workflows/sync-openforge-portfolio.yml`을 통해 이 파일을 주기적으로 fetch하고 `version`과 비어있지 않은 `projects[]`를 검증한 뒤 공개 `/oss` Portfolio Page에 렌더링합니다. 따라서 `version: openforge-dashboard/v1`과 `projects[]` 구조는 내부 표현이 아니라 이 Consumer와의 Compatibility Contract이며, `version`을 변경하려면 Consumer 측의 Migration을 함께 조율해야 합니다.
