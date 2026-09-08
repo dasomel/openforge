@@ -1,0 +1,435 @@
+{
+  "schemaVersion": "openforge-agent-audit-matrix/v1",
+  "priority_repositories": [
+    "dasomel/narwhal",
+    "dasomel/narwhal-portal",
+    "dasomel/beluga",
+    "dasomel/beluga-manager",
+    "dasomel/kubemetal",
+    "dasomel/clusterdeck",
+    "dasomel/ldapium",
+    "dasomel/nfs-quota-agent",
+    "dasomel/egovframe-launcher",
+    "dasomel/kube-ready-box"
+  ],
+  "repositories": [
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/narwhal",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": true,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [
+        "naming"
+      ],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "813ccb0cbeb79ef973bca4f48a1212adbf9c3cea"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/narwhal-portal",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [
+          "make build",
+          "npm run build"
+        ],
+        "test": [
+          "npm run test"
+        ],
+        "lint": []
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": true,
+        "security-policy": true,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [
+        "naming"
+      ],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "011890f8c8c2994f0066e43e30d8528d0a61179a"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/beluga",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": false,
+        "lint": true,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": false,
+        "generated-files": false
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "74197bde7e7fcfaea54b5e9d22a422c7d9eb7c5c"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/beluga-manager",
+      "instructions": [
+        "AGENTS.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "docs/architecture.md",
+        "docs/development.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [],
+        "test": [],
+        "lint": []
+      },
+      "deterministic_controls": {
+        "formatting": false,
+        "lint": false,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": false,
+        "generated-files": false
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [
+        "agent instructions reference linting but no lint owner was detected"
+      ],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "7a34f33bd30439612b6492c3cc331b28b0477b04"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/kubemetal",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [
+          "make check",
+          "make verify"
+        ],
+        "build": [
+          "make build",
+          "npm run build"
+        ],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": true,
+        "security-policy": true,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "fa6b60babe26efcca98c0c0ed991f04c232ffecc"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/clusterdeck",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [
+          "make verify"
+        ],
+        "build": [
+          "make build",
+          "npm run build"
+        ],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": true,
+        "security-policy": false,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [
+        "naming"
+      ],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "d5023a31b3626e64021ae5c66cbf85b7ef094243"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/ldapium",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [
+          "make check"
+        ],
+        "build": [],
+        "test": [],
+        "lint": []
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": true,
+        "security-policy": true,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "dfd3fbfe2b9fc576457e0978c9a33d8600dc1875"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/nfs-quota-agent",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md",
+        "docs/architecture.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [
+          "go build ./...",
+          "make build"
+        ],
+        "test": [
+          "go test ./...",
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": true,
+        "security-policy": true,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [
+        "formatting"
+      ],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "d5ba45b2e23d4aedd2026b7e2c8c71933fa1ec10"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/egovframe-launcher",
+      "instructions": [
+        "AGENTS.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [],
+        "test": [],
+        "lint": []
+      },
+      "deterministic_controls": {
+        "formatting": false,
+        "lint": false,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": false,
+        "generated-files": false
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [
+        "agent instructions reference linting but no lint owner was detected"
+      ],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "b762dabc88be18654973d571dfd449d750476044"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/kube-ready-box",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md"
+      ],
+      "canonical_commands": {
+        "verify": [],
+        "build": [
+          "make build"
+        ],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": true,
+        "lint": true,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": false,
+        "generated-files": true
+      },
+      "prompt_deterministic_hints": [],
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "7c62e309ebd03483291387df5d82d02f920a04bb"
+    }
+  ]
+}
