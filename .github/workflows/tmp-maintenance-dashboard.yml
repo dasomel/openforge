@@ -1,0 +1,70 @@
+name: Temporary Maintenance Dashboard Integration
+
+on:
+  push:
+    branches: [feat/portfolio-maintenance-dashboard]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  integrate:
+    if: github.actor != 'github-actions[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: feat/portfolio-maintenance-dashboard
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Patch generator and regenerate canonical outputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 - <<'PY'
+          from pathlib import Path
+          p = Path('templates/scripts/generate-portfolio.py')
+          s = p.read_text()
+          s = s.replace('MILESTONES_PATH = ROOT / "portfolio" / "milestones.json"\n', 'MILESTONES_PATH = ROOT / "portfolio" / "milestones.json"\nMAINTENANCE_PATH = ROOT / "portfolio" / "maintenance.json"\n')
+          s = s.replace(
+              'def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> str:\n',
+              'def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> str:\n'
+          )
+          old = '''    output = {\n        "version": "openforge-dashboard/v1",\n        "generated_from": ["portfolio/projects.json", "portfolio/relationships.json", "portfolio/milestones.json"],\n        "updated_at": projects_doc.get("updated_at"),\n        "portfolio": projects_doc.get("portfolio", {}),\n        "projects": [dict(project, impact_score=impact_scores[project_id]) for project_id, project in projects.items()],\n        "relationships": relationships_doc.get("relationships", []),\n        "standards": relationships_doc.get("standards", []),\n        "milestones": milestones_doc.get("milestones", []),\n    }\n'''
+          new = '''    maintenance_entries = {\n        item["project"]: item\n        for item in maintenance_doc.get("projects", [])\n        if isinstance(item, dict) and item.get("project") in projects\n    }\n    maintenance_summary = {\n        "owned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "owned"),\n        "unowned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "unowned"),\n        "high_blast_radius_projects": sum(1 for item in maintenance_entries.values() if item.get("blast_radius") == "high"),\n        "exit_path_review_required": sum(1 for item in maintenance_entries.values() if item.get("exit_path_status") == "review-required"),\n        "review_cadence_default": maintenance_doc.get("review_cadence_default"),\n    }\n    output = {\n        "version": "openforge-dashboard/v1",\n        "generated_from": ["portfolio/projects.json", "portfolio/relationships.json", "portfolio/milestones.json", "portfolio/maintenance.json"],\n        "updated_at": max(filter(None, [projects_doc.get("updated_at"), maintenance_doc.get("updated_at")])),\n        "portfolio": projects_doc.get("portfolio", {}),\n        "maintenance": {\n            "summary": maintenance_summary,\n            "projects": maintenance_doc.get("projects", []),\n        },\n        "projects": [\n            dict(project, impact_score=impact_scores[project_id], maintenance=maintenance_entries.get(project_id))\n            for project_id, project in projects.items()\n        ],\n        "relationships": relationships_doc.get("relationships", []),\n        "standards": relationships_doc.get("standards", []),\n        "milestones": milestones_doc.get("milestones", []),\n    }\n'''
+          if old not in s:
+              raise SystemExit('dashboard output block not found')
+          s = s.replace(old, new)
+          s = s.replace(
+              'def generated_files(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> dict[Path, str]:',
+              'def generated_files(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> dict[Path, str]:'
+          )
+          s = s.replace(
+              'DASHBOARD_JSON_PATH: render_dashboard_json(projects_doc, relationships_doc, milestones_doc),',
+              'DASHBOARD_JSON_PATH: render_dashboard_json(projects_doc, relationships_doc, milestones_doc, maintenance_doc),'
+          )
+          s = s.replace(
+              '    milestones_doc = load_json(MILESTONES_PATH)\n',
+              '    milestones_doc = load_json(MILESTONES_PATH)\n    maintenance_doc = load_json(MAINTENANCE_PATH)\n'
+          )
+          s = s.replace(
+              '    outputs = generated_files(projects_doc, relationships_doc, milestones_doc)\n',
+              '    outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc)\n'
+          )
+          p.write_text(s)
+          PY
+          python3 templates/scripts/validate-portfolio-maintenance.py
+          python3 templates/scripts/generate-portfolio.py
+          python3 templates/scripts/generate-portfolio.py --check
+      - name: Commit generated integration
+        shell: bash
+        run: |
+          set -euo pipefail
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add templates/scripts/generate-portfolio.py portfolio/dashboard.json docs/portfolio-dashboard.md docs/portfolio-architecture.md docs/portfolio-impact.md
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m 'feat(portfolio): surface maintenance intelligence in dashboard'
+          git push origin HEAD:feat/portfolio-maintenance-dashboard
