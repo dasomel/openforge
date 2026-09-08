@@ -3,15 +3,153 @@
   "generated_from": [
     "portfolio/projects.json",
     "portfolio/relationships.json",
-    "portfolio/milestones.json"
+    "portfolio/milestones.json",
+    "portfolio/maintenance.json"
   ],
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-08",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
     "adoption_percent": 61.6,
     "adoption_target_percent": 70.0,
     "adr_count": 13
+  },
+  "maintenance": {
+    "summary": {
+      "owned_projects": 14,
+      "unowned_projects": 0,
+      "high_blast_radius_projects": 3,
+      "exit_path_review_required": 14,
+      "review_cadence_default": "quarterly"
+    },
+    "projects": [
+      {
+        "project": "openforge",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "narwhal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "narwhal-portal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "kubemetal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "experiment",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "beluga",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "beluga-manager",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "kube-ready-box",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "nfs-quota-agent",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "ldapium",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "clusterdeck",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "egovframe-launcher",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "cka-lab",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "dasomel-github-io",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
+        "project": "kairos",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
+    ]
   },
   "projects": [
     {
@@ -30,7 +168,16 @@
         "compliance",
         "portfolio"
       ],
-      "impact_score": 27
+      "impact_score": 27,
+      "maintenance": {
+        "project": "openforge",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "narwhal",
@@ -47,7 +194,16 @@
         "gitops",
         "ai-agent"
       ],
-      "impact_score": 29
+      "impact_score": 29,
+      "maintenance": {
+        "project": "narwhal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "narwhal-portal",
@@ -64,7 +220,16 @@
         "ai-agent",
         "operations"
       ],
-      "impact_score": 11
+      "impact_score": 11,
+      "maintenance": {
+        "project": "narwhal-portal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "high",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "kubemetal",
@@ -82,7 +247,16 @@
         "agent",
         "remediation"
       ],
-      "impact_score": 11
+      "impact_score": 11,
+      "maintenance": {
+        "project": "kubemetal",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "experiment",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "beluga",
@@ -98,7 +272,16 @@
         "data-platform",
         "operations-agent"
       ],
-      "impact_score": 10
+      "impact_score": 10,
+      "maintenance": {
+        "project": "beluga",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "differentiator",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "beluga-manager",
@@ -114,7 +297,16 @@
         "management",
         "ui"
       ],
-      "impact_score": 8
+      "impact_score": 8,
+      "maintenance": {
+        "project": "beluga-manager",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "kube-ready-box",
@@ -132,7 +324,16 @@
         "security",
         "evidence"
       ],
-      "impact_score": 10
+      "impact_score": 10,
+      "maintenance": {
+        "project": "kube-ready-box",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "nfs-quota-agent",
@@ -149,7 +350,16 @@
         "quota",
         "controller"
       ],
-      "impact_score": 6
+      "impact_score": 6,
+      "maintenance": {
+        "project": "nfs-quota-agent",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "ldapium",
@@ -165,7 +375,16 @@
         "ldap",
         "admin"
       ],
-      "impact_score": 6
+      "impact_score": 6,
+      "maintenance": {
+        "project": "ldapium",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "medium",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "clusterdeck",
@@ -182,7 +401,16 @@
         "operations",
         "ui"
       ],
-      "impact_score": 3
+      "impact_score": 3,
+      "maintenance": {
+        "project": "clusterdeck",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "egovframe-launcher",
@@ -197,7 +425,16 @@
         "developer-experience",
         "egovframe"
       ],
-      "impact_score": 1
+      "impact_score": 1,
+      "maintenance": {
+        "project": "egovframe-launcher",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "cka-lab",
@@ -213,7 +450,16 @@
         "education",
         "lab"
       ],
-      "impact_score": 0
+      "impact_score": 0,
+      "maintenance": {
+        "project": "cka-lab",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "dasomel-github-io",
@@ -229,7 +475,16 @@
         "community",
         "portfolio"
       ],
-      "impact_score": 2
+      "impact_score": 2,
+      "maintenance": {
+        "project": "dasomel-github-io",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "enabler",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     },
     {
       "id": "kairos",
@@ -243,7 +498,16 @@
       "domains": [
         "automation"
       ],
-      "impact_score": 0
+      "impact_score": 0,
+      "maintenance": {
+        "project": "kairos",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "utility",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
     }
   ],
   "relationships": [
