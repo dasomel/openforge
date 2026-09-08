@@ -11,6 +11,7 @@ repositories:
     ui: false
     container: false
     env: false
+    documentation_freshness: true
 
   - id: partial-repo
     repository: fixture/partial-repo
@@ -21,6 +22,7 @@ repositories:
     ui: true
     container: true
     env: true
+    documentation_freshness: true
 
   - id: minimal-repo
     repository: fixture/minimal-repo
@@ -31,6 +33,7 @@ repositories:
     ui: false
     container: false
     env: false
+    documentation_freshness: true
 
   - id: missing-repo
     repository: fixture/missing-repo
@@ -41,3 +44,4 @@ repositories:
     ui: false
     container: false
     env: false
+    documentation_freshness: true

@@ -89,3 +89,13 @@ Substantive PR은 다음을 답해야 합니다.
 Link checker는 link가 존재함을 증명할 수 있지만 architecture 설명이 정확한지는 증명하지 못합니다. Generated version table은 copy drift를 줄일 수 있지만 migration warning이 필요한지는 판단하지 못합니다.
 
 따라서 OpenForge는 deterministic freshness check와 의미·사용성·architecture coherence·운영 명확성에 대한 maintainer review를 분리합니다.
+
+## Portfolio audit snapshot
+
+Portfolio audit configuration에서 `documentation_freshness: true`를 선택한 저장소는 `docs/IMPLEMENTATION-STATUS.md`를 유지해야 합니다. Status snapshot에는 아래의 기계 검증 가능한 형식이 필요합니다.
+
+```text
+Last verified: YYYY-MM-DD against `main`.
+```
+
+Auditor는 `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$`를 사용하고 `date`를 ISO calendar date로 검증합니다. 파일과 날짜가 있는 `main` 바인딩만 검사하며, 이 표준은 freshness interval을 정의하지 않으므로 경과 시간만으로 semantic accuracy, blog 동기화, stale 여부를 추론하지 않습니다.

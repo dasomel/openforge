@@ -41,7 +41,7 @@ class TestBehaviorPortfolioAudit(unittest.TestCase):
         ids = [m["id"] for m in audit_portfolio.METRIC_DEFINITIONS]
         self.assertIn("AGENT-004", ids)
         self.assertIn("AGENT-005", ids)
-        self.assertEqual(len(ids), 37)
+        self.assertEqual(len(ids), 38)
         self.assertEqual(len(ids), len(set(ids)))
 
     def test_profile_not_adopted_is_na(self):
@@ -107,14 +107,23 @@ class TestBehaviorPortfolioAudit(unittest.TestCase):
             self.assertEqual(check["score"], 0)
             self.assertIn("contains no BEHAVIOR.md", check["evidence"])
 
-    def test_audit_report_declares_2026_10_metric_set(self):
+    def test_audit_report_declares_2026_11_metric_set(self):
         with tempfile.TemporaryDirectory() as td:
             repo = Path(td)
             result = audit_portfolio.run_portfolio_audit(
                 [self._repo_info(repo)], repo.parent
             )
-            self.assertEqual(result["metricSetVersion"], "2026.10")
-            self.assertEqual(result["metricSetChange"]["added"], ["AGENT-005"])
+            self.assertEqual(result["metricSetVersion"], "2026.11")
+            self.assertEqual(result["metricSetChange"]["added"], ["DOC-010"])
+
+    def test_pre_2026_10_baseline_warns_about_both_opt_in_metrics(self):
+        comparison = audit_portfolio.compare_with_baseline(
+            {"metricSetVersion": "2026.11", "overallScore": 50.0, "results": []},
+            {"metricSetVersion": "2026.09", "overallScore": 50.0, "results": []},
+        )
+        self.assertEqual(comparison["metricSetVersionStatus"], "additive-compatible")
+        self.assertIn("AGENT-005", comparison["warning"])
+        self.assertIn("DOC-010", comparison["warning"])
 
 
 if __name__ == "__main__":

@@ -32,9 +32,9 @@ class TestPortfolioAuditor(unittest.TestCase):
         self.workspace_root = FIXTURES_DIR
 
     def test_stable_metric_ids_integrity(self):
-        """Verify all 37 standard metrics have unique, uppercase stable IDs with required fields and weight=1."""
+        """Verify all 38 standard metrics have unique, uppercase stable IDs with required fields and weight=1."""
         metrics = audit_portfolio.METRIC_DEFINITIONS
-        self.assertEqual(len(metrics), 37, f"Expected exactly 37 metrics, got {len(metrics)}")
+        self.assertEqual(len(metrics), 38, f"Expected exactly 38 metrics, got {len(metrics)}")
 
         seen_ids = set()
         for m in metrics:
@@ -74,7 +74,7 @@ class TestPortfolioAuditor(unittest.TestCase):
         self.assertIn("earned", res["score"])
         self.assertIn("possible", res["score"])
         self.assertIn("percent", res["score"])
-        self.assertEqual(res["metrics"]["totalDefined"], 37)
+        self.assertEqual(res["metrics"]["totalDefined"], 38)
 
         # Verify no local user path leaked in output
         self.assertNotIn("/Users/", res["pathHint"])
@@ -321,6 +321,98 @@ repositories:
             self.assertEqual(checks["DESIGN-002"]["score"], 2)
         finally:
             shutil.rmtree(temp_dir)
+
+    def test_documentation_freshness_snapshot_passes(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            (repo_path / "docs").mkdir(parents=True)
+            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
+                "# Status\n\nLast verified: 2026-09-08 against `main`.\n", encoding="utf-8"
+            )
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
+                Path(temp_dir),
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], 2)
+            self.assertIn("dated `main` snapshot", check["evidence"])
+
+    def test_documentation_freshness_missing_status_file_fails(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            repo_path.mkdir()
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
+                Path(temp_dir),
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], 0)
+            self.assertIn("Missing docs/IMPLEMENTATION-STATUS.md", check["evidence"])
+
+    def test_documentation_freshness_undated_status_file_fails(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            (repo_path / "docs").mkdir(parents=True)
+            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
+                "# Status\n\nLast verified: against `main`.\n", encoding="utf-8"
+            )
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
+                Path(temp_dir),
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], 0)
+            self.assertIn("missing a dated `main` snapshot", check["evidence"])
+
+    def test_documentation_freshness_invalid_calendar_date_fails(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            (repo_path / "docs").mkdir(parents=True)
+            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
+                "Last verified: 2026-02-31 against `main`.\n", encoding="utf-8"
+            )
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
+                Path(temp_dir),
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], 0)
+
+    def test_documentation_freshness_multiline_snapshot_fails(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            (repo_path / "docs").mkdir(parents=True)
+            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
+                "Last verified: 2026-09-08\nagainst `main`.\n", encoding="utf-8"
+            )
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
+                Path(temp_dir),
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], 0)
+
+    def test_documentation_freshness_unconfigured_is_not_scored(self):
+        with tempfile.TemporaryDirectory() as temp_dir:
+            repo_path = Path(temp_dir) / "test-repo"
+            repo_path.mkdir()
+            auditor = audit_portfolio.RepoAuditor(
+                {"id": "test-repo", "path": "test-repo", "profile": "standard"}, Path(temp_dir)
+            )
+            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+            self.assertEqual(check["score"], "N/A")
+
+    def test_documentation_freshness_config_must_be_boolean(self):
+        errors = audit_portfolio.validate_portfolio_config({
+            "version": "openforge-portfolio/v1",
+            "repositories": [{
+                "id": "fixture",
+                "repository": "fixture/repo",
+                "path": "fixture",
+                "documentation_freshness": "yes",
+            }],
+        })
+        self.assertTrue(any("documentation_freshness" in error for error in errors))
 
 
 if __name__ == "__main__":

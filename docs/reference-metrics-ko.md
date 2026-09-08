@@ -20,6 +20,7 @@ OpenForge는 표준을 정의하지만, 새로운 저장소에 표준을 적용�
 | Documentation | Release guide | 1 | 릴리스 중심 저장소 | `RELEASING*.md` |
 | Documentation | Version inventory | 플랫폼 프로젝트는 1 | Narwhal 사례 | `VERSIONS.md` |
 | Documentation | Lessons / mistakes log | 권장 | Narwhal / KubeMetal 사례 | `lessons-log*.md` / `mistakes-log*.md` |
+| Documentation | Freshness snapshot | Opt-in | 현재 상태 claim을 `main`에 바인딩 | 날짜가 있는 `main` snapshot의 `docs/IMPLEMENTATION-STATUS.md` |
 | Architecture | ADR 체계 | 1 | OpenForge / Narwhal Portal 사례 | `docs/adr/` |
 | Architecture | Decision Management Standard | 여러 프로젝트 공통 표준 저장소 권장 | OpenForge | `docs/decision-management*.md` |
 | Architecture | ADR 영/한 쌍 | 사용자 대상 ADR 100% | OpenForge | ADR CI validation |

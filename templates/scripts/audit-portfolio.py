@@ -112,6 +112,16 @@ METRIC_DEFINITIONS: List[Dict[str, Any]] = [
         "related_standard": "docs/reference-practices.md",
         "priority": "P3",
     },
+    {
+        "id": "DOC-010",
+        "area": "Documentation",
+        "name": "Documentation Freshness Snapshot",
+        "target": "Opted-in repositories record a dated docs/IMPLEMENTATION-STATUS.md snapshot against main",
+        "default_weight": 1,
+        "related_adr": "ADR-0002",
+        "related_standard": "docs/documentation-freshness.md",
+        "priority": "P2",
+    },
     # 2. Architecture & Decision Governance
     {
         "id": "ARCH-001",
@@ -522,6 +532,9 @@ class RepoAuditor:
         self.category = repo_info.get("category", "General OSS")
         self.archetype = repo_info.get("archetype", "Developer Tool")
         self.profile = repo_info.get("profile", "standard")
+        # D1: Keep this additive control opt-in. Cost: config must declare adoption;
+        # escape hatch: omit or set false to retain the existing score denominator.
+        self.documentation_freshness = repo_info.get("documentation_freshness", None)
 
         # Compatibility booleans
         self.is_ui = repo_info.get("ui", repo_info.get("is_ui", self.profile in {"desktop", "platform"} and "portal" in self.id))
@@ -775,6 +788,30 @@ class RepoAuditor:
             self._add_check(m, 2, f"Found {logs[0]}", "", "")
         else:
             self._add_check(m, 1, "No dedicated lessons log (optional reference practice)", "Maintain a lessons/mistakes log for operational retention.", "Optional reference practice")
+
+    def _eval_doc_010(self, m: Dict[str, Any]):
+        if self.documentation_freshness is not True:
+            self._add_check(m, "N/A", "Documentation freshness snapshot not adopted", "", "Set documentation_freshness: true when adopting the snapshot contract")
+            return
+
+        status_file = "docs/IMPLEMENTATION-STATUS.md"
+        if not self._file_exists(status_file):
+            self._add_check(m, 0, f"Missing {status_file}", f"Add {status_file} with a dated main snapshot.", "docs/documentation-freshness.md")
+            return
+
+        content = self._read_file_safe(status_file)
+        snapshot_pattern = r"(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$"
+        snapshot = re.search(snapshot_pattern, content)
+        try:
+            if snapshot:
+                datetime.strptime(snapshot.group("date"), "%Y-%m-%d")
+        except ValueError:
+            snapshot = None
+        if not snapshot:
+            self._add_check(m, 0, f"{status_file} is missing a dated `main` snapshot", "Add `Last verified: YYYY-MM-DD against `main`.` with a valid calendar date and keep current-state claims bound to it.", "docs/documentation-freshness.md")
+            return
+
+        self._add_check(m, 2, f"Found dated `main` snapshot in {status_file}", "", "")
 
     def _eval_arch_001(self, m: Dict[str, Any]):
         adr_dir = self._find_files("docs/adr/*.md") + self._find_files("adr/*.md")
@@ -1432,6 +1469,9 @@ def validate_portfolio_config(config_data: Dict[str, Any]) -> List[str]:
 
         if profile and profile not in VALID_PROFILES:
             errors.append(f"Repository '{rid}' has invalid profile '{profile}'. Valid: {', '.join(sorted(VALID_PROFILES))}")
+
+        if "documentation_freshness" in r and not isinstance(r["documentation_freshness"], bool):
+            errors.append(f"Repository '{rid or idx}' field 'documentation_freshness' must be true or false when specified")
 
     return errors
 

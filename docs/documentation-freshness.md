@@ -89,3 +89,13 @@ Every substantive PR should answer:
 A link checker can prove that a link resolves; it cannot prove that an architecture explanation is accurate. A generated version table can eliminate copy drift; it cannot decide whether a user needs a migration warning.
 
 OpenForge therefore separates deterministic freshness checks from maintainer review of meaning, usability, architecture coherence, and operational clarity.
+
+## Portfolio audit snapshot
+
+Repositories that opt in with `documentation_freshness: true` in the portfolio audit configuration must keep `docs/IMPLEMENTATION-STATUS.md`. Its status snapshot must include this exact machine-checked line shape:
+
+```text
+Last verified: YYYY-MM-DD against `main`.
+```
+
+The auditor uses `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$` and validates `date` as an ISO calendar date. It checks that the file and dated `main` binding exist; it does not infer semantic accuracy, blog synchronization, or staleness from elapsed time because this standard defines no freshness interval.

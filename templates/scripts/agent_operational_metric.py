@@ -123,11 +123,11 @@ def register(core: Any) -> None:
     original_run = core.run_portfolio_audit
     def run_portfolio_audit(portfolio, workspace_root):
         result = original_run(portfolio, workspace_root)
-        result["metricSetVersion"] = "2026.10"
+        result["metricSetVersion"] = "2026.11"
         result["metricSetChange"] = {
             "type": "additive",
-            "added": ["AGENT-005"],
-            "notes": "AGENT-005 is N/A unless explicitly required or .agents/evals/ is adopted; it requires an executable live-evidence/regression-gate contract, not directory presence.",
+            "added": ["DOC-010"],
+            "notes": "DOC-010 is opt-in and requires a dated implementation-status snapshot against main. AGENT-005 remains the opt-in executable live-evidence/regression-gate control introduced in metric set 2026.10.",
         }
         return result
     core.run_portfolio_audit = run_portfolio_audit
@@ -137,8 +137,11 @@ def register(core: Any) -> None:
         comparison = original_compare(current, baseline)
         curr_v = current.get("metricSetVersion", "unknown")
         base_v = baseline.get("metricSetVersion", "unknown")
-        if curr_v == "2026.10" and base_v in {"2026.09", "2026.08"}:
+        if curr_v == "2026.11" and base_v in {"2026.10", "2026.09", "2026.08"}:
             comparison["metricSetVersionStatus"] = "additive-compatible"
-            comparison["warning"] = "Metric set 2026.10 adds opt-in AGENT-005; prior scores remain comparable where the operational eval profile is N/A."
+            if base_v == "2026.10":
+                comparison["warning"] = "Metric set 2026.11 adds opt-in DOC-010; prior scores remain comparable where the documentation freshness control is N/A."
+            else:
+                comparison["warning"] = "Metric set 2026.11 adds opt-in DOC-010 and includes AGENT-005 introduced in 2026.10; prior scores remain comparable where both controls are N/A."
         return comparison
     core.compare_with_baseline = compare_with_baseline
