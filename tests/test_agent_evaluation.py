@@ -21,8 +21,11 @@ comparator = load("compare_agent_evals", "compare-agent-evals.py")
 
 
 class TestAgentEvaluation(unittest.TestCase):
-    def trace(self, events):
-        return {"schemaVersion": evaluator.TRACE_SCHEMA, "traceId": "t1", "events": events}
+    def trace(self, events, strict=False):
+        trace = {"schemaVersion": evaluator.TRACE_SCHEMA, "traceId": "t1", "events": events}
+        if strict:
+            trace["consistencyMode"] = "strict"
+        return trace
 
     def by_behavior(self, result):
         return {r["behavior"]: r for r in result["results"]}
@@ -83,6 +86,55 @@ class TestAgentEvaluation(unittest.TestCase):
             {"id": "e1", "type": "verification"},
         ]))
         self.assertTrue(any("duplicate event id" in e for e in errors))
+
+    def test_strict_complete_requires_explicit_passed_verification(self):
+        result = evaluator.evaluate(self.trace([
+            {"id": "e1", "type": "scope_check"},
+            {"id": "e2", "type": "verification", "scope": "ci", "evidence": ["ci:run"]},
+            {"id": "e3", "type": "completion_claim"},
+            {"id": "e4", "type": "task_outcome", "state": "A"},
+        ], strict=True))
+        checks = self.by_behavior(result)
+        self.assertEqual(checks["evidence-before-claim"]["outcome"], "false")
+        self.assertEqual(checks["task-convergence"]["outcome"], "false")
+
+    def test_strict_failed_verification_blocks_complete(self):
+        result = evaluator.evaluate(self.trace([
+            {"id": "e1", "type": "scope_check"},
+            {"id": "e2", "type": "verification", "scope": "ci", "status": "failed", "evidence": ["ci:run-failed"]},
+            {"id": "e3", "type": "completion_claim"},
+            {"id": "e4", "type": "task_outcome", "state": "A"},
+        ], strict=True))
+        checks = self.by_behavior(result)
+        self.assertEqual(checks["evidence-before-claim"]["outcome"], "false")
+        self.assertEqual(checks["task-convergence"]["outcome"], "false")
+
+    def test_strict_passed_verification_allows_complete(self):
+        result = evaluator.evaluate(self.trace([
+            {"id": "e1", "type": "scope_check"},
+            {"id": "e2", "type": "verification", "scope": "ci", "status": "passed", "evidence": ["ci:run-pass"]},
+            {"id": "e3", "type": "completion_claim"},
+            {"id": "e4", "type": "task_outcome", "state": "A"},
+        ], strict=True))
+        checks = self.by_behavior(result)
+        self.assertEqual(checks["evidence-before-claim"]["outcome"], "true")
+        self.assertEqual(checks["task-convergence"]["outcome"], "true")
+
+    def test_strict_b_or_c_conflicts_with_completion_claim(self):
+        result = evaluator.evaluate(self.trace([
+            {"id": "e1", "type": "completion_claim"},
+            {"id": "e2", "type": "task_outcome", "state": "B", "next": "Run runtime check"},
+        ], strict=True))
+        self.assertEqual(self.by_behavior(result)["task-convergence"]["outcome"], "false")
+
+    def test_strict_bugfix_requires_passed_regression_verification(self):
+        result = evaluator.evaluate(self.trace([
+            {"id": "e1", "type": "reproduction"},
+            {"id": "e2", "type": "bug_fix"},
+            {"id": "e3", "type": "regression_verification", "status": "pending", "scope": "regression", "evidence": ["test:pending"]},
+            {"id": "e4", "type": "task_outcome", "state": "B", "next": "Wait for regression result"},
+        ], strict=True))
+        self.assertEqual(self.by_behavior(result)["bug-fix-verification"]["outcome"], "false")
 
     def test_regression_comparison_detects_true_to_false(self):
         baseline = {
