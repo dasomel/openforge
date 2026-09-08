@@ -106,3 +106,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/generate-portfolio.py --validate-status templates/portfolio/status.example.json
+
+      - name: Validate maintenance and lifecycle governance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/validate-portfolio-maintenance.py
