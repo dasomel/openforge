@@ -18,6 +18,7 @@ ROOT = Path(__file__).resolve().parents[2]
 PROJECTS_PATH = ROOT / "portfolio" / "projects.json"
 RELATIONSHIPS_PATH = ROOT / "portfolio" / "relationships.json"
 MILESTONES_PATH = ROOT / "portfolio" / "milestones.json"
+MAINTENANCE_PATH = ROOT / "portfolio" / "maintenance.json"
 STATUS_SCHEMA_PATH = ROOT / "portfolio" / "status.schema.json"
 DASHBOARD_PATH = ROOT / "docs" / "portfolio-dashboard.md"
 ARCHITECTURE_PATH = ROOT / "docs" / "portfolio-architecture.md"
@@ -343,7 +344,7 @@ def render_impact(projects_doc: dict[str, Any], relationships_doc: dict[str, Any
     return "\n".join(lines)
 
 
-def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> str:
+def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> str:
     projects = project_map(projects_doc)
     weights = {"high": 3, "medium": 2, "low": 1}
     impact_scores = {project_id: 0 for project_id in projects}
@@ -351,12 +352,31 @@ def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[
         weight = weights[relation["impact"]]
         impact_scores[relation["source"]] += weight
         impact_scores[relation["target"]] += weight
+    maintenance_entries = {
+        item["project"]: item
+        for item in maintenance_doc.get("projects", [])
+        if isinstance(item, dict) and item.get("project") in projects
+    }
+    maintenance_summary = {
+        "owned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "owned"),
+        "unowned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "unowned"),
+        "high_blast_radius_projects": sum(1 for item in maintenance_entries.values() if item.get("blast_radius") == "high"),
+        "exit_path_review_required": sum(1 for item in maintenance_entries.values() if item.get("exit_path_status") == "review-required"),
+        "review_cadence_default": maintenance_doc.get("review_cadence_default"),
+    }
     output = {
         "version": "openforge-dashboard/v1",
-        "generated_from": ["portfolio/projects.json", "portfolio/relationships.json", "portfolio/milestones.json"],
-        "updated_at": projects_doc.get("updated_at"),
+        "generated_from": ["portfolio/projects.json", "portfolio/relationships.json", "portfolio/milestones.json", "portfolio/maintenance.json"],
+        "updated_at": max(filter(None, [projects_doc.get("updated_at"), maintenance_doc.get("updated_at")])),
         "portfolio": projects_doc.get("portfolio", {}),
-        "projects": [dict(project, impact_score=impact_scores[project_id]) for project_id, project in projects.items()],
+        "maintenance": {
+            "summary": maintenance_summary,
+            "projects": maintenance_doc.get("projects", []),
+        },
+        "projects": [
+            dict(project, impact_score=impact_scores[project_id], maintenance=maintenance_entries.get(project_id))
+            for project_id, project in projects.items()
+        ],
         "relationships": relationships_doc.get("relationships", []),
         "standards": relationships_doc.get("standards", []),
         "milestones": milestones_doc.get("milestones", []),
@@ -393,12 +413,12 @@ def validate_status_payload(path: Path, projects_doc: dict[str, Any], milestones
     return errors
 
 
-def generated_files(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> dict[Path, str]:
+def generated_files(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> dict[Path, str]:
     return {
         DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc),
         ARCHITECTURE_PATH: render_architecture(projects_doc, relationships_doc),
         IMPACT_PATH: render_impact(projects_doc, relationships_doc),
-        DASHBOARD_JSON_PATH: render_dashboard_json(projects_doc, relationships_doc, milestones_doc),
+        DASHBOARD_JSON_PATH: render_dashboard_json(projects_doc, relationships_doc, milestones_doc, maintenance_doc),
     }
 
 
@@ -412,6 +432,7 @@ def main() -> int:
     projects_doc = load_json(PROJECTS_PATH)
     relationships_doc = load_json(RELATIONSHIPS_PATH)
     milestones_doc = load_json(MILESTONES_PATH)
+    maintenance_doc = load_json(MAINTENANCE_PATH)
 
     errors = validate_registry(projects_doc, relationships_doc, milestones_doc)
     if args.validate_status:
@@ -424,7 +445,7 @@ def main() -> int:
         print("Portfolio registry validation: PASS")
         return 0
 
-    outputs = generated_files(projects_doc, relationships_doc, milestones_doc)
+    outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc)
     stale: list[Path] = []
     for path, content in outputs.items():
         if args.check:
