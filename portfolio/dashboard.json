@@ -236,9 +236,9 @@
       "repository": "dasomel/kubemetal",
       "name": "KubeMetal",
       "category": "Hybrid AI / MLOps",
-      "archetype": "AI Platform",
+      "archetype": "Desktop Operator",
       "development_status": "active",
-      "adoption_percent": 82.4,
+      "adoption_percent": 95.8,
       "role": "adopter",
       "domains": [
         "kubernetes",
@@ -247,6 +247,25 @@
         "agent",
         "remediation"
       ],
+      "status": {
+        "revision": "ed1d870",
+        "updated_at": "2026-09-08",
+        "evidence": {
+          "commit": "ed1d8709823547c8c4ee1efb1843701dffc635f7"
+        },
+        "compliance_audit": {
+          "score_percent": 95.8,
+          "score_earned": 69,
+          "score_possible": 72,
+          "gap_count": 2,
+          "gaps": [
+            "DOC-004",
+            "I18N-001"
+          ],
+          "audit_timestamp": "2026-09-08T11:26:30.988917+00:00",
+          "audit_command": "python3 templates/scripts/audit-portfolio.py --config <workspace>/portfolio-kubemetal-only.yml (workspaceRoot=/Users/m/Documents/IdeaProjects/20.dasomel, path=kubemetal, archetype=Desktop Operator from templates/portfolio.example.yml)"
+        }
+      },
       "impact_score": 11,
       "maintenance": {
         "project": "kubemetal",
