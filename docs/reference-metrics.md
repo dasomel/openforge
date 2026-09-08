@@ -20,7 +20,7 @@ These are **reference metrics, not mandatory universal thresholds**. A project m
 | Documentation | Release guide | 1 | Release-oriented repositories | `RELEASING*.md` |
 | Documentation | Version inventory | 1 for platform projects | Narwhal-style practice | `VERSIONS.md` |
 | Documentation | Lessons / mistakes log | Recommended | Narwhal / KubeMetal practice | `lessons-log*.md` / `mistakes-log*.md` |
-| Documentation | Freshness snapshot | Opt-in | Current-state claims bound to `main` | `docs/IMPLEMENTATION-STATUS.md` with dated `main` snapshot |
+| Documentation | Freshness snapshot | 1 | Opt-in: current-state claims bound to `main` | `docs/IMPLEMENTATION-STATUS.md` with dated `main` snapshot |
 | Architecture | ADR process | 1 | OpenForge / Narwhal Portal practice | `docs/adr/` |
 | Architecture | Decision management standard | Recommended for multi-project standards | OpenForge | `docs/decision-management*.md` |
 | Architecture | ADR English/Korean pairs | 100% user-facing ADRs | OpenForge | ADR CI validation |

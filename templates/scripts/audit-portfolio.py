@@ -12,13 +12,20 @@ import glob
 import re
 import argparse
 import subprocess
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Dict, List, Any, Optional, Tuple
 
 # ==============================================================================
 # Metric Registry with Stable IDs, Weights, and Metadata
 # ==============================================================================
+
+METRIC_SET_VERSION = "2026.11"
+METRIC_SET_CHANGE = {
+    "type": "additive",
+    "added": ["DOC-010"],
+    "notes": "DOC-010 is opt-in and requires a dated, non-future implementation-status snapshot against main.",
+}
 
 METRIC_DEFINITIONS: List[Dict[str, Any]] = [
     # 1. Documentation
@@ -118,7 +125,6 @@ METRIC_DEFINITIONS: List[Dict[str, Any]] = [
         "name": "Documentation Freshness Snapshot",
         "target": "Opted-in repositories record a dated docs/IMPLEMENTATION-STATUS.md snapshot against main",
         "default_weight": 1,
-        "related_adr": "ADR-0002",
         "related_standard": "docs/documentation-freshness.md",
         "priority": "P2",
     },
@@ -799,19 +805,21 @@ class RepoAuditor:
             self._add_check(m, 0, f"Missing {status_file}", f"Add {status_file} with a dated main snapshot.", "docs/documentation-freshness.md")
             return
 
-        content = self._read_file_safe(status_file)
+        # D2: Read DOC-010 separately so BOM tolerance cannot change other metric inputs.
+        # Cost: a narrow normalization step; escape hatch: remove it if utf-8-sig becomes global policy.
+        content = self._read_file_safe(status_file).lstrip("\ufeff")
+        content = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
         snapshot_pattern = r"(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$"
-        snapshot = re.search(snapshot_pattern, content)
-        try:
-            if snapshot:
-                datetime.strptime(snapshot.group("date"), "%Y-%m-%d")
-        except ValueError:
-            snapshot = None
-        if not snapshot:
-            self._add_check(m, 0, f"{status_file} is missing a dated `main` snapshot", "Add `Last verified: YYYY-MM-DD against `main`.` with a valid calendar date and keep current-state claims bound to it.", "docs/documentation-freshness.md")
-            return
+        for snapshot in re.finditer(snapshot_pattern, content):
+            try:
+                snapshot_date = datetime.strptime(snapshot.group("date"), "%Y-%m-%d").date()
+            except ValueError:
+                continue
+            if snapshot_date <= date.today():
+                self._add_check(m, 2, f"Found dated `main` snapshot in {status_file}", "", "")
+                return
 
-        self._add_check(m, 2, f"Found dated `main` snapshot in {status_file}", "", "")
+        self._add_check(m, 0, f"{status_file} is missing a dated `main` snapshot with a non-future date", "Add `Last verified: YYYY-MM-DD against `main`.` with a valid, non-future calendar date and keep current-state claims bound to it.", "docs/documentation-freshness.md")
 
     def _eval_arch_001(self, m: Dict[str, Any]):
         adr_dir = self._find_files("docs/adr/*.md") + self._find_files("adr/*.md")
@@ -1184,7 +1192,8 @@ def run_portfolio_audit(portfolio: List[Dict[str, Any]], workspace_root: Path) -
         "schemaVersion": "openforge-portfolio-audit/v1",
         "generatedAt": datetime.now(timezone.utc).isoformat(),
         "openforgeCommit": openforge_commit,
-        "metricSetVersion": "2026.08",
+        "metricSetVersion": METRIC_SET_VERSION,
+        "metricSetChange": METRIC_SET_CHANGE,
         "totalMetricsDefined": len(METRIC_DEFINITIONS),
         "overallScore": overall_percent,
         "totalRepositories": len(results),
@@ -1198,7 +1207,20 @@ def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> 
     curr_v = current.get("metricSetVersion", "unknown")
     base_v = baseline.get("metricSetVersion", "unknown")
     is_compatible = curr_v == base_v
+    version_status = "compatible" if is_compatible else "incompatible"
     warning = None if is_compatible else f"Metric set versions differ: current '{curr_v}' vs baseline '{base_v}'. Score deltas may reflect changed metric definitions."
+    if curr_v == METRIC_SET_VERSION and base_v in {"2026.10", "2026.09", "2026.08"}:
+        is_compatible = True
+        version_status = "additive-compatible"
+        additions = ["DOC-010"]
+        if base_v in {"2026.09", "2026.08"}:
+            additions.insert(0, "AGENT-005")
+        if base_v == "2026.08":
+            additions.insert(0, "AGENT-004")
+        warning = (
+            f"Metric set {METRIC_SET_VERSION} includes additive opt-in metrics {', '.join(additions)}; "
+            "prior scores remain comparable where added controls are N/A."
+        )
 
     prev_overall = baseline.get("overallScore", 0.0)
     curr_overall = current.get("overallScore", 0.0)
@@ -1262,7 +1284,7 @@ def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> 
         })
 
     return {
-        "metricSetVersionStatus": "compatible" if is_compatible else "incompatible",
+        "metricSetVersionStatus": version_status,
         "warning": warning,
         "portfolio": {
             "previous": prev_overall,
@@ -1700,6 +1722,22 @@ def _register_agent_operational_metric() -> None:
 
 
 _register_agent_operational_metric()
+
+
+def _finalize_core_metric_set_version() -> None:
+    """Keep canonical DOC-010 metadata ahead of legacy extension wrappers."""
+    original_run = globals()["run_portfolio_audit"]
+
+    def run_portfolio_audit(portfolio: List[Dict[str, Any]], workspace_root: Path) -> Dict[str, Any]:
+        result = original_run(portfolio, workspace_root)
+        result["metricSetVersion"] = METRIC_SET_VERSION
+        result["metricSetChange"] = METRIC_SET_CHANGE
+        return result
+
+    globals()["run_portfolio_audit"] = run_portfolio_audit
+
+
+_finalize_core_metric_set_version()
 
 
 if __name__ == "__main__":

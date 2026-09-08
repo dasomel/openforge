@@ -98,4 +98,4 @@ Repositories that opt in with `documentation_freshness: true` in the portfolio a
 Last verified: YYYY-MM-DD against `main`.
 ```
 
-The auditor uses `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$` and validates `date` as an ISO calendar date. It checks that the file and dated `main` binding exist; it does not infer semantic accuracy, blog synchronization, or staleness from elapsed time because this standard defines no freshness interval.
+The auditor ignores fenced code blocks, examines every remaining line matching `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$`, and accepts the first valid ISO calendar date that is not in the future. It checks that the file and dated `main` binding exist; it does not infer semantic accuracy, blog synchronization, or staleness from elapsed time because this standard defines no freshness interval.

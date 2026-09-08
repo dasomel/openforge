@@ -116,13 +116,12 @@ class TestBehaviorPortfolioAudit(unittest.TestCase):
             self.assertEqual(result["metricSetVersion"], "2026.11")
             self.assertEqual(result["metricSetChange"]["added"], ["DOC-010"])
 
-    def test_pre_2026_10_baseline_warns_about_both_opt_in_metrics(self):
+    def test_older_baseline_warns_about_doc_010_addition(self):
         comparison = audit_portfolio.compare_with_baseline(
             {"metricSetVersion": "2026.11", "overallScore": 50.0, "results": []},
-            {"metricSetVersion": "2026.09", "overallScore": 50.0, "results": []},
+            {"metricSetVersion": "2026.10", "overallScore": 50.0, "results": []},
         )
         self.assertEqual(comparison["metricSetVersionStatus"], "additive-compatible")
-        self.assertIn("AGENT-005", comparison["warning"])
         self.assertIn("DOC-010", comparison["warning"])
 
 

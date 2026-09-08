@@ -98,4 +98,4 @@ Portfolio audit configuration에서 `documentation_freshness: true`를 선택한
 Last verified: YYYY-MM-DD against `main`.
 ```
 
-Auditor는 `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$`를 사용하고 `date`를 ISO calendar date로 검증합니다. 파일과 날짜가 있는 `main` 바인딩만 검사하며, 이 표준은 freshness interval을 정의하지 않으므로 경과 시간만으로 semantic accuracy, blog 동기화, stale 여부를 추론하지 않습니다.
+Auditor는 fenced code block을 제외하고 `(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$`에 맞는 모든 줄을 검사합니다. 미래가 아닌 유효한 ISO calendar date를 가진 첫 번째 snapshot을 허용합니다. 파일과 날짜가 있는 `main` 바인딩만 검사하며, 이 표준은 freshness interval을 정의하지 않으므로 경과 시간만으로 semantic accuracy, blog 동기화, stale 여부를 추론하지 않습니다.
