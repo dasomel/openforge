@@ -91,8 +91,11 @@ jobs:
           bash templates/scripts/validate-behaviors.sh
           python3 -m unittest discover -s tests -v
           python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only
-          python3 templates/scripts/evaluate-agent-trace.py templates/agent-eval/traces/2026-08-risk-based-trace-gate.json --out /tmp/agent-eval.json
-          python3 templates/scripts/agent-eval-gate.py --current /tmp/agent-eval.json --baseline templates/agent-eval/baseline.eval.json
+          python3 templates/scripts/agent-eval-gate.py \
+            --trace templates/agent-eval/traces/2026-08-risk-based-trace-gate.json \
+            --baseline templates/agent-eval/baseline.eval.json \
+            --current-out /tmp/agent-eval.json \
+            --comparison-out /tmp/agent-eval-comparison.json
       - name: Commit operational integration
         shell: bash
         run: |
