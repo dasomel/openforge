@@ -1,0 +1,66 @@
+name: Refresh Agent Engineering Audit
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 3 1 * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: main
+          fetch-depth: 0
+      - name: Clone priority repositories
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/agent-audit
+          repos=(narwhal narwhal-portal beluga beluga-manager kubemetal clusterdeck ldapium nfs-quota-agent egovframe-launcher kube-ready-box)
+          for repo in "${repos[@]}"; do
+            git clone --depth=1 "https://github.com/dasomel/${repo}.git" "/tmp/agent-audit/${repo}"
+          done
+      - name: Generate revision-bound matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-agent-audit-matrix.py \
+            --repo dasomel/narwhal=/tmp/agent-audit/narwhal \
+            --repo dasomel/narwhal-portal=/tmp/agent-audit/narwhal-portal \
+            --repo dasomel/beluga=/tmp/agent-audit/beluga \
+            --repo dasomel/beluga-manager=/tmp/agent-audit/beluga-manager \
+            --repo dasomel/kubemetal=/tmp/agent-audit/kubemetal \
+            --repo dasomel/clusterdeck=/tmp/agent-audit/clusterdeck \
+            --repo dasomel/ldapium=/tmp/agent-audit/ldapium \
+            --repo dasomel/nfs-quota-agent=/tmp/agent-audit/nfs-quota-agent \
+            --repo dasomel/egovframe-launcher=/tmp/agent-audit/egovframe-launcher \
+            --repo dasomel/kube-ready-box=/tmp/agent-audit/kube-ready-box
+          python3 templates/scripts/generate-agent-audit-matrix.py --validate
+      - name: Open reviewable refresh PR when state changed
+        shell: bash
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          if git diff --quiet -- portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md; then
+            echo 'Agent audit matrix is current.'
+            exit 0
+          fi
+          branch="agent-audit/refresh-${GITHUB_RUN_ID}"
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git switch -c "$branch"
+          git add portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md
+          git commit -m 'chore(agent): refresh portfolio audit matrix'
+          git push origin "$branch"
+          gh pr create \
+            --base main \
+            --head "$branch" \
+            --title 'chore(agent): refresh portfolio audit matrix' \
+            --body 'Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit. Review false-green findings and judgment fields before merging.'

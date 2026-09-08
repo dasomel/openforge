@@ -112,3 +112,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/validate-portfolio-maintenance.py
+
+      - name: Validate agent engineering audit matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-agent-audit-matrix.py --validate
