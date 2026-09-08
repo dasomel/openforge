@@ -35,6 +35,7 @@ jobs:
           s = t.read_text()
           s = s.replace('Verify all 35 standard metrics', 'Verify all 36 standard metrics')
           s = s.replace('self.assertEqual(len(metrics), 35, f"Expected exactly 35 metrics, got {len(metrics)}")', 'self.assertEqual(len(metrics), 36, f"Expected exactly 36 metrics, got {len(metrics)}")')
+          s = s.replace('self.assertEqual(res["metrics"]["totalDefined"], 35)', 'self.assertEqual(res["metrics"]["totalDefined"], 36)')
           t.write_text(s)
           PY
       - name: Verify foundation
