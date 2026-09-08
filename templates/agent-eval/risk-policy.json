@@ -1,0 +1,13 @@
+{
+  "schemaVersion": "openforge-agent-risk-policy/v1",
+  "defaultRisk": "low",
+  "traceRequiredAt": ["high"],
+  "tracePathPrefix": "templates/agent-eval/traces/",
+  "rules": [
+    {"risk": "high", "pattern": ".github/workflows/**", "reason": "CI and release behavior"},
+    {"risk": "high", "pattern": "templates/scripts/**", "reason": "reusable governance and compliance execution"},
+    {"risk": "high", "pattern": "templates/agent-eval/**", "reason": "agent evaluation semantics and baseline inputs"},
+    {"risk": "high", "pattern": ".agents/**", "reason": "agent behavior or operational evidence contract"},
+    {"risk": "medium", "pattern": "docs/agent-*.md", "reason": "agent governance documentation"}
+  ]
+}

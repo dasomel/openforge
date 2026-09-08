@@ -1,0 +1,38 @@
+name: OpenForge Agent Eval Gate
+description: Evaluate a structured agent trace against a trusted baseline using the canonical OpenForge evaluator/comparator.
+
+inputs:
+  trace:
+    description: Path to the hydrated openforge-agent-trace/v1 trace in the caller workspace.
+    required: true
+  baseline:
+    description: Path to the trusted openforge-agent-eval/v1 baseline in the caller workspace.
+    required: true
+  current-out:
+    description: Path for the current evaluation JSON.
+    required: false
+    default: .agents/evals/current-eval.json
+  comparison-out:
+    description: Path for the baseline comparison JSON.
+    required: false
+    default: .agents/evals/comparison.json
+
+runs:
+  using: composite
+  steps:
+    - name: Run canonical OpenForge agent evaluation gate
+      shell: bash
+      env:
+        INPUT_TRACE: ${{ inputs.trace }}
+        INPUT_BASELINE: ${{ inputs.baseline }}
+        INPUT_CURRENT_OUT: ${{ inputs.current-out }}
+        INPUT_COMPARISON_OUT: ${{ inputs.comparison-out }}
+      run: |
+        set -euo pipefail
+        OPENFORGE_ROOT="$(cd "$GITHUB_ACTION_PATH/../../.." && pwd)"
+        python3 "$OPENFORGE_ROOT/templates/scripts/agent-eval-gate.py" \
+          --scripts-dir "$OPENFORGE_ROOT/templates/scripts" \
+          --trace "$INPUT_TRACE" \
+          --baseline "$INPUT_BASELINE" \
+          --current-out "$INPUT_CURRENT_OUT" \
+          --comparison-out "$INPUT_COMPARISON_OUT"

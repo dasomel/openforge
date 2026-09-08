@@ -1635,5 +1635,32 @@ def _register_agent_behavior_metric() -> None:
 _register_agent_behavior_metric()
 
 
+def _register_agent_operational_metric() -> None:
+    """Attach additive AGENT-005 without replacing the current audit core."""
+    import importlib.util
+    from types import SimpleNamespace
+
+    module_path = Path(__file__).with_name("agent_operational_metric.py")
+    spec = importlib.util.spec_from_file_location("openforge_agent_operational_metric", module_path)
+    module = importlib.util.module_from_spec(spec)
+    assert spec.loader is not None
+    spec.loader.exec_module(module)
+
+    core = SimpleNamespace(
+        METRIC_DEFINITIONS=METRIC_DEFINITIONS,
+        RepoAuditor=RepoAuditor,
+        validate_portfolio_config=validate_portfolio_config,
+        run_portfolio_audit=run_portfolio_audit,
+        compare_with_baseline=compare_with_baseline,
+    )
+    module.register(core)
+    globals()["validate_portfolio_config"] = core.validate_portfolio_config
+    globals()["run_portfolio_audit"] = core.run_portfolio_audit
+    globals()["compare_with_baseline"] = core.compare_with_baseline
+
+
+_register_agent_operational_metric()
+
+
 if __name__ == "__main__":
     main()

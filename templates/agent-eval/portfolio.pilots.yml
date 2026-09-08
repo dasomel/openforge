@@ -1,0 +1,42 @@
+version: openforge-portfolio/v1
+workspaceRoot: "../../.."
+
+# AGENT-005 cross-project pilot portfolio.
+# Paths assume OpenForge is checked out at <workspace>/openforge and pilot
+# repositories under <workspace>/pilots/<repo>.
+repositories:
+  - id: narwhal
+    repository: dasomel/narwhal
+    path: pilots/narwhal
+    category: Internal Developer Platform
+    archetype: Platform Portal
+    profile: platform
+    ui: false
+    container: true
+    env: true
+    agent_behaviors: true
+    agent_evals: true
+
+  - id: kubemetal
+    repository: dasomel/kubemetal
+    path: pilots/kubemetal
+    category: Apple Silicon Hybrid MLOps
+    archetype: Desktop Operator
+    profile: desktop
+    ui: true
+    container: false
+    env: true
+    agent_behaviors: true
+    agent_evals: true
+
+  - id: nfs-quota-agent
+    repository: dasomel/nfs-quota-agent
+    path: pilots/nfs-quota-agent
+    category: Storage & Kubernetes Controllers
+    archetype: Developer Tool
+    profile: controller
+    ui: false
+    container: true
+    env: true
+    agent_behaviors: true
+    agent_evals: true
