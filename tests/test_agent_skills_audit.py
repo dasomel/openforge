@@ -96,6 +96,34 @@ metadata:
         self.write_evidence(root, skillVersion="2")
         self.assertIn("SKILL-VERIFICATION-VERSION", self.error_codes(root))
 
+    def test_runtime_symlink_alias_is_audited_once(self):
+        root = self.make_repo("draft")
+        target = root / ".claude" / "skills" / "verification"
+        target.mkdir(parents=True)
+        (target / "SKILL.md").write_text(
+            """---
+name: verification
+description: Legacy runtime adapter for verification.
+metadata:
+  openforge-scope: project
+  openforge-owner: owner/repo
+  openforge-maturity: deprecated
+  openforge-version: "2"
+---
+# Adapter
+""",
+            encoding="utf-8",
+        )
+        aliases = root / ".agents" / "skills"
+        aliases.mkdir(parents=True, exist_ok=True)
+        (aliases / "verification").symlink_to(Path("../../.claude/skills/verification"))
+
+        skills, findings = AUDIT.audit(root)
+        verification = [skill for skill in skills if skill.name == "verification"]
+        self.assertEqual(1, len(verification))
+        self.assertEqual(".claude/skills/verification/SKILL.md", verification[0].path)
+        self.assertNotIn("SKILL-DUP-NAME", {finding.code for finding in findings})
+
 
 if __name__ == "__main__":
     unittest.main()

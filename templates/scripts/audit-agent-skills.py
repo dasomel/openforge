@@ -12,7 +12,7 @@ import argparse
 import hashlib
 import json
 import re
-from dataclasses import dataclass, asdict
+from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
 from typing import Dict, List, Optional
@@ -24,7 +24,17 @@ NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ABSOLUTE_PATH_RE = re.compile(r"(?:/Users/[^/\s]+|/home/[^/\s]+|[A-Za-z]:\\Users\\[^\\\s]+)")
 GENERIC_PROJECT_NAMES = {
-    "build", "check", "debug", "deploy", "fix", "install", "release", "test", "upgrade", "validate", "verification"
+    "build",
+    "check",
+    "debug",
+    "deploy",
+    "fix",
+    "install",
+    "release",
+    "test",
+    "upgrade",
+    "validate",
+    "verification",
 }
 VALID_SCOPES = {"core", "domain", "project"}
 VALID_MATURITY = {"draft", "verified", "stable", "deprecated"}
@@ -82,17 +92,52 @@ def parse_frontmatter(text: str) -> tuple[Dict[str, str], Dict[str, str], str]:
     return top, metadata, body
 
 
+def path_uses_symlink(root: Path, path: Path) -> bool:
+    """Return True when path is reached through a symlinked directory inside root."""
+    current = path.parent
+    while current != root and current != current.parent:
+        if current.is_symlink():
+            return True
+        current = current.parent
+    return False
+
+
 def skill_files(root: Path) -> List[tuple[Path, Path]]:
-    found: List[tuple[Path, Path]] = []
+    """Discover skill files while collapsing runtime symlink aliases.
+
+    A repository may expose the same physical skill through multiple runtime discovery
+    roots (for example `.agents/skills/foo -> ../../.claude/skills/foo`). Such aliases
+    are one source of truth and must be audited once. Real copied files remain distinct
+    and are still caught later by duplicate-name/body checks.
+    """
+    candidates: List[tuple[Path, Path]] = []
+    root_order = {skill_root: index for index, skill_root in enumerate(SKILL_ROOTS)}
     for skill_root in SKILL_ROOTS:
         absolute = root / skill_root
         if not absolute.exists():
             continue
-        for file in absolute.glob("*/SKILL.md"):
-            found.append((skill_root, file))
-        for file in absolute.glob("*/skill.md"):
-            found.append((skill_root, file))
-    return sorted(set(found), key=lambda item: str(item[1]))
+        candidates.extend((skill_root, file) for file in absolute.glob("*/SKILL.md"))
+        candidates.extend((skill_root, file) for file in absolute.glob("*/skill.md"))
+
+    selected: Dict[Path, tuple[tuple[int, int, str], Path, Path]] = {}
+    for skill_root, file in candidates:
+        try:
+            target = file.resolve(strict=True)
+        except OSError:
+            target = file.resolve(strict=False)
+        rank = (
+            1 if path_uses_symlink(root, file) else 0,
+            root_order[skill_root],
+            str(file),
+        )
+        current = selected.get(target)
+        if current is None or rank < current[0]:
+            selected[target] = (rank, skill_root, file)
+
+    return sorted(
+        ((skill_root, file) for _, skill_root, file in selected.values()),
+        key=lambda item: str(item[1]),
+    )
 
 
 def load_verification_evidence(path: Path) -> tuple[Optional[dict], Optional[str]]:
@@ -290,12 +335,33 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
         if "AGENTS.md" not in text:
             findings.append(Finding("warn", "CLAUDE-NO-AGENTS", "CLAUDE.md", "CLAUDE.md does not import/reference AGENTS.md."))
         if lines > 200:
-            findings.append(Finding("warn", "CLAUDE-LARGE", "CLAUDE.md", f"CLAUDE.md is {lines} lines; classify sections and move workflows/docs out of the adapter."))
+            findings.append(
+                Finding(
+                    "warn",
+                    "CLAUDE-LARGE",
+                    "CLAUDE.md",
+                    f"CLAUDE.md is {lines} lines; classify sections and move workflows/docs out of the adapter.",
+                )
+            )
         match = ABSOLUTE_PATH_RE.search(text)
         if match:
-            findings.append(Finding("error", "CLAUDE-PERSONAL-PATH", "CLAUDE.md", f"Personal absolute path detected: {match.group(0)}"))
+            findings.append(
+                Finding(
+                    "error",
+                    "CLAUDE-PERSONAL-PATH",
+                    "CLAUDE.md",
+                    f"Personal absolute path detected: {match.group(0)}",
+                )
+            )
         if "~/.claude/CLAUDE.md" in text:
-            findings.append(Finding("warn", "CLAUDE-GLOBAL-DEPENDENCY", "CLAUDE.md", "Repository behavior references a maintainer-global Claude configuration; keep it optional."))
+            findings.append(
+                Finding(
+                    "warn",
+                    "CLAUDE-GLOBAL-DEPENDENCY",
+                    "CLAUDE.md",
+                    "Repository behavior references a maintainer-global Claude configuration; keep it optional.",
+                )
+            )
 
     seen_names: Dict[str, str] = {}
     seen_desc: Dict[str, str] = {}
@@ -315,7 +381,21 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
         lines = text.count("\n") + 1
         body_hash = hashlib.sha256(body.strip().encode()).hexdigest()
 
-        skills.append(Skill(rel, str(skill_root), directory, name, description, scope, owner, maturity, version, lines, body_hash[:12]))
+        skills.append(
+            Skill(
+                rel,
+                str(skill_root),
+                directory,
+                name,
+                description,
+                scope,
+                owner,
+                maturity,
+                version,
+                lines,
+                body_hash[:12],
+            )
+        )
 
         if file.name != "SKILL.md":
             findings.append(Finding("warn", "SKILL-CASE", rel, "Use canonical uppercase SKILL.md filename."))
@@ -333,9 +413,23 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
         elif len(description) > 1024:
             findings.append(Finding("error", "SKILL-DESCRIPTION-LENGTH", rel, "Description exceeds 1024 characters."))
         if lines > 500:
-            findings.append(Finding("error", "SKILL-LENGTH", rel, f"SKILL.md is {lines} lines; Agent Skills recommends keeping it under 500."))
+            findings.append(
+                Finding(
+                    "error",
+                    "SKILL-LENGTH",
+                    rel,
+                    f"SKILL.md is {lines} lines; Agent Skills recommends keeping it under 500.",
+                )
+            )
         elif lines > 250:
-            findings.append(Finding("warn", "SKILL-LENGTH-TARGET", rel, f"SKILL.md is {lines} lines; move detail to references/scripts when practical."))
+            findings.append(
+                Finding(
+                    "warn",
+                    "SKILL-LENGTH-TARGET",
+                    rel,
+                    f"SKILL.md is {lines} lines; move detail to references/scripts when practical.",
+                )
+            )
         if ABSOLUTE_PATH_RE.search(text):
             findings.append(Finding("error", "SKILL-PERSONAL-PATH", rel, "Personal absolute path found in a portable workflow."))
 
@@ -347,27 +441,62 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
             if not owner:
                 findings.append(Finding("warn", "SKILL-OWNER", rel, "Project skill should declare openforge-owner."))
             if name in GENERIC_PROJECT_NAMES:
-                findings.append(Finding("warn", "SKILL-GENERIC-NAME", rel, f"Project skill name '{name}' can collide globally; prefer <project>-<task>."))
+                findings.append(
+                    Finding(
+                        "warn",
+                        "SKILL-GENERIC-NAME",
+                        rel,
+                        f"Project skill name '{name}' can collide globally; prefer <project>-<task>.",
+                    )
+                )
         if not scope:
-            findings.append(Finding("info", "SKILL-SCOPE-MISSING", rel, "Add OpenForge scope/owner/maturity/version metadata during migration."))
+            findings.append(
+                Finding(
+                    "info",
+                    "SKILL-SCOPE-MISSING",
+                    rel,
+                    "Add OpenForge scope/owner/maturity/version metadata during migration.",
+                )
+            )
 
         if name and maturity in {"verified", "stable"}:
             findings.extend(validate_verification_evidence(root, name, version, maturity, rel))
 
         if name:
             if name in seen_names:
-                findings.append(Finding("error", "SKILL-DUP-NAME", rel, f"Duplicate skill name; first seen at {seen_names[name]}."))
+                findings.append(
+                    Finding(
+                        "error",
+                        "SKILL-DUP-NAME",
+                        rel,
+                        f"Duplicate skill name; first seen at {seen_names[name]}.",
+                    )
+                )
             else:
                 seen_names[name] = rel
         if description:
             normalized = " ".join(description.lower().split())
             if normalized in seen_desc:
-                findings.append(Finding("warn", "SKILL-DUP-DESCRIPTION", rel, f"Same normalized description as {seen_desc[normalized]}."))
+                findings.append(
+                    Finding(
+                        "warn",
+                        "SKILL-DUP-DESCRIPTION",
+                        rel,
+                        f"Same normalized description as {seen_desc[normalized]}.",
+                    )
+                )
             else:
                 seen_desc[normalized] = rel
         if body.strip():
             if body_hash in seen_body:
-                findings.append(Finding("warn", "SKILL-DUP-BODY", rel, f"Same normalized body as {seen_body[body_hash]}."))
+                findings.append(
+                    Finding(
+                        "warn",
+                        "SKILL-DUP-BODY",
+                        rel,
+                        f"Same normalized body as {seen_body[body_hash]}.",
+                    )
+                )
             else:
                 seen_body[body_hash] = rel
 
@@ -384,16 +513,28 @@ def main() -> int:
     skills, findings = audit(root)
 
     if args.json:
-        print(json.dumps({"repository": str(root), "skills": [asdict(s) for s in skills], "findings": [asdict(f) for f in findings]}, indent=2))
+        print(
+            json.dumps(
+                {
+                    "repository": str(root),
+                    "skills": [asdict(skill) for skill in skills],
+                    "findings": [asdict(finding) for finding in findings],
+                },
+                indent=2,
+            )
+        )
     else:
         print(f"Agent skills audit: {root}")
         print(f"skills: {len(skills)}  findings: {len(findings)}")
         for skill in skills:
-            print(f"SKILL {skill.path}: name={skill.name or '-'} scope={skill.scope or '-'} maturity={skill.maturity or '-'} lines={skill.lines}")
+            print(
+                f"SKILL {skill.path}: name={skill.name or '-'} scope={skill.scope or '-'} "
+                f"maturity={skill.maturity or '-'} lines={skill.lines}"
+            )
         for finding in findings:
             print(f"{finding.severity.upper():5} {finding.code:30} {finding.path}: {finding.message}")
 
-    return 1 if any(f.severity == "error" for f in findings) else 0
+    return 1 if any(finding.severity == "error" for finding in findings) else 0
 
 
 if __name__ == "__main__":
