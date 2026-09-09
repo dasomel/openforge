@@ -46,6 +46,38 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         errors = portfolio.validate_registry(self.projects, relationships, self.milestones)
         self.assertTrue(any("unknown target" in error for error in errors))
 
+    def test_new_project_with_unknown_architecture_category_fails_closed(self):
+        projects = json.loads(json.dumps(self.projects))
+        projects["projects"].append(
+            {
+                "id": "future-project",
+                "repository": "dasomel/future-project",
+                "name": "Future Project",
+                "category": "Unregistered Architecture Category",
+                "archetype": "Experiment",
+                "development_status": "active",
+                "adoption_percent": None,
+                "role": "experiment",
+                "domains": ["test"],
+            }
+        )
+        errors = portfolio.validate_registry(projects, self.relationships, self.milestones)
+        self.assertTrue(any("not assigned to any group" in error for error in errors))
+
+    def test_architecture_category_cannot_belong_to_multiple_groups(self):
+        projects = portfolio.project_map(self.projects)
+        groups = {
+            key: {
+                "label": value["label"],
+                "categories": set(value["categories"]),
+            }
+            for key, value in portfolio.ARCHITECTURE_GROUPS.items()
+        }
+        groups["Platform"]["categories"].add("Developer Tooling")
+        _, errors = portfolio.architecture_assignments(projects, groups)
+        self.assertTrue(any("belongs to multiple groups" in error for error in errors))
+        self.assertTrue(any("egovframe-launcher" in error and "multiple groups" in error for error in errors))
+
     def test_status_repository_identity_mismatch_is_rejected(self):
         example = portfolio.load_json(ROOT / "templates" / "portfolio" / "status.example.json")
         example["repository"] = "someone/else"
@@ -62,6 +94,7 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         self.assertIn("OpenForge OSS Portfolio Dashboard", dashboard)
         self.assertIn("Narwhal Portal", dashboard)
         self.assertIn("flowchart TB", architecture)
+        self.assertIn('siqoq["Siqoq\\nexperiment"]', architecture)
         self.assertIn("adr-0013-agent-execution-security", impact)
 
     def test_dashboard_exposes_revision_evidence_and_capability_verification(self):
