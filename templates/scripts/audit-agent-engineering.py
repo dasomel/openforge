@@ -3,13 +3,18 @@
 
 The audit intentionally separates machine-observable facts from human-judgment fields.
 It does not infer architecture quality or high-risk boundaries from keywords alone.
+Agent Skills are audited through the canonical OpenForge skill auditor so maturity and
+fresh-session evidence claims remain bound to the same executable policy.
 """
 
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import re
+import sys
+from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
@@ -37,6 +42,14 @@ PROMPT_RULE_PATTERNS = {
     "braces": re.compile(r"\bbraces?\b", re.I),
     "naming": re.compile(r"\b(naming|name length|identifier length)\b", re.I),
 }
+
+SKILL_AUDIT_SCRIPT = Path(__file__).with_name("audit-agent-skills.py")
+_skill_spec = importlib.util.spec_from_file_location("openforge_agent_skills_audit", SKILL_AUDIT_SCRIPT)
+assert _skill_spec and _skill_spec.loader
+skill_audit = importlib.util.module_from_spec(_skill_spec)
+# dataclasses resolves annotation metadata through sys.modules while the module is loading.
+sys.modules[_skill_spec.name] = skill_audit
+_skill_spec.loader.exec_module(skill_audit)
 
 
 def read_text(path: Path) -> str:
@@ -84,6 +97,46 @@ def tooling_corpus(root: Path) -> str:
     return "\n".join(read_text(path) for path in candidates if path.is_file()).lower()
 
 
+def audit_skills(root: Path) -> dict[str, Any]:
+    skills, findings = skill_audit.audit(root)
+    canonical = [skill for skill in skills if skill.root == ".agents/skills"]
+    adapters = [skill for skill in skills if skill.root != ".agents/skills"]
+    maturity_counts = {maturity: 0 for maturity in ("draft", "verified", "stable", "deprecated", "unspecified")}
+    canonical_records = []
+    evidence_backed_mature = 0
+
+    for skill in canonical:
+        maturity = skill.maturity if skill.maturity in maturity_counts else "unspecified"
+        maturity_counts[maturity] += 1
+        evidence_path = root / ".agents" / "skill-evals" / f"{skill.name}.json" if skill.name else None
+        evidence_present = bool(evidence_path and evidence_path.is_file())
+        if maturity in {"verified", "stable"} and evidence_present:
+            evidence_backed_mature += 1
+        canonical_records.append(
+            {
+                "name": skill.name,
+                "path": skill.path,
+                "scope": skill.scope,
+                "owner": skill.owner,
+                "maturity": skill.maturity,
+                "version": skill.version,
+                "evidence_present": evidence_present,
+            }
+        )
+
+    finding_records = [asdict(finding) for finding in findings]
+    return {
+        "canonical": canonical_records,
+        "canonical_count": len(canonical_records),
+        "adapter_count": len(adapters),
+        "maturity_counts": maturity_counts,
+        "evidence_backed_mature_count": evidence_backed_mature,
+        "error_count": sum(finding.severity == "error" for finding in findings),
+        "warning_count": sum(finding.severity == "warn" for finding in findings),
+        "findings": finding_records,
+    }
+
+
 def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
     instructions = [name for name in INSTRUCTION_FILES if (root / name).is_file()]
     source_docs = [name for name in SOURCE_DOCS if (root / name).is_file()]
@@ -103,6 +156,12 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
     if "test" in agent_text.lower() and not controls["tests"]:
         false_green.append("agent instructions reference tests but no test owner was detected")
 
+    skills = audit_skills(root)
+    if skills["error_count"]:
+        false_green.append(
+            f"Agent Skills audit reports {skills['error_count']} error(s); maturity/evidence claims are not fully valid"
+        )
+
     return {
         "schemaVersion": SCHEMA,
         "repository": repository or root.name,
@@ -112,6 +171,7 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
         "canonical_commands": commands,
         "deterministic_controls": controls,
         "prompt_deterministic_hints": prompt_hints,
+        "agent_skills": skills,
         "false_green_findings": false_green,
         "manual_review": {
             "high_risk_paths": "review-required",
@@ -123,7 +183,7 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
 
 
 def main() -> int:
-    parser = argparse.ArgumentParser(description=__doc__)
+    parser = argparse.ArgumentParser()
     parser.add_argument("--repo", type=Path, default=Path("."))
     parser.add_argument("--repository")
     parser.add_argument("--out", type=Path)
