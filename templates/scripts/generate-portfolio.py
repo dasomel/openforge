@@ -27,6 +27,47 @@ DASHBOARD_JSON_PATH = ROOT / "portfolio" / "dashboard.json"
 
 ALLOWED_IMPACT = {"high", "medium", "low"}
 
+# Architecture groups are defined by canonical project category, not by project ID.
+# This avoids maintaining a second repository inventory inside the renderer: adding a
+# project with an existing category automatically places it, while an unknown or
+# ambiguously-owned category fails registry validation before generated views can pass.
+ARCHITECTURE_GROUPS: dict[str, dict[str, Any]] = {
+    "Governance": {
+        "label": "Standards & Governance",
+        "categories": {"Standards & Blueprints"},
+    },
+    "Platform": {
+        "label": "Platform Engineering",
+        "categories": {"Internal Developer Platform", "Kubernetes Operations"},
+    },
+    "AIData": {
+        "label": "AI / Data Platforms",
+        "categories": {
+            "Hybrid AI / MLOps",
+            "Data Platform IaC",
+            "Data Platform Management",
+            "Physical AI / Edge AI",
+        },
+    },
+    "Foundation": {
+        "label": "Runtime / Shared Services",
+        "categories": {
+            "OS & VM Infrastructure",
+            "Storage & Kubernetes Controllers",
+            "Identity & Directory Service",
+        },
+    },
+    "DeveloperCommunity": {
+        "label": "Developer / Community",
+        "categories": {
+            "Developer Tooling",
+            "Certification & Labs",
+            "Community & Documentation",
+            "Automation",
+        },
+    },
+}
+
 
 def load_json(path: Path) -> dict[str, Any]:
     with path.open("r", encoding="utf-8") as handle:
@@ -60,6 +101,55 @@ def project_map(projects_doc: dict[str, Any]) -> dict[str, dict[str, Any]]:
     return result
 
 
+def architecture_assignments(
+    projects: dict[str, dict[str, Any]],
+    groups: dict[str, dict[str, Any]] | None = None,
+) -> tuple[dict[str, list[str]], list[str]]:
+    """Assign every project to exactly one architecture group by category."""
+    group_defs = ARCHITECTURE_GROUPS if groups is None else groups
+    errors: list[str] = []
+    category_owners: dict[str, list[str]] = defaultdict(list)
+    assignments: dict[str, list[str]] = {group: [] for group in group_defs}
+
+    for group, config in group_defs.items():
+        label = config.get("label") if isinstance(config, dict) else None
+        categories = config.get("categories") if isinstance(config, dict) else None
+        if not isinstance(label, str) or not label:
+            errors.append(f"architecture group {group!r}: label must be non-empty")
+        if not isinstance(categories, (set, list, tuple)) or not categories:
+            errors.append(f"architecture group {group!r}: categories must be non-empty")
+            continue
+        for category in categories:
+            if not isinstance(category, str) or not category:
+                errors.append(f"architecture group {group!r}: category must be non-empty string")
+                continue
+            category_owners[category].append(group)
+
+    for category, owners in sorted(category_owners.items()):
+        if len(owners) > 1:
+            errors.append(
+                f"architecture category {category!r} belongs to multiple groups: {', '.join(sorted(owners))}"
+            )
+
+    for project_id, project in projects.items():
+        category = project.get("category")
+        owners = category_owners.get(category, []) if isinstance(category, str) else []
+        if not owners:
+            errors.append(
+                f"{project_id}: architecture category {category!r} is not assigned to any group"
+            )
+            continue
+        if len(owners) > 1:
+            errors.append(
+                f"{project_id}: architecture category {category!r} maps to multiple groups: "
+                + ", ".join(sorted(owners))
+            )
+            continue
+        assignments[owners[0]].append(project_id)
+
+    return assignments, errors
+
+
 def validate_registry(
     projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]
 ) -> list[str]:
@@ -68,6 +158,9 @@ def validate_registry(
         projects = project_map(projects_doc)
     except ValueError as exc:
         return [str(exc)]
+
+    _, architecture_errors = architecture_assignments(projects)
+    errors.extend(architecture_errors)
 
     allowed_statuses = set(milestones_doc.get("allowed_statuses", []))
     if not allowed_statuses:
@@ -281,6 +374,10 @@ def render_dashboard(projects_doc: dict[str, Any], milestones_doc: dict[str, Any
 
 def render_architecture(projects_doc: dict[str, Any], relationships_doc: dict[str, Any]) -> str:
     projects = project_map(projects_doc)
+    assignments, errors = architecture_assignments(projects)
+    if errors:
+        raise ValueError("invalid architecture grouping: " + "; ".join(errors))
+
     lines = [
         "# OpenForge OSS Portfolio Architecture",
         "",
@@ -292,29 +389,22 @@ def render_architecture(projects_doc: dict[str, Any], relationships_doc: dict[st
         "flowchart TB",
     ]
 
-    groups = {
-        "Governance": ["openforge"],
-        "Platform": ["narwhal", "narwhal-portal", "clusterdeck"],
-        "AIData": ["kubemetal", "beluga", "beluga-manager"],
-        "Foundation": ["kube-ready-box", "nfs-quota-agent", "ldapium"],
-        "DeveloperCommunity": ["egovframe-launcher", "cka-lab", "dasomel-github-io", "kairos"],
-    }
-    labels = {
-        "Governance": "Standards & Governance",
-        "Platform": "Platform Engineering",
-        "AIData": "AI / Data Platforms",
-        "Foundation": "Runtime / Shared Services",
-        "DeveloperCommunity": "Developer / Community",
-    }
-    for group, ids in groups.items():
-        lines.append(f"  subgraph {group}[\"{labels[group]}\"]")
-        for project_id in ids:
+    for group, config in ARCHITECTURE_GROUPS.items():
+        lines.append(f"  subgraph {group}[\"{config['label']}\"]")
+        for project_id in assignments[group]:
             project = projects[project_id]
             label = project["name"].replace('"', "'")
             lines.append(f"    {project_id.replace('-', '_')}[\"{label}\\n{project['role']}\"]")
         lines.append("  end")
 
-    important_types = {"standardizes", "provides", "consumes", "control-surface", "shared-contract", "reference-implementation"}
+    important_types = {
+        "standardizes",
+        "provides",
+        "consumes",
+        "control-surface",
+        "shared-contract",
+        "reference-implementation",
+    }
     seen: set[tuple[str, str, str]] = set()
     for relation in relationships_doc.get("relationships", []):
         if relation.get("type") not in important_types:
@@ -381,7 +471,13 @@ def render_impact(projects_doc: dict[str, Any], relationships_doc: dict[str, Any
 
     lines += ["", "## Standards blast radius", ""]
     for standard in relationships_doc.get("standards", []):
-        lines += [f"### `{standard['id']}`", "", "```mermaid", "flowchart LR", f"  standard[\"{standard['id']}\"]"]
+        lines += [
+            f"### `{standard['id']}`",
+            "",
+            "```mermaid",
+            "flowchart LR",
+            f"  standard[\"{standard['id']}\"]",
+        ]
         for affected in standard.get("affected_projects", []):
             project_id = affected["project"]
             node = project_id.replace("-", "_")
@@ -401,7 +497,12 @@ def render_impact(projects_doc: dict[str, Any], relationships_doc: dict[str, Any
     return "\n".join(lines)
 
 
-def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> str:
+def render_dashboard_json(
+    projects_doc: dict[str, Any],
+    relationships_doc: dict[str, Any],
+    milestones_doc: dict[str, Any],
+    maintenance_doc: dict[str, Any],
+) -> str:
     projects = project_map(projects_doc)
     weights = {"high": 3, "medium": 2, "low": 1}
     impact_scores = {project_id: 0 for project_id in projects}
@@ -415,15 +516,28 @@ def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[
         if isinstance(item, dict) and item.get("project") in projects
     }
     maintenance_summary = {
-        "owned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "owned"),
-        "unowned_projects": sum(1 for item in maintenance_entries.values() if item.get("maintenance_status") == "unowned"),
-        "high_blast_radius_projects": sum(1 for item in maintenance_entries.values() if item.get("blast_radius") == "high"),
-        "exit_path_review_required": sum(1 for item in maintenance_entries.values() if item.get("exit_path_status") == "review-required"),
+        "owned_projects": sum(
+            1 for item in maintenance_entries.values() if item.get("maintenance_status") == "owned"
+        ),
+        "unowned_projects": sum(
+            1 for item in maintenance_entries.values() if item.get("maintenance_status") == "unowned"
+        ),
+        "high_blast_radius_projects": sum(
+            1 for item in maintenance_entries.values() if item.get("blast_radius") == "high"
+        ),
+        "exit_path_review_required": sum(
+            1 for item in maintenance_entries.values() if item.get("exit_path_status") == "review-required"
+        ),
         "review_cadence_default": maintenance_doc.get("review_cadence_default"),
     }
     output = {
         "version": "openforge-dashboard/v1",
-        "generated_from": ["portfolio/projects.json", "portfolio/relationships.json", "portfolio/milestones.json", "portfolio/maintenance.json"],
+        "generated_from": [
+            "portfolio/projects.json",
+            "portfolio/relationships.json",
+            "portfolio/milestones.json",
+            "portfolio/maintenance.json",
+        ],
         "updated_at": max(filter(None, [projects_doc.get("updated_at"), maintenance_doc.get("updated_at")])),
         "portfolio": projects_doc.get("portfolio", {}),
         "maintenance": {
@@ -441,7 +555,9 @@ def render_dashboard_json(projects_doc: dict[str, Any], relationships_doc: dict[
     return json.dumps(output, ensure_ascii=False, indent=2) + "\n"
 
 
-def validate_status_payload(path: Path, projects_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> list[str]:
+def validate_status_payload(
+    path: Path, projects_doc: dict[str, Any], milestones_doc: dict[str, Any]
+) -> list[str]:
     payload = load_json(path)
     errors: list[str] = []
     projects = project_map(projects_doc)
@@ -470,12 +586,19 @@ def validate_status_payload(path: Path, projects_doc: dict[str, Any], milestones
     return errors
 
 
-def generated_files(projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any], maintenance_doc: dict[str, Any]) -> dict[Path, str]:
+def generated_files(
+    projects_doc: dict[str, Any],
+    relationships_doc: dict[str, Any],
+    milestones_doc: dict[str, Any],
+    maintenance_doc: dict[str, Any],
+) -> dict[Path, str]:
     return {
         DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc),
         ARCHITECTURE_PATH: render_architecture(projects_doc, relationships_doc),
         IMPACT_PATH: render_impact(projects_doc, relationships_doc),
-        DASHBOARD_JSON_PATH: render_dashboard_json(projects_doc, relationships_doc, milestones_doc, maintenance_doc),
+        DASHBOARD_JSON_PATH: render_dashboard_json(
+            projects_doc, relationships_doc, milestones_doc, maintenance_doc
+        ),
     }
 
 
