@@ -13,6 +13,23 @@
 - 보안 정책과 취약점 신고 절차를 제공합니다.
 - 보안에 영향을 주는 중요한 아키텍처 결정은 기록합니다.
 
+## Kubernetes 및 Cluster Runtime
+
+Kubernetes 클러스터를 구축·운영하거나 Kubernetes에 배포하는 프로젝트는 자신의 소유 경계와 환경에 맞는 프로파일로 [Kubernetes Zero Trust 보안 기준](kubernetes-zero-trust-security-baseline-ko.md)을 적용합니다.
+
+다음 항목은 서로 대체하지 않는 별도의 보안 계층으로 취급합니다.
+
+- External/Public 및 Internal/Private 노출
+- Native OS Firewall
+- Kubernetes-aware Node Firewall
+- Workload NetworkPolicy
+- Pod Security 및 seccomp
+- Linux Host 계열에 따른 AppArmor 또는 SELinux
+- Workload Identity, mTLS, Authorization
+- Controlled Egress
+
+제품 하나나 Firewall 한 계층만 적용한 것을 Zero Trust라고 주장하지 않습니다. Production 예외는 `docs/security-exceptions.md`를 따릅니다.
+
 ## 공급망
 
 OpenForge는 `docs/supply-chain.md`를 포트폴리오 공통 공급망 보안 기준으로 사용합니다.
