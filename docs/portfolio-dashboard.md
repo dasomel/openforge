@@ -60,6 +60,33 @@
 | Agent Execution Security Rollout | **implementing** | narwhal-portal: design-adopted, kubemetal: design-adopted, beluga: design-adopted, kube-ready-box: design-adopted |
 | OSS Portfolio Control Plane | **implementing** | openforge: implementing |
 
+## Agent engineering audit
+
+> Counts what the revision-bound audit can observe. A zero false-green count means no finding matched the detector's current rules at that revision; it is not proof that every validation path fails closed. A `—` means the control was not measured at that revision, which is different from measured and clean.
+
+- Audited repositories: **11**
+- Repositories with false-green findings: **0**
+- False-green findings (total): **0**
+- Canonical agent skills: **16**
+- Evidence-backed mature skills: **0**
+- Skill audit errors: **0**
+- Swallowed-failure findings: **—** (measured in 0 of 11 repositories)
+- Repositories with a local agent CI gate: **—** (measured in 0 of 11 repositories)
+
+| Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |
+|---|---|---:|---:|---:|---:|
+| dasomel/narwhal | `1b1e5c0` | 0 | 4 | 0 | 0 |
+| dasomel/narwhal-portal | `0730430` | 0 | 3 | 0 | 0 |
+| dasomel/beluga | `6c5bdd1` | 0 | 1 | 0 | 0 |
+| dasomel/beluga-manager | `0e7a495` | 0 | 1 | 0 | 0 |
+| dasomel/kubemetal | `829221e` | 0 | 1 | 0 | 0 |
+| dasomel/clusterdeck | `3b7c283` | 0 | 1 | 0 | 0 |
+| dasomel/ldapium | `438e244` | 0 | 1 | 0 | 0 |
+| dasomel/nfs-quota-agent | `60aa69a` | 0 | 1 | 0 | 0 |
+| dasomel/egovframe-launcher | `73cf922` | 0 | 1 | 0 | 0 |
+| dasomel/kube-ready-box | `a0c8d7e` | 0 | 1 | 0 | 0 |
+| dasomel/siqoq | `b71c68f` | 0 | 1 | 0 | 0 |
+
 ## Status publication workflow
 
 ```text

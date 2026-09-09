@@ -19,6 +19,7 @@ PROJECTS_PATH = ROOT / "portfolio" / "projects.json"
 RELATIONSHIPS_PATH = ROOT / "portfolio" / "relationships.json"
 MILESTONES_PATH = ROOT / "portfolio" / "milestones.json"
 MAINTENANCE_PATH = ROOT / "portfolio" / "maintenance.json"
+AGENT_AUDIT_PATH = ROOT / "portfolio" / "agent-audit.json"
 STATUS_SCHEMA_PATH = ROOT / "portfolio" / "status.schema.json"
 DASHBOARD_PATH = ROOT / "docs" / "portfolio-dashboard.md"
 ARCHITECTURE_PATH = ROOT / "docs" / "portfolio-architecture.md"
@@ -75,6 +76,23 @@ def load_json(path: Path) -> dict[str, Any]:
     if not isinstance(value, dict):
         raise ValueError(f"{path}: top-level JSON value must be an object")
     return value
+
+
+def load_agent_audit(path: Path) -> dict[str, Any]:
+    """Load portfolio/agent-audit.json, the fifth required dashboard input.
+
+    Required like the other four registry inputs (projects/relationships/milestones/
+    maintenance): a missing or unparseable file must fail the build loudly rather than let
+    the dashboard silently ship an empty `agent_audit` block. A silently-empty audit block on
+    the public dashboard is exactly the false-green failure class this repository exists to
+    catch, so this raises instead of falling back to `{}`.
+    """
+    try:
+        return load_json(path)
+    except FileNotFoundError as exc:
+        raise RuntimeError(f"required agent audit input missing: {path}") from exc
+    except json.JSONDecodeError as exc:
+        raise RuntimeError(f"agent audit input is not valid JSON: {path}: {exc}") from exc
 
 
 def project_map(projects_doc: dict[str, Any]) -> dict[str, dict[str, Any]]:
@@ -232,6 +250,15 @@ def fmt_percent(value: Any) -> str:
     return "—" if value is None else f"{float(value):.1f}%"
 
 
+def fmt_optional_int(value: Any) -> str:
+    """Render an int as-is; render `None` (not measured) as the same "—" used elsewhere for unknowns."""
+    return "—" if value is None else str(value)
+
+
+def fmt_short_revision(revision: Any) -> str:
+    return "—" if not revision else f"`{str(revision)[:7]}`"
+
+
 def repo_link(project: dict[str, Any]) -> str:
     return f"[{project['name']}](https://github.com/{project['repository']})"
 
@@ -280,7 +307,112 @@ def capability_verification_rows(project: dict[str, Any]) -> list[tuple[str, str
     return rows
 
 
-def render_dashboard(projects_doc: dict[str, Any], milestones_doc: dict[str, Any]) -> str:
+MATURITY_LEVELS = ("draft", "verified", "stable", "deprecated", "unspecified")
+
+
+def build_agent_audit_view(agent_audit_doc: dict[str, Any]) -> dict[str, Any]:
+    """Normalize portfolio/agent-audit.json into the dashboard's additive `agent_audit` block.
+
+    Honesty rule: `swallowed_failure_count` and `local_agent_ci_gate` are being added to
+    per-repository records by concurrent lanes and are ABSENT from the checked-in matrix today.
+    Absent must render as `null`, never as `0`/`false` -- `0` asserts "measured, none found"
+    while the truth here is "not measured at this revision". A repository record that lacks the
+    key contributes `null` to its own row; a summary field is `null` only when NO repository has
+    the key, and otherwise sums just the repositories that do, alongside a `*_measured_repositories`
+    count so a reader can tell partial coverage from full coverage. This mirrors the class of bug
+    this repository exists to catch: a silently-invented zero is a false green.
+    """
+    repositories = agent_audit_doc.get("repositories", [])
+
+    false_green_total = 0
+    repos_with_false_green = 0
+    canonical_skills_total = 0
+    evidence_backed_total = 0
+    error_total = 0
+    maturity_totals = {level: 0 for level in MATURITY_LEVELS}
+    swallowed_values: list[int] = []
+    ci_gate_present_count = 0
+    ci_gate_measured_count = 0
+    repo_views = []
+
+    for repo in repositories:
+        findings = repo.get("false_green_findings", [])
+        if findings:
+            repos_with_false_green += 1
+        false_green_total += len(findings)
+
+        skills = repo.get("agent_skills", {})
+        maturity_counts = skills.get("maturity_counts", {})
+        canonical_skills_total += skills.get("canonical_count", 0)
+        evidence_backed_total += skills.get("evidence_backed_mature_count", 0)
+        error_total += skills.get("error_count", 0)
+        for level in MATURITY_LEVELS:
+            maturity_totals[level] += maturity_counts.get(level, 0)
+
+        has_swallowed = "swallowed_failure_count" in repo
+        swallowed_failure_count = repo.get("swallowed_failure_count") if has_swallowed else None
+        if has_swallowed:
+            swallowed_values.append(swallowed_failure_count or 0)
+
+        has_ci_gate = "local_agent_ci_gate" in repo
+        local_agent_ci_gate = repo.get("local_agent_ci_gate") if has_ci_gate else None
+        if has_ci_gate:
+            ci_gate_measured_count += 1
+            # The value is an object -- {"configured": bool, "evidence", "reason"} -- and every
+            # non-empty object is truthy, including one reporting `configured: false`. Testing the
+            # object itself would count a repository whose gate was found and rejected (no
+            # pull_request trigger, failure neutralized) as having a working gate: a false green
+            # on the dashboard about false-green detection. Read the field.
+            if isinstance(local_agent_ci_gate, dict):
+                configured = local_agent_ci_gate.get("configured") is True
+            else:
+                configured = bool(local_agent_ci_gate)
+            if configured:
+                ci_gate_present_count += 1
+
+        repo_views.append(
+            {
+                "repository": repo.get("repository"),
+                "revision": repo.get("revision"),
+                "false_green_findings": findings,
+                "deterministic_controls": repo.get("deterministic_controls", {}),
+                "agent_skills": {
+                    "canonical_count": skills.get("canonical_count", 0),
+                    "adapter_count": skills.get("adapter_count", 0),
+                    "maturity_counts": maturity_counts,
+                    "evidence_backed_mature_count": skills.get("evidence_backed_mature_count", 0),
+                    "error_count": skills.get("error_count", 0),
+                    "warning_count": skills.get("warning_count", 0),
+                },
+                "swallowed_failure_count": swallowed_failure_count,
+                "local_agent_ci_gate": local_agent_ci_gate,
+            }
+        )
+
+    summary = {
+        "repositories": len(repositories),
+        "repositories_with_false_green": repos_with_false_green,
+        "false_green_findings": false_green_total,
+        "canonical_skills": canonical_skills_total,
+        "skill_maturity": maturity_totals,
+        "evidence_backed_mature_skills": evidence_backed_total,
+        "skill_audit_errors": error_total,
+        "swallowed_failure_findings": sum(swallowed_values) if swallowed_values else None,
+        "swallowed_failure_findings_measured_repositories": len(swallowed_values),
+        "repositories_with_local_ci_gate": ci_gate_present_count if ci_gate_measured_count else None,
+        "local_ci_gate_measured_repositories": ci_gate_measured_count,
+    }
+
+    return {
+        "schema": agent_audit_doc.get("schemaVersion"),
+        "summary": summary,
+        "repositories": repo_views,
+    }
+
+
+def render_dashboard(
+    projects_doc: dict[str, Any], milestones_doc: dict[str, Any], agent_audit_doc: dict[str, Any]
+) -> str:
     projects = list(project_map(projects_doc).values())
     portfolio = projects_doc.get("portfolio", {})
     status_counts = Counter(project.get("development_status", "unknown") for project in projects)
@@ -345,6 +477,46 @@ def render_dashboard(projects_doc: dict[str, Any], milestones_doc: dict[str, Any
             states = milestone.get("projects", {})
             progress = ", ".join(f"{key}: {value}" for key, value in states.items()) or "—"
         lines.append(f"| {milestone['name']} | **{milestone['status']}** | {progress} |")
+
+    agent_audit = build_agent_audit_view(agent_audit_doc)
+    audit_summary = agent_audit["summary"]
+    lines += [
+        "",
+        "## Agent engineering audit",
+        "",
+        # A zero here is reproducible for the detector's current semantics, not proof that every
+        # validation path is fail-closed. Issue #73 recorded the exact misreading: `owner exists`
+        # was reported as clean for a repository whose Markdown validator emitted real errors
+        # behind `|| true`. Say so next to the number rather than in a document nobody opens.
+        "> Counts what the revision-bound audit can observe. A zero false-green count means no "
+        "finding matched the detector's current rules at that revision; it is not proof that "
+        "every validation path fails closed. A `—` means the control was not measured at that "
+        "revision, which is different from measured and clean.",
+        "",
+        f"- Audited repositories: **{audit_summary['repositories']}**",
+        f"- Repositories with false-green findings: **{audit_summary['repositories_with_false_green']}**",
+        f"- False-green findings (total): **{audit_summary['false_green_findings']}**",
+        f"- Canonical agent skills: **{audit_summary['canonical_skills']}**",
+        f"- Evidence-backed mature skills: **{audit_summary['evidence_backed_mature_skills']}**",
+        f"- Skill audit errors: **{audit_summary['skill_audit_errors']}**",
+        # `null` here means "not measured at this revision", not "measured, zero found" -- see
+        # build_agent_audit_view's honesty rule.
+        f"- Swallowed-failure findings: **{fmt_optional_int(audit_summary['swallowed_failure_findings'])}** "
+        f"(measured in {audit_summary['swallowed_failure_findings_measured_repositories']} of {audit_summary['repositories']} repositories)",
+        f"- Repositories with a local agent CI gate: **{fmt_optional_int(audit_summary['repositories_with_local_ci_gate'])}** "
+        f"(measured in {audit_summary['local_ci_gate_measured_repositories']} of {audit_summary['repositories']} repositories)",
+        "",
+        "| Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |",
+        "|---|---|---:|---:|---:|---:|",
+    ]
+    for repo in agent_audit["repositories"]:
+        maturity = repo["agent_skills"]["maturity_counts"]
+        verified_stable = maturity.get("verified", 0) + maturity.get("stable", 0)
+        lines.append(
+            f"| {repo['repository']} | {fmt_short_revision(repo['revision'])} | "
+            f"{len(repo['false_green_findings'])} | {repo['agent_skills']['canonical_count']} | "
+            f"{verified_stable} | {repo['agent_skills']['error_count']} |"
+        )
 
     lines += [
         "",
@@ -502,6 +674,7 @@ def render_dashboard_json(
     relationships_doc: dict[str, Any],
     milestones_doc: dict[str, Any],
     maintenance_doc: dict[str, Any],
+    agent_audit_doc: dict[str, Any],
 ) -> str:
     projects = project_map(projects_doc)
     weights = {"high": 3, "medium": 2, "low": 1}
@@ -537,6 +710,7 @@ def render_dashboard_json(
             "portfolio/relationships.json",
             "portfolio/milestones.json",
             "portfolio/maintenance.json",
+            "portfolio/agent-audit.json",
         ],
         "updated_at": max(filter(None, [projects_doc.get("updated_at"), maintenance_doc.get("updated_at")])),
         "portfolio": projects_doc.get("portfolio", {}),
@@ -551,6 +725,9 @@ def render_dashboard_json(
         "relationships": relationships_doc.get("relationships", []),
         "standards": relationships_doc.get("standards", []),
         "milestones": milestones_doc.get("milestones", []),
+        # Additive fifth input (D1 in the agent-audit dashboard work order): unknown top-level
+        # keys are ignored by the downstream consumer, so this does not require a version bump.
+        "agent_audit": build_agent_audit_view(agent_audit_doc),
     }
     return json.dumps(output, ensure_ascii=False, indent=2) + "\n"
 
@@ -591,13 +768,14 @@ def generated_files(
     relationships_doc: dict[str, Any],
     milestones_doc: dict[str, Any],
     maintenance_doc: dict[str, Any],
+    agent_audit_doc: dict[str, Any],
 ) -> dict[Path, str]:
     return {
-        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc),
+        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc, agent_audit_doc),
         ARCHITECTURE_PATH: render_architecture(projects_doc, relationships_doc),
         IMPACT_PATH: render_impact(projects_doc, relationships_doc),
         DASHBOARD_JSON_PATH: render_dashboard_json(
-            projects_doc, relationships_doc, milestones_doc, maintenance_doc
+            projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc
         ),
     }
 
@@ -613,6 +791,13 @@ def main() -> int:
     relationships_doc = load_json(RELATIONSHIPS_PATH)
     milestones_doc = load_json(MILESTONES_PATH)
     maintenance_doc = load_json(MAINTENANCE_PATH)
+    # Required like the four inputs above (D4): a missing/unparseable audit fails the build
+    # loudly instead of silently rendering an empty `agent_audit` block on the public dashboard.
+    try:
+        agent_audit_doc = load_agent_audit(AGENT_AUDIT_PATH)
+    except RuntimeError as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
 
     errors = validate_registry(projects_doc, relationships_doc, milestones_doc)
     if args.validate_status:
@@ -625,7 +810,7 @@ def main() -> int:
         print("Portfolio registry validation: PASS")
         return 0
 
-    outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc)
+    outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc)
     stale: list[Path] = []
     for path, content in outputs.items():
         if args.check:

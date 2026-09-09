@@ -4,7 +4,8 @@
     "portfolio/projects.json",
     "portfolio/relationships.json",
     "portfolio/milestones.json",
-    "portfolio/maintenance.json"
+    "portfolio/maintenance.json",
+    "portfolio/agent-audit.json"
   ],
   "updated_at": "2026-09-09",
   "portfolio": {
@@ -921,5 +922,348 @@
         "openforge": "implementing"
       }
     }
-  ]
+  ],
+  "agent_audit": {
+    "schema": "openforge-agent-audit-matrix/v1",
+    "summary": {
+      "repositories": 11,
+      "repositories_with_false_green": 0,
+      "false_green_findings": 0,
+      "canonical_skills": 16,
+      "skill_maturity": {
+        "draft": 16,
+        "verified": 0,
+        "stable": 0,
+        "deprecated": 0,
+        "unspecified": 0
+      },
+      "evidence_backed_mature_skills": 0,
+      "skill_audit_errors": 0,
+      "swallowed_failure_findings": null,
+      "swallowed_failure_findings_measured_repositories": 0,
+      "repositories_with_local_ci_gate": null,
+      "local_ci_gate_measured_repositories": 0
+    },
+    "repositories": [
+      {
+        "repository": "dasomel/narwhal",
+        "revision": "1b1e5c0082591d1e307692a41cde5404dac9081d",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 4,
+          "adapter_count": 1,
+          "maturity_counts": {
+            "draft": 4,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/narwhal-portal",
+        "revision": "0730430d1dc4f77c05d25f79499a1897c6dff375",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": true,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 3,
+          "adapter_count": 4,
+          "maturity_counts": {
+            "draft": 3,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/beluga",
+        "revision": "6c5bdd1ad3e91aadf0aea4c89a2c6de24cb7a099",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/beluga-manager",
+        "revision": "0e7a4950602361c941f908571fc5b6a5887fbbec",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": false,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": false,
+          "generated-files": false
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/kubemetal",
+        "revision": "829221e8c6655a558de826966894b69c3ab9d505",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": true,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 1
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/clusterdeck",
+        "revision": "3b7c283f408bebec73ae7d3a255bf7b83c9a130b",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": true,
+          "security-policy": false,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/ldapium",
+        "revision": "438e2445e00a8a79ed19172e07a773726be474a3",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": true,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/nfs-quota-agent",
+        "revision": "60aa69a15101b6448e275a2e864ae459ac77ed72",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": true,
+          "security-policy": true,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 1,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 1
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/egovframe-launcher",
+        "revision": "73cf9225a39af56f3ac00cb98c9e6a236844e197",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": false,
+          "generated-files": false
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/kube-ready-box",
+        "revision": "a0c8d7e63688152f6d6fecd9ce3fe52f996fb559",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": true,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": false,
+          "generated-files": true
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 1
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      },
+      {
+        "repository": "dasomel/siqoq",
+        "revision": "b71c68fbc07751401d9f100168106b36375fb692",
+        "false_green_findings": [],
+        "deterministic_controls": {
+          "formatting": false,
+          "lint": true,
+          "tests": true,
+          "static-analysis": false,
+          "security-policy": false,
+          "generated-files": false
+        },
+        "agent_skills": {
+          "canonical_count": 1,
+          "adapter_count": 0,
+          "maturity_counts": {
+            "draft": 1,
+            "verified": 0,
+            "stable": 0,
+            "deprecated": 0,
+            "unspecified": 0
+          },
+          "evidence_backed_mature_count": 0,
+          "error_count": 0,
+          "warning_count": 0
+        },
+        "swallowed_failure_count": null,
+        "local_agent_ci_gate": null
+      }
+    ]
+  }
 }
