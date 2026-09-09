@@ -55,6 +55,16 @@ repositories:
     container: false
     env: true
 
+  - id: siqoq
+    repository: dasomel/siqoq
+    path: siqoq
+    category: Physical AI / Edge AI
+    archetype: Developer Tool
+    profile: standard
+    ui: false
+    container: false
+    env: false
+
   - id: nfs-quota-agent
     repository: dasomel/nfs-quota-agent
     path: nfs-quota-agent
