@@ -102,6 +102,50 @@ def path_uses_symlink(root: Path, path: Path) -> bool:
     return False
 
 
+def file_identity(path: Path) -> object:
+    """Return a key that is equal for two paths reaching one physical file.
+
+    A repository may expose the same skill through several runtime discovery roots
+    (`.agents/skills/foo -> ../../.claude/skills/foo`), and the alias must be audited once.
+    The filesystem's own (device, inode) pair answers that regardless of how the path was
+    spelled. exFAT, SMB without `serverino` and some FUSE drivers report `st_ino == 0` for
+    every file, so an inode of zero carries no identity and must not be trusted: collapsing
+    on it would silently drop distinct skills, which is worse than the duplicate it prevents.
+    """
+    try:
+        stat = path.stat()
+    except OSError:
+        return path.resolve(strict=False)
+    if stat.st_ino:
+        return (stat.st_dev, stat.st_ino)
+    return path.resolve(strict=False)
+
+
+def skill_file_entries(skills_root: Path) -> List[Path]:
+    """Return each skill directory's SKILL.md under the name it actually has on disk.
+
+    Matching two globs (`*/SKILL.md` and `*/skill.md`) cannot answer this. A case-insensitive
+    filesystem satisfies both patterns from one file and hands back the *pattern's* spelling, so
+    the file is discovered twice and a genuinely lowercase filename is reported as `SKILL.md` —
+    hiding it from the SKILL-CASE check on exactly the platforms where it is easiest to create.
+    Directory entries carry the real name, so read them instead and match case-insensitively.
+    """
+    entries: List[Path] = []
+    try:
+        skill_dirs = sorted(skills_root.iterdir(), key=lambda item: item.name)
+    except OSError:
+        return entries
+    for skill_dir in skill_dirs:
+        if not skill_dir.is_dir():
+            continue
+        try:
+            children = sorted(skill_dir.iterdir(), key=lambda item: item.name)
+        except OSError:
+            continue
+        entries.extend(child for child in children if child.name.lower() == "skill.md" and child.is_file())
+    return entries
+
+
 def skill_files(root: Path) -> List[tuple[Path, Path]]:
     """Discover skill files while collapsing runtime symlink aliases.
 
@@ -114,17 +158,13 @@ def skill_files(root: Path) -> List[tuple[Path, Path]]:
     root_order = {skill_root: index for index, skill_root in enumerate(SKILL_ROOTS)}
     for skill_root in SKILL_ROOTS:
         absolute = root / skill_root
-        if not absolute.exists():
+        if not absolute.is_dir():
             continue
-        candidates.extend((skill_root, file) for file in absolute.glob("*/SKILL.md"))
-        candidates.extend((skill_root, file) for file in absolute.glob("*/skill.md"))
+        candidates.extend((skill_root, file) for file in skill_file_entries(absolute))
 
-    selected: Dict[Path, tuple[tuple[int, int, str], Path, Path]] = {}
+    selected: Dict[object, tuple[tuple[int, int, str], Path, Path]] = {}
     for skill_root, file in candidates:
-        try:
-            target = file.resolve(strict=True)
-        except OSError:
-            target = file.resolve(strict=False)
+        target = file_identity(file)
         rank = (
             1 if path_uses_symlink(root, file) else 0,
             root_order[skill_root],

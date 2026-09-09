@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import os
 import sys
 import tempfile
 import unittest
@@ -123,6 +124,39 @@ metadata:
         self.assertEqual(1, len(verification))
         self.assertEqual(".claude/skills/verification/SKILL.md", verification[0].path)
         self.assertNotIn("SKILL-DUP-NAME", {finding.code for finding in findings})
+
+    def test_one_physical_skill_file_reached_twice_is_audited_once(self):
+        """Discovery globs both `SKILL.md` and `skill.md`.
+
+        A case-insensitive filesystem (macOS, Windows) answers both globs with the same
+        physical file under two spellings; a hard link reproduces that on a case-sensitive
+        one. Either way the skill must be audited once, not reported as a duplicate name.
+        """
+        root = self.make_repo("draft")
+        canonical = root / ".agents" / "skills" / "demo-task" / "SKILL.md"
+        alias = canonical.with_name("skill.md")
+        if not alias.exists():
+            os.link(canonical, alias)
+
+        skills, findings = AUDIT.audit(root)
+        self.assertEqual([("demo-task", ".agents/skills/demo-task/SKILL.md")], [(s.name, s.path) for s in skills])
+        self.assertNotIn("SKILL-DUP-NAME", {finding.code for finding in findings})
+
+    def test_lowercase_skill_filename_is_discovered_and_reported(self):
+        """A lowercase `skill.md` must be audited under its real name.
+
+        Discovery used to match the glob pattern `*/SKILL.md`, which a case-insensitive
+        filesystem answers with this file under the pattern's spelling — silently suppressing
+        SKILL-CASE on macOS and Windows while Linux CI still reported it.
+        """
+        root = self.make_repo("draft")
+        canonical = root / ".agents" / "skills" / "demo-task" / "SKILL.md"
+        canonical.rename(canonical.with_name("renamed.tmp"))
+        canonical.with_name("renamed.tmp").rename(canonical.with_name("skill.md"))
+
+        skills, findings = AUDIT.audit(root)
+        self.assertEqual([".agents/skills/demo-task/skill.md"], [skill.path for skill in skills])
+        self.assertIn("SKILL-CASE", {finding.code for finding in findings})
 
 
 if __name__ == "__main__":
