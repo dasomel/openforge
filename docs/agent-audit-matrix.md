@@ -4,16 +4,17 @@
 
 | Repository | Revision | Instructions | Verify / Build / Test / Lint | Deterministic controls | False-green | Manual review |
 |---|---|---|---|---|---|---|
-| `dasomel/narwhal` | `813ccb0cbeb7` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: —<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, security-policy, generated-files | 0 | 4 review-required |
-| `dasomel/narwhal-portal` | `011890f8c8c2` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: make build, npm run build<br>`test`: npm run test<br>`lint`: — | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
-| `dasomel/beluga` | `74197bde7e7f` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: —<br>`test`: make test<br>`lint`: make lint | lint, tests | 0 | 4 review-required |
-| `dasomel/beluga-manager` | `7a34f33bd304` | AGENTS.md | `verify`: —<br>`build`: —<br>`test`: —<br>`lint`: — | tests | 1 | 4 review-required |
-| `dasomel/kubemetal` | `fa6b60babe26` | AGENTS.md, CLAUDE.md | `verify`: make check, make verify<br>`build`: make build, npm run build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
-| `dasomel/clusterdeck` | `d5023a31b362` | AGENTS.md, CLAUDE.md | `verify`: make verify<br>`build`: make build, npm run build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, generated-files | 0 | 4 review-required |
-| `dasomel/ldapium` | `dfd3fbfe2b9f` | AGENTS.md, CLAUDE.md | `verify`: make check<br>`build`: —<br>`test`: —<br>`lint`: — | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
-| `dasomel/nfs-quota-agent` | `d5ba45b2e23d` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: go build ./..., make build<br>`test`: go test ./..., make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
-| `dasomel/egovframe-launcher` | `b762dabc88be` | AGENTS.md | `verify`: —<br>`build`: —<br>`test`: —<br>`lint`: — | tests | 1 | 4 review-required |
-| `dasomel/kube-ready-box` | `7c62e309ebd0` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: make build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, generated-files | 0 | 4 review-required |
+| `dasomel/narwhal` | `1b1e5c008259` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: —<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/narwhal-portal` | `0730430d1dc4` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: make build, npm run build<br>`test`: npm run test<br>`lint`: — | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/beluga` | `6c5bdd1ad3e9` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: —<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/beluga-manager` | `0e7a49506023` | AGENTS.md, CLAUDE.md | `verify`: make verify<br>`build`: —<br>`test`: make test<br>`lint`: make lint | lint, tests | 0 | 4 review-required |
+| `dasomel/kubemetal` | `829221e8c665` | AGENTS.md, CLAUDE.md | `verify`: make check, make verify<br>`build`: make build, npm run build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/clusterdeck` | `3b7c283f408b` | AGENTS.md, CLAUDE.md | `verify`: make verify<br>`build`: make build, npm run build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, generated-files | 0 | 4 review-required |
+| `dasomel/ldapium` | `438e2445e00a` | AGENTS.md, CLAUDE.md | `verify`: make check<br>`build`: —<br>`test`: —<br>`lint`: — | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/nfs-quota-agent` | `60aa69a15101` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: go build ./..., make build<br>`test`: go test ./..., make test<br>`lint`: make lint | formatting, lint, tests, static-analysis, security-policy, generated-files | 0 | 4 review-required |
+| `dasomel/egovframe-launcher` | `73cf9225a39a` | AGENTS.md, CLAUDE.md | `verify`: make verify<br>`build`: make build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests | 0 | 4 review-required |
+| `dasomel/kube-ready-box` | `a0c8d7e63688` | AGENTS.md, CLAUDE.md | `verify`: —<br>`build`: make build<br>`test`: make test<br>`lint`: make lint | formatting, lint, tests, generated-files | 0 | 4 review-required |
+| `dasomel/siqoq` | `b71c68fbc077` | AGENTS.md, CLAUDE.md | `verify`: make verify<br>`build`: make build<br>`test`: make test<br>`lint`: make lint | lint, tests | 0 | 4 review-required |
 
 ## Interpretation
 
