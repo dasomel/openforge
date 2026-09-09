@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 import tempfile
 import unittest
 from datetime import date
@@ -12,6 +13,7 @@ SCRIPT = Path(__file__).resolve().parents[1] / "templates" / "scripts" / "audit-
 SPEC = importlib.util.spec_from_file_location("audit_agent_skills", SCRIPT)
 assert SPEC and SPEC.loader
 AUDIT = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = AUDIT
 SPEC.loader.exec_module(AUDIT)
 
 
