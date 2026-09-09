@@ -243,6 +243,24 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         self.assertEqual(view["summary"]["local_ci_gate_measured_repositories"], 2)
         self.assertEqual(view["summary"]["repositories_with_local_ci_gate"], 1)
 
+    def test_declared_adr_count_matches_the_files_on_disk(self):
+        """`adr_count` is published to the public dashboard, so it must be checkable.
+
+        It was maintained by hand and read 13 while `docs/adr/` held 0001..0014. Counting the
+        canonical files turns the next drift into a failing build instead of a wrong number on
+        a public page.
+        """
+        self.assertEqual(
+            self.projects["portfolio"]["adr_count"],
+            portfolio.count_english_adrs(),
+        )
+
+    def test_adr_count_mismatch_is_a_registry_error(self):
+        drifted = json.loads(json.dumps(self.projects))
+        drifted["portfolio"]["adr_count"] = portfolio.count_english_adrs() + 1
+        errors = portfolio.validate_registry(drifted, self.relationships, self.milestones)
+        self.assertTrue(any("adr_count" in error for error in errors), errors)
+
     def test_dashboard_json_version_and_generated_from(self):
         output = json.loads(
             portfolio.render_dashboard_json(

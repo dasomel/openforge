@@ -9,7 +9,7 @@
 - OpenForge standard maturity: **96.9%**
 - Portfolio adoption: **61.6%**
 - Adoption target: **70.0%**
-- ADRs: **13**
+- ADRs: **14**
 - Active projects: **13**
 
 ## Development board

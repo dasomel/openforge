@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from collections import Counter, defaultdict
 from pathlib import Path
@@ -168,6 +169,23 @@ def architecture_assignments(
     return assignments, errors
 
 
+ADR_DIR = ROOT / "docs" / "adr"
+ADR_FILENAME = re.compile(r"^\d{4}-.+(?<!-ko)\.md$")
+
+
+def count_english_adrs(adr_dir: Path = ADR_DIR) -> int | None:
+    """Count canonical (English) ADR files, or None when the directory is absent.
+
+    `portfolio/projects.json` publishes `adr_count` straight to `dashboard.json` and on to the
+    public page, so a hand-maintained number there drifts silently every time an ADR lands --
+    it read 13 while 0001..0014 existed on disk. Counting the files makes the registry value
+    checkable instead of merely asserted.
+    """
+    if not adr_dir.is_dir():
+        return None
+    return sum(1 for entry in adr_dir.iterdir() if entry.is_file() and ADR_FILENAME.match(entry.name))
+
+
 def validate_registry(
     projects_doc: dict[str, Any], relationships_doc: dict[str, Any], milestones_doc: dict[str, Any]
 ) -> list[str]:
@@ -176,6 +194,13 @@ def validate_registry(
         projects = project_map(projects_doc)
     except ValueError as exc:
         return [str(exc)]
+
+    declared_adrs = projects_doc.get("portfolio", {}).get("adr_count")
+    actual_adrs = count_english_adrs()
+    if actual_adrs is not None and declared_adrs != actual_adrs:
+        errors.append(
+            f"portfolio.adr_count is {declared_adrs!r} but docs/adr/ holds {actual_adrs} canonical ADRs"
+        )
 
     _, architecture_errors = architecture_assignments(projects)
     errors.extend(architecture_errors)
