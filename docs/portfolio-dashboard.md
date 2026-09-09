@@ -4,13 +4,13 @@
 
 ## Portfolio pulse
 
-- Projects: **14**
+- Projects: **15**
 - Engineering metrics: **35**
 - OpenForge standard maturity: **96.9%**
 - Portfolio adoption: **61.6%**
 - Adoption target: **70.0%**
 - ADRs: **13**
-- Active projects: **12**
+- Active projects: **13**
 
 ## Development board
 
@@ -27,6 +27,7 @@
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
 | [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | — | — |
 | [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe | — | — |
+| [Siqoq](https://github.com/dasomel/siqoq) | `experiment` | **active** | — | physical-ai, edge-ai, simulation, ai-agent | — | — |
 | [CKA Lab](https://github.com/dasomel/cka-lab) | `lab` | **maintenance** | — | kubernetes, education, lab | — | — |
 | [dasomel.github.io](https://github.com/dasomel/dasomel.github.io) | `presentation` | **active** | — | documentation, community, portfolio | — | — |
 | [Kairos](https://github.com/dasomel/kairos) | `independent-adopter` | **maintenance** | — | automation | — | — |
