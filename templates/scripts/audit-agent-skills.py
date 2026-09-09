@@ -2,7 +2,8 @@
 """Audit repository agent instruction and Agent Skills hygiene.
 
 This scanner is intentionally dependency-free. It validates the subset of SKILL.md
-frontmatter OpenForge relies on and reports migration warnings without rewriting files.
+frontmatter OpenForge relies on, checks verification-evidence artifacts for mature
+skills, and reports migration warnings without rewriting files.
 """
 
 from __future__ import annotations
@@ -12,17 +13,22 @@ import hashlib
 import json
 import re
 from dataclasses import dataclass, asdict
+from datetime import date
 from pathlib import Path
 from typing import Dict, List, Optional
 
 SKILL_ROOTS = (Path(".agents/skills"), Path(".claude/skills"), Path("skills"))
+VERIFICATION_ROOT = Path(".agents/skill-evals")
+VERIFICATION_SCHEMA = "openforge-agent-skill-verification/v1"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
+DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ABSOLUTE_PATH_RE = re.compile(r"(?:/Users/[^/\s]+|/home/[^/\s]+|[A-Za-z]:\\Users\\[^\\\s]+)")
 GENERIC_PROJECT_NAMES = {
     "build", "check", "debug", "deploy", "fix", "install", "release", "test", "upgrade", "validate", "verification"
 }
 VALID_SCOPES = {"core", "domain", "project"}
 VALID_MATURITY = {"draft", "verified", "stable", "deprecated"}
+PASS_STATUSES = {"pass", "passed", "success", "successful", "ok", "verified"}
 
 
 @dataclass
@@ -87,6 +93,185 @@ def skill_files(root: Path) -> List[tuple[Path, Path]]:
         for file in absolute.glob("*/skill.md"):
             found.append((skill_root, file))
     return sorted(set(found), key=lambda item: str(item[1]))
+
+
+def load_verification_evidence(path: Path) -> tuple[Optional[dict], Optional[str]]:
+    try:
+        value = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        return None, str(exc)
+    if not isinstance(value, dict):
+        return None, "top-level JSON value must be an object"
+    return value, None
+
+
+def passed_status(value: object) -> bool:
+    return str(value or "").strip().lower() in PASS_STATUSES
+
+
+def validate_verification_evidence(
+    root: Path,
+    skill_name: str,
+    skill_version: Optional[str],
+    maturity: str,
+    skill_path: str,
+) -> List[Finding]:
+    findings: List[Finding] = []
+    evidence_path = root / VERIFICATION_ROOT / f"{skill_name}.json"
+    rel = str(evidence_path.relative_to(root))
+
+    if not evidence_path.is_file():
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-EVIDENCE",
+                skill_path,
+                f"{maturity} skill requires {VERIFICATION_ROOT}/{skill_name}.json.",
+            )
+        )
+        return findings
+
+    evidence, error = load_verification_evidence(evidence_path)
+    if error or evidence is None:
+        findings.append(Finding("error", "SKILL-VERIFICATION-JSON", rel, f"Invalid verification evidence: {error}"))
+        return findings
+
+    if evidence.get("schemaVersion") != VERIFICATION_SCHEMA:
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-SCHEMA",
+                rel,
+                f"schemaVersion must be {VERIFICATION_SCHEMA}.",
+            )
+        )
+    if evidence.get("skill") != skill_name:
+        findings.append(Finding("error", "SKILL-VERIFICATION-NAME", rel, "Evidence skill must match SKILL.md name."))
+    if str(evidence.get("skillVersion", "")) != str(skill_version or ""):
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-VERSION",
+                rel,
+                "Evidence skillVersion must match metadata.openforge-version.",
+            )
+        )
+    if evidence.get("freshSession") is not True:
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-FRESH",
+                rel,
+                "verified/stable skill evidence must record freshSession=true.",
+            )
+        )
+
+    runtime = evidence.get("agentRuntime")
+    if not isinstance(runtime, str) or not runtime.strip():
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-RUNTIME",
+                rel,
+                "agentRuntime must identify the runtime used for the replay.",
+            )
+        )
+
+    happy = evidence.get("happyPath")
+    if not isinstance(happy, dict) or not passed_status(happy.get("status")):
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-HAPPY",
+                rel,
+                "happyPath.status must explicitly pass.",
+            )
+        )
+    elif not isinstance(happy.get("evidence"), list) or not happy["evidence"]:
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-HAPPY-EVIDENCE",
+                rel,
+                "happyPath.evidence must contain at least one evidence reference.",
+            )
+        )
+
+    edge = evidence.get("edgeCase")
+    if not isinstance(edge, dict) or not passed_status(edge.get("status")):
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-EDGE",
+                rel,
+                "edgeCase.status must explicitly pass.",
+            )
+        )
+    elif not isinstance(edge.get("evidence"), list) or not edge["evidence"]:
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-EDGE-EVIDENCE",
+                rel,
+                "edgeCase.evidence must contain at least one regression/evidence reference.",
+            )
+        )
+
+    checks = evidence.get("deterministicChecks")
+    if not isinstance(checks, list) or not checks:
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-CHECKS",
+                rel,
+                "deterministicChecks must contain at least one repository-owned check.",
+            )
+        )
+    else:
+        for index, check in enumerate(checks):
+            if not isinstance(check, dict):
+                findings.append(
+                    Finding(
+                        "error",
+                        "SKILL-VERIFICATION-CHECK",
+                        rel,
+                        f"deterministicChecks[{index}] must be an object.",
+                    )
+                )
+                continue
+            if not str(check.get("command", "")).strip() or not passed_status(check.get("status")):
+                findings.append(
+                    Finding(
+                        "error",
+                        "SKILL-VERIFICATION-CHECK",
+                        rel,
+                        f"deterministicChecks[{index}] requires command and an explicit passing status.",
+                    )
+                )
+
+    unverified = evidence.get("unverified")
+    if unverified is not None and not isinstance(unverified, list):
+        findings.append(Finding("error", "SKILL-VERIFICATION-UNVERIFIED", rel, "unverified must be a JSON array."))
+
+    verified_at = str(evidence.get("verifiedAt", ""))
+    if not DATE_RE.match(verified_at):
+        findings.append(
+            Finding(
+                "error",
+                "SKILL-VERIFICATION-DATE",
+                rel,
+                "verifiedAt must use YYYY-MM-DD.",
+            )
+        )
+    else:
+        try:
+            parsed = date.fromisoformat(verified_at)
+            if parsed > date.today():
+                findings.append(Finding("error", "SKILL-VERIFICATION-FUTURE", rel, "verifiedAt cannot be in the future."))
+        except ValueError:
+            findings.append(Finding("error", "SKILL-VERIFICATION-DATE", rel, "verifiedAt is not a valid date."))
+
+    return findings
 
 
 def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
@@ -166,6 +351,9 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
         if not scope:
             findings.append(Finding("info", "SKILL-SCOPE-MISSING", rel, "Add OpenForge scope/owner/maturity/version metadata during migration."))
 
+        if name and maturity in {"verified", "stable"}:
+            findings.extend(validate_verification_evidence(root, name, version, maturity, rel))
+
         if name:
             if name in seen_names:
                 findings.append(Finding("error", "SKILL-DUP-NAME", rel, f"Duplicate skill name; first seen at {seen_names[name]}."))
@@ -203,7 +391,7 @@ def main() -> int:
         for skill in skills:
             print(f"SKILL {skill.path}: name={skill.name or '-'} scope={skill.scope or '-'} maturity={skill.maturity or '-'} lines={skill.lines}")
         for finding in findings:
-            print(f"{finding.severity.upper():5} {finding.code:24} {finding.path}: {finding.message}")
+            print(f"{finding.severity.upper():5} {finding.code:30} {finding.path}: {finding.message}")
 
     return 1 if any(f.severity == "error" for f in findings) else 0
 

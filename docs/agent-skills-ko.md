@@ -59,12 +59,12 @@ compatibility: Repository checkout과 문서화된 Project Toolchain이 필요�
 metadata:
   openforge-scope: project
   openforge-owner: owner/repository
-  openforge-maturity: verified
+  openforge-maturity: draft
   openforge-version: "1"
 ---
 ```
 
-Agent Skills 규격상 `name`과 `description`은 필수입니다. OpenForge Custom Metadata 값은 Portability를 위해 String으로 유지합니다.
+Agent Skills 규격상 `name`과 `description`은 필수입니다. OpenForge Custom Metadata 값은 Portability를 위해 String으로 유지합니다. 새 Skill 또는 Material Change가 발생한 Skill은 `draft`에서 시작하며, 리뷰를 받았다는 이유만으로 `verified`를 부여하지 않습니다.
 
 ### Naming
 
@@ -125,25 +125,73 @@ OpenForge 권장 크기는 보통 250줄 미만이며 Agent Skills 호환 상한
 
 `metadata.openforge-maturity`는 다음 중 하나를 사용합니다.
 
-- `draft`: Clean Context 재실행 전
-- `verified`: 명시적 Evidence로 Fresh Session 재실행 성공
-- `stable`: 반복 사용 성공, Trigger Ambiguity 없음
+- `draft`: Clean Context 재실행과 Evidence Artifact가 아직 완료되지 않음
+- `verified`: 명시적 Machine-readable Evidence로 Fresh Session 재실행 성공
+- `stable`: Verified 이후 반복 사용 성공, Trigger Ambiguity 없음
 - `deprecated`: Migration을 위해 남김. Description에서 Replacement를 안내
 
-Material Change 시 `metadata.openforge-version`을 증가시킵니다.
+Material Change 시 `metadata.openforge-version`을 증가시킵니다. Skill Version이 바뀌면 Verification Evidence의 `skillVersion`도 새 Version과 일치하기 전까지 기존 Verified Evidence는 유효하지 않습니다.
 
 ## 검증
 
-Markdown이 그럴듯하다는 이유로 Skill을 Verified로 보지 않습니다.
+Markdown이 그럴듯하거나 관련 없는 Repository CI가 Green이라는 이유로 Skill을 Verified로 보지 않습니다.
+
+`verified`로 승격하기 전에:
 
 1. 가능한 경우 `skills-ref validate`로 형식 검증
 2. 생성 당시 Conversation Context가 없는 Fresh Session에서 재실행
 3. 최소 1개의 과거 Failure/Edge Case 실행
 4. 변경되어야 할 것과 변경되면 안 되는 것을 모두 확인
-5. Portable하다고 주장하는 모든 Agent Runtime에서 확인
-6. 반복 Failure는 Regression Scenario 또는 결정적 Test로 남김
+5. Repository가 소유한 결정적 검증 명령을 실행하고 결과 기록
+6. Static/Unit/Stub Evidence와 실제 Cluster/Filesystem/Network/Browser/Device/Service Evidence를 구분
+7. Portable하다고 주장하는 모든 Agent Runtime에서 확인
+8. 아래 Machine-readable Verification Artifact 저장
 
 Unit/Stub 성공을 실제 Cluster, Filesystem, Network, Identity, Cloud Runtime 검증처럼 표현하지 않습니다.
+
+### Verification Evidence Artifact
+
+`verified` 또는 `stable` Skill은 반드시 다음 파일을 가져야 합니다.
+
+```text
+.agents/skill-evals/<skill-name>.json
+```
+
+`templates/agent-skill-verification.json`을 시작점으로 사용합니다. 이 파일은 Transcript 전체를 복사하는 곳이 아니라 **Evidence Metadata**입니다. Project-local Trace, CI Run, Report, Test, Runtime Artifact를 Reference합니다.
+
+필수 Contract 예시는 다음과 같습니다.
+
+```json
+{
+  "schemaVersion": "openforge-agent-skill-verification/v1",
+  "skill": "project-task",
+  "skillVersion": "1",
+  "freshSession": true,
+  "agentRuntime": "runtime-and-version-or-channel",
+  "happyPath": {
+    "status": "passed",
+    "scenario": "Representative workflow",
+    "evidence": ["artifact:path/or-reference"]
+  },
+  "edgeCase": {
+    "status": "passed",
+    "scenario": "Known failure/edge regression",
+    "evidence": ["artifact:path/or-reference"]
+  },
+  "deterministicChecks": [
+    {"command": "make verify", "status": "passed", "scope": "repository baseline"}
+  ],
+  "runtimeEvidence": [],
+  "unverified": [],
+  "verifiedAt": "YYYY-MM-DD"
+}
+```
+
+`unverified`가 비어 있지 않다고 해서 자동 실패는 아닙니다. 이것은 **검증 Claim의 경계**입니다. Skill이 검증하지 않은 Runtime Property를 성공했다고 주장하지 않는다면, 문서화된 범위에 대해서는 Verified일 수 있습니다.
+
+`templates/scripts/audit-agent-skills.py`는 `openforge-maturity`가 `verified` 또는 `stable`인데 Evidence Artifact가 없거나 형식이 잘못된 경우 Error를 반환합니다. 따라서 Frontmatter만 수정해서 Verified로 보이게 할 수 없습니다.
+
+이 규칙 이전에 존재했던 Skill도 자동 면제하지 않습니다. 기존 Skill도 동일한 Evidence Artifact를 만들기 전에는 `verified`/`stable`을 유지하지 않습니다.
 
 ## Security
 

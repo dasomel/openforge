@@ -62,12 +62,12 @@ compatibility: Requires the repository checkout and documented project toolchain
 metadata:
   openforge-scope: project
   openforge-owner: owner/repository
-  openforge-maturity: verified
+  openforge-maturity: draft
   openforge-version: "1"
 ---
 ```
 
-`name` and `description` are required by the Agent Skills format. Keep custom OpenForge metadata values as strings for portability.
+`name` and `description` are required by the Agent Skills format. Keep custom OpenForge metadata values as strings for portability. New or materially changed skills start at `draft`; do not use `verified` in a template or new skill merely because the workflow was reviewed.
 
 ### Naming
 
@@ -130,16 +130,16 @@ Large legacy CLAUDE.md files should be split without deleting valuable project k
 
 Use `metadata.openforge-maturity` with one of:
 
-- `draft`: workflow exists but has not been replayed from a clean context;
-- `verified`: successfully replayed with explicit evidence;
-- `stable`: repeated successful use with no known trigger ambiguity;
+- `draft`: workflow exists but has not been replayed from a clean context with the required evidence artifact;
+- `verified`: successfully replayed with explicit machine-readable evidence;
+- `stable`: repeated successful use after verification with no known trigger ambiguity;
 - `deprecated`: retained only for migration; description must point at the replacement.
 
-For material changes, increment `metadata.openforge-version`.
+For material changes, increment `metadata.openforge-version`. A material skill-version change invalidates old verification evidence until the evidence `skillVersion` matches the new version.
 
 ## Verification
 
-A skill is not verified because its Markdown looks reasonable.
+A skill is not verified because its Markdown looks reasonable or because unrelated repository CI is green.
 
 Before promoting to `verified`:
 
@@ -147,10 +147,56 @@ Before promoting to `verified`:
 2. run the workflow in a fresh session without relying on the conversation that created it;
 3. exercise at least one known failure/edge case;
 4. confirm the expected files/commands/results, including what must not change;
-5. verify on every supported agent runtime when portability is claimed;
-6. record failures as regression scenarios or deterministic checks where practical.
+5. run repository-owned deterministic verification and record its result;
+6. distinguish static/unit/stub evidence from real cluster/filesystem/network/browser/device/service evidence;
+7. verify on every supported agent runtime when portability is claimed;
+8. store the machine-readable verification artifact described below.
 
 A successful unit/stub path must not be presented as proof of a real cluster, filesystem, network, identity, or cloud behavior.
+
+### Verification evidence artifact
+
+A `verified` or `stable` skill MUST have:
+
+```text
+.agents/skill-evals/<skill-name>.json
+```
+
+Use `templates/agent-skill-verification.json` as the starting point. The artifact is evidence metadata, not a transcript dump. It points at project-local traces, CI runs, reports, tests, or runtime artifacts instead of copying large logs.
+
+Required contract:
+
+```json
+{
+  "schemaVersion": "openforge-agent-skill-verification/v1",
+  "skill": "project-task",
+  "skillVersion": "1",
+  "freshSession": true,
+  "agentRuntime": "runtime-and-version-or-channel",
+  "happyPath": {
+    "status": "passed",
+    "scenario": "Representative workflow",
+    "evidence": ["artifact:path/or-reference"]
+  },
+  "edgeCase": {
+    "status": "passed",
+    "scenario": "Known failure/edge regression",
+    "evidence": ["artifact:path/or-reference"]
+  },
+  "deterministicChecks": [
+    {"command": "make verify", "status": "passed", "scope": "repository baseline"}
+  ],
+  "runtimeEvidence": [],
+  "unverified": [],
+  "verifiedAt": "YYYY-MM-DD"
+}
+```
+
+`unverified` is not a failure by itself. It is the explicit boundary of the claim. A skill may be `verified` for its documented scope while naming a runtime path that was not exercised, provided the skill does not claim that unverified property.
+
+`templates/scripts/audit-agent-skills.py` treats missing or malformed evidence as an error when `openforge-maturity` is `verified` or `stable`. Therefore maturity cannot be promoted by frontmatter-only edits.
+
+Do not grandfather a skill solely because it existed before this rule. Existing skills must produce the same evidence artifact before retaining `verified`/`stable` under this standard.
 
 ## Security
 
