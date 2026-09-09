@@ -1,6 +1,6 @@
 # Agent Skills Portfolio Audit — 2026-09
 
-This audit applies the OpenForge agent-skills layering model to actively developed `dasomel` OSS repositories and records the first portfolio rollout. The structural rollout was merged on 2026-09-09; newly created or materially split project skills remain `draft` until the fresh-session verification work tracked by OpenForge issue #54 is complete.
+This audit applies the OpenForge agent-skills layering model to actively developed `dasomel` OSS repositories and records the first portfolio rollout. The structural rollout was merged on 2026-09-09; project skills remain `draft` until the fresh-session verification work tracked by OpenForge issue #54 produces the machine-readable evidence required by the Agent Skills standard.
 
 ## Portfolio findings
 
@@ -12,6 +12,7 @@ This audit applies the OpenForge agent-skills layering model to actively develop
 6. Kube Ready Box, Narwhal, and Narwhal Portal had large CLAUDE guides suitable for decomposition; KubeMetal, Beluga, ClusterDeck, and LDAPium already had thin adapters.
 7. The earlier portfolio audit reported verification false-green for Beluga Manager and eGovFrame Launcher. Launcher actually had a real nested `launcher/Makefile`; its rollout exposes that owner at repository root. Beluga Manager still needs a deterministic repository-owned verification entrypoint.
 8. Siqoq was early enough to establish the layered model before ad-hoc runtime instructions accumulated; its unrelated pre-existing Ruff failure was repaired separately before the agent foundation was merged.
+9. `verified`/`stable` maturity is now machine-gated: `.agents/skill-evals/<skill>.json` must bind a fresh-session happy path, failure/edge replay, deterministic checks, runtime identity, skill version, and claim boundary.
 
 ## Canonical portfolio layering
 
@@ -36,17 +37,17 @@ scripts / Makefile / tests / CI / policy
 
 | Repository | Canonical project skill(s) | CLAUDE / contract change | Verification/maturity status | Structural rollout | Replay tracking |
 |---|---|---|---|---|---|
-| `openforge` | standard/template/audit layer rather than project skill collection | minimal CLAUDE template + skill/Claude audit rules | standard merged; fresh-session promotion policy is authoritative | #53 merged | #54 |
+| `openforge` | standard/template/audit layer rather than project skill collection | minimal CLAUDE template + skill/Claude audit rules | standard + machine-readable verification evidence gate merged | #53 / #56 merged | #54 |
 | `narwhal` | `narwhal-component-lifecycle`, `narwhal-version-upgrade`, `narwhal-cluster-debug`, `narwhal-verification` | large CLAUDE reduced to routing adapter; durable operational rules moved to project docs; legacy `narwhal-ops` is a deprecated router | split skills remain `draft`; agent-policy trace and CI passed for the restructuring | #183 merged | #184 |
 | `narwhal-portal` | `narwhal-portal-frontend`, `narwhal-portal-backend`, `narwhal-portal-qa` | AGENTS is source of truth; CLAUDE is harness adapter; personal absolute Narwhal path removed; legacy `idp-*` entries are deprecated adapters | canonical skills remain `draft` | #91 merged | #92 |
-| `nfs-quota-agent` | `nfs-quota-verification` | thin CLAUDE routes to canonical skill; generic `verification` remains only as deprecated adapter | existing real-filesystem-vs-stub verification workflow and trace retained; canonical migration remains the initial `verified` exception; Agent Behavior + full CI passed | #170 merged | re-audit under #54 |
+| `nfs-quota-agent` | `nfs-quota-verification` | thin CLAUDE routes to canonical skill; generic `verification` remains only as deprecated adapter | mature historical workflow retained, but no grandfathered `verified` state; #172 aligns maturity to `draft` until evidence exists | #170 merged / #172 alignment | #171 |
 | `kube-ready-box` | `kube-ready-box-build-validation` | build matrix/workflow removed from large CLAUDE; adapter points to AGENTS, skill, commands/hooks, playbook and mistakes log | `draft` until representative provider/runtime replay | #40 merged | #41 |
 | `kubemetal` | `kubemetal-hybrid-runtime-change` | thin CLAUDE routes to skill; maintainer-global Claude config is no longer a repository requirement | `draft`; restructuring trace + Agent Behavior + CI passed | #72 merged | #73 |
 | `beluga` | `beluga-platform-change` | thin CLAUDE routes to skill | `draft`; CI, docs/ADR, supply-chain and SAST gates passed | #122 merged | #123 |
 | `beluga-manager` | `beluga-manager-integration-contract` | thin CLAUDE adapter added; i18n docs gate excludes machine-facing agent contracts to avoid duplicate translated sources | intentionally `draft`; deterministic local verification owner is still missing | #52 merged | #51 + #54 |
 | `clusterdeck` | `clusterdeck-connection-workflow` | thin CLAUDE routes to skill | `draft`; repository CI passed | #17 merged | #18 |
 | `ldapium` | `ldapium-directory-change` | thin CLAUDE routes to skill | `draft`; CI, browser UI E2E, kind E2E, security, CodeQL and air-gap bundle all passed | #139 merged | #140 |
-| `egovframe-launcher` | `egovframe-launcher-target-workflow` | thin CLAUDE added; AGENTS points at project workflow and evidence classes | root `make verify` now delegates to the existing nested formatter/test/build owner; skill remains `draft`; multi-platform workflow passed | #8 merged | #9 |
+| `egovframe-launcher` | `egovframe-launcher-target-workflow` | thin CLAUDE added; AGENTS points at project workflow and evidence classes | root `make verify` delegates to the existing nested formatter/test/build owner; skill remains `draft`; multi-platform workflow passed | #8 merged | #9 |
 | `siqoq` | `siqoq-sim-to-edge-workflow` | root AGENTS + thin CLAUDE established from bootstrap stage | CI-aligned root `make verify`; skill remains `draft`; unrelated Ruff failures fixed separately in #35 before successful agent-foundation CI | #34 merged | #36 |
 
 ## Why these skills are project-scoped
@@ -103,31 +104,30 @@ A large legacy CLAUDE.md must be classified rather than deleted mechanically:
 
 ## Skill maturity and rollout gate
 
-Newly created or materially split skills start at `draft`, even when their underlying repository already has good tests. Promote to `verified` only after:
+Newly created or materially split skills start at `draft`, even when their underlying repository already has good tests. Existing skills are not grandfathered. Promote to `verified` only after:
 
 1. `SKILL.md` format/hygiene validation;
 2. a fresh session with no creation-conversation context;
 3. successful execution of the intended workflow;
 4. at least one known failure/edge regression;
-5. explicit confirmation of what changed and what must not change;
-6. each claimed runtime/agent environment when portability is claimed.
+5. repository-owned deterministic verification;
+6. explicit confirmation of what changed and what must not change;
+7. each claimed runtime/agent environment when portability is claimed;
+8. `.agents/skill-evals/<skill-name>.json` using `openforge-agent-skill-verification/v1`, with `skillVersion` matching `metadata.openforge-version`.
 
-The nfs-quota-agent migration is the initial exception because it preserves an existing, separately traced verification workflow rather than introducing a new split workflow.
-
-OpenForge issue #54 is the portfolio tracker for this maturity gate. Promotion remains project-owned: OpenForge records evidence, but does not infer `verified` from a merged PR or green CI alone.
+OpenForge issue #54 is the portfolio tracker for this maturity gate. Promotion remains project-owned: OpenForge records and validates evidence, but does not infer `verified` from a merged PR or green CI alone.
 
 ## Remaining gaps
 
 ### P0
 
-- Complete fresh-session replay work tracked by #54 and the project-local replay issues in the table above.
+- Complete fresh-session replay work tracked by #54 and the project-local replay issues in the table above, including nfs-quota-agent #171.
 - Beluga Manager #51: establish one deterministic local verification command and align CI/local ownership before promoting its skill.
 
 ### P1
 
 - Remove deprecated Claude adapters only after supported runtimes reliably discover the canonical `.agents/skills/` paths.
 - Add portfolio automation that invokes `audit-agent-skills.py` against checked-out repositories and records results alongside `agent-audit-matrix.md`.
-- Re-audit `nfs-quota-verification` for adapter drift even though its underlying workflow remains the initial verified migration exception.
 
 ### P2
 
@@ -144,4 +144,5 @@ The structural rollout is complete: all first-wave standardization PRs above are
 - deterministic steps are owned by scripts/Make/tests/CI where possible;
 - no canonical skill has a manually maintained divergent mirror;
 - fresh-session replay and at least one failure case are recorded before `verified`;
-- the portfolio skill audit has no personal absolute paths, malformed skill files, generic canonical project names, or verification false-green for skills that claim completion evidence.
+- every `verified`/`stable` skill has valid `openforge-agent-skill-verification/v1` evidence matching its skill version;
+- the portfolio skill audit has no personal absolute paths, malformed skill files, generic canonical project names, or verification false-green.
