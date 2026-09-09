@@ -1,6 +1,6 @@
 # Agent Skills Portfolio Audit — 2026-09
 
-This audit applies the OpenForge agent-skills layering model to actively developed `dasomel` OSS repositories and records the first portfolio rollout. An open PR means the target shape is implemented for review, not merged or runtime-verified.
+This audit applies the OpenForge agent-skills layering model to actively developed `dasomel` OSS repositories and records the first portfolio rollout. The structural rollout was merged on 2026-09-09; newly created or materially split project skills remain `draft` until the fresh-session verification work tracked by OpenForge issue #54 is complete.
 
 ## Portfolio findings
 
@@ -11,7 +11,7 @@ This audit applies the OpenForge agent-skills layering model to actively develop
 5. Personal absolute paths and required dependence on a maintainer-global Claude configuration are not portable repository contracts.
 6. Kube Ready Box, Narwhal, and Narwhal Portal had large CLAUDE guides suitable for decomposition; KubeMetal, Beluga, ClusterDeck, and LDAPium already had thin adapters.
 7. The earlier portfolio audit reported verification false-green for Beluga Manager and eGovFrame Launcher. Launcher actually had a real nested `launcher/Makefile`; its rollout exposes that owner at repository root. Beluga Manager still needs a deterministic repository-owned verification entrypoint.
-8. Siqoq was early enough to establish the layered model before ad-hoc runtime instructions accumulated.
+8. Siqoq was early enough to establish the layered model before ad-hoc runtime instructions accumulated; its unrelated pre-existing Ruff failure was repaired separately before the agent foundation was merged.
 
 ## Canonical portfolio layering
 
@@ -34,20 +34,20 @@ scripts / Makefile / tests / CI / policy
 
 ## First rollout status
 
-| Repository | Canonical project skill(s) in rollout | CLAUDE / contract change | Verification/maturity status | Rollout |
-|---|---|---|---|---|
-| `openforge` | standard/template/audit layer rather than project skill collection | adds minimal CLAUDE template and skill/Claude audit rules | standard defines fresh-session + failure replay before `verified` | PR #53 |
-| `narwhal` | `narwhal-component-lifecycle`, `narwhal-version-upgrade`, `narwhal-cluster-debug`, `narwhal-verification` | large CLAUDE reduced to routing adapter; durable operational rules moved to project docs; legacy `narwhal-ops` becomes deprecated router | new split skills are `draft` until replay | PR #183 |
-| `narwhal-portal` | `narwhal-portal-frontend`, `narwhal-portal-backend`, `narwhal-portal-qa` | AGENTS becomes source of truth; CLAUDE becomes harness adapter; personal absolute Narwhal path removed; legacy `idp-*` entries become deprecated uppercase `SKILL.md` adapters | new canonical skills are `draft` until replay | PR #91 |
-| `nfs-quota-agent` | `nfs-quota-verification` | thin CLAUDE routes to canonical skill; generic `verification` kept only as deprecated adapter | preserved mature real-filesystem-vs-stub workflow and existing verification trace; canonical migration remains the only initial `verified` skill | PR #170 |
-| `kube-ready-box` | `kube-ready-box-build-validation` | build matrix/workflow removed from large CLAUDE; adapter points to AGENTS, skill, commands/hooks, playbook, mistakes log | `draft` until fresh replay on representative build path | PR #40 |
-| `kubemetal` | `kubemetal-hybrid-runtime-change` | thin CLAUDE routes to skill; maintainer-global Claude config becomes optional | `draft` until fresh macOS/MLX/Colima replay | PR #72 |
-| `beluga` | `beluga-platform-change` | thin CLAUDE routes to skill | `draft` until fresh cluster/GitOps replay | PR #122 |
-| `beluga-manager` | `beluga-manager-integration-contract` | adds thin CLAUDE adapter | intentionally `draft`; deterministic local verification owner tracked in issue #51 | PR #52 / issue #51 |
-| `clusterdeck` | `clusterdeck-connection-workflow` | thin CLAUDE routes to skill | `draft` until fresh real SSH/kubectl edge replay | PR #17 |
-| `ldapium` | `ldapium-directory-change` | thin CLAUDE routes to skill | `draft` until fresh live-LDAP failure replay | PR #139 |
-| `egovframe-launcher` | `egovframe-launcher-target-workflow` | adds thin CLAUDE adapter; AGENTS points at skill and real evidence classes | adds root `make verify` delegating to the existing nested formatter/test/build owner; skill stays `draft` until target workflow replay | PR #8 |
-| `siqoq` | `siqoq-sim-to-edge-workflow` | adds root AGENTS + thin CLAUDE from the start | adds CI-aligned root `make verify`; skill intentionally `draft` until MVP replay | PR #34 |
+| Repository | Canonical project skill(s) | CLAUDE / contract change | Verification/maturity status | Structural rollout | Replay tracking |
+|---|---|---|---|---|---|
+| `openforge` | standard/template/audit layer rather than project skill collection | minimal CLAUDE template + skill/Claude audit rules | standard merged; fresh-session promotion policy is authoritative | #53 merged | #54 |
+| `narwhal` | `narwhal-component-lifecycle`, `narwhal-version-upgrade`, `narwhal-cluster-debug`, `narwhal-verification` | large CLAUDE reduced to routing adapter; durable operational rules moved to project docs; legacy `narwhal-ops` is a deprecated router | split skills remain `draft`; agent-policy trace and CI passed for the restructuring | #183 merged | #184 |
+| `narwhal-portal` | `narwhal-portal-frontend`, `narwhal-portal-backend`, `narwhal-portal-qa` | AGENTS is source of truth; CLAUDE is harness adapter; personal absolute Narwhal path removed; legacy `idp-*` entries are deprecated adapters | canonical skills remain `draft` | #91 merged | #92 |
+| `nfs-quota-agent` | `nfs-quota-verification` | thin CLAUDE routes to canonical skill; generic `verification` remains only as deprecated adapter | existing real-filesystem-vs-stub verification workflow and trace retained; canonical migration remains the initial `verified` exception; Agent Behavior + full CI passed | #170 merged | re-audit under #54 |
+| `kube-ready-box` | `kube-ready-box-build-validation` | build matrix/workflow removed from large CLAUDE; adapter points to AGENTS, skill, commands/hooks, playbook and mistakes log | `draft` until representative provider/runtime replay | #40 merged | #41 |
+| `kubemetal` | `kubemetal-hybrid-runtime-change` | thin CLAUDE routes to skill; maintainer-global Claude config is no longer a repository requirement | `draft`; restructuring trace + Agent Behavior + CI passed | #72 merged | #73 |
+| `beluga` | `beluga-platform-change` | thin CLAUDE routes to skill | `draft`; CI, docs/ADR, supply-chain and SAST gates passed | #122 merged | #123 |
+| `beluga-manager` | `beluga-manager-integration-contract` | thin CLAUDE adapter added; i18n docs gate excludes machine-facing agent contracts to avoid duplicate translated sources | intentionally `draft`; deterministic local verification owner is still missing | #52 merged | #51 + #54 |
+| `clusterdeck` | `clusterdeck-connection-workflow` | thin CLAUDE routes to skill | `draft`; repository CI passed | #17 merged | #18 |
+| `ldapium` | `ldapium-directory-change` | thin CLAUDE routes to skill | `draft`; CI, browser UI E2E, kind E2E, security, CodeQL and air-gap bundle all passed | #139 merged | #140 |
+| `egovframe-launcher` | `egovframe-launcher-target-workflow` | thin CLAUDE added; AGENTS points at project workflow and evidence classes | root `make verify` now delegates to the existing nested formatter/test/build owner; skill remains `draft`; multi-platform workflow passed | #8 merged | #9 |
+| `siqoq` | `siqoq-sim-to-edge-workflow` | root AGENTS + thin CLAUDE established from bootstrap stage | CI-aligned root `make verify`; skill remains `draft`; unrelated Ruff failures fixed separately in #35 before successful agent-foundation CI | #34 merged | #36 |
 
 ## Why these skills are project-scoped
 
@@ -114,28 +114,29 @@ Newly created or materially split skills start at `draft`, even when their under
 
 The nfs-quota-agent migration is the initial exception because it preserves an existing, separately traced verification workflow rather than introducing a new split workflow.
 
+OpenForge issue #54 is the portfolio tracker for this maturity gate. Promotion remains project-owned: OpenForge records evidence, but does not infer `verified` from a merged PR or green CI alone.
+
 ## Remaining gaps
 
 ### P0
 
-- Merge/review OpenForge PR #53 before treating its metadata/lifecycle rules as portfolio policy.
-- Beluga Manager issue #51: establish one deterministic local verification command and align CI/local ownership.
-- Replay Narwhal and Portal split skills from clean contexts before promoting any to `verified`.
+- Complete fresh-session replay work tracked by #54 and the project-local replay issues in the table above.
+- Beluga Manager #51: establish one deterministic local verification command and align CI/local ownership before promoting its skill.
 
 ### P1
 
-- Replay KubeMetal, Beluga, ClusterDeck, LDAPium, Kube Ready Box, eGovFrame Launcher, and Siqoq workflows with one failure/edge scenario each.
-- Remove deprecated Claude adapters only after supported runtimes discover the canonical `.agents/skills/` paths reliably.
+- Remove deprecated Claude adapters only after supported runtimes reliably discover the canonical `.agents/skills/` paths.
 - Add portfolio automation that invokes `audit-agent-skills.py` against checked-out repositories and records results alongside `agent-audit-matrix.md`.
+- Re-audit `nfs-quota-verification` for adapter drift even though its underlying workflow remains the initial verified migration exception.
 
 ### P2
 
-- Compare successful project skills and promote only genuinely reusable procedures to OpenForge `domain` scope.
+- Compare successful project replays and promote only genuinely reusable procedures to OpenForge `domain` scope.
 - Prune project skills that become fully deterministic scripts/CI or are no longer used.
 
 ## Acceptance criteria
 
-The rollout is complete when:
+The structural rollout is complete: all first-wave standardization PRs above are merged. The maturity rollout is complete only when:
 
 - every active project has a concise root agent contract;
 - CLAUDE.md contains only runtime-specific adapter behavior plus references;
