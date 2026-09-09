@@ -61,6 +61,7 @@ The first ADR pass retrospectively captures high-impact common decisions already
 | [0011](0011-ci-resilience-must-not-encourage-security-bypass.md) ([한국어](0011-ci-resilience-must-not-encourage-security-bypass-ko.md)) | CI resilience must not encourage blind security bypass | Accepted | CI resilience, CI security |
 | [0012](0012-document-and-time-bound-intentional-exceptions.md) ([한국어](0012-document-and-time-bound-intentional-exceptions-ko.md)) | Document and time-bound intentional exceptions | Accepted | security exceptions, governance |
 | [0013](0013-bind-agent-authority-to-canonical-resolved-invocations.md) ([한국어](0013-bind-agent-authority-to-canonical-resolved-invocations-ko.md)) | Bind agent authority, approval, sandbox enforcement, and evidence to one canonical resolved invocation | Accepted | agent execution security, AI security |
+| [0014](0014-standardize-kubernetes-zero-trust-security-baseline.md) ([한국어](0014-standardize-kubernetes-zero-trust-security-baseline-ko.md)) | Standardize layered Kubernetes Zero Trust security across exposure, host, workload, LSM, identity, and egress | Accepted | Kubernetes security, security profiles |
 
 ## Relationship to standards and adoption records
 
