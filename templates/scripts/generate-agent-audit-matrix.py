@@ -99,8 +99,8 @@ def validate(matrix: dict[str, Any]) -> list[str]:
 
 def render_table(matrix: dict[str, Any]) -> list[str]:
     lines = [
-        "| Repository | Revision | Instructions | Verify / Build / Test / Lint | Deterministic controls | Local gate | False-green | Manual review |",
-        "|---|---|---|---|---|---|---|---|",
+        "| Repository | Revision | Instructions | Verify / Build / Test / Lint | Deterministic controls | Local gate | Swallowed | False-green | Manual review |",
+        "|---|---|---|---|---|---|---|---|---|",
     ]
     for row in matrix["repositories"]:
         commands = row.get("canonical_commands", {})
@@ -113,10 +113,13 @@ def render_table(matrix: dict[str, Any]) -> list[str]:
         manual = row.get("manual_review", {})
         pending = sum(value == "review-required" for value in manual.values())
         local_gate = "yes" if row.get("local_agent_ci_gate", {}).get("configured") else "no"
+        # Absent means the revision predates the detector, which is not the same as zero.
+        swallowed = row.get("swallowed_failure_count")
+        swallowed_text = "—" if swallowed is None else str(swallowed)
         lines.append(
             f"| `{row['repository']}` | `{row['revision'][:12]}` | "
             f"{', '.join(row.get('instructions', [])) or '—'} | {command_text} | {controls} | "
-            f"{local_gate} | {len(findings)} | {pending} review-required |"
+            f"{local_gate} | {swallowed_text} | {len(findings)} | {pending} review-required |"
         )
     return lines
 
@@ -137,6 +140,7 @@ def render_markdown(matrix: dict[str, Any], korean: bool = False) -> str:
             "- control이 탐지됐다는 것은 repository tooling에 executable owner가 존재한다는 뜻이며 모든 경로가 올바르게 검증된다는 의미는 아닙니다.",
             "- `false-green`은 지침이 deterministic verification을 요구하지만 대응되는 executable owner를 찾지 못한 상태입니다.",
             "- `Local gate`는 agent instruction/skill 변경이 repository-local CI(예: `agent-contract-gate.yml`)를 실제로 실행시키는지를 나타내며, `no`는 중앙 portfolio audit가 계약 위반을 처음 발견하는 지점이 되고 있다는 뜻입니다.",
+            "- `Swallowed`는 validator가 실행되지만 종료 상태가 무조건 폐기되는 지점의 수입니다(`markdownlint ... || true` 등). `owner 존재`만으로는 충분하지 않다는 뜻이며, 정당한 사례는 `# openforge: allow-swallow` 주석으로 예외 처리합니다. `—`는 해당 revision이 탐지기 도입 이전이라 측정되지 않았다는 뜻이고 0과 다릅니다.",
             "- high-risk boundary, 실제 경로 bug reproduction 가능성, prompt debt, architecture guidance 품질은 keyword로 추론하지 않고 maintainer review로 남깁니다.",
             "- 각 행은 정확한 Git commit에 바인딩되어 이후 동일 시점의 scan을 재현할 수 있습니다.",
             "",
@@ -156,6 +160,7 @@ def render_markdown(matrix: dict[str, Any], korean: bool = False) -> str:
         "- A detected control means the repository exposes an executable owner in its tooling; it does not prove that every path is correctly covered.",
         "- `false-green` means instructions require deterministic verification but no corresponding executable owner was detected.",
         "- `Local gate` shows whether agent instruction/skill changes actually trigger a repository-local CI check (for example `agent-contract-gate.yml`); `no` means the central portfolio audit remains the first place an invalid contract is discovered.",
+        "- `Swallowed` counts validators that run but whose exit status is unconditionally discarded (`markdownlint ... || true` and similar), the second false-green class: an owner exists and its verdict is thrown away. A legitimate case is annotated with `# openforge: allow-swallow`. A `—` means the revision predates the detector and was not measured, which is not the same as zero.",
         "- High-risk boundaries, real-path bug reproduction feasibility, prompt debt, and architecture guidance quality are not inferred from keywords and remain maintainer-reviewed fields.",
         "- Every row is bound to an exact Git commit so later reviews can reproduce what was scanned.",
         "",

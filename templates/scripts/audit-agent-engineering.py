@@ -12,6 +12,10 @@ from pathlib import Path
 from typing import Any
 
 SCHEMA = "openforge-agent-audit/v1"
+# The count is exact; the records are capped so one badly configured repository cannot
+# dominate the matrix file.
+SWALLOWED_RECORD_LIMIT = 50
+SWALLOWED_SUMMARY_LIMIT = 10
 INSTRUCTION_FILES = ("AGENTS.md", "CLAUDE.md", "GEMINI.md", "CODING_STANDARDS.md")
 SOURCE_DOCS = ("README.md", "CONTRIBUTING.md", "DESIGN.md", "ARCHITECTURE.md", "docs/architecture.md", "docs/development.md")
 DETERMINISTIC_RULE_HINTS = {
@@ -33,6 +37,15 @@ VALIDATOR_COMMAND = re.compile(
     re.I,
 )
 SWALLOWED_FAILURE = re.compile(r"\|\|\s*(?:true|:)\s*(?:#.*)?$")
+
+SWALLOWED_DETECTOR_SCRIPT = Path(__file__).with_name("swallowed_failure_detector.py")
+_swallowed_spec = importlib.util.spec_from_file_location(
+    "openforge_swallowed_failure_detector", SWALLOWED_DETECTOR_SCRIPT
+)
+assert _swallowed_spec and _swallowed_spec.loader
+swallowed_detector = importlib.util.module_from_spec(_swallowed_spec)
+sys.modules[_swallowed_spec.name] = swallowed_detector
+_swallowed_spec.loader.exec_module(swallowed_detector)
 
 SKILL_AUDIT_SCRIPT = Path(__file__).with_name("audit-agent-skills.py")
 _skill_spec = importlib.util.spec_from_file_location("openforge_agent_skills_audit", SKILL_AUDIT_SCRIPT)
@@ -208,6 +221,20 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
     if skills["error_count"]:
         false_green.append(f"Agent Skills audit reports {skills['error_count']} error(s); maturity/evidence claims are not fully valid")
 
+    # The second false-green class: an executable owner exists and runs, but its verdict is
+    # discarded. `owner exists` was never sufficient -- narwhal's Markdown validator emitted real
+    # errors behind `|| true` while the job reported success (#71).
+    swallowed = swallowed_detector.scan_repository(root)
+    for finding in swallowed[:SWALLOWED_SUMMARY_LIMIT]:
+        false_green.append(
+            "deterministic validator failure is neutralized: "
+            f"{finding.path}:{finding.line} ({finding.command})"
+        )
+    if len(swallowed) > SWALLOWED_SUMMARY_LIMIT:
+        false_green.append(
+            f"... and {len(swallowed) - SWALLOWED_SUMMARY_LIMIT} more swallowed validator findings"
+        )
+
     local_agent_ci_gate = detect_local_agent_gate(root)
     if instructions and not local_agent_ci_gate["configured"]:
         false_green.append(f"agent contract changes have no repository-local CI gate ({local_agent_ci_gate['reason']})")
@@ -216,6 +243,8 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
         "schemaVersion": SCHEMA, "repository": repository or root.name, "root": str(root),
         "instructions": instructions, "source_of_truth_docs": source_docs, "canonical_commands": commands,
         "deterministic_controls": controls, "prompt_deterministic_hints": prompt_hints, "agent_skills": skills,
+        "swallowed_failures": [asdict(finding) for finding in swallowed[:SWALLOWED_RECORD_LIMIT]],
+        "swallowed_failure_count": len(swallowed),
         "local_agent_ci_gate": local_agent_ci_gate,
         "false_green_findings": false_green,
         "manual_review": {"high_risk_paths": "review-required", "bug_reproduction_automation": "review-required", "duplicated_or_obsolete_prompt_rules": "review-required", "architecture_boundary_guidance": "review-required"},

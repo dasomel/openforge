@@ -45,6 +45,44 @@ An instruction such as “always run lint/tests” is not an executable control 
 
 This check is deliberately conservative. It does not claim that a detected keyword proves the control is complete; it only establishes that an executable owner is present. Repository-specific CI still owns behavioral correctness.
 
+### Two false-green classes
+
+An owner can be missing, and an owner can be present and ignored. The second is the one a green
+build hides best: `markdownlint ... || true` runs the validator, prints its errors, and reports
+success anyway. Narwhal's Markdown job did exactly that while this matrix recorded zero
+false-green findings for the repository, which is what motivated the second detector.
+
+The audit therefore reports both, and records the neutralized commands under
+`swallowed_failures` with an exact `swallowed_failure_count`. The `Swallowed` column in the
+portfolio matrix shows the count; `—` there means the revision predates the detector and was not
+measured, which is not the same as zero.
+
+Detected neutralizations: `|| true`, `|| :`, `|| exit 0`, a make recipe prefixed with `-`, a step
+or job carrying `continue-on-error: true`, and `set +e` in effect over a validator whose exit
+status is never read.
+
+### Why `|| true` is not banned
+
+`grep ... || true` is correct: grep's non-zero exit means "no match", which is data, not a
+verdict. So the detector classifies the *program*, not the idiom, against a table whose inclusion
+rule is that a non-zero exit is a judgement about the code. Cleanup and probe commands (`rm`,
+`docker rm`, `kubectl delete`, `curl`, `find`) are never reported, and neither is a command whose
+program the table does not recognize.
+
+That asymmetry is deliberate. A missed finding costs one unreported false-green; a false positive
+teaches a downstream repository that the matrix is noise, which costs every finding after it. The
+validator table is the part that grows.
+
+Two more suppressions: a command inside a block guarded by a prior failure (`if [ $? -ne 0 ]`, a
+`trap` handler, a step with `if: failure()`) is diagnostics, not a swallowed verdict; and
+`# openforge: allow-swallow` on the offending line, or alone on the line above, annotates a
+deliberate exception. Use the comment to record *why*, so the next reader inherits the reasoning
+rather than the silence.
+
+This is a heuristic scanner, not a shell parser. It reads line structure and known command
+shapes. It does not classify validators invoked through a third-party action (`uses:`), and it
+cannot resolve a command built at runtime from variables.
+
 ## Judgment fields
 
 The following fields remain `review-required` until a maintainer or repository-specific policy supplies evidence:

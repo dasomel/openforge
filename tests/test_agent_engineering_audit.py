@@ -60,6 +60,38 @@ metadata:
             )
             self.assertEqual(result["manual_review"]["high_risk_paths"], "review-required")
 
+    def test_swallowed_validator_reaches_the_audit_output(self):
+        """`owner exists` was never sufficient: the owner can run and be ignored.
+
+        narwhal's Markdown validator emitted real errors behind `|| true` while the job
+        reported success, and the matrix recorded zero false-green findings for it (#71).
+        """
+        with tempfile.TemporaryDirectory() as tmp:
+            root = Path(tmp)
+            (root / "AGENTS.md").write_text("Run lint and tests.\n", encoding="utf-8")
+            workflow = root / ".github" / "workflows"
+            workflow.mkdir(parents=True)
+            (workflow / "lint.yml").write_text(
+                "jobs:\n  lint:\n    steps:\n      - run: |\n"
+                "          markdownlint 'docs/**/*.md' || true\n"
+                "          grep -r TODO . || true\n",
+                encoding="utf-8",
+            )
+            result = module.audit(root, "owner/demo")
+
+            self.assertEqual(1, result["swallowed_failure_count"], "grep must not be counted")
+            record = result["swallowed_failures"][0]
+            self.assertEqual(".github/workflows/lint.yml", record["path"])
+            self.assertEqual("or-true", record["pattern"])
+            self.assertIn("markdownlint", record["command"])
+            self.assertTrue(
+                any(
+                    finding.startswith("deterministic validator failure is neutralized")
+                    for finding in result["false_green_findings"]
+                ),
+                result["false_green_findings"],
+            )
+
     def test_flags_instruction_only_false_green(self):
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
