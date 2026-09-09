@@ -18,6 +18,7 @@ flowchart TB
     kubemetal["KubeMetal\nadopter"]
     beluga["Beluga\nadopter"]
     beluga_manager["Beluga Manager\ncontrol-surface"]
+    siqoq["Siqoq\nexperiment"]
   end
   subgraph Foundation["Runtime / Shared Services"]
     kube_ready_box["kube-ready-box\nenforcement-provider"]
