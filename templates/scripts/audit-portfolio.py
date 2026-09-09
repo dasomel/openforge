@@ -20,10 +20,18 @@ from typing import Dict, List, Any, Optional, Tuple
 # Metric Registry with Stable IDs, Weights, and Metadata
 # ==============================================================================
 
-METRIC_SET_VERSION = "2026.11"
+# Ordered oldest -> newest. Every step after the baseline is additive (opt-in metrics only);
+# bumping the set means appending one entry here and nowhere else.
+METRIC_SET_HISTORY: List[Tuple[str, List[str]]] = [
+    ("2026.08", []),
+    ("2026.09", ["AGENT-004"]),
+    ("2026.10", ["AGENT-005"]),
+    ("2026.11", ["DOC-010"]),
+]
+METRIC_SET_VERSION = METRIC_SET_HISTORY[-1][0]
 METRIC_SET_CHANGE = {
     "type": "additive",
-    "added": ["DOC-010"],
+    "added": list(METRIC_SET_HISTORY[-1][1]),
     "notes": "DOC-010 is opt-in and requires a dated, non-future implementation-status snapshot against main.",
 }
 
@@ -683,9 +691,13 @@ class RepoAuditor:
         return results
 
     def _read_file_safe(self, rel_path: str) -> str:
+        # utf-8-sig is the repository-wide policy, superseding D2, which stripped the BOM for
+        # DOC-010 alone so BOM tolerance could not change other metric inputs. A leading BOM is
+        # invisible metadata: no metric should score a file differently for carrying one, and
+        # keeping one reader BOM-aware and the rest not is the surprise worth removing.
         full = self.full_path / rel_path
         try:
-            with open(full, "r", encoding="utf-8", errors="ignore") as f:
+            with open(full, "r", encoding="utf-8-sig", errors="ignore") as f:
                 return f.read()
         except Exception:
             return ""
@@ -805,17 +817,16 @@ class RepoAuditor:
             self._add_check(m, 0, f"Missing {status_file}", f"Add {status_file} with a dated main snapshot.", "docs/documentation-freshness.md")
             return
 
-        # D2: Read DOC-010 separately so BOM tolerance cannot change other metric inputs.
-        # Cost: a narrow normalization step; escape hatch: remove it if utf-8-sig becomes global policy.
-        content = self._read_file_safe(status_file).lstrip("\ufeff")
+        content = self._read_file_safe(status_file)
         content = re.sub(r"```.*?```", "", content, flags=re.DOTALL)
         snapshot_pattern = r"(?m)^Last verified:[ \t]+(?P<date>\d{4}-\d{2}-\d{2})[ \t]+against[ \t]+`main`\.?[ \t]*$"
+        today = date.today()
         for snapshot in re.finditer(snapshot_pattern, content):
             try:
                 snapshot_date = datetime.strptime(snapshot.group("date"), "%Y-%m-%d").date()
             except ValueError:
                 continue
-            if snapshot_date <= date.today():
+            if snapshot_date <= today:
                 self._add_check(m, 2, f"Found dated `main` snapshot in {status_file}", "", "")
                 return
 
@@ -1209,14 +1220,12 @@ def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> 
     is_compatible = curr_v == base_v
     version_status = "compatible" if is_compatible else "incompatible"
     warning = None if is_compatible else f"Metric set versions differ: current '{curr_v}' vs baseline '{base_v}'. Score deltas may reflect changed metric definitions."
-    if curr_v == METRIC_SET_VERSION and base_v in {"2026.10", "2026.09", "2026.08"}:
+    history_versions = [v for v, _ in METRIC_SET_HISTORY]
+    if curr_v == METRIC_SET_VERSION and base_v != curr_v and base_v in history_versions:
         is_compatible = True
         version_status = "additive-compatible"
-        additions = ["DOC-010"]
-        if base_v in {"2026.09", "2026.08"}:
-            additions.insert(0, "AGENT-005")
-        if base_v == "2026.08":
-            additions.insert(0, "AGENT-004")
+        base_index = history_versions.index(base_v)
+        additions = [metric_id for _, added in METRIC_SET_HISTORY[base_index + 1:] for metric_id in added]
         warning = (
             f"Metric set {METRIC_SET_VERSION} includes additive opt-in metrics {', '.join(additions)}; "
             "prior scores remain comparable where added controls are N/A."
@@ -1690,8 +1699,6 @@ def _register_agent_behavior_metric() -> None:
     )
     module.register(core)
     globals()["validate_portfolio_config"] = core.validate_portfolio_config
-    globals()["run_portfolio_audit"] = core.run_portfolio_audit
-    globals()["compare_with_baseline"] = core.compare_with_baseline
 
 
 _register_agent_behavior_metric()
@@ -1717,27 +1724,9 @@ def _register_agent_operational_metric() -> None:
     )
     module.register(core)
     globals()["validate_portfolio_config"] = core.validate_portfolio_config
-    globals()["run_portfolio_audit"] = core.run_portfolio_audit
-    globals()["compare_with_baseline"] = core.compare_with_baseline
 
 
 _register_agent_operational_metric()
-
-
-def _finalize_core_metric_set_version() -> None:
-    """Keep canonical DOC-010 metadata ahead of legacy extension wrappers."""
-    original_run = globals()["run_portfolio_audit"]
-
-    def run_portfolio_audit(portfolio: List[Dict[str, Any]], workspace_root: Path) -> Dict[str, Any]:
-        result = original_run(portfolio, workspace_root)
-        result["metricSetVersion"] = METRIC_SET_VERSION
-        result["metricSetChange"] = METRIC_SET_CHANGE
-        return result
-
-    globals()["run_portfolio_audit"] = run_portfolio_audit
-
-
-_finalize_core_metric_set_version()
 
 
 if __name__ == "__main__":

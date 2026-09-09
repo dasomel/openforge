@@ -50,7 +50,7 @@ def parse_behavior_frontmatter(content: str) -> Tuple[Dict[str, str], List[str]]
 
 
 def register(core: Any) -> None:
-    """Register AGENT-004 and additive 2026.09 compatibility behavior."""
+    """Register AGENT-004. Metric-set version history lives in audit-portfolio.py METRIC_SET_HISTORY."""
     if any(metric.get("id") == "AGENT-004" for metric in core.METRIC_DEFINITIONS):
         return
 
@@ -140,33 +140,3 @@ def register(core: Any) -> None:
         return errors
 
     core.validate_portfolio_config = validate_portfolio_config
-
-    original_run = core.run_portfolio_audit
-
-    def run_portfolio_audit(portfolio: List[Dict[str, Any]], workspace_root: Path) -> Dict[str, Any]:
-        result = original_run(portfolio, workspace_root)
-        result["metricSetVersion"] = "2026.09"
-        result["metricSetChange"] = {
-            "type": "additive",
-            "added": ["AGENT-004"],
-            "notes": "AGENT-004 is N/A unless explicitly required or .agents/behaviors/ is present.",
-        }
-        return result
-
-    core.run_portfolio_audit = run_portfolio_audit
-
-    original_compare = core.compare_with_baseline
-
-    def compare_with_baseline(current: Dict[str, Any], baseline: Dict[str, Any]) -> Dict[str, Any]:
-        comparison = original_compare(current, baseline)
-        curr_v = current.get("metricSetVersion", "unknown")
-        base_v = baseline.get("metricSetVersion", "unknown")
-        if curr_v == "2026.09" and base_v == "2026.08":
-            comparison["metricSetVersionStatus"] = "additive-compatible"
-            comparison["warning"] = (
-                "Metric set 2026.09 adds opt-in AGENT-004. Existing 2026.08 scores remain comparable "
-                "for repositories where AGENT-004 is N/A; adopted repositories may gain a new applicable metric."
-            )
-        return comparison
-
-    core.compare_with_baseline = compare_with_baseline

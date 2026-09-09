@@ -322,143 +322,64 @@ repositories:
         finally:
             shutil.rmtree(temp_dir)
 
-    def test_documentation_freshness_snapshot_passes(self):
+    def _doc_010_check(self, status_md=None, *, encoding="utf-8", freshness=True):
         with tempfile.TemporaryDirectory() as temp_dir:
             repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "# Status\n\nLast verified: 2026-09-08 against `main`.\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 2)
-            self.assertIn("dated `main` snapshot", check["evidence"])
+            if status_md is None:
+                repo_path.mkdir()
+            else:
+                (repo_path / "docs").mkdir(parents=True)
+                (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(status_md, encoding=encoding)
+            repo_info = {"id": "test-repo", "path": "test-repo", "profile": "standard"}
+            if freshness is not None:
+                repo_info["documentation_freshness"] = freshness
+            auditor = audit_portfolio.RepoAuditor(repo_info, Path(temp_dir))
+            return next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
+
+    def test_documentation_freshness_snapshot_passes(self):
+        check = self._doc_010_check("# Status\n\nLast verified: 2026-09-08 against `main`.\n")
+        self.assertEqual(check["score"], 2)
+        self.assertIn("dated `main` snapshot", check["evidence"])
 
     def test_documentation_freshness_missing_status_file_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            repo_path.mkdir()
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
-            self.assertIn("Missing docs/IMPLEMENTATION-STATUS.md", check["evidence"])
+        check = self._doc_010_check(None)
+        self.assertEqual(check["score"], 0)
+        self.assertIn("Missing docs/IMPLEMENTATION-STATUS.md", check["evidence"])
 
     def test_documentation_freshness_undated_status_file_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "# Status\n\nLast verified: against `main`.\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
-            self.assertIn("missing a dated `main` snapshot", check["evidence"])
+        check = self._doc_010_check("# Status\n\nLast verified: against `main`.\n")
+        self.assertEqual(check["score"], 0)
+        self.assertIn("missing a dated `main` snapshot", check["evidence"])
 
     def test_documentation_freshness_invalid_calendar_date_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "Last verified: 2026-02-31 against `main`.\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
+        check = self._doc_010_check("Last verified: 2026-02-31 against `main`.\n")
+        self.assertEqual(check["score"], 0)
 
     def test_documentation_freshness_snapshot_in_fenced_code_block_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "```text\nLast verified: 2026-09-08 against `main`.\n```\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
+        check = self._doc_010_check("```text\nLast verified: 2026-09-08 against `main`.\n```\n")
+        self.assertEqual(check["score"], 0)
 
     def test_documentation_freshness_uses_valid_snapshot_after_invalid_date(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "Last verified: 2026-02-31 against `main`.\nLast verified: 2026-09-08 against `main`.\n",
-                encoding="utf-8",
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 2)
+        check = self._doc_010_check(
+            "Last verified: 2026-02-31 against `main`.\nLast verified: 2026-09-08 against `main`.\n"
+        )
+        self.assertEqual(check["score"], 2)
 
     def test_documentation_freshness_future_snapshot_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "Last verified: 2999-01-01 against `main`.\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
+        check = self._doc_010_check("Last verified: 2999-01-01 against `main`.\n")
+        self.assertEqual(check["score"], 0)
 
     def test_documentation_freshness_bom_snapshot_passes(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "Last verified: 2026-09-08 against `main`.\n", encoding="utf-8-sig"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 2)
+        check = self._doc_010_check("Last verified: 2026-09-08 against `main`.\n", encoding="utf-8-sig")
+        self.assertEqual(check["score"], 2)
 
     def test_documentation_freshness_multiline_snapshot_fails(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            (repo_path / "docs").mkdir(parents=True)
-            (repo_path / "docs" / "IMPLEMENTATION-STATUS.md").write_text(
-                "Last verified: 2026-09-08\nagainst `main`.\n", encoding="utf-8"
-            )
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard", "documentation_freshness": True},
-                Path(temp_dir),
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], 0)
+        check = self._doc_010_check("Last verified: 2026-09-08\nagainst `main`.\n")
+        self.assertEqual(check["score"], 0)
 
     def test_documentation_freshness_unconfigured_is_not_scored(self):
-        with tempfile.TemporaryDirectory() as temp_dir:
-            repo_path = Path(temp_dir) / "test-repo"
-            repo_path.mkdir()
-            auditor = audit_portfolio.RepoAuditor(
-                {"id": "test-repo", "path": "test-repo", "profile": "standard"}, Path(temp_dir)
-            )
-            check = next(c for c in auditor.run_audit()["checks"] if c["metricId"] == "DOC-010")
-            self.assertEqual(check["score"], "N/A")
-
+        check = self._doc_010_check(None, freshness=None)
+        self.assertEqual(check["score"], "N/A")
     def test_documentation_freshness_config_must_be_boolean(self):
         errors = audit_portfolio.validate_portfolio_config({
             "version": "openforge-portfolio/v1",

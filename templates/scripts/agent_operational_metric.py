@@ -119,26 +119,3 @@ def register(core: Any) -> None:
                 errors.append(f"Repository '{repo.get('id', idx)}' field 'agent_evals' must be true or false when specified")
         return errors
     core.validate_portfolio_config = validate_portfolio_config
-
-    original_run = core.run_portfolio_audit
-    def run_portfolio_audit(portfolio, workspace_root):
-        result = original_run(portfolio, workspace_root)
-        result["metricSetVersion"] = "2026.10"
-        result["metricSetChange"] = {
-            "type": "additive",
-            "added": ["AGENT-005"],
-            "notes": "AGENT-005 is N/A unless explicitly required or .agents/evals/ is adopted; it requires an executable live-evidence/regression-gate contract, not directory presence.",
-        }
-        return result
-    core.run_portfolio_audit = run_portfolio_audit
-
-    original_compare = core.compare_with_baseline
-    def compare_with_baseline(current, baseline):
-        comparison = original_compare(current, baseline)
-        curr_v = current.get("metricSetVersion", "unknown")
-        base_v = baseline.get("metricSetVersion", "unknown")
-        if curr_v == "2026.10" and base_v in {"2026.09", "2026.08"}:
-            comparison["metricSetVersionStatus"] = "additive-compatible"
-            comparison["warning"] = "Metric set 2026.10 adds opt-in AGENT-005; prior scores remain comparable where the operational eval profile is N/A."
-        return comparison
-    core.compare_with_baseline = compare_with_baseline
