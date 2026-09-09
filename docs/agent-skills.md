@@ -198,6 +198,39 @@ Required contract:
 
 Do not grandfather a skill solely because it existed before this rule. Existing skills must produce the same evidence artifact before retaining `verified`/`stable` under this standard.
 
+## Repository-local agent contract gate
+
+Agent engineering contracts (`AGENTS.md`, `CLAUDE.md`, `.agents/skills/**`, `.claude/skills/**`, verification evidence, and the commands they reference) are first-class CI inputs, not documentation that only the portfolio-wide audit eventually notices. `templates/scripts/audit-agent-skills.py` is the reusable, dependency-free check; a repository adopts it locally rather than waiting for a central refresh.
+
+### Adopt it
+
+Copy [`templates/github/agent-contract-gate.yml`](../templates/github/agent-contract-gate.yml) into `.github/workflows/agent-contract-gate.yml`. It calls the reusable `dasomel/openforge/.github/workflows/agent-contract-gate.yml` workflow, which:
+
+1. checks out the caller repository and a pinned OpenForge ref (`openforge-ref`, default `main`);
+2. diffs changed paths against the base revision and runs the audit only when a contract path changed (`paths-filter` input);
+3. runs `audit-agent-skills.py . --strict` when it does run, so the gate is fail-closed.
+
+### `--strict` and what it escalates
+
+`audit-agent-skills.py`'s default severities are unchanged by `--strict` - the central portfolio audit and downstream repositories that only read plain findings keep their existing meaning. `--strict` additionally treats a named, documented set of otherwise-advisory codes as gate failures for the purpose of the CLI exit code:
+
+- `CLAUDE-NO-AGENTS` - `CLAUDE.md` does not reference `AGENTS.md`.
+- `CLAUDE-GLOBAL-DEPENDENCY` - repository behavior depends on a maintainer-global `~/.claude/CLAUDE.md`.
+- `SKILL-OWNER` - a project-scope skill has no `openforge-owner`.
+- `SKILL-SCOPE-MISSING` - a skill has no `openforge-scope`/`owner`/`maturity`/`version` metadata.
+- `SKILL-MATURITY-MISSING` - a canonical (`.agents/skills`) skill has no `openforge-maturity`. Adapter copies under `.claude/skills`/`skills` are not required to repeat it.
+- `SKILL-VERIFICATION-COMMAND-OWNER` - a `deterministicChecks[].command` in a skill's verification evidence does not resolve to a repository-local owner (a `make <target>` whose `Makefile` has no such target, an `npm`/`pnpm`/`yarn` script the `package.json` does not define, or a script path that does not exist). This check is deliberately conservative: only a small set of common command forms are machine-checkable, and an unrecognized form is never flagged, because a false positive here would turn into a wrong red build across every repository that adopts `--strict`. For the same reason a `make` target is reported as unknown rather than missing when the `Makefile` has an `include` directive that could define it, and a yarn built-in such as `yarn audit` is never resolved against `package.json` scripts.
+
+`error`-severity findings (malformed frontmatter, missing verification evidence for `verified`/`stable`, invalid names/scopes, and similar) already fail the gate in both the default and `--strict` modes; `--strict` only changes the advisory codes above.
+
+### Why the caller does not use `on.pull_request.paths`
+
+The caller template intentionally triggers on every pull request instead of filtering with `paths:`. If this job is configured as a required status check and GitHub skips the run because of a `paths` filter, the required check never reports and the PR is blocked indefinitely - a well-known GitHub Actions pitfall. The reusable workflow's own diff step decides internally whether to run the audit, so an application-only pull request still gets a fast, green "skipped" result instead of forcing a full contract audit or a stuck required check.
+
+### The central portfolio audit is still second-line
+
+`templates/scripts/audit-agent-engineering.py` records `local_agent_ci_gate` for every scanned repository - whether a repository-local gate is configured, its evidence workflow file, and, when not configured, why (`no-workflows`, `no-gate-workflow`, `missing-pull-request-trigger`, or `failure-neutralized`, the last meaning the gate workflow exists but carries `continue-on-error: true`). `generate-agent-audit-matrix.py` renders this as the `Local gate` column. A repository-local gate remains the first line of defense; the portfolio audit's role is to catch a repository that has not adopted one yet, not to be where an invalid contract is discovered for the first time.
+
 ## Security
 
 A skill is guidance, not an authorization boundary. `allowed-tools` is experimental and must not be treated as a security control. Side-effecting tools still require the capability, approval, sandbox, and evidence controls defined in `docs/agent-execution-security.md`.

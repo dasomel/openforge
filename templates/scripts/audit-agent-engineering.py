@@ -112,6 +112,56 @@ def swallowed_validator_findings(root: Path) -> list[str]:
     return findings
 
 
+LOCAL_GATE_WORKFLOW_REF = "dasomel/openforge/.github/workflows/agent-contract-gate.yml"
+LOCAL_GATE_SCRIPT_HINT = "audit-agent-skills.py"
+
+
+def detect_local_agent_gate(root: Path) -> dict[str, Any]:
+    """Second-line detection of a repository-local agent-contract CI gate.
+
+    This runs against an offline shallow clone, so it can only read the working tree - it
+    cannot ask GitHub whether the workflow is a required status check or whether it actually
+    ran green. It is deliberately conservative: it looks for the reusable workflow reference
+    or a direct invocation of the skills auditor, gated on a pull_request trigger and the
+    absence of continue-on-error, so the central portfolio audit stays a second-line control
+    rather than the first place an invalid contract is discovered.
+    """
+    workflows_dir = root / ".github" / "workflows"
+    if not workflows_dir.is_dir():
+        return {"configured": False, "evidence": None, "reason": "no-workflows"}
+
+    candidates: list[Path] = sorted(workflows_dir.glob("*.yml")) + sorted(workflows_dir.glob("*.yaml"))
+    best: dict[str, Any] | None = None
+    for path in candidates:
+        text = read_text(path)
+        if not text:
+            continue
+        has_gate = LOCAL_GATE_WORKFLOW_REF in text or (
+            "run:" in text and LOCAL_GATE_SCRIPT_HINT in text
+        )
+        if not has_gate:
+            continue
+
+        rel = str(path.relative_to(root))
+        has_pull_request = bool(re.search(r"^\s*pull_request\s*:", text, re.M))
+        has_continue_on_error = "continue-on-error: true" in text or "continue-on-error:true" in text
+
+        if not has_pull_request:
+            result = {"configured": False, "evidence": rel, "reason": "missing-pull-request-trigger"}
+        elif has_continue_on_error:
+            result = {"configured": False, "evidence": rel, "reason": "failure-neutralized"}
+        else:
+            return {"configured": True, "evidence": rel, "reason": "ok"}
+
+        # Keep scanning: another workflow file may still provide a fully configured gate.
+        if best is None:
+            best = result
+
+    if best is not None:
+        return best
+    return {"configured": False, "evidence": None, "reason": "no-gate-workflow"}
+
+
 def audit_skills(root: Path) -> dict[str, Any]:
     skills, findings = skill_audit.audit(root)
     canonical = [skill for skill in skills if skill.root == ".agents/skills"]
@@ -157,10 +207,16 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
     skills = audit_skills(root)
     if skills["error_count"]:
         false_green.append(f"Agent Skills audit reports {skills['error_count']} error(s); maturity/evidence claims are not fully valid")
+
+    local_agent_ci_gate = detect_local_agent_gate(root)
+    if instructions and not local_agent_ci_gate["configured"]:
+        false_green.append(f"agent contract changes have no repository-local CI gate ({local_agent_ci_gate['reason']})")
+
     return {
         "schemaVersion": SCHEMA, "repository": repository or root.name, "root": str(root),
         "instructions": instructions, "source_of_truth_docs": source_docs, "canonical_commands": commands,
         "deterministic_controls": controls, "prompt_deterministic_hints": prompt_hints, "agent_skills": skills,
+        "local_agent_ci_gate": local_agent_ci_gate,
         "false_green_findings": false_green,
         "manual_review": {"high_risk_paths": "review-required", "bug_reproduction_automation": "review-required", "duplicated_or_obsolete_prompt_rules": "review-required", "architecture_boundary_guidance": "review-required"},
     }

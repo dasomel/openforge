@@ -12,12 +12,14 @@ import argparse
 import hashlib
 import json
 import re
+import sys
 from dataclasses import asdict, dataclass
 from datetime import date
 from pathlib import Path
 from typing import Dict, List, Optional
 
 SKILL_ROOTS = (Path(".agents/skills"), Path(".claude/skills"), Path("skills"))
+CANONICAL_SKILL_ROOT = SKILL_ROOTS[0]
 VERIFICATION_ROOT = Path(".agents/skill-evals")
 VERIFICATION_SCHEMA = "openforge-agent-skill-verification/v1"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
@@ -39,6 +41,20 @@ GENERIC_PROJECT_NAMES = {
 VALID_SCOPES = {"core", "domain", "project"}
 VALID_MATURITY = {"draft", "verified", "stable", "deprecated"}
 PASS_STATUSES = {"pass", "passed", "success", "successful", "ok", "verified"}
+
+# Codes that are advisory in a report but contract-breaking in a repository-local gate.
+# A repository opts into fail-closed enforcement with --strict; the default severities stay
+# as they are so the central portfolio audit keeps its existing meaning.
+STRICT_CONTRACT_CODES = frozenset(
+    {
+        "CLAUDE-NO-AGENTS",
+        "CLAUDE-GLOBAL-DEPENDENCY",
+        "SKILL-OWNER",
+        "SKILL-SCOPE-MISSING",
+        "SKILL-MATURITY-MISSING",
+        "SKILL-VERIFICATION-COMMAND-OWNER",
+    }
+)
 
 
 @dataclass
@@ -194,6 +210,102 @@ def passed_status(value: object) -> bool:
     return str(value or "").strip().lower() in PASS_STATUSES
 
 
+MAKE_INCLUDE_RE = re.compile(r"^\s*[-s]?include\s+\S", re.M)
+
+
+def _make_target_exists(root: Path, directory: Optional[str], target: str) -> Optional[bool]:
+    base = (root / directory) if directory else root
+    saw_include = False
+    for name in ("Makefile", "makefile", "GNUmakefile"):
+        makefile = base / name
+        if not makefile.is_file():
+            continue
+        try:
+            text = makefile.read_text(encoding="utf-8", errors="replace")
+        except OSError:
+            continue
+        if re.search(rf"^{re.escape(target)}:", text, re.M):
+            return True
+        saw_include = saw_include or bool(MAKE_INCLUDE_RE.search(text))
+    if saw_include:
+        # The target may be defined in an included fragment, whose path can be a variable or a
+        # glob. Resolving that means implementing make, so report unknown rather than claim the
+        # target is missing.
+        return None
+    return False
+
+
+# Yarn subcommands that are built into the tool rather than package.json scripts. `yarn audit`
+# is a real verification command; resolving it against `scripts` would report a missing owner
+# for a command that needs none.
+YARN_BUILTINS = frozenset(
+    {
+        "add", "audit", "bin", "cache", "config", "create", "dedupe", "dlx", "exec", "info",
+        "init", "install", "link", "node", "npm", "pack", "patch", "plugin", "publish", "rebuild",
+        "remove", "set", "unlink", "up", "upgrade", "version", "why", "workspace", "workspaces",
+    }
+)
+
+
+def _npm_script_exists(root: Path, script: str) -> bool:
+    package = root / "package.json"
+    if not package.is_file():
+        return False
+    try:
+        data = json.loads(package.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return False
+    scripts = data.get("scripts") if isinstance(data, dict) else None
+    return isinstance(scripts, dict) and script in scripts
+
+
+MAKE_COMMAND_RE = re.compile(r"^make\s+(?:-C\s+(\S+)\s+)?(\S+)$")
+NPM_PNPM_RUN_RE = re.compile(r"^(?:npm|pnpm)\s+run\s+(\S+)$")
+NPM_TEST_RE = re.compile(r"^npm\s+test$")
+YARN_RUN_RE = re.compile(r"^yarn\s+(\S+)$")
+SCRIPT_PATH_RE = re.compile(r"^(?:\./(\S+)|bash\s+(\S+)|sh\s+(\S+)|python3?\s+(\S+))(?:\s|$)")
+
+
+def resolve_verification_command(root: Path, command: str) -> Optional[bool]:
+    """Best-effort, fail-quiet check that a deterministicChecks command has a repo-local owner.
+
+    Only a small set of common command forms are machine-checkable (make target, npm/pnpm/yarn
+    script, or a script path that exists). Everything else returns None ("unknown") rather than
+    being flagged. This is a deliberate trade-off: a false positive here becomes a wrong red
+    build across every downstream repository that adopts --strict, which is far worse than
+    silently skipping a command form we cannot confidently resolve.
+    """
+    text = command.strip()
+
+    match = MAKE_COMMAND_RE.match(text)
+    if match:
+        directory, target = match.groups()
+        return _make_target_exists(root, directory, target)
+
+    match = NPM_PNPM_RUN_RE.match(text)
+    if match:
+        return _npm_script_exists(root, match.group(1))
+
+    if NPM_TEST_RE.match(text):
+        return _npm_script_exists(root, "test")
+
+    match = YARN_RUN_RE.match(text)
+    if match:
+        subcommand = match.group(1)
+        if subcommand in YARN_BUILTINS or subcommand.startswith("-"):
+            return None
+        return _npm_script_exists(root, subcommand)
+
+    match = SCRIPT_PATH_RE.match(text)
+    if match:
+        path = next(group for group in match.groups() if group)
+        if path.startswith("-"):
+            return None
+        return (root / path).is_file()
+
+    return None
+
+
 def validate_verification_evidence(
     root: Path,
     skill_name: str,
@@ -324,13 +436,25 @@ def validate_verification_evidence(
                     )
                 )
                 continue
-            if not str(check.get("command", "")).strip() or not passed_status(check.get("status")):
+            command = str(check.get("command", "")).strip()
+            if not command or not passed_status(check.get("status")):
                 findings.append(
                     Finding(
                         "error",
                         "SKILL-VERIFICATION-CHECK",
                         rel,
                         f"deterministicChecks[{index}] requires command and an explicit passing status.",
+                    )
+                )
+            elif resolve_verification_command(root, command) is False:
+                findings.append(
+                    Finding(
+                        "warn",
+                        "SKILL-VERIFICATION-COMMAND-OWNER",
+                        rel,
+                        f"deterministicChecks[{index}] command '{command}' has no resolvable "
+                        "repository-local owner (Makefile target/npm-pnpm-yarn script/script "
+                        "path not found).",
                     )
                 )
 
@@ -477,6 +601,17 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
             findings.append(Finding("error", "SKILL-SCOPE", rel, f"Unknown openforge-scope '{scope}'."))
         if maturity and maturity not in VALID_MATURITY:
             findings.append(Finding("error", "SKILL-MATURITY", rel, f"Unknown openforge-maturity '{maturity}'."))
+        elif not maturity and skill_root == CANONICAL_SKILL_ROOT:
+            # Adapter roots legitimately mirror the canonical file, so only the canonical
+            # copy is required to declare a lifecycle stage.
+            findings.append(
+                Finding(
+                    "warn",
+                    "SKILL-MATURITY-MISSING",
+                    rel,
+                    "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated.",
+                )
+            )
         if scope == "project":
             if not owner:
                 findings.append(Finding("warn", "SKILL-OWNER", rel, "Project skill should declare openforge-owner."))
@@ -543,10 +678,33 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
     return skills, findings
 
 
+def gate_failed(findings: List[Finding], strict: bool) -> bool:
+    """Exit-code decision for a repository-local fail-closed gate.
+
+    Default severities are unchanged (the central portfolio audit and downstream repositories
+    consume them as-is); --strict additionally treats STRICT_CONTRACT_CODES findings, at any
+    severity, as gate failures.
+    """
+    for finding in findings:
+        if finding.severity == "error":
+            return True
+        if strict and finding.code in STRICT_CONTRACT_CODES:
+            return True
+    return False
+
+
 def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("path", nargs="?", default=".")
     parser.add_argument("--json", action="store_true")
+    parser.add_argument(
+        "--strict",
+        action="store_true",
+        help=(
+            "fail-closed repository-local gate: escalate STRICT_CONTRACT_CODES findings "
+            "(advisory by default) to non-zero exit"
+        ),
+    )
     args = parser.parse_args()
 
     root = Path(args.path).resolve()
@@ -574,7 +732,17 @@ def main() -> int:
         for finding in findings:
             print(f"{finding.severity.upper():5} {finding.code:30} {finding.path}: {finding.message}")
 
-    return 1 if any(finding.severity == "error" for finding in findings) else 0
+    if args.strict:
+        escalated = sorted({finding.code for finding in findings if finding.code in STRICT_CONTRACT_CODES})
+        if escalated:
+            # stderr, not stdout: --json output must stay parseable for CI consumers that
+            # pipe it straight into a JSON parser (see templates/github/agent-contract-gate.yml).
+            print(
+                f"STRICT: escalating advisory codes to gate the exit code: {', '.join(escalated)}",
+                file=sys.stderr,
+            )
+
+    return 1 if gate_failed(findings, args.strict) else 0
 
 
 if __name__ == "__main__":

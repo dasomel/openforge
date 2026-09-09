@@ -193,6 +193,39 @@ Unit/Stub 성공을 실제 Cluster, Filesystem, Network, Identity, Cloud Runtime
 
 이 규칙 이전에 존재했던 Skill도 자동 면제하지 않습니다. 기존 Skill도 동일한 Evidence Artifact를 만들기 전에는 `verified`/`stable`을 유지하지 않습니다.
 
+## Repository-local Agent Contract Gate
+
+Agent Engineering Contract(`AGENTS.md`, `CLAUDE.md`, `.agents/skills/**`, `.claude/skills/**`, Verification Evidence, 그리고 이들이 참조하는 Command)는 문서가 아니라 First-class CI Input입니다. Portfolio-wide Audit이 뒤늦게 발견하는 대상이어서는 안 됩니다. `templates/scripts/audit-agent-skills.py`가 재사용 가능한 Dependency-free Check이며, 각 Repository는 중앙 Refresh를 기다리지 않고 이를 Local로 적용합니다.
+
+### 적용 방법
+
+[`templates/github/agent-contract-gate.yml`](../templates/github/agent-contract-gate.yml)을 `.github/workflows/agent-contract-gate.yml`로 복사합니다. 이 파일은 재사용 Workflow인 `dasomel/openforge/.github/workflows/agent-contract-gate.yml`을 호출하며, 해당 Workflow는 다음을 수행합니다.
+
+1. 호출한 Repository와 고정된 OpenForge Ref(`openforge-ref`, 기본값 `main`)를 Checkout합니다.
+2. 변경된 Path를 Base Revision과 Diff하여, Contract Path가 변경된 경우에만 Audit을 실행합니다(`paths-filter` Input).
+3. 실행할 때는 `audit-agent-skills.py . --strict`를 실행하여 Fail-closed Gate로 동작합니다.
+
+### `--strict`와 Escalate 대상
+
+`audit-agent-skills.py`의 기본 Severity는 `--strict`로 인해 바뀌지 않습니다. 중앙 Portfolio Audit과, 원시 Finding만 읽는 Downstream Repository는 기존 의미를 그대로 유지합니다. `--strict`는 명시적으로 이름 붙은 다음 Advisory Code만 CLI Exit Code 목적으로 Gate 실패로 격상시킵니다.
+
+- `CLAUDE-NO-AGENTS` - `CLAUDE.md`가 `AGENTS.md`를 Reference하지 않음.
+- `CLAUDE-GLOBAL-DEPENDENCY` - Repository 동작이 Maintainer-global `~/.claude/CLAUDE.md`에 의존함.
+- `SKILL-OWNER` - Project Scope Skill에 `openforge-owner`가 없음.
+- `SKILL-SCOPE-MISSING` - Skill에 `openforge-scope`/`owner`/`maturity`/`version` Metadata가 전혀 없음.
+- `SKILL-MATURITY-MISSING` - Canonical(`.agents/skills`) Skill에 `openforge-maturity`가 없음. `.claude/skills`/`skills` 아래의 Adapter 사본은 이를 반복할 필요가 없습니다.
+- `SKILL-VERIFICATION-COMMAND-OWNER` - Skill Verification Evidence의 `deterministicChecks[].command`가 Repository-local Owner로 Resolve되지 않음(`Makefile`에 없는 `make <target>`, `package.json`에 정의되지 않은 `npm`/`pnpm`/`yarn` Script, 존재하지 않는 Script Path). 이 Check은 의도적으로 보수적입니다. 기계적으로 확인 가능한 소수의 Command 형태만 검사하며, 인식되지 않는 형태는 절대 Flag하지 않습니다. 여기서의 False Positive는 `--strict`를 채택한 모든 Repository에서 잘못된 Red Build로 이어지기 때문입니다. 같은 이유로 `Makefile`에 `include` 지시자가 있어 target이 그 안에 정의될 수 있으면 missing이 아니라 unknown으로 보고하며, `yarn audit` 같은 yarn built-in은 `package.json` script로 해석하지 않습니다.
+
+Error Severity Finding(잘못된 Frontmatter, `verified`/`stable`의 누락된 Verification Evidence, 잘못된 Name/Scope 등)은 기본/`--strict` 모드 모두에서 이미 Gate를 실패시킵니다. `--strict`는 위 Advisory Code만 추가로 바꿉니다.
+
+### Caller가 `on.pull_request.paths`를 쓰지 않는 이유
+
+Caller Template은 의도적으로 `paths:` Filter 없이 모든 Pull Request에서 Trigger됩니다. 이 Job이 Required Status Check로 설정된 상태에서 GitHub이 `paths` Filter 때문에 실행을 Skip하면, Required Check가 영원히 보고되지 않아 PR이 막히는 잘 알려진 GitHub Actions 함정이 있습니다. 재사용 Workflow 내부의 Diff Step이 Audit 실행 여부를 스스로 판단하므로, Application-only Pull Request는 여전히 빠르고 Green한 "Skip" 결과를 받으며, Required Check가 멈추거나 불필요한 Full Contract Audit이 강제되지 않습니다.
+
+### 중앙 Portfolio Audit은 여전히 2차 통제
+
+`templates/scripts/audit-agent-engineering.py`는 Scan한 모든 Repository에 대해 `local_agent_ci_gate`를 기록합니다. Repository-local Gate가 구성되어 있는지, 어떤 Workflow 파일이 Evidence인지, 구성되지 않았다면 그 이유(`no-workflows`, `no-gate-workflow`, `missing-pull-request-trigger`, 또는 Gate Workflow는 존재하지만 `continue-on-error: true`를 포함한다는 뜻의 `failure-neutralized`)를 함께 남깁니다. `generate-agent-audit-matrix.py`는 이를 `Local gate` Column으로 표시합니다. Repository-local Gate가 1차 방어선이며, Portfolio Audit의 역할은 아직 이를 적용하지 않은 Repository를 잡아내는 것이지, 잘못된 Contract가 처음 발견되는 지점이 되는 것이 아닙니다.
+
 ## Security
 
 Skill은 Guidance이며 Authorization Boundary가 아닙니다. `allowed-tools`는 Experimental이므로 Security Control로 간주하지 않습니다. Side Effect Tool은 `docs/agent-execution-security-ko.md`의 Capability, Approval, Sandbox, Evidence Control을 따라야 합니다.

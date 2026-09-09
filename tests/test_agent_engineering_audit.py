@@ -50,7 +50,15 @@ metadata:
             self.assertEqual(result["canonical_commands"]["build"], ["npm run build"])
             self.assertTrue(result["deterministic_controls"]["lint"])
             self.assertTrue(result["deterministic_controls"]["tests"])
-            self.assertEqual(result["false_green_findings"], [])
+            self.assertEqual(result["agent_skills"]["canonical_count"], 0)
+            # Owner-missing findings must not fire: lint and test owners are both present. The
+            # fixture has no `.github/workflows` at all, so the local-gate finding is correct
+            # here and is asserted rather than excluded.
+            self.assertEqual(
+                result["false_green_findings"],
+                ["agent contract changes have no repository-local CI gate (no-workflows)"],
+            )
+            self.assertEqual(result["manual_review"]["high_risk_paths"], "review-required")
 
     def test_flags_instruction_only_false_green(self):
         with tempfile.TemporaryDirectory() as tmp:

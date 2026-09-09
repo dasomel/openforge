@@ -79,6 +79,27 @@ jobs:
           set -euo pipefail
           python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only
 
+  agent-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      # OpenForge runs its own agent-contract gate. The reusable workflow in
+      # agent-contract-gate.yml is the downstream adoption path; here the script is invoked
+      # directly so a pull request is validated by its own revision of the auditor rather than
+      # by whatever is on main. Without this job the repository would publish a fail-closed
+      # contract standard it does not itself apply.
+      - name: Validate agent instruction and skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/audit-agent-skills.py . --strict
+
   portfolio-validation:
     runs-on: ubuntu-latest
     steps:
