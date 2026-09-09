@@ -22,7 +22,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/agent-audit
-          repos=(narwhal narwhal-portal beluga beluga-manager kubemetal clusterdeck ldapium nfs-quota-agent egovframe-launcher kube-ready-box)
+          repos=(narwhal narwhal-portal beluga beluga-manager kubemetal clusterdeck ldapium nfs-quota-agent egovframe-launcher kube-ready-box siqoq)
           for repo in "${repos[@]}"; do
             git clone --depth=1 "https://github.com/dasomel/${repo}.git" "/tmp/agent-audit/${repo}"
           done
@@ -40,7 +40,8 @@ jobs:
             --repo dasomel/ldapium=/tmp/agent-audit/ldapium \
             --repo dasomel/nfs-quota-agent=/tmp/agent-audit/nfs-quota-agent \
             --repo dasomel/egovframe-launcher=/tmp/agent-audit/egovframe-launcher \
-            --repo dasomel/kube-ready-box=/tmp/agent-audit/kube-ready-box
+            --repo dasomel/kube-ready-box=/tmp/agent-audit/kube-ready-box \
+            --repo dasomel/siqoq=/tmp/agent-audit/siqoq
           python3 templates/scripts/generate-agent-audit-matrix.py --validate
       - name: Open reviewable refresh PR when state changed
         shell: bash
@@ -63,4 +64,4 @@ jobs:
             --base main \
             --head "$branch" \
             --title 'chore(agent): refresh portfolio audit matrix' \
-            --body 'Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit. Review false-green findings and judgment fields before merging.'
+            --body 'Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit, including canonical Agent Skills maturity/evidence status. Review false-green findings and judgment fields before merging.'
