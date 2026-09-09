@@ -46,6 +46,59 @@
       "prompt_deterministic_hints": [
         "naming"
       ],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "narwhal-cluster-debug",
+            "path": ".agents/skills/narwhal-cluster-debug/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-component-lifecycle",
+            "path": ".agents/skills/narwhal-component-lifecycle/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-verification",
+            "path": ".agents/skills/narwhal-verification/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-version-upgrade",
+            "path": ".agents/skills/narwhal-version-upgrade/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 4,
+        "adapter_count": 1,
+        "maturity_counts": {
+          "draft": 4,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -53,7 +106,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "813ccb0cbeb79ef973bca4f48a1212adbf9c3cea"
+      "revision": "1b1e5c0082591d1e307692a41cde5404dac9081d"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -86,17 +139,170 @@
         "security-policy": true,
         "generated-files": true
       },
-      "prompt_deterministic_hints": [
-        "naming"
+      "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "idp-backend",
+            "path": ".agents/skills/idp-backend/skill.md",
+            "scope": null,
+            "owner": null,
+            "maturity": null,
+            "version": null,
+            "evidence_present": false
+          },
+          {
+            "name": "idp-frontend",
+            "path": ".agents/skills/idp-frontend/skill.md",
+            "scope": null,
+            "owner": null,
+            "maturity": null,
+            "version": null,
+            "evidence_present": false
+          },
+          {
+            "name": "idp-orchestrator",
+            "path": ".agents/skills/idp-orchestrator/skill.md",
+            "scope": null,
+            "owner": null,
+            "maturity": null,
+            "version": null,
+            "evidence_present": false
+          },
+          {
+            "name": "idp-qa",
+            "path": ".agents/skills/idp-qa/skill.md",
+            "scope": null,
+            "owner": null,
+            "maturity": null,
+            "version": null,
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-portal-backend",
+            "path": ".agents/skills/narwhal-portal-backend/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal-portal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-portal-frontend",
+            "path": ".agents/skills/narwhal-portal-frontend/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal-portal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "narwhal-portal-qa",
+            "path": ".agents/skills/narwhal-portal-qa/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/narwhal-portal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 7,
+        "adapter_count": 4,
+        "maturity_counts": {
+          "draft": 3,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 4
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 4,
+        "warning_count": 4,
+        "findings": [
+          {
+            "severity": "warn",
+            "code": "SKILL-CASE",
+            "path": ".agents/skills/idp-backend/skill.md",
+            "message": "Use canonical uppercase SKILL.md filename."
+          },
+          {
+            "severity": "info",
+            "code": "SKILL-SCOPE-MISSING",
+            "path": ".agents/skills/idp-backend/skill.md",
+            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-CASE",
+            "path": ".agents/skills/idp-frontend/skill.md",
+            "message": "Use canonical uppercase SKILL.md filename."
+          },
+          {
+            "severity": "info",
+            "code": "SKILL-SCOPE-MISSING",
+            "path": ".agents/skills/idp-frontend/skill.md",
+            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-CASE",
+            "path": ".agents/skills/idp-orchestrator/skill.md",
+            "message": "Use canonical uppercase SKILL.md filename."
+          },
+          {
+            "severity": "info",
+            "code": "SKILL-SCOPE-MISSING",
+            "path": ".agents/skills/idp-orchestrator/skill.md",
+            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-CASE",
+            "path": ".agents/skills/idp-qa/skill.md",
+            "message": "Use canonical uppercase SKILL.md filename."
+          },
+          {
+            "severity": "info",
+            "code": "SKILL-SCOPE-MISSING",
+            "path": ".agents/skills/idp-qa/skill.md",
+            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
+          },
+          {
+            "severity": "error",
+            "code": "SKILL-DUP-NAME",
+            "path": ".claude/skills/idp-backend/SKILL.md",
+            "message": "Duplicate skill name; first seen at .agents/skills/idp-backend/skill.md."
+          },
+          {
+            "severity": "error",
+            "code": "SKILL-DUP-NAME",
+            "path": ".claude/skills/idp-frontend/SKILL.md",
+            "message": "Duplicate skill name; first seen at .agents/skills/idp-frontend/skill.md."
+          },
+          {
+            "severity": "error",
+            "code": "SKILL-DUP-NAME",
+            "path": ".claude/skills/idp-orchestrator/SKILL.md",
+            "message": "Duplicate skill name; first seen at .agents/skills/idp-orchestrator/skill.md."
+          },
+          {
+            "severity": "error",
+            "code": "SKILL-DUP-NAME",
+            "path": ".claude/skills/idp-qa/SKILL.md",
+            "message": "Duplicate skill name; first seen at .agents/skills/idp-qa/skill.md."
+          }
+        ]
+      },
+      "false_green_findings": [
+        "Agent Skills audit reports 4 error(s); maturity/evidence claims are not fully valid"
       ],
-      "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "011890f8c8c2994f0066e43e30d8528d0a61179a"
+      "revision": "316617dbed28d5618c125f56c66bde3337ffc4fb"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -106,7 +312,11 @@
         "CLAUDE.md"
       ],
       "source_of_truth_docs": [
-        "README.md"
+        "README.md",
+        "CONTRIBUTING.md",
+        "DESIGN.md",
+        "docs/architecture.md",
+        "docs/development.md"
       ],
       "canonical_commands": {
         "verify": [],
@@ -119,14 +329,40 @@
         ]
       },
       "deterministic_controls": {
-        "formatting": false,
+        "formatting": true,
         "lint": true,
         "tests": true,
         "static-analysis": false,
-        "security-policy": false,
-        "generated-files": false
+        "security-policy": true,
+        "generated-files": true
       },
       "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "beluga-platform-change",
+            "path": ".agents/skills/beluga-platform-change/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/beluga",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -134,13 +370,14 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "74197bde7e7fcfaea54b5e9d22a422c7d9eb7c5c"
+      "revision": "6c5bdd1ad3e91aadf0aea4c89a2c6de24cb7a099"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
       "repository": "dasomel/beluga-manager",
       "instructions": [
-        "AGENTS.md"
+        "AGENTS.md",
+        "CLAUDE.md"
       ],
       "source_of_truth_docs": [
         "README.md",
@@ -163,6 +400,32 @@
         "generated-files": false
       },
       "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "beluga-manager-integration-contract",
+            "path": ".agents/skills/beluga-manager-integration-contract/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/beluga-manager",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [
         "agent instructions reference linting but no lint owner was detected"
       ],
@@ -172,7 +435,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "7a34f33bd30439612b6492c3cc331b28b0477b04"
+      "revision": "3fd29f6a3b5119281b4392c0a354cabfd60117ea"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -184,7 +447,8 @@
       "source_of_truth_docs": [
         "README.md",
         "CONTRIBUTING.md",
-        "DESIGN.md"
+        "DESIGN.md",
+        "docs/architecture.md"
       ],
       "canonical_commands": {
         "verify": [
@@ -211,6 +475,39 @@
         "generated-files": true
       },
       "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "kubemetal-hybrid-runtime-change",
+            "path": ".agents/skills/kubemetal-hybrid-runtime-change/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/kubemetal",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 1,
+        "findings": [
+          {
+            "severity": "warn",
+            "code": "CLAUDE-GLOBAL-DEPENDENCY",
+            "path": "CLAUDE.md",
+            "message": "Repository behavior references a maintainer-global Claude configuration; keep it optional."
+          }
+        ]
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -218,7 +515,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "fa6b60babe26efcca98c0c0ed991f04c232ffecc"
+      "revision": "829221e8c6655a558de826966894b69c3ab9d505"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -258,6 +555,32 @@
       "prompt_deterministic_hints": [
         "naming"
       ],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "clusterdeck-connection-workflow",
+            "path": ".agents/skills/clusterdeck-connection-workflow/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/clusterdeck",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -265,7 +588,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "d5023a31b3626e64021ae5c66cbf85b7ef094243"
+      "revision": "3b7c283f408bebec73ae7d3a255bf7b83c9a130b"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -296,6 +619,32 @@
         "generated-files": true
       },
       "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "ldapium-directory-change",
+            "path": ".agents/skills/ldapium-directory-change/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/ldapium",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -303,7 +652,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "dfd3fbfe2b9fc576457e0978c9a33d8600dc1875"
+      "revision": "438e2445e00a8a79ed19172e07a773726be474a3"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -343,20 +692,89 @@
       "prompt_deterministic_hints": [
         "formatting"
       ],
-      "false_green_findings": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "nfs-quota-verification",
+            "path": ".agents/skills/nfs-quota-verification/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/nfs-quota-agent",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          },
+          {
+            "name": "verification",
+            "path": ".agents/skills/verification/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/nfs-quota-agent",
+            "maturity": "deprecated",
+            "version": "2",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 2,
+        "adapter_count": 1,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 1,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 1,
+        "warning_count": 4,
+        "findings": [
+          {
+            "severity": "warn",
+            "code": "SKILL-GENERIC-NAME",
+            "path": ".agents/skills/verification/SKILL.md",
+            "message": "Project skill name 'verification' can collide globally; prefer <project>-<task>."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-GENERIC-NAME",
+            "path": ".claude/skills/verification/SKILL.md",
+            "message": "Project skill name 'verification' can collide globally; prefer <project>-<task>."
+          },
+          {
+            "severity": "error",
+            "code": "SKILL-DUP-NAME",
+            "path": ".claude/skills/verification/SKILL.md",
+            "message": "Duplicate skill name; first seen at .agents/skills/verification/SKILL.md."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-DUP-DESCRIPTION",
+            "path": ".claude/skills/verification/SKILL.md",
+            "message": "Same normalized description as .agents/skills/verification/SKILL.md."
+          },
+          {
+            "severity": "warn",
+            "code": "SKILL-DUP-BODY",
+            "path": ".claude/skills/verification/SKILL.md",
+            "message": "Same normalized body as .agents/skills/verification/SKILL.md."
+          }
+        ]
+      },
+      "false_green_findings": [
+        "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "d5ba45b2e23d4aedd2026b7e2c8c71933fa1ec10"
+      "revision": "60aa69a15101b6448e275a2e864ae459ac77ed72"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
       "repository": "dasomel/egovframe-launcher",
       "instructions": [
-        "AGENTS.md"
+        "AGENTS.md",
+        "CLAUDE.md"
       ],
       "source_of_truth_docs": [
         "README.md",
@@ -364,20 +782,54 @@
         "DESIGN.md"
       ],
       "canonical_commands": {
-        "verify": [],
-        "build": [],
-        "test": [],
+        "verify": [
+          "make verify"
+        ],
+        "build": [
+          "make build"
+        ],
+        "test": [
+          "make test"
+        ],
         "lint": []
       },
       "deterministic_controls": {
-        "formatting": false,
+        "formatting": true,
         "lint": false,
         "tests": true,
         "static-analysis": false,
         "security-policy": false,
         "generated-files": false
       },
-      "prompt_deterministic_hints": [],
+      "prompt_deterministic_hints": [
+        "formatting"
+      ],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "egovframe-launcher-target-workflow",
+            "path": ".agents/skills/egovframe-launcher-target-workflow/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/egovframe-launcher",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
       "false_green_findings": [
         "agent instructions reference linting but no lint owner was detected"
       ],
@@ -387,7 +839,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "b762dabc88be18654973d571dfd449d750476044"
+      "revision": "0d0ceae70b311c1dac06abe89572c240ea8190f1"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -422,6 +874,39 @@
         "generated-files": true
       },
       "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "kube-ready-box-build-validation",
+            "path": ".agents/skills/kube-ready-box-build-validation/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 1,
+        "findings": [
+          {
+            "severity": "warn",
+            "code": "CLAUDE-GLOBAL-DEPENDENCY",
+            "path": "CLAUDE.md",
+            "message": "Repository behavior references a maintainer-global Claude configuration; keep it optional."
+          }
+        ]
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -429,7 +914,78 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "7c62e309ebd03483291387df5d82d02f920a04bb"
+      "revision": "a0c8d7e63688152f6d6fecd9ce3fe52f996fb559"
+    },
+    {
+      "schemaVersion": "openforge-agent-audit/v1",
+      "repository": "dasomel/siqoq",
+      "instructions": [
+        "AGENTS.md",
+        "CLAUDE.md"
+      ],
+      "source_of_truth_docs": [
+        "README.md",
+        "CONTRIBUTING.md",
+        "docs/architecture.md",
+        "docs/development.md"
+      ],
+      "canonical_commands": {
+        "verify": [
+          "make verify"
+        ],
+        "build": [
+          "make build"
+        ],
+        "test": [
+          "make test"
+        ],
+        "lint": [
+          "make lint"
+        ]
+      },
+      "deterministic_controls": {
+        "formatting": false,
+        "lint": true,
+        "tests": true,
+        "static-analysis": false,
+        "security-policy": false,
+        "generated-files": false
+      },
+      "prompt_deterministic_hints": [],
+      "agent_skills": {
+        "canonical": [
+          {
+            "name": "siqoq-sim-to-edge-workflow",
+            "path": ".agents/skills/siqoq-sim-to-edge-workflow/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/siqoq",
+            "maturity": "draft",
+            "version": "1",
+            "evidence_present": false
+          }
+        ],
+        "canonical_count": 1,
+        "adapter_count": 0,
+        "maturity_counts": {
+          "draft": 1,
+          "verified": 0,
+          "stable": 0,
+          "deprecated": 0,
+          "unspecified": 0
+        },
+        "evidence_backed_mature_count": 0,
+        "error_count": 0,
+        "warning_count": 0,
+        "findings": []
+      },
+      "false_green_findings": [],
+      "manual_review": {
+        "high_risk_paths": "review-required",
+        "bug_reproduction_automation": "review-required",
+        "duplicated_or_obsolete_prompt_rules": "review-required",
+        "architecture_boundary_guidance": "review-required"
+      },
+      "revision": "b71c68fbc07751401d9f100168106b36375fb692"
     }
   ]
 }
