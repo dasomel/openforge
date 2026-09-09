@@ -15,6 +15,7 @@ on:
 permissions:
   contents: write
   pull-requests: write
+  issues: write
 
 jobs:
   refresh:
@@ -60,15 +61,29 @@ jobs:
             echo 'Agent audit matrix is current.'
             exit 0
           fi
-          branch="agent-audit/refresh-${GITHUB_RUN_ID}"
+
+          branch="agent-audit/refresh-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git switch -c "$branch"
           git add portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md
           git commit -m 'chore(agent): refresh portfolio audit matrix'
           git push origin "$branch"
-          gh pr create \
+
+          body='Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit, including canonical Agent Skills maturity/evidence status. Review false-green findings and judgment fields before merging.'
+          if gh pr create \
             --base main \
             --head "$branch" \
             --title 'chore(agent): refresh portfolio audit matrix' \
-            --body 'Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit, including canonical Agent Skills maturity/evidence status. Review false-green findings and judgment fields before merging.'
+            --body "$body"; then
+            exit 0
+          fi
+
+          echo '::warning::GitHub Actions is not permitted to create pull requests; the review branch was pushed successfully.'
+          compare_url="https://github.com/${GITHUB_REPOSITORY}/compare/main...${branch}?expand=1"
+          issue_body="The agent-audit refresh completed and pushed \`${branch}\`, but the repository currently blocks GitHub Actions from creating pull requests.\n\nOpen the review PR from: ${compare_url}\n\nWorkflow run: https://github.com/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+          if ! gh issue create \
+            --title "Agent audit refresh branch requires review (${GITHUB_RUN_ID})" \
+            --body "$issue_body"; then
+            echo "::warning::Could not create fallback issue. Review branch manually: ${branch}"
+          fi
