@@ -7,7 +7,7 @@
 | Project | Impact score | Incoming edges | Outgoing edges |
 |---|---:|---:|---:|
 | Narwhal | 29 | 6 | 7 |
-| OpenForge | 27 | 2 | 11 |
+| OpenForge | 28 | 2 | 12 |
 | KubeMetal | 11 | 4 | 1 |
 | Narwhal Portal | 11 | 2 | 2 |
 | Beluga | 10 | 3 | 1 |
@@ -18,6 +18,7 @@
 | ClusterDeck | 3 | 1 | 1 |
 | dasomel.github.io | 2 | 1 | 1 |
 | eGovFrame Launcher | 1 | 1 | 0 |
+| Siqoq | 1 | 1 | 0 |
 | CKA Lab | 0 | 0 | 0 |
 | Kairos | 0 | 0 | 0 |
 

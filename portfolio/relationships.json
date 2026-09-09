@@ -1,6 +1,6 @@
 {
   "version": "openforge-relationships/v1",
-  "updated_at": "2026-09-07",
+  "updated_at": "2026-09-09",
   "relationship_types": [
     "standardizes",
     "reference-implementation",
@@ -23,6 +23,7 @@
     {"source":"openforge","target":"clusterdeck","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
     {"source":"openforge","target":"beluga-manager","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
     {"source":"openforge","target":"egovframe-launcher","type":"standardizes","impact":"low","scope":"developer-tool standards"},
+    {"source":"openforge","target":"siqoq","type":"standardizes","impact":"low","scope":"engineering and Agent Skills standards"},
     {"source":"openforge","target":"dasomel-github-io","type":"standardizes","impact":"low","scope":"documentation and presentation"},
 
     {"source":"narwhal","target":"openforge","type":"reference-implementation","impact":"high","scope":"platform, security and agent execution patterns"},

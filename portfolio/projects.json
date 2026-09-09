@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-09-08",
+  "updated_at": "2026-09-09",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -276,6 +276,22 @@
       "domains": [
         "developer-experience",
         "egovframe"
+      ]
+    },
+    {
+      "id": "siqoq",
+      "repository": "dasomel/siqoq",
+      "name": "Siqoq",
+      "category": "Physical AI / Edge AI",
+      "archetype": "Edge AI Infrastructure",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "experiment",
+      "domains": [
+        "physical-ai",
+        "edge-ai",
+        "simulation",
+        "ai-agent"
       ]
     },
     {

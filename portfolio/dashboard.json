@@ -6,7 +6,7 @@
     "portfolio/milestones.json",
     "portfolio/maintenance.json"
   ],
-  "updated_at": "2026-09-08",
+  "updated_at": "2026-09-09",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -16,10 +16,10 @@
   },
   "maintenance": {
     "summary": {
-      "owned_projects": 14,
+      "owned_projects": 15,
       "unowned_projects": 0,
       "high_blast_radius_projects": 3,
-      "exit_path_review_required": 14,
+      "exit_path_review_required": 15,
       "review_cadence_default": "quarterly"
     },
     "projects": [
@@ -123,6 +123,15 @@
         "review_cadence": "quarterly"
       },
       {
+        "project": "siqoq",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "experiment",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      },
+      {
         "project": "cka-lab",
         "maintenance_owner": "dasomel",
         "maintenance_status": "owned",
@@ -168,7 +177,7 @@
         "compliance",
         "portfolio"
       ],
-      "impact_score": 27,
+      "impact_score": 28,
       "maintenance": {
         "project": "openforge",
         "maintenance_owner": "dasomel",
@@ -532,6 +541,32 @@
       }
     },
     {
+      "id": "siqoq",
+      "repository": "dasomel/siqoq",
+      "name": "Siqoq",
+      "category": "Physical AI / Edge AI",
+      "archetype": "Edge AI Infrastructure",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "experiment",
+      "domains": [
+        "physical-ai",
+        "edge-ai",
+        "simulation",
+        "ai-agent"
+      ],
+      "impact_score": 1,
+      "maintenance": {
+        "project": "siqoq",
+        "maintenance_owner": "dasomel",
+        "maintenance_status": "owned",
+        "strategic_role": "experiment",
+        "blast_radius": "low",
+        "exit_path_status": "review-required",
+        "review_cadence": "quarterly"
+      }
+    },
+    {
       "id": "cka-lab",
       "repository": "dasomel/cka-lab",
       "name": "CKA Lab",
@@ -675,6 +710,13 @@
       "type": "standardizes",
       "impact": "low",
       "scope": "developer-tool standards"
+    },
+    {
+      "source": "openforge",
+      "target": "siqoq",
+      "type": "standardizes",
+      "impact": "low",
+      "scope": "engineering and Agent Skills standards"
     },
     {
       "source": "openforge",
