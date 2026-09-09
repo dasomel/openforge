@@ -4,6 +4,13 @@ on:
   workflow_dispatch:
   schedule:
     - cron: '23 3 1 * *'
+  push:
+    branches: [main]
+    paths:
+      - 'templates/scripts/audit-agent-engineering.py'
+      - 'templates/scripts/audit-agent-skills.py'
+      - 'templates/scripts/generate-agent-audit-matrix.py'
+      - '.github/workflows/refresh-agent-audit.yml'
 
 permissions:
   contents: write
