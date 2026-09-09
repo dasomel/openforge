@@ -40,6 +40,7 @@ flowchart TB
   openforge -->|standardizes| clusterdeck
   openforge -->|standardizes| beluga_manager
   openforge -->|standardizes| egovframe_launcher
+  openforge -->|standardizes| siqoq
   openforge -->|standardizes| dasomel_github_io
   narwhal -->|reference-implementation| openforge
   narwhal -->|provides| narwhal_portal
