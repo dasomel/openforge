@@ -25,5 +25,6 @@ Initial reference behaviors:
 - `scope-discipline`
 - `bug-fix-verification`
 - `user-centric-validation`
+- `instruction-debt-audit`
 - `task-convergence`
 - `trust-and-provenance`
