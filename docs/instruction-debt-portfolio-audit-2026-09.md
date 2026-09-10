@@ -6,17 +6,19 @@ This report records the coordinated second pass for OpenForge issues #83, #84, a
 
 Initial active OSS batch:
 
-| Repository | Result |
-|---|---|
-| `dasomel/narwhal` | Root contract changed to task-relevant inspection, risk-proportional verification, explicit autonomy boundary, and canonical OpenForge references. |
-| `dasomel/narwhal-portal` | Root contract changed to task-relevant inspection while preserving the generated Next.js rule block; browser/auth/live integration evidence remains risk-scoped. |
-| `dasomel/kubemetal` | Unconditional repository-wide reading removed. Existing architecture invariants and measured runtime gotchas retained because they are high-value project knowledge, not generic prompt policy. |
-| `dasomel/nfs-quota-agent` | Root reading and verification requirements made task/risk relevant; Claude adapter no longer loads the verification skill for every change. Filesystem/kernel/privilege gotchas retained. |
-| `dasomel/kube-ready-box` | Existing layered contract already uses a source map, project skill routing, and a separate 700+ line technical reference loaded by section. No mechanical rewrite required in this pass. |
-| `dasomel/beluga` | Unconditional platform-document loading replaced by task-relevant source-map routing; user/live-cluster verification made proportional to affected paths. |
-| `dasomel/beluga-manager` | Root contract changed to task-relevant guidance, explicit autonomy boundaries, and proportional verification. |
-| `dasomel/ldapium` | Unconditional multi-document loading replaced by task-relevant routing; live LDAP/browser evidence remains required only when the affected property needs it. High-value OpenLDAP gotchas retained. |
-| `dasomel/egovframe-launcher` | Root contract changed to task-relevant project-skill loading and proportional real-toolchain verification. |
+| Repository | Result | Second-pass commit |
+|---|---|---|
+| `dasomel/narwhal` | Root contract changed to task-relevant inspection, risk-proportional verification, explicit autonomy boundary, and canonical OpenForge references. | `96be305` |
+| `dasomel/narwhal-portal` | Root contract changed to task-relevant inspection while preserving the generated Next.js rule block; browser/auth/live integration evidence remains risk-scoped. | `e1d7cbc` |
+| `dasomel/kubemetal` | Unconditional repository-wide reading removed. Existing architecture invariants and measured runtime gotchas retained because they are high-value project knowledge, not generic prompt policy. | `6840f34` |
+| `dasomel/nfs-quota-agent` | Root reading and verification requirements made task/risk relevant; Claude adapter no longer loads the verification skill for every change. Filesystem/kernel/privilege gotchas retained. | `ea6a2a2`, `d78fc87` |
+| `dasomel/kube-ready-box` | Existing layered contract retained; task-relevant source-map loading, proportional verification, autonomy boundaries, and new OpenForge references were made explicit. | `30e7358` |
+| `dasomel/beluga` | Unconditional platform-document loading replaced by task-relevant source-map routing; user/live-cluster verification made proportional to affected paths. | `12bd291` |
+| `dasomel/beluga-manager` | Root contract changed to task-relevant guidance, explicit autonomy boundaries, and proportional verification. | `773c7ce` |
+| `dasomel/ldapium` | Unconditional multi-document loading replaced by task-relevant routing; live LDAP/browser evidence remains required only when the affected property needs it. High-value OpenLDAP gotchas retained. | `591ddb2` |
+| `dasomel/egovframe-launcher` | Root contract changed to task-relevant project-skill loading and proportional real-toolchain verification. | `4e12355` |
+
+The first-pass adoption markers remain under `.agents/openforge-adoption.md` in all nine repositories.
 
 ## CLAUDE.md findings
 
@@ -57,6 +59,8 @@ Safe local/disposable inspect-edit-build-test-fix-retest loops may proceed witho
 
 ## Verification and limitation
 
-This pass verified the current repository instruction files through the GitHub source after changes and recorded commit-level adoption in issue #85. It did not execute each repository's runtime test suite because the changes are repository guidance rather than product/runtime code, and GitHub commit status availability varies by repository. No runtime correctness claim is made from this documentation-only rollout.
+The updated source was re-read from GitHub on representative high-risk repositories (`narwhal`, `kubemetal`, `nfs-quota-agent`) after the second-pass commits, and the portfolio results are recorded here. GitHub code-search indexing can lag new commits, so direct file reads are the verification source for this pass.
+
+This rollout did not execute each repository's runtime test suite because the changes are repository guidance rather than product/runtime code, and GitHub commit status availability varies by repository. No runtime correctness claim is made from this documentation-only rollout.
 
 Future portfolio audits should use `templates/scripts/audit-instruction-debt.py` plus representative before/after task evals. Improvement is measured by verified task outcomes, unnecessary reads/tool calls, approval interruptions, context cost, skill activation quality, and preserved high-value constraints — not by prompt size alone.
