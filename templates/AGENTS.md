@@ -30,6 +30,11 @@ If an automated regression test is impractical, record executable reproduction e
 
 Do not claim completion without relevant verification. State what was actually run and distinguish mocked/unit evidence from real integration/runtime evidence.
 
+For user-facing, installation, configuration, upgrade, integration, or high-risk changes, also follow the OpenForge User-Centric Validation Standard:
+https://github.com/dasomel/openforge/blob/main/docs/user-centric-validation.md
+
+A green CI run or self-authored test suite is necessary evidence but is not sufficient proof of user-visible correctness. Exercise the relevant public user journey from a clean environment where practical, derive expected behavior independently from the implementation, challenge likely failure paths, and convert confirmed user-visible defects into regression evidence.
+
 ## Convergence
 
 End substantive work as one of:
