@@ -1,0 +1,79 @@
+{
+  "version": "openforge-capability-ownership/v1",
+  "updated_at": "2026-09-10",
+  "policy": {
+    "single_source_of_truth": true,
+    "duplicate_issue_rule": "Do not create a new implementation issue for a capability already owned by another portfolio project. Create an integration/adapter/consumer-contract issue instead.",
+    "allowed_relationships": [
+      "owns",
+      "control-surface-for",
+      "consumes",
+      "integrates-with",
+      "experiment-only"
+    ]
+  },
+  "capabilities": [
+    {
+      "id": "portfolio-engineering-governance",
+      "owner": "openforge",
+      "consumers": ["narwhal", "narwhal-portal", "beluga", "beluga-manager", "kubemetal", "kube-ready-box", "ldapium", "nfs-quota-agent", "clusterdeck", "egovframe-launcher", "siqoq"],
+      "scope": "engineering standards, portfolio state, evidence, maintenance and cross-project ownership contracts"
+    },
+    {
+      "id": "kubernetes-platform-control-plane",
+      "owner": "narwhal",
+      "control_surfaces": ["narwhal-portal"],
+      "consumers": ["beluga", "kubemetal"],
+      "scope": "cluster lifecycle, GitOps, platform security/governance, observability and platform operations contracts"
+    },
+    {
+      "id": "data-platform-lakehouse",
+      "owner": "beluga",
+      "control_surfaces": ["beluga-manager"],
+      "consumers": [],
+      "scope": "ingestion, Medallion, data quality, catalog, lineage, data products, analytics and data-platform operations"
+    },
+    {
+      "id": "local-edge-ai-runtime",
+      "owner": "kubemetal",
+      "consumers": ["beluga", "siqoq"],
+      "scope": "Apple Silicon/local accelerator runtime, model execution and accelerator telemetry"
+    },
+    {
+      "id": "node-runtime-foundation",
+      "owner": "kube-ready-box",
+      "consumers": ["narwhal", "beluga"],
+      "scope": "Kubernetes-ready node image, readiness/preflight, offline OS/package profile and node evidence"
+    },
+    {
+      "id": "directory-identity-data-plane",
+      "owner": "ldapium",
+      "consumers": ["narwhal", "beluga"],
+      "scope": "LDAP directory lifecycle, TLS, ACL, replication, backup/restore and directory interoperability"
+    },
+    {
+      "id": "filesystem-quota-enforcement",
+      "owner": "nfs-quota-agent",
+      "consumers": ["narwhal", "beluga"],
+      "scope": "filesystem/NFS project quota enforcement, reconciliation and quota evidence"
+    },
+    {
+      "id": "local-kubernetes-operations-client",
+      "owner": "clusterdeck",
+      "consumers": [],
+      "scope": "desktop/local Kubernetes connection and operator UX; not a platform control plane"
+    },
+    {
+      "id": "egovframe-developer-tooling",
+      "owner": "egovframe-launcher",
+      "consumers": [],
+      "scope": "eGovFrame developer workflow and launcher tooling"
+    },
+    {
+      "id": "physical-edge-ai-experimentation",
+      "owner": "siqoq",
+      "consumers": [],
+      "scope": "robotics/physical-AI simulation-to-edge experiments; integration may consume KubeMetal and Narwhal contracts"
+    }
+  ]
+}
