@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Read the repository's README, CONTRIBUTING, DESIGN/architecture docs, and project-specific instruction files before editing.
+Inspect repository guidance and documentation relevant to the current task before editing. Load detailed references only when they are needed.
 
 ## Work contract
 
@@ -9,31 +9,39 @@ Read the repository's README, CONTRIBUTING, DESIGN/architecture docs, and projec
 - Preserve architecture/layer boundaries and existing access restrictions.
 - Treat public/internal visibility, exported APIs, permissions, RBAC, and destructive behavior as design changes.
 - Follow existing naming/style conventions; let formatter/linter rules own deterministic style.
-- Comments explain why, invariants, hazards, or non-obvious constraints; do not narrate obvious code.
+- Keep generic engineering rules model-agnostic. Tool/model-specific instruction files should be thin adapters rather than policy forks.
+
+## Autonomy boundary
+
+Safe local and reversible work already within the requested scope may proceed without repeated approval, including relevant inspection, editing, build/lint/test execution, fixing failures caused by the change, and re-running verification.
+
+Require explicit authorization unless already granted for production/shared-environment mutation, destructive or irreversible external actions, credential/permission changes beyond the requested design, release/publish actions, paid-resource changes, or unrelated repository/external-system mutations.
 
 ## Documentation impact
 
-For substantive changes, explicitly review whether README, architecture, operations, security, API/configuration, supported-version, or user-facing documentation must change in the same work unit.
+For substantive changes, review documentation relevant to the changed behavior. Do not require unrelated documentation to be read or updated.
 
 - Do not describe planned/experimental behavior as implemented.
 - Prefer generated/canonical sources for repeated numeric or version claims.
-- If documentation cannot safely be updated in the same change, identify the tracked follow-up rather than silently leaving known drift.
-- Review whether the change is also a blog/portfolio update candidate when it adds a user capability, architecture/operations lesson, platform support, or material security improvement.
+- If relevant documentation cannot safely be updated in the same change, identify the tracked follow-up rather than silently leaving known drift.
 
 ## Bugs
 
-When feasible: reproduce -> failing regression test/evidence -> fix -> same test passes -> relevant regression suite.
+When feasible: reproduce -> failing regression test/evidence -> fix -> same evidence passes -> relevant regression suite.
 
-If an automated regression test is impractical, record executable reproduction evidence and why automation is not feasible.
+If automated regression is impractical, record executable reproduction evidence and why automation is not feasible.
 
 ## Verification
 
-Do not claim completion without relevant verification. State what was actually run and distinguish mocked/unit evidence from real integration/runtime evidence.
+Perform verification appropriate to the change's risk and user impact. Do not run broad suites by habit when narrower evidence is sufficient, and do not claim completion without stating what was actually run.
 
-For user-facing, installation, configuration, upgrade, integration, or high-risk changes, also follow the OpenForge User-Centric Validation Standard:
+For user-facing, installation, configuration, upgrade, integration, or high-risk changes, apply the relevant portions of the OpenForge User-Centric Validation Standard:
 https://github.com/dasomel/openforge/blob/main/docs/user-centric-validation.md
 
-A green CI run or self-authored test suite is necessary evidence but is not sufficient proof of user-visible correctness. Exercise the relevant public user journey from a clean environment where practical, derive expected behavior independently from the implementation, challenge likely failure paths, and convert confirmed user-visible defects into regression evidence.
+A green CI run or self-authored test suite is necessary evidence but is not sufficient proof of user-visible correctness when the changed behavior depends on a real user journey or runtime integration.
+
+For agent instruction design and maintenance, follow:
+https://github.com/dasomel/openforge/blob/main/docs/model-agnostic-agent-instructions.md
 
 ## Convergence
 
@@ -43,4 +51,4 @@ End substantive work as one of:
 - B: meaningful verified progress with the next blocker isolated
 - C: stop because further work needs unjustified scope, fragile patches, unsupported assumptions, or unacceptable risk
 
-Activity is not progress. Do not keep patching when the work is no longer converging.
+Activity is not progress. Continue through implementation, relevant verification, and fixes caused by the change until one of these states is reached.
