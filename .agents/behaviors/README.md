@@ -24,5 +24,6 @@ Initial reference behaviors:
 - `evidence-before-claim`
 - `scope-discipline`
 - `bug-fix-verification`
+- `user-centric-validation`
 - `task-convergence`
 - `trust-and-provenance`
