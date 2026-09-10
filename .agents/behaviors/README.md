@@ -28,3 +28,5 @@ Initial reference behaviors:
 - `instruction-debt-audit`
 - `task-convergence`
 - `trust-and-provenance`
+
+Portfolio example: [`docs/instruction-debt-portfolio-audit-2026-09.md`](../../docs/instruction-debt-portfolio-audit-2026-09.md) records a multi-repository rollout using the model-agnostic instruction design and instruction-debt audit approach.
