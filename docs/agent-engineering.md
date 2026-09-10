@@ -2,6 +2,8 @@
 
 OpenForge treats repository instructions as an engineering control, not as a dumping ground for every coding preference.
 
+For the canonical model-independent instruction architecture, progressive disclosure, autonomy boundaries, compatibility overrides, and instruction-debt auditing, see [Model-Agnostic Agent Instruction Design](model-agnostic-agent-instructions.md).
+
 ## Layered instruction model
 
 ```text
@@ -9,17 +11,20 @@ AGENTS.md
   -> short execution contract
   -> scope, boundaries, verification, escalation
 
-CODING_STANDARDS.md
-  -> detailed coding and review guidance
+behaviors / skills
+  -> task-specific conduct and workflow selection
 
-CONTRIBUTING.md / DESIGN.md / architecture docs
-  -> project-specific process and design context
+references / scripts
+  -> detail loaded only when relevant
+
+CLAUDE.md / GEMINI.md / tool-specific rules
+  -> thin runtime adapters
 
 formatter / linter / tests / policy-as-code / CI
   -> deterministic enforcement
 ```
 
-Keep `AGENTS.md` short enough to remain salient in long sessions. Do not duplicate rules already enforced reliably by tools.
+Keep `AGENTS.md` short enough to remain salient in long sessions. Inspect only guidance relevant to the current task; do not require every document to be loaded before every edit. Do not duplicate rules already enforced reliably by tools.
 
 ## Agent execution security
 
@@ -29,16 +34,19 @@ Use the [Agent Execution Security Contract](agent-execution-security.md) ([í•œêµ
 
 ## Root AGENTS.md rules
 
-A project-level `AGENTS.md` should normally contain only the following classes of instruction:
+A project-level `AGENTS.md` should normally contain only instructions relevant to nearly every substantive task, such as:
 
-1. source-of-truth documents to read before editing
+1. how to locate task-relevant source-of-truth guidance
 2. allowed and forbidden scope
 3. architecture and access-boundary constraints
-4. canonical build/test/verification entrypoints
+4. canonical verification expectations or entrypoints
 5. bug-fix reproduction policy
 6. evidence required before claiming completion
-7. escalation/stop conditions
-8. project-specific high-risk paths that cannot be inferred from code
+7. safe autonomy and explicit-authorization boundaries
+8. escalation/stop conditions
+9. project-specific high-risk paths that cannot be inferred from code
+
+Task-specific workflows belong in behaviors/skills and supporting references rather than the root contract.
 
 ## Scope discipline
 
@@ -68,7 +76,7 @@ Recommended judgment rules:
 
 ## Bug-fix workflow
 
-Preferred sequence:
+Preferred sequence when the defect is reproducible:
 
 ```text
 reproduce
@@ -97,6 +105,14 @@ Distinguish evidence classes:
 
 Do not imply that a lower-level evidence class proves a higher-level runtime property.
 
+Verification should be proportional to the change's risk and user impact. For user-facing, installation, configuration, upgrade, integration, or high-risk changes, use the relevant portions of the [User-Centric Validation Standard](user-centric-validation.md). A trivial change does not need every validation gate; a high-risk runtime change may need several.
+
+## Safe autonomy
+
+Within the requested scope, safe local and reversible work may normally continue without repeated approval: relevant inspection, editing, build/lint/test execution, fixing failures caused by the change, and re-running verification.
+
+Explicit authorization is required unless already granted for production/shared-environment mutation, destructive or irreversible external actions, credential/permission changes beyond the requested design, release/publish actions, paid-resource changes, or unrelated repository/external-system mutations.
+
 ## Convergence model
 
 Every substantive task should end in one of three states:
@@ -112,19 +128,23 @@ Further work would require unjustified scope expansion, fragile patches, unsuppo
 
 Activity is not progress. A failed attempt is useful only when it narrows the problem, improves evidence, or justifies stopping.
 
+Prefer this outcome contract over rigid universal procedures. Continue through implementation, relevant verification, and fixes caused by the change until one of these states is reached.
+
 ## Context-dilution control
 
 - Keep root instructions concise.
-- Put detailed standards in linked files loaded when needed.
-- Start a fresh session for an unrelated feature when practical.
-- Reload repository instructions after long investigations when instruction adherence degrades.
+- Load detailed standards and references only when relevant to the task.
+- Move repeatable task workflows into narrowly triggered skills/behaviors.
 - Do not duplicate formatter/linter rules in prose unless the prose explains a non-obvious reason.
+- Audit stale, duplicate, or over-broad instructions periodically with `.agents/behaviors/instruction-debt-audit/BEHAVIOR.md` and `templates/scripts/audit-instruction-debt.py`.
 
 ## Agent-specific files
 
-`CLAUDE.md`, `GEMINI.md`, tool-specific rules, or local skills may coexist with `AGENTS.md`.
+`CLAUDE.md`, `GEMINI.md`, tool-specific rules, or local runtime files may coexist with `AGENTS.md`.
 
-Use them for tool-specific behavior or project-specific high-risk context. Do not fork generic engineering rules across multiple files.
+Treat them as thin adapters: keep runtime syntax, hooks, orchestration, or unique capability guidance there, but do not fork generic engineering rules across models.
+
+Model-specific compatibility guidance should be added only for repeated observed failures backed by an eval, issue, trace, or reproducible case, with a minimal mitigation and a review/removal condition.
 
 Existing high-value gotcha files should be preserved and referenced rather than replaced by a generic template.
 
