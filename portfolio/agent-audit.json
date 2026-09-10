@@ -106,7 +106,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "1b1e5c0082591d1e307692a41cde5404dac9081d"
+      "revision": "96be30582a9d4aa95a8bc9f9f2f67414764e16c9"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -191,7 +191,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "0730430d1dc4f77c05d25f79499a1897c6dff375"
+      "revision": "e1d7cbceca27a78a6401ad56e7c711f24ccb149f"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -259,7 +259,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "6c5bdd1ad3e91aadf0aea4c89a2c6de24cb7a099"
+      "revision": "12bd2917395fea2c00735c75d7f39855d303b71e"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -328,7 +328,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "0e7a4950602361c941f908571fc5b6a5887fbbec"
+      "revision": "773c7ce07afea8dafcdeed4edbfb00169b9a9b73"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -408,7 +408,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "829221e8c6655a558de826966894b69c3ab9d505"
+      "revision": "6840f3496d70cd22dff5278bdd6262f391a4ef59"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -481,7 +481,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "3b7c283f408bebec73ae7d3a255bf7b83c9a130b"
+      "revision": "778550b833874e7617c88343f04235e1fe9c2253"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -545,7 +545,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "438e2445e00a8a79ed19172e07a773726be474a3"
+      "revision": "591ddb2ec920cbdd2c069cd768f1c7d56e4e3f9c"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -625,7 +625,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "60aa69a15101b6448e275a2e864ae459ac77ed72"
+      "revision": "ea6a2a21f62bbc927868253221dae467bddb401a"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -695,7 +695,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "73cf9225a39af56f3ac00cb98c9e6a236844e197"
+      "revision": "4e12355ca68c6e83e40cac77a4d761f5f322931b"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -770,7 +770,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "a0c8d7e63688152f6d6fecd9ce3fe52f996fb559"
+      "revision": "30e7358fbe23acbac1f5e585afa0b5abe8087012"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -841,7 +841,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "b71c68fbc07751401d9f100168106b36375fb692"
+      "revision": "077c958cd770a55500ce8d6d454291d5d1ac5f66"
     }
   ]
 }
