@@ -59,8 +59,12 @@ Safe local/disposable inspect-edit-build-test-fix-retest loops may proceed witho
 
 ## Verification and limitation
 
-The updated source was re-read from GitHub on representative high-risk repositories (`narwhal`, `kubemetal`, `nfs-quota-agent`) after the second-pass commits, and the portfolio results are recorded here. GitHub code-search indexing can lag new commits, so direct file reads are the verification source for this pass.
+The updated source was re-read directly from GitHub after the second-pass commits on representative high-risk repositories (`narwhal`, `kubemetal`, `nfs-quota-agent`). GitHub code-search indexing lagged the new commits during the pass, so direct file reads were treated as the verification source.
 
 This rollout did not execute each repository's runtime test suite because the changes are repository guidance rather than product/runtime code, and GitHub commit status availability varies by repository. No runtime correctness claim is made from this documentation-only rollout.
 
 Future portfolio audits should use `templates/scripts/audit-instruction-debt.py` plus representative before/after task evals. Improvement is measured by verified task outcomes, unnecessary reads/tool calls, approval interruptions, context cost, skill activation quality, and preserved high-value constraints — not by prompt size alone.
+
+## Status
+
+The coordinated second pass for the initial nine-repository batch is complete. Further repositories should adopt the same canonical standards opportunistically or through a future portfolio expansion rather than by copying model-specific prompt forks.
