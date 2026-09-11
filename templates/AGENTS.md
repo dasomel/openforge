@@ -10,6 +10,7 @@ Inspect repository guidance and documentation relevant to the current task befor
 - Treat public/internal visibility, exported APIs, permissions, RBAC, and destructive behavior as design changes.
 - Follow existing naming/style conventions; let formatter/linter rules own deterministic style.
 - Keep generic engineering rules model-agnostic. Tool/model-specific instruction files should be thin adapters rather than policy forks.
+- Preserve reproducible, privacy-safe engineering evidence during normal development. Capture machine-readable test/build/deploy/runtime/reliability and agent-assistance measurements when practical, including failures and human interventions; follow the OpenForge Research Evidence Collection Standard.
 
 ## Autonomy boundary
 
@@ -42,6 +43,9 @@ A green CI run or self-authored test suite is necessary evidence but is not suff
 
 For agent instruction design and maintenance, follow:
 https://github.com/dasomel/openforge/blob/main/docs/model-agnostic-agent-instructions.md
+
+For durable development/research measurements, follow:
+https://github.com/dasomel/openforge/blob/main/docs/research-evidence.md
 
 ## Convergence
 
