@@ -9,6 +9,7 @@ OpenForge defines reusable engineering standards. Inspect the issue/spec and rep
 - Keep canonical guidance model-agnostic; tool/model-specific files are thin adapters unless measured failure evidence justifies a narrow compatibility override.
 - Treat template changes as portfolio-wide API changes: consider downstream repositories and backward compatibility.
 - For bugs in templates/scripts, prefer reproduce -> failing test/evidence -> minimal fix -> same evidence passes -> relevant regression checks.
+- Preserve reproducible, privacy-safe engineering measurements during normal development according to `docs/research-evidence.md`; prefer structured machine-generated evidence and retain failures as well as successes.
 - Run verification appropriate to the change's risk and user impact. Safe local build/test/fix/retest work within the requested scope may proceed without repeated approval.
 - Do not claim completion without stating the checks run and their scope.
 - End substantive work as A) complete/verified, B) meaningful verified progress with the next blocker isolated, or C) stop with evidence when further work requires unjustified scope, fragile patches, unsupported assumptions, or unacceptable risk.
@@ -16,3 +17,4 @@ OpenForge defines reusable engineering standards. Inspect the issue/spec and rep
 Detailed standards:
 - `docs/agent-engineering.md`
 - `docs/model-agnostic-agent-instructions.md`
+- `docs/research-evidence.md`
