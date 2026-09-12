@@ -9,6 +9,7 @@ against a hypothetical.
 from __future__ import annotations
 
 import importlib.util
+import json
 import sys
 import tempfile
 import unittest
@@ -302,6 +303,64 @@ class MarkdownTests(DetectorTestCase):
             "---\nname: demo\n---\n\n```bash\npytest -q || true\n```\n",
         )
         self.assertEqual(1, len(self.scan(root)))
+
+    def test_claude_command_recipes_are_scanned(self):
+        """#71's acceptance criteria: a verification recipe under .claude/commands/ counts."""
+        root = self.repo()
+        self.write(
+            root,
+            ".claude/commands/verify.md",
+            "# Verify\n\n```bash\nshellcheck scripts/*.sh || true\n```\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual(".claude/commands/verify.md", findings[0].path)
+
+    def test_agents_command_recipes_are_scanned(self):
+        """.agents/commands/ is the canonical form the .claude/ adapter mirrors."""
+        root = self.repo()
+        self.write(
+            root,
+            ".agents/commands/verify.md",
+            "# Verify\n\n```bash\nshellcheck scripts/*.sh || true\n```\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual(".agents/commands/verify.md", findings[0].path)
+
+    def test_command_recipe_data_grep_is_not_flagged(self):
+        """The classify-the-program guarantee must survive the new command-recipe path."""
+        root = self.repo()
+        self.write(
+            root,
+            ".claude/commands/verify.md",
+            "# Verify\n\n```bash\ngrep -q foo file || true\n```\n",
+        )
+        self.assertNoFindings(root)
+
+    def test_non_command_markdown_elsewhere_is_not_scanned(self):
+        """The widening is bounded: an arbitrary doc outside the command directories is untouched."""
+        root = self.repo()
+        self.write(
+            root,
+            "docs/whatever.md",
+            "# Whatever\n\n```bash\nshellcheck scripts/*.sh || true\n```\n",
+        )
+        self.assertNoFindings(root)
+
+
+class PackageJsonTests(DetectorTestCase):
+    def test_swallowed_npm_script_is_detected_and_grep_script_is_not(self):
+        root = self.repo()
+        self.write(
+            root,
+            "package.json",
+            json.dumps({"scripts": {"test": "vitest || true", "find": "grep -r TODO . || true"}}),
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("package.json", findings[0].path)
+        self.assertIn("vitest", findings[0].command)
 
 
 class EscapeHatchTests(DetectorTestCase):

@@ -32,12 +32,6 @@ PROMPT_RULE_PATTERNS = {
     "braces": re.compile(r"\bbraces?\b", re.I),
     "naming": re.compile(r"\b(naming|name length|identifier length)\b", re.I),
 }
-VALIDATOR_COMMAND = re.compile(
-    r"(?:^|[;&|()\s])(?:[^#\n]*?\b)?(?:markdownlint|shellcheck|eslint|ruff|golangci-lint|staticcheck|govulncheck|mypy|pytest|vitest|jest|playwright|trivy|gitleaks|conftest|codeql|prettier|gofmt|rustfmt|biome|cargo\s+(?:test|clippy|build)|go\s+(?:test|build)|npm\s+(?:test|run\s+(?:test|lint|build|check|verify)))\b",
-    re.I,
-)
-SWALLOWED_FAILURE = re.compile(r"\|\|\s*(?:true|:)\s*(?:#.*)?$")
-
 SWALLOWED_DETECTOR_SCRIPT = Path(__file__).with_name("swallowed_failure_detector.py")
 _swallowed_spec = importlib.util.spec_from_file_location(
     "openforge_swallowed_failure_detector", SWALLOWED_DETECTOR_SCRIPT
@@ -101,28 +95,6 @@ def tooling_paths(root: Path) -> list[Path]:
 
 def tooling_corpus(root: Path) -> str:
     return "\n".join(read_text(path) for path in tooling_paths(root)).lower()
-
-
-def swallowed_validator_findings(root: Path) -> list[str]:
-    candidates = tooling_paths(root)
-    for name in INSTRUCTION_FILES:
-        path = root / name
-        if path.is_file():
-            candidates.append(path)
-    commands = root / ".claude" / "commands"
-    if commands.is_dir():
-        candidates.extend(sorted(commands.glob("*.md")))
-    findings: list[str] = []
-    seen: set[Path] = set()
-    for path in candidates:
-        if path in seen:
-            continue
-        seen.add(path)
-        for lineno, line in enumerate(read_text(path).splitlines(), 1):
-            if SWALLOWED_FAILURE.search(line) and VALIDATOR_COMMAND.search(line):
-                rel = path.relative_to(root).as_posix()
-                findings.append(f"{rel}:{lineno}: validator failure is unconditionally swallowed with '|| true' or '|| :' ")
-    return findings
 
 
 LOCAL_GATE_WORKFLOW_REF = "dasomel/openforge/.github/workflows/agent-contract-gate.yml"
@@ -210,7 +182,11 @@ def audit(root: Path, repository: str | None = None) -> dict[str, Any]:
     controls = {name: any(hint in corpus for hint in hints) for name, hints in DETERMINISTIC_RULE_HINTS.items()}
     prompt_hints = [name for name, pattern in PROMPT_RULE_PATTERNS.items() if pattern.search(agent_text)]
     commands = discover_commands(root)
-    false_green: list[str] = swallowed_validator_findings(root)
+    # #71's naive '|| true'-plus-validator-keyword regex (formerly swallowed_validator_findings
+    # here) is retired: it double-reported findings the dedicated swallowed_detector module
+    # below already classifies correctly, with false positives it didn't share. Do not
+    # re-add a second detector; extend swallowed_failure_detector.py instead.
+    false_green: list[str] = []
     if instructions and not any(controls.values()):
         false_green.append("agent instructions exist but no deterministic control was detected")
     if "lint" in agent_text.lower() and not controls["lint"]:

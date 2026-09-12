@@ -110,22 +110,30 @@ metadata:
             self.assertEqual(result["canonical_commands"]["test"], ["make test"])
 
     def test_flags_swallowed_markdownlint_in_workflow(self):
+        # Real Actions YAML, not a bare `run:` line: the dedicated swallowed_detector module
+        # (unlike the retired naive regex) understands workflow step structure, so the fixture
+        # has to look like one.
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             workflow = root / ".github" / "workflows"
             workflow.mkdir(parents=True)
-            (workflow / "docs.yml").write_text("run: npx markdownlint-cli2 '**/*.md' || true\n", encoding="utf-8")
+            (workflow / "docs.yml").write_text(
+                "jobs:\n  docs:\n    steps:\n      - run: npx markdownlint-cli2 '**/*.md' || true\n",
+                encoding="utf-8",
+            )
             result = module.audit(root)
-            self.assertTrue(any(".github/workflows/docs.yml:1" in finding for finding in result["false_green_findings"]))
+            self.assertTrue(any(".github/workflows/docs.yml:4" in finding for finding in result["false_green_findings"]))
 
     def test_flags_swallowed_shellcheck_in_agent_command(self):
+        # Same reasoning: scan_markdown only looks inside fenced code blocks (prose describing
+        # `|| true` as an anti-pattern must not self-match), so the fixture needs a real fence.
         with tempfile.TemporaryDirectory() as tmp:
             root = Path(tmp)
             commands = root / ".claude" / "commands"
             commands.mkdir(parents=True)
-            (commands / "verify.md").write_text("shellcheck scripts/*.sh || :\n", encoding="utf-8")
+            (commands / "verify.md").write_text("```bash\nshellcheck scripts/*.sh || :\n```\n", encoding="utf-8")
             result = module.audit(root)
-            self.assertTrue(any(".claude/commands/verify.md:1" in finding for finding in result["false_green_findings"]))
+            self.assertTrue(any(".claude/commands/verify.md:2" in finding for finding in result["false_green_findings"]))
 
     def test_allows_expected_probe_and_diagnostics(self):
         with tempfile.TemporaryDirectory() as tmp:

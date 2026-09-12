@@ -59,6 +59,13 @@ revision이 detector 도입 이전이라 측정되지 않았다는 뜻이며 0�
 탐지 대상: `|| true`, `|| :`, `|| exit 0`, `-`로 시작하는 make recipe, `continue-on-error: true`가 설정된
 step 또는 job, 그리고 validator에 `set +e`가 적용된 상태에서 종료 상태를 한 번도 읽지 않는 경우입니다.
 
+스캔 대상 표면: GitHub Actions workflow(`.github/workflows/*.yml`), Makefile, shell script, 루트 agent
+instruction 파일(`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CODING_STANDARDS.md`), Agent Skills
+(`.agents/skills/` 또는 `.claude/skills/` 아래의 `SKILL.md`), 그리고 agent command recipe
+(`.claude/commands/*.md`, `.agents/commands/*.md`)입니다. 마지막 항목은 repository가 skill 밖에 두는
+agent-facing 검증 recipe로, SKILL.md와 같은 방식으로 스캔됩니다 — 코드 펜스 안쪽만 보므로, anti-pattern을
+설명하는 prose는 스스로를 오탐하지 않습니다.
+
 ### `|| true`를 금지하지 않는 이유
 
 `grep ... || true`는 올바른 사용입니다. grep의 non-zero exit은 "일치 없음"이라는 데이터이지 판정이 아닙니다.
@@ -77,6 +84,11 @@ downstream repository에 "이 matrix는 noise"라고 가르쳐 이후의 모든 
 
 이 도구는 shell parser가 아니라 heuristic scanner입니다. 줄 구조와 알려진 명령 형태를 읽습니다. third-party
 action(`uses:`)으로 실행되는 validator는 분류하지 않으며, 변수로 런타임에 조립되는 명령도 해석하지 못합니다.
+알려진 한계 두 가지가 더 있습니다: pipeline의 *소비자* 자리에 있는 validator(`find . -name '*.sh' | xargs
+shellcheck || true`)는 분류되지 않는데, 분류가 pipeline의 첫 명령인 `find`를 기준으로 실행되어
+`shellcheck`에는 닿지 않기 때문입니다. 또한 코드 펜스 밖 Markdown prose로 적힌 무력화된 validator는 스캔되지 않습니다 — 이는
+의도된 것으로, "never write `shellcheck ... || true`"처럼 anti-pattern을 설명하는 prose가 보고되어서는 안
+되며, 펜스 안쪽만 보는 방식이 그것을 안전하게 만듭니다.
 
 ## Judgment field
 

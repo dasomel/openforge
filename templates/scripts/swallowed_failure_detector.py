@@ -20,6 +20,7 @@ command shapes. Where it cannot be confident it stays quiet, and the escape-hatc
 
 from __future__ import annotations
 
+import json
 import re
 from dataclasses import dataclass
 from pathlib import Path
@@ -630,6 +631,7 @@ def scan_markdown(text: str, path: str) -> list[SwallowedFailure]:
 SKIP_DIRECTORIES = frozenset({".git", "node_modules", "__pycache__", ".venv", "venv",
                               ".pytest_cache", ".mypy_cache", "vendor", "dist", "build"})
 INSTRUCTION_FILES = ("AGENTS.md", "CLAUDE.md", "GEMINI.md", "CODING_STANDARDS.md")
+COMMAND_DIRECTORIES = (".claude/commands/", ".agents/commands/")
 MAKEFILE_NAMES = frozenset({"Makefile", "makefile", "GNUmakefile"})
 SHELL_SUFFIXES = frozenset({".sh", ".bash"})
 SHEBANG_RE = re.compile(r"^#!.*\b(?:bash|sh|zsh|dash|ksh)\b")
@@ -662,6 +664,51 @@ def _walk(root: Path) -> Iterator[Path]:
                 continue
 
 
+def _is_agent_command_markdown(relative: str) -> bool:
+    """True for a Markdown file directly under an agent command directory.
+
+    Deliberately narrow: nested subdirectories under `commands/` are excluded, matching
+    how the SKILL.md check below is scoped to skill directories rather than the whole
+    `.agents/`/`.claude/` tree.
+    """
+    for prefix in COMMAND_DIRECTORIES:
+        if relative.startswith(prefix) and relative.count("/") == prefix.count("/"):
+            return True
+    return False
+
+
+SCRIPT_KEY_RE_TEMPLATE = r'"{}"\s*:'
+
+
+def _scan_package_json(text: str, path: str) -> list[SwallowedFailure]:
+    """Scan a root `package.json`'s `scripts` values through the same classifier as shell text.
+
+    `pyproject.toml` and `Cargo.toml` are deliberately not handled here: unlike `scripts`
+    values, their build/test entries are not inline shell one-liners, so there is no
+    comparable stdlib-parseable shell surface worth the added false-positive risk.
+    """
+    try:
+        data = json.loads(text)
+    except json.JSONDecodeError:
+        return []
+    scripts = data.get("scripts")
+    if not isinstance(scripts, dict):
+        return []
+
+    lines = text.splitlines()
+    scripts_key_line = next((i for i, line in enumerate(lines) if re.search(r'"scripts"\s*:', line)), None)
+    fallback_line = scripts_key_line + 1 if scripts_key_line is not None else 1
+
+    findings: list[SwallowedFailure] = []
+    for name, command in scripts.items():
+        if not isinstance(command, str):
+            continue
+        key_re = re.compile(SCRIPT_KEY_RE_TEMPLATE.format(re.escape(name)))
+        line_no = next((i + 1 for i, line in enumerate(lines) if key_re.search(line)), fallback_line)
+        findings.extend(scan_text(command, path, line_offset=line_no - 1))
+    return findings
+
+
 def scan_repository(root: Path) -> list[SwallowedFailure]:
     """Scan a repository working tree. Deterministic, and never raises on unreadable files."""
     root = Path(root)
@@ -682,6 +729,12 @@ def scan_repository(root: Path) -> list[SwallowedFailure]:
                 findings.extend(_scan_workflow_text(text, relative))
             continue
 
+        if relative == "package.json":
+            text = _read(path)
+            if text is not None:
+                findings.extend(_scan_package_json(text, relative))
+            continue
+
         if name in MAKEFILE_NAMES or path.suffix == ".mk":
             text = _read(path)
             if text is not None:
@@ -696,7 +749,7 @@ def scan_repository(root: Path) -> list[SwallowedFailure]:
 
         if name in INSTRUCTION_FILES or (name == "SKILL.md" and (
             relative.startswith(".agents/skills/") or relative.startswith(".claude/skills/")
-        )):
+        )) or (path.suffix == ".md" and _is_agent_command_markdown(relative)):
             text = _read(path)
             if text is not None:
                 findings.extend(scan_markdown(text, relative))

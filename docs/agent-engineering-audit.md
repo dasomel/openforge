@@ -61,6 +61,13 @@ Detected neutralizations: `|| true`, `|| :`, `|| exit 0`, a make recipe prefixed
 or job carrying `continue-on-error: true`, and `set +e` in effect over a validator whose exit
 status is never read.
 
+Scanned surfaces: GitHub Actions workflows (`.github/workflows/*.yml`), Makefiles, shell scripts,
+root agent instruction files (`AGENTS.md`, `CLAUDE.md`, `GEMINI.md`, `CODING_STANDARDS.md`),
+Agent Skills (`SKILL.md` under `.agents/skills/` or `.claude/skills/`), and agent command recipes
+(`.claude/commands/*.md`, `.agents/commands/*.md`) — the last is where a repository keeps
+agent-facing verification recipes outside its skills, and is scanned the same way SKILL.md is:
+fenced code blocks only, so prose describing the anti-pattern never self-matches.
+
 ### Why `|| true` is not banned
 
 `grep ... || true` is correct: grep's non-zero exit means "no match", which is data, not a
@@ -81,7 +88,12 @@ rather than the silence.
 
 This is a heuristic scanner, not a shell parser. It reads line structure and known command
 shapes. It does not classify validators invoked through a third-party action (`uses:`), and it
-cannot resolve a command built at runtime from variables.
+cannot resolve a command built at runtime from variables. Two further known limits: a validator
+that is the *consumer* of a pipeline (`find . -name '*.sh' | xargs shellcheck || true`) is not
+classified, because classification runs on the pipeline's first command, `find`, not on
+`shellcheck`; and a swallowed validator written as Markdown prose outside a fenced code block is
+not scanned — deliberately, since prose describing the anti-pattern (e.g. "never write
+`shellcheck ... || true`") must not be reported, and fenced-only is what makes that safe.
 
 ## Judgment fields
 
