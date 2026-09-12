@@ -139,3 +139,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/generate-agent-audit-matrix.py --validate
+
+      - name: Validate legacy evidence catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/inventory-legacy-evidence.py --validate
