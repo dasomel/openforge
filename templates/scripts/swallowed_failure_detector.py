@@ -665,16 +665,13 @@ def _walk(root: Path) -> Iterator[Path]:
 
 
 def _is_agent_command_markdown(relative: str) -> bool:
-    """True for a Markdown file directly under an agent command directory.
+    """True for a Markdown file anywhere under an agent command directory.
 
-    Deliberately narrow: nested subdirectories under `commands/` are excluded, matching
-    how the SKILL.md check below is scoped to skill directories rather than the whole
-    `.agents/`/`.claude/` tree.
+    Nesting is included because a namespaced command (`.claude/commands/db/migrate.md`) is a
+    verification recipe like any other. The prefixes carry a trailing slash, so a sibling
+    directory such as `.claude/commandsfoo/` does not match.
     """
-    for prefix in COMMAND_DIRECTORIES:
-        if relative.startswith(prefix) and relative.count("/") == prefix.count("/"):
-            return True
-    return False
+    return any(relative.startswith(prefix) for prefix in COMMAND_DIRECTORIES)
 
 
 SCRIPT_KEY_RE_TEMPLATE = r'"{}"\s*:'
@@ -691,6 +688,11 @@ def _scan_package_json(text: str, path: str) -> list[SwallowedFailure]:
         data = json.loads(text)
     except json.JSONDecodeError:
         return []
+    # A bare array, number or null is valid JSON, so a successful decode does not mean an
+    # object came back. This scanner runs over third-party repositories in CI, where one odd
+    # manifest must not take the whole audit down with it.
+    if not isinstance(data, dict):
+        return []
     scripts = data.get("scripts")
     if not isinstance(scripts, dict):
         return []
@@ -698,13 +700,19 @@ def _scan_package_json(text: str, path: str) -> list[SwallowedFailure]:
     lines = text.splitlines()
     scripts_key_line = next((i for i, line in enumerate(lines) if re.search(r'"scripts"\s*:', line)), None)
     fallback_line = scripts_key_line + 1 if scripts_key_line is not None else 1
+    # Look only below the `scripts` key: a dependency sharing a script's name
+    # (`"test": "^1.0.0"` in devDependencies) sits earlier and would claim the line number.
+    search_from = scripts_key_line + 1 if scripts_key_line is not None else 0
 
     findings: list[SwallowedFailure] = []
     for name, command in scripts.items():
         if not isinstance(command, str):
             continue
         key_re = re.compile(SCRIPT_KEY_RE_TEMPLATE.format(re.escape(name)))
-        line_no = next((i + 1 for i, line in enumerate(lines) if key_re.search(line)), fallback_line)
+        line_no = next(
+            (i + 1 for i, line in enumerate(lines) if i >= search_from and key_re.search(line)),
+            fallback_line,
+        )
         findings.extend(scan_text(command, path, line_offset=line_no - 1))
     return findings
 

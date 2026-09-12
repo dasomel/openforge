@@ -93,7 +93,10 @@ that is the *consumer* of a pipeline (`find . -name '*.sh' | xargs shellcheck ||
 classified, because classification runs on the pipeline's first command, `find`, not on
 `shellcheck`; and a swallowed validator written as Markdown prose outside a fenced code block is
 not scanned — deliberately, since prose describing the anti-pattern (e.g. "never write
-`shellcheck ... || true`") must not be reported, and fenced-only is what makes that safe.
+`shellcheck ... || true`") must not be reported, and fenced-only is what makes that safe. A
+root `package.json`'s `scripts` values are scanned the same way; `pyproject.toml` and
+`Cargo.toml` are deliberately not, since their build/test entries aren't inline shell
+one-liners the way `scripts` values are.
 
 ## Judgment fields
 

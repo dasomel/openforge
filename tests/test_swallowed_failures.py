@@ -349,18 +349,78 @@ class MarkdownTests(DetectorTestCase):
         self.assertNoFindings(root)
 
 
+class NamespacedCommandTests(DetectorTestCase):
+    def test_nested_command_namespace_is_scanned(self):
+        """Claude Code namespaces slash commands with subdirectories, so a recipe at
+        `.claude/commands/db/migrate.md` is a verification recipe like any other."""
+        root = self.repo()
+        self.write(
+            root,
+            ".claude/commands/db/migrate.md",
+            "# migrate\n\n```bash\nshellcheck scripts/*.sh || true\n```\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual(".claude/commands/db/migrate.md", findings[0].path)
+        self.assertEqual("shellcheck scripts/*.sh", findings[0].command)
+
+    def test_sibling_directory_is_not_mistaken_for_commands(self):
+        """The prefix carries a trailing slash, so `.claude/commandsfoo/` stays out."""
+        root = self.repo()
+        self.write(
+            root,
+            ".claude/commandsfoo/verify.md",
+            "# verify\n\n```bash\nshellcheck scripts/*.sh || true\n```\n",
+        )
+        self.assertNoFindings(root)
+
+
 class PackageJsonTests(DetectorTestCase):
-    def test_swallowed_npm_script_is_detected_and_grep_script_is_not(self):
+    def test_swallowed_npm_script_is_detected_grep_and_plain_scripts_are_not(self):
+        """`grep ... || true` is data, and `eslint .` alone doesn't swallow anything -- only
+        the unconditionally-neutralized `vitest` script should be reported."""
         root = self.repo()
         self.write(
             root,
             "package.json",
-            json.dumps({"scripts": {"test": "vitest || true", "find": "grep -r TODO . || true"}}),
+            json.dumps({"scripts": {
+                "test": "vitest || true",
+                "find": "grep -r TODO . || true",
+                "lint": "eslint .",
+            }}),
         )
         findings = self.scan(root)
         self.assertEqual(1, len(findings))
         self.assertEqual("package.json", findings[0].path)
-        self.assertIn("vitest", findings[0].command)
+        self.assertEqual("vitest", findings[0].command)
+
+    def test_non_object_manifest_does_not_raise(self):
+        """A bare array/null/number decodes fine but has no `.get`. The audit runs over
+        third-party repositories, so one odd manifest must not take the whole scan down."""
+        for body in ("[]", "null", "42", '"a string"'):
+            with self.subTest(body=body):
+                root = self.repo()
+                self.write(root, "package.json", body)
+                self.assertEqual([], self.scan(root))
+
+    def test_line_number_ignores_a_dependency_of_the_same_name(self):
+        """`"test"` appears in devDependencies above `scripts`; the finding must point at
+        the script, not at the dependency that happens to share its name."""
+        root = self.repo()
+        body = (
+            '{\n'
+            '  "devDependencies": {\n'
+            '    "test": "^1.0.0"\n'
+            '  },\n'
+            '  "scripts": {\n'
+            '    "test": "vitest || true"\n'
+            '  }\n'
+            '}\n'
+        )
+        self.write(root, "package.json", body)
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual(6, findings[0].line)
 
 
 class EscapeHatchTests(DetectorTestCase):

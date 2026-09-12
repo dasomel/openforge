@@ -88,7 +88,9 @@ action(`uses:`)으로 실행되는 validator는 분류하지 않으며, 변수�
 shellcheck || true`)는 분류되지 않는데, 분류가 pipeline의 첫 명령인 `find`를 기준으로 실행되어
 `shellcheck`에는 닿지 않기 때문입니다. 또한 코드 펜스 밖 Markdown prose로 적힌 무력화된 validator는 스캔되지 않습니다 — 이는
 의도된 것으로, "never write `shellcheck ... || true`"처럼 anti-pattern을 설명하는 prose가 보고되어서는 안
-되며, 펜스 안쪽만 보는 방식이 그것을 안전하게 만듭니다.
+되며, 펜스 안쪽만 보는 방식이 그것을 안전하게 만듭니다. 루트 `package.json`의 `scripts` 값도 같은 방식으로
+스캔되지만, `pyproject.toml`과 `Cargo.toml`은 의도적으로 스캔하지 않습니다 — 그 build/test 항목은
+`scripts` 값과 달리 인라인 shell 한 줄이 아니기 때문입니다.
 
 ## Judgment field
 
