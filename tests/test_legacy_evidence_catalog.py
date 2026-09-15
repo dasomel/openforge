@@ -77,7 +77,9 @@ class LegacyEvidenceCatalogTests(unittest.TestCase):
             entry["repository"]
             for entry in catalog["pending_repositories"]
         }
-        self.assertEqual(pending, {"beluga", "beluga-manager", "siqoq"})
+        # beluga, beluga-manager and siqoq were scanned once cloned locally (issue #89);
+        # no repositories remain pending.
+        self.assertEqual(pending, set())
 
     def test_output_is_deterministic(self):
         with tempfile.TemporaryDirectory() as directory:
