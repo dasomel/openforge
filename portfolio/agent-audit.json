@@ -99,14 +99,32 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [
+        {
+          "path": ".github/workflows/lint.yml",
+          "line": 209,
+          "command": "markdownlint --config .markdownlint.json --ignore node_modules 'docs/**/*.md' 'README.md' 'CHANGELOG.md'",
+          "pattern": "or-true",
+          "reason": "validator exit status is discarded, so a failing check still reports success"
+        }
+      ],
+      "swallowed_failure_count": 1,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "deterministic validator failure is neutralized: .github/workflows/lint.yml:209 (markdownlint --config .markdownlint.json --ignore node_modules 'docs/**/*.md' 'README.md' 'CHANGELOG.md')",
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "1b1e5c0082591d1e307692a41cde5404dac9081d"
+      "revision": "921d9c6dd08d3cb34691992cad989882202fc22d"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -118,7 +136,8 @@
       "source_of_truth_docs": [
         "README.md",
         "CONTRIBUTING.md",
-        "DESIGN.md"
+        "DESIGN.md",
+        "docs/architecture.md"
       ],
       "canonical_commands": {
         "verify": [],
@@ -184,6 +203,13 @@
         "warning_count": 0,
         "findings": []
       },
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": true,
+        "evidence": ".github/workflows/agent-contract.yml",
+        "reason": "ok"
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -191,7 +217,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "0730430d1dc4f77c05d25f79499a1897c6dff375"
+      "revision": "d27a2ea04b656083f50018dfba87a4e47d6a4ec2"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -252,14 +278,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "6c5bdd1ad3e91aadf0aea4c89a2c6de24cb7a099"
+      "revision": "f0b0a70502de109e16d44b18e6930d27da506ecf"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -321,14 +356,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "0e7a4950602361c941f908571fc5b6a5887fbbec"
+      "revision": "5e772ce46fbf7ad220347c41ea3cf95ffd73b2a5"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -401,14 +445,23 @@
           }
         ]
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "829221e8c6655a558de826966894b69c3ab9d505"
+      "revision": "3c2392e90f4e9112e93d5b87588fa9c98aa1d486"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -474,14 +527,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "3b7c283f408bebec73ae7d3a255bf7b83c9a130b"
+      "revision": "2f19a2db89625129ca3419be29ee4c7767eb1d69"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -493,7 +555,8 @@
       "source_of_truth_docs": [
         "README.md",
         "CONTRIBUTING.md",
-        "DESIGN.md"
+        "DESIGN.md",
+        "docs/architecture.md"
       ],
       "canonical_commands": {
         "verify": [
@@ -538,14 +601,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "438e2445e00a8a79ed19172e07a773726be474a3"
+      "revision": "c1ba5b3a8c6463c7f7ce7450cf6a32d53a4f84a7"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -561,7 +633,9 @@
         "docs/architecture.md"
       ],
       "canonical_commands": {
-        "verify": [],
+        "verify": [
+          "make verify"
+        ],
         "build": [
           "go build ./...",
           "make build"
@@ -592,21 +666,21 @@
             "path": ".agents/skills/nfs-quota-verification/SKILL.md",
             "scope": "project",
             "owner": "dasomel/nfs-quota-agent",
-            "maturity": "draft",
+            "maturity": "verified",
             "version": "1",
-            "evidence_present": false
+            "evidence_present": true
           }
         ],
         "canonical_count": 1,
         "adapter_count": 1,
         "maturity_counts": {
-          "draft": 1,
-          "verified": 0,
+          "draft": 0,
+          "verified": 1,
           "stable": 0,
           "deprecated": 0,
           "unspecified": 0
         },
-        "evidence_backed_mature_count": 0,
+        "evidence_backed_mature_count": 1,
         "error_count": 0,
         "warning_count": 1,
         "findings": [
@@ -618,14 +692,23 @@
           }
         ]
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "60aa69a15101b6448e275a2e864ae459ac77ed72"
+      "revision": "bb66077066d951685bf3b6e6f4c8cbf428d745cb"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -688,14 +771,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "73cf9225a39af56f3ac00cb98c9e6a236844e197"
+      "revision": "4e12355ca68c6e83e40cac77a4d761f5f322931b"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -707,7 +799,8 @@
       "source_of_truth_docs": [
         "README.md",
         "CONTRIBUTING.md",
-        "DESIGN.md"
+        "DESIGN.md",
+        "docs/architecture.md"
       ],
       "canonical_commands": {
         "verify": [],
@@ -763,6 +856,13 @@
           }
         ]
       },
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": true,
+        "evidence": ".github/workflows/agent-contract.yml",
+        "reason": "ok"
+      },
       "false_green_findings": [],
       "manual_review": {
         "high_risk_paths": "review-required",
@@ -770,7 +870,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "a0c8d7e63688152f6d6fecd9ce3fe52f996fb559"
+      "revision": "c56de5dfa2b7d18380c5b29c25578cb545220d00"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -834,14 +934,23 @@
         "warning_count": 0,
         "findings": []
       },
-      "false_green_findings": [],
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
+      "local_agent_ci_gate": {
+        "configured": false,
+        "evidence": null,
+        "reason": "no-gate-workflow"
+      },
+      "false_green_findings": [
+        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+      ],
       "manual_review": {
         "high_risk_paths": "review-required",
         "bug_reproduction_automation": "review-required",
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "b71c68fbc07751401d9f100168106b36375fb692"
+      "revision": "a967d6ca37232a8bc5356f698778fc92edf93f9f"
     }
   ]
 }
