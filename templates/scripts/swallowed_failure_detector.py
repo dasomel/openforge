@@ -165,6 +165,17 @@ COMMAND_WRAPPER_PAIRS = frozenset({("poetry", "run"), ("bundle", "exec"), ("pipx
 ENV_ASSIGNMENT_RE = re.compile(r"^[A-Za-z_][A-Za-z0-9_]*=\S*$")
 
 
+def _redirects_to_devnull(arguments: list[str]) -> bool:
+    """True when the tokens redirect stdout (or all output) to `/dev/null`."""
+    for index, token in enumerate(arguments):
+        if token in (">", "&>", "1>", ">>", "&>>", "1>>") and index + 1 < len(arguments) \
+                and arguments[index + 1] == "/dev/null":
+            return True
+        if token in (">/dev/null", "&>/dev/null", "1>/dev/null", ">>/dev/null"):
+            return True
+    return False
+
+
 def _tokenize(command: str) -> list[str]:
     """Split a command into tokens, dropping quotes. Good enough for reading argv[0..2]."""
     return [token.strip("'\"") for token in command.strip().split()]
@@ -202,6 +213,13 @@ def classify_command(command: str) -> bool:
 
     program = tokens[0].rsplit("/", 1)[-1]
     arguments = tokens[1:]
+
+    # `yq eval ... > /dev/null` is a syntax-check idiom (narwhal's `validate:` target): the
+    # output is discarded and only the exit status is read. Without the redirect, yq is a data
+    # query like any other NEVER_VALIDATORS entry, so this must stay narrower than the bare
+    # program name.
+    if program == "yq":
+        return _redirects_to_devnull(arguments)
 
     if program in NEVER_VALIDATORS:
         return False
@@ -242,6 +260,23 @@ FAILURE_GUARD_RE = re.compile(
 SET_PLUS_E_RE = re.compile(r"^set\s+\+[a-z]*e")
 SET_MINUS_E_RE = re.compile(r"^set\s+-[a-z]*e")
 STATUS_READ_RE = re.compile(r"\$\?|\bif\s*!|\|\|\s*exit\b|\bexit\s+\$|\breturn\s+\$|\[\s*\"?\$\{?(?:rc|status|exit_code|ret)\b")
+
+# The "both branches succeed" shape (#91): `cmd && echo ok || echo fail` and its `if/then/else`
+# equivalent both print a verdict but always exit 0, because the reporting command (`echo`,
+# `printf`) is what determines the visible status. `[^;|]*?` keeps the `then` branch from
+# swallowing the `||` that follows it.
+AND_OR_ECHO_RE = re.compile(
+    r"^(?P<pre>.*?)&&\s*(?:echo|printf)\b[^;|]*?\|\|\s*(?:echo|printf)\b"
+)
+IF_THEN_ELSE_ECHO_RE = re.compile(
+    r"\bif\s+(?P<command>.+?)\s*;\s*then\s+(?:echo|printf)\b.*?;\s*else\s+(?:echo|printf)\b.*?;\s*fi\b"
+)
+# Propagation the loop/script may still do *after* the echo-branch line -- `exit $fail`,
+# `exit "$rc"`, `exit ${status}`. A literal `exit 0`/`exit 1` inside the branches themselves
+# does not count: those are the false-green shape, not a fix for it.
+# `\$\$?` also matches a Makefile recipe's `$$fail` -- make collapses `$$` to a single `$`
+# before the shell ever sees it, so the doubled form is the same propagation in that context.
+EXIT_VAR_RE = re.compile(r"\bexit\s+\"?\$\$?\{?[A-Za-z_][A-Za-z0-9_]*\}?\"?")
 
 
 def _strip_trailing_comment(text: str) -> str:
@@ -361,6 +396,63 @@ def _inside_failure_branch(lines: list[str], index: int) -> bool:
     return False
 
 
+def _last_statement(segment: str) -> str:
+    """Return the final `;`-separated statement of `segment`, stripped of loop/recipe noise."""
+    parts = _split_outside_quotes(segment, ";")
+    candidate = parts[-1].strip() if parts else segment.strip()
+    candidate = re.sub(r"^(?:do|then)\s+", "", candidate)
+    return candidate.lstrip("@").strip()
+
+
+def _detect_echo_branch_false_green(stripped: str) -> Optional[str]:
+    """Return the validator command when every branch reporting its result also succeeds.
+
+    Covers both `cmd && echo ok || echo fail` and `if cmd; then echo ok; else echo fail; fi`.
+    Only the command, not the finding -- callers still run it through `classify_command` and
+    the same escape hatches as every other pattern here.
+    """
+    match = AND_OR_ECHO_RE.match(stripped)
+    if match:
+        return _last_statement(match.group("pre"))
+    match = IF_THEN_ELSE_ECHO_RE.search(stripped)
+    if match:
+        return match.group("command").strip()
+    return None
+
+
+SHELL_FUNCTION_DEF_RE = re.compile(r"^\s*(?:function\s+)?[A-Za-z_][A-Za-z0-9_]*\s*\(\)\s*\{")
+
+
+def _block_tail(lines: list[str], start_index: int) -> list[str]:
+    """Return the lines from `start_index` (0-based, inclusive) to the end of the enclosing block.
+
+    Used to bound a forward search (e.g. for `exit $rc`-style propagation) to the block the
+    line actually belongs to, instead of the rest of the file -- an unrelated `exit` in a later,
+    unrelated Makefile target or shell function must not suppress an earlier finding.
+
+    Makefile recipe lines are tab-indented, so a recipe's block ends at the first following line
+    that has no leading tab (a new target, a blank line, or EOF). Plain shell content has no such
+    convention; a generic indentation cutoff would also stop *inside* the same loop/if (e.g. at a
+    `done`/`fi` that dedents relative to a nested branch), which is exactly the same-block case
+    that must still suppress. So the boundary there is a new shell function definition (or EOF) --
+    a flat, function-less script has no such boundary and keeps searching to EOF, same as before.
+    """
+    if start_index >= len(lines):
+        return []
+    start_line = lines[start_index]
+    if start_line.startswith("\t"):
+        end = start_index + 1
+        while end < len(lines) and lines[end].startswith("\t"):
+            end += 1
+        return lines[start_index:end]
+    end = start_index + 1
+    while end < len(lines):
+        if SHELL_FUNCTION_DEF_RE.match(lines[end]):
+            break
+        end += 1
+    return lines[start_index:end]
+
+
 def scan_text(text: str, path: str, *, line_offset: int = 0, in_failure_step: bool = False) -> list[SwallowedFailure]:
     """Scan shell-ish text for neutralized validators.
 
@@ -374,6 +466,7 @@ def scan_text(text: str, path: str, *, line_offset: int = 0, in_failure_step: bo
 
     set_plus_e_at: Optional[int] = None
     pending_set_plus_e: list[tuple[int, str]] = []
+    pending_echo_branch: list[tuple[int, str]] = []
 
     logical = list(_join_continuations(lines))
     for start, joined in logical:
@@ -415,8 +508,35 @@ def scan_text(text: str, path: str, *, line_offset: int = 0, in_failure_step: bo
                 )
             continue
 
+        echo_branch_command = _detect_echo_branch_false_green(stripped)
+        if (
+            echo_branch_command
+            and classify_command(echo_branch_command)
+            and not _allowed(lines, index)
+            and not _inside_failure_branch(lines, index)
+        ):
+            # The exit-propagating fix (`exit $fail` after the loop) can only be seen by
+            # looking forward, unlike every other pattern here -- defer the finding until the
+            # rest of the script has been read.
+            pending_echo_branch.append((start, echo_branch_command))
+
         if set_plus_e_at is not None and classify_command(stripped) and not _allowed(lines, index):
             pending_set_plus_e.append((start, stripped))
+
+    for start, command in pending_echo_branch:
+        tail = "\n".join(_block_tail(lines, start - 1))
+        if EXIT_VAR_RE.search(tail):
+            continue
+        findings.append(
+            SwallowedFailure(
+                path=path,
+                line=start + line_offset,
+                command=command[:200],
+                pattern="echo-branch",
+                reason="every branch that reports the validator's result also exits 0, "
+                "so a failing check still reports success",
+            )
+        )
 
     if pending_set_plus_e:
         tail = "\n".join(lines[pending_set_plus_e[0][0] :])

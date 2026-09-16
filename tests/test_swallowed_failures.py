@@ -443,6 +443,130 @@ class EscapeHatchTests(DetectorTestCase):
         self.assertNoFindings(root)
 
 
+class EchoBranchFalseGreenTests(DetectorTestCase):
+    """Issue #91: both branches of a conditional report a validator's result but exit 0."""
+
+    def test_narwhal_pre_fix_validate_target_is_detected(self):
+        """narwhal's original `validate:` (PR #197's diff) -- `make validate` always exits 0."""
+        root = self.repo()
+        self.write(
+            root,
+            "Makefile",
+            "validate:\n"
+            "\t@for f in gitops/apps/*.yaml gitops/resources/*.yaml; do \\\n"
+            '\t\tyq eval \'.\' "$$f" > /dev/null && echo "OK: $$f" || echo "FAIL: $$f"; \\\n'
+            "\tdone\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+        self.assertIn("yq eval", findings[0].command)
+
+    def test_exit_fail_propagation_after_the_loop_is_not_flagged(self):
+        """narwhal's fix: `fail=1` inside the `else` branch, `exit $fail` after the loop."""
+        root = self.repo()
+        self.write(
+            root,
+            "Makefile",
+            "validate:\n"
+            "\t@fail=0; \\\n"
+            "\tfor f in gitops/apps/*.yaml gitops/resources/*.yaml; do \\\n"
+            "\t\tif yq eval '.' \"$$f\" > /dev/null; then echo \"OK: $$f\"; "
+            'else echo "FAIL: $$f"; fail=1; fi; \\\n'
+            "\tdone; \\\n"
+            "\texit $$fail\n",
+        )
+        self.assertNoFindings(root)
+
+    def test_plain_shell_script_and_or_echo_form_is_detected(self):
+        """Same idiom, no Makefile involved -- a standalone `validate.sh`."""
+        root = self.repo()
+        self.write(
+            root,
+            "validate.sh",
+            "#!/bin/bash\n"
+            "for f in *.yaml; do\n"
+            "  yq eval '.' \"$f\" > /dev/null && echo \"OK: $f\" || echo \"FAIL: $f\"\n"
+            "done\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+
+    def test_plain_shell_script_exit_var_propagation_is_not_flagged(self):
+        root = self.repo()
+        self.write(
+            root,
+            "validate.sh",
+            "#!/bin/bash\n"
+            "fail=0\n"
+            "for f in *.yaml; do\n"
+            "  if yq eval '.' \"$f\" > /dev/null; then echo \"OK: $f\"; "
+            'else echo "FAIL: $f"; fail=1; fi\n'
+            "done\n"
+            "exit $fail\n",
+        )
+        self.assertNoFindings(root)
+
+    def test_unrelated_later_target_exit_var_does_not_suppress_finding(self):
+        """Bug report: an unrelated later target's `exit $$rc` must not suppress an earlier
+        target's echo-branch false-green -- the forward search for propagation has to stay
+        bounded to the enclosing recipe block, not run to the end of the file."""
+        root = self.repo()
+        self.write(
+            root,
+            "Makefile",
+            "validate:\n"
+            "\t@for f in gitops/apps/*.yaml gitops/resources/*.yaml; do \\\n"
+            '\t\tyq eval \'.\' "$$f" > /dev/null && echo "OK: $$f" || echo "FAIL: $$f"; \\\n'
+            "\tdone\n"
+            "\n"
+            "deploy:\n"
+            "\t@rc=0; \\\n"
+            "\techo deploying; \\\n"
+            "\texit $$rc\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+        self.assertIn("yq eval", findings[0].command)
+
+    def test_unrelated_later_shell_function_exit_var_does_not_suppress_finding(self):
+        """Same bug, shell-function flavor: an unrelated function's `exit $rc` must not reach
+        back into an earlier, unrelated function's echo-branch finding."""
+        root = self.repo()
+        self.write(
+            root,
+            "validate.sh",
+            "#!/bin/bash\n"
+            "check() {\n"
+            "  for f in *.yaml; do\n"
+            "    yq eval '.' \"$f\" > /dev/null && echo \"OK: $f\" || echo \"FAIL: $f\"\n"
+            "  done\n"
+            "}\n"
+            "\n"
+            "deploy() {\n"
+            "  rc=0\n"
+            "  echo deploying\n"
+            "  exit $rc\n"
+            "}\n",
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+
+    def test_unknown_program_in_echo_branches_is_not_flagged(self):
+        """Same discipline as `|| true`: an unrecognized program is never reported."""
+        root = self.repo()
+        self.write(
+            root,
+            "check.sh",
+            "#!/bin/sh\n"
+            'codegraph impact get_cluster_status && echo "OK" || echo "FAIL"\n',
+        )
+        self.assertNoFindings(root)
+
+
 class ContractTests(DetectorTestCase):
     def test_or_noop_forms_are_detected(self):
         root = self.repo()
