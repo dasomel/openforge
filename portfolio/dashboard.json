@@ -927,28 +927,33 @@
     "schema": "openforge-agent-audit-matrix/v1",
     "summary": {
       "repositories": 11,
-      "repositories_with_false_green": 0,
-      "false_green_findings": 0,
+      "repositories_with_false_green": 9,
+      "false_green_findings": 12,
       "canonical_skills": 16,
       "skill_maturity": {
-        "draft": 16,
-        "verified": 0,
+        "draft": 15,
+        "verified": 1,
         "stable": 0,
         "deprecated": 0,
         "unspecified": 0
       },
-      "evidence_backed_mature_skills": 0,
+      "evidence_backed_mature_skills": 1,
       "skill_audit_errors": 0,
-      "swallowed_failure_findings": null,
-      "swallowed_failure_findings_measured_repositories": 0,
-      "repositories_with_local_ci_gate": null,
-      "local_ci_gate_measured_repositories": 0
+      "swallowed_failure_findings": 3,
+      "swallowed_failure_findings_measured_repositories": 11,
+      "repositories_with_local_ci_gate": 2,
+      "local_ci_gate_measured_repositories": 11
     },
     "repositories": [
       {
         "repository": "dasomel/narwhal",
-        "revision": "1b1e5c0082591d1e307692a41cde5404dac9081d",
-        "false_green_findings": [],
+        "revision": "314b3187fa74caaac1439ada29b4ac4b2bf7a277",
+        "false_green_findings": [
+          "deterministic validator failure is neutralized: .claude/commands/check.md:25 (yq eval '.' \"$f\" > /dev/null)",
+          "deterministic validator failure is neutralized: .claude/commands/verify.md:22 (yq eval '.' \"$f\" > /dev/null 2>&1)",
+          "deterministic validator failure is neutralized: .github/workflows/lint.yml:209 (markdownlint --config .markdownlint.json --ignore node_modules 'docs/**/*.md' 'README.md' 'CHANGELOG.md')",
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -971,12 +976,16 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 3,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/narwhal-portal",
-        "revision": "0730430d1dc4f77c05d25f79499a1897c6dff375",
+        "revision": "d27a2ea04b656083f50018dfba87a4e47d6a4ec2",
         "false_green_findings": [],
         "deterministic_controls": {
           "formatting": true,
@@ -1000,13 +1009,19 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": true,
+          "evidence": ".github/workflows/agent-contract.yml",
+          "reason": "ok"
+        }
       },
       {
         "repository": "dasomel/beluga",
-        "revision": "6c5bdd1ad3e91aadf0aea4c89a2c6de24cb7a099",
-        "false_green_findings": [],
+        "revision": "9de23660020c597713fd9b602988411567aee0c5",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1029,13 +1044,19 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/beluga-manager",
-        "revision": "0e7a4950602361c941f908571fc5b6a5887fbbec",
-        "false_green_findings": [],
+        "revision": "5e772ce46fbf7ad220347c41ea3cf95ffd73b2a5",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": false,
           "lint": true,
@@ -1058,13 +1079,19 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/kubemetal",
-        "revision": "829221e8c6655a558de826966894b69c3ab9d505",
-        "false_green_findings": [],
+        "revision": "b117c0f4bd3a38a8d7d6fc02f9c57c5cf648c950",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1087,13 +1114,19 @@
           "error_count": 0,
           "warning_count": 1
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/clusterdeck",
-        "revision": "3b7c283f408bebec73ae7d3a255bf7b83c9a130b",
-        "false_green_findings": [],
+        "revision": "2f19a2db89625129ca3419be29ee4c7767eb1d69",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1116,13 +1149,19 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/ldapium",
-        "revision": "438e2445e00a8a79ed19172e07a773726be474a3",
-        "false_green_findings": [],
+        "revision": "c1ba5b3a8c6463c7f7ce7450cf6a32d53a4f84a7",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1145,13 +1184,19 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/nfs-quota-agent",
-        "revision": "60aa69a15101b6448e275a2e864ae459ac77ed72",
-        "false_green_findings": [],
+        "revision": "bb66077066d951685bf3b6e6f4c8cbf428d745cb",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1164,23 +1209,29 @@
           "canonical_count": 1,
           "adapter_count": 1,
           "maturity_counts": {
-            "draft": 1,
-            "verified": 0,
+            "draft": 0,
+            "verified": 1,
             "stable": 0,
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
+          "evidence_backed_mature_count": 1,
           "error_count": 0,
           "warning_count": 1
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/egovframe-launcher",
-        "revision": "73cf9225a39af56f3ac00cb98c9e6a236844e197",
-        "false_green_findings": [],
+        "revision": "4e12355ca68c6e83e40cac77a4d761f5f322931b",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
@@ -1203,12 +1254,16 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       },
       {
         "repository": "dasomel/kube-ready-box",
-        "revision": "a0c8d7e63688152f6d6fecd9ce3fe52f996fb559",
+        "revision": "c56de5dfa2b7d18380c5b29c25578cb545220d00",
         "false_green_findings": [],
         "deterministic_controls": {
           "formatting": true,
@@ -1232,13 +1287,19 @@
           "error_count": 0,
           "warning_count": 1
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": true,
+          "evidence": ".github/workflows/agent-contract.yml",
+          "reason": "ok"
+        }
       },
       {
         "repository": "dasomel/siqoq",
-        "revision": "b71c68fbc07751401d9f100168106b36375fb692",
-        "false_green_findings": [],
+        "revision": "a967d6ca37232a8bc5356f698778fc92edf93f9f",
+        "false_green_findings": [
+          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
+        ],
         "deterministic_controls": {
           "formatting": false,
           "lint": true,
@@ -1261,8 +1322,12 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": null,
-        "local_agent_ci_gate": null
+        "swallowed_failure_count": 0,
+        "local_agent_ci_gate": {
+          "configured": false,
+          "evidence": null,
+          "reason": "no-gate-workflow"
+        }
       }
     ]
   }
