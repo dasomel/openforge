@@ -25,6 +25,12 @@ VERIFICATION_SCHEMA = "openforge-agent-skill-verification/v1"
 NAME_RE = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 ABSOLUTE_PATH_RE = re.compile(r"(?:/Users/[^/\s]+|/home/[^/\s]+|[A-Za-z]:\\Users\\[^\\\s]+)")
+# A line mentioning ~/.claude/CLAUDE.md that also disclaims dependency on it (the pattern this
+# very check asks maintainers to use) is compliant, not a violation -- match on presence alone
+# would flag the disclaimer sentence itself as the thing it's disclaiming.
+GLOBAL_DEPENDENCY_DISCLAIMER_RE = re.compile(
+    r"\b(?:do(?:es)?\s+not|don'?t|never|without)\b.{0,40}\brequir", re.IGNORECASE
+)
 GENERIC_PROJECT_NAMES = {
     "build",
     "check",
@@ -517,7 +523,11 @@ def audit(root: Path) -> tuple[List[Skill], List[Finding]]:
                     f"Personal absolute path detected: {match.group(0)}",
                 )
             )
-        if "~/.claude/CLAUDE.md" in text:
+        undisclaimed_global_ref = any(
+            "~/.claude/CLAUDE.md" in line and not GLOBAL_DEPENDENCY_DISCLAIMER_RE.search(line)
+            for line in text.splitlines()
+        )
+        if undisclaimed_global_ref:
             findings.append(
                 Finding(
                     "warn",
