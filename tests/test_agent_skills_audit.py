@@ -74,6 +74,10 @@ metadata:
         _, findings = AUDIT.audit(root)
         return {finding.code for finding in findings if finding.severity == "error"}
 
+    def all_codes(self, root: Path) -> set[str]:
+        _, findings = AUDIT.audit(root)
+        return {finding.code for finding in findings}
+
     def test_draft_does_not_require_evidence(self):
         root = self.make_repo("draft")
         self.assertEqual(set(), self.error_codes(root))
@@ -96,6 +100,33 @@ metadata:
         root = self.make_repo("verified")
         self.write_evidence(root, skillVersion="2")
         self.assertIn("SKILL-VERIFICATION-VERSION", self.error_codes(root))
+
+    def test_claude_md_disclaiming_global_dependency_is_not_flagged(self):
+        root = self.make_repo("draft")
+        (root / "CLAUDE.md").write_text(
+            "@AGENTS.md\n\n"
+            "Do not require maintainer-global ~/.claude/CLAUDE.md state for repository "
+            "correctness.\n",
+            encoding="utf-8",
+        )
+        self.assertNotIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
+
+    def test_claude_md_requiring_global_config_is_flagged(self):
+        root = self.make_repo("draft")
+        (root / "CLAUDE.md").write_text(
+            "@AGENTS.md\n\n"
+            "This repository behaves correctly only when ~/.claude/CLAUDE.md is present.\n",
+            encoding="utf-8",
+        )
+        self.assertIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
+
+    def test_claude_md_with_only_a_bare_mention_is_flagged(self):
+        root = self.make_repo("draft")
+        (root / "CLAUDE.md").write_text(
+            "@AGENTS.md\n\nSee also ~/.claude/CLAUDE.md for global defaults.\n",
+            encoding="utf-8",
+        )
+        self.assertIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
 
     def test_runtime_symlink_alias_is_audited_once(self):
         root = self.make_repo("draft")
