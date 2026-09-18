@@ -82,6 +82,10 @@ python3 templates/scripts/compare-agent-evals.py eval-before.json eval-after.jso
 
 Baseline 순서는 `false < na < true`입니다. `true → false`, `true → na`, `na → false`는 Regression으로 처리하며 Regression이 있으면 비교 Command는 `1`을 반환합니다.
 
+## 선택적 Harness Experiment Profile
+
+Behavior Evaluation은 Harness Context Overhead, Token Usage, Tool Reliability, Elapsed Time, Intervention, 추정 API Cost를 측정하지 않습니다. 이런 측정이 필요한 명시적 Experiment에는 별도의 [실험적 Agent Harness 평가 프로필](agent-harness-evaluation-ko.md)을 사용합니다. 이 프로필은 Task, Revision, Model, Environment를 고정하고, Missing Telemetry를 추정하지 않고 그대로 표시하며, Universal Winner를 선택하지 않습니다. 일반 개발에서는 이 선택적 프로필을 수집할 필요가 없습니다.
+
 ## CI에서 검증할 것과 검증하지 않을 것
 
 CI에 적합한 항목:

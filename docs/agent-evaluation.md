@@ -88,6 +88,10 @@ Comparison schema: `openforge-agent-eval-comparison/v1`.
 
 A transition from `true` to `false`, `true` to `na`, or `na` to `false` is treated as a regression by the baseline ordering `false < na < true`. A regression report exits `1`, allowing CI to gate intentionally selected representative traces.
 
+## Optional harness experiment profile
+
+Behavior evaluation does not measure harness context overhead, token use, tool reliability, elapsed time, intervention, or estimated API cost. When an explicit experiment needs those measures, use the separate [Experimental Agent Harness Evaluation Profile](agent-harness-evaluation.md). It holds the task, revision, model, and environment constant; reports missing telemetry rather than inventing it; and never selects a universal winner. Normal development does not need to collect this optional profile.
+
 ## What CI should and should not gate
 
 Good CI candidates:

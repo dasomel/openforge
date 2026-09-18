@@ -53,6 +53,7 @@ ADR → Standard → Template / CI / Policy → Adoption Record / Issue / PR
 - [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
 - [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
 - [Agent Execution Security Contract](docs/agent-execution-security-ko.md) ([English](docs/agent-execution-security.md))
+- [실험적 Agent Harness 평가 프로필](docs/agent-harness-evaluation-ko.md) ([English](docs/agent-harness-evaluation.md))
 - [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS 디자인 시스템 표준](docs/design-system-ko.md) ([English](docs/design-system.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
