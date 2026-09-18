@@ -1,0 +1,79 @@
+{
+  "schemaVersion": "openforge-agent-harness-dataset/v1",
+  "datasetId": "example-harness-pilot-001",
+  "cohort": {
+    "taskId": "docs-link-fix-001",
+    "taskClass": "simple",
+    "repository": "example/project",
+    "repositoryRevision": "0123456789abcdef0123456789abcdef01234567",
+    "model": {
+      "provider": "example-provider",
+      "name": "example-model",
+      "version": "2026-09-01",
+      "reasoningEffort": "fixed-medium"
+    },
+    "environment": {
+      "operatingSystem": "ubuntu-24.04-x86_64",
+      "networkAccess": "disabled",
+      "toolProfile": "read-edit-shell-v1",
+      "maxTurns": 40,
+      "notes": "Fresh checkout per attempt; warm caches disabled"
+    }
+  },
+  "runs": [
+    {
+      "runId": "harness-a-01",
+      "attempt": 1,
+      "traceId": "trace-harness-a-01",
+      "harness": {"name": "harness-a", "version": "1.0.0", "configuration": "default"},
+      "outcome": {"success": true, "score": 1.0, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 9200, "cachedInputTokens": 0, "outputTokens": 1300, "reasoningTokens": null, "initialContextTokens": 5100, "instructionChars": 7400, "toolSchemaBytes": 8600, "turns": 8, "toolCalls": 13, "failedToolCalls": 1, "elapsedSeconds": 118.4, "humanInterventions": 0, "contextCompactions": 0, "estimatedApiCostUsd": 0.42, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider."]
+    },
+    {
+      "runId": "harness-a-02",
+      "attempt": 2,
+      "traceId": "trace-harness-a-02",
+      "harness": {"name": "harness-a", "version": "1.0.0", "configuration": "default"},
+      "outcome": {"success": true, "score": 1.0, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 8800, "cachedInputTokens": 0, "outputTokens": 1200, "reasoningTokens": null, "initialContextTokens": 5100, "instructionChars": 7400, "toolSchemaBytes": 8600, "turns": 7, "toolCalls": 12, "failedToolCalls": 0, "elapsedSeconds": 109.1, "humanInterventions": 0, "contextCompactions": 0, "estimatedApiCostUsd": 0.39, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider."]
+    },
+    {
+      "runId": "harness-a-03",
+      "attempt": 3,
+      "traceId": "trace-harness-a-03",
+      "harness": {"name": "harness-a", "version": "1.0.0", "configuration": "default"},
+      "outcome": {"success": false, "score": 0.4, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 12100, "cachedInputTokens": 0, "outputTokens": 1700, "reasoningTokens": null, "initialContextTokens": 5100, "instructionChars": 7400, "toolSchemaBytes": 8600, "turns": 12, "toolCalls": 18, "failedToolCalls": 3, "elapsedSeconds": 191.8, "humanInterventions": 1, "contextCompactions": 0, "estimatedApiCostUsd": 0.58, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider.", "The failed attempt is retained."]
+    },
+    {
+      "runId": "harness-b-01",
+      "attempt": 1,
+      "traceId": "trace-harness-b-01",
+      "harness": {"name": "harness-b", "version": "2.1.0", "configuration": "minimal"},
+      "outcome": {"success": true, "score": 1.0, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 6100, "cachedInputTokens": 0, "outputTokens": 1100, "reasoningTokens": null, "initialContextTokens": 1800, "instructionChars": 2700, "toolSchemaBytes": 3200, "turns": 9, "toolCalls": 11, "failedToolCalls": 0, "elapsedSeconds": 103.2, "humanInterventions": 0, "contextCompactions": 0, "estimatedApiCostUsd": 0.29, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider."]
+    },
+    {
+      "runId": "harness-b-02",
+      "attempt": 2,
+      "traceId": "trace-harness-b-02",
+      "harness": {"name": "harness-b", "version": "2.1.0", "configuration": "minimal"},
+      "outcome": {"success": true, "score": 0.9, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 6500, "cachedInputTokens": 0, "outputTokens": 1150, "reasoningTokens": null, "initialContextTokens": 1800, "instructionChars": 2700, "toolSchemaBytes": 3200, "turns": 10, "toolCalls": 12, "failedToolCalls": 1, "elapsedSeconds": 111.6, "humanInterventions": 0, "contextCompactions": 0, "estimatedApiCostUsd": 0.31, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider."]
+    },
+    {
+      "runId": "harness-b-03",
+      "attempt": 3,
+      "traceId": "trace-harness-b-03",
+      "harness": {"name": "harness-b", "version": "2.1.0", "configuration": "minimal"},
+      "outcome": {"success": true, "score": 1.0, "safetyPassed": true, "evaluator": "tests-and-review-v1"},
+      "usage": {"inputTokens": 6200, "cachedInputTokens": 0, "outputTokens": 1080, "reasoningTokens": null, "initialContextTokens": 1800, "instructionChars": 2700, "toolSchemaBytes": 3200, "turns": 9, "toolCalls": 11, "failedToolCalls": 0, "elapsedSeconds": 105.7, "humanInterventions": 0, "contextCompactions": 0, "estimatedApiCostUsd": 0.3, "pricingDate": "2026-09-01"},
+      "measurementNotes": ["Reasoning-token telemetry was not exposed by the provider."]
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://github.com/dasomel/openforge/schemas/agent-harness-dataset-v1.schema.json",
+  "title": "OpenForge Experimental Agent Harness Dataset v1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["schemaVersion", "datasetId", "cohort", "runs"],
+  "properties": {
+    "schemaVersion": {"const": "openforge-agent-harness-dataset/v1"},
+    "datasetId": {"type": "string", "minLength": 1, "maxLength": 160},
+    "cohort": {"$ref": "#/$defs/cohort"},
+    "runs": {
+      "type": "array",
+      "minItems": 1,
+      "items": {"$ref": "#/$defs/run"}
+    }
+  },
+  "$defs": {
+    "cohort": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["taskId", "taskClass", "repository", "repositoryRevision", "model", "environment"],
+      "properties": {
+        "taskId": {"type": "string", "minLength": 1, "maxLength": 160},
+        "taskClass": {
+          "enum": ["simple", "bug-fix", "cross-component", "runtime-ops", "multi-session"]
+        },
+        "repository": {
+          "type": "string",
+          "pattern": "^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$",
+          "maxLength": 200
+        },
+        "repositoryRevision": {"type": "string", "pattern": "^[0-9a-f]{7,40}$"},
+        "model": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["provider", "name", "version", "reasoningEffort"],
+          "properties": {
+            "provider": {"type": "string", "minLength": 1, "maxLength": 80},
+            "name": {"type": "string", "minLength": 1, "maxLength": 120},
+            "version": {"type": "string", "minLength": 1, "maxLength": 120},
+            "reasoningEffort": {"type": "string", "minLength": 1, "maxLength": 80}
+          }
+        },
+        "environment": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["operatingSystem", "networkAccess", "toolProfile", "maxTurns"],
+          "properties": {
+            "operatingSystem": {"type": "string", "minLength": 1, "maxLength": 120},
+            "networkAccess": {"enum": ["disabled", "restricted", "enabled"]},
+            "toolProfile": {"type": "string", "minLength": 1, "maxLength": 160},
+            "maxTurns": {"type": "integer", "minimum": 1},
+            "notes": {"type": "string", "maxLength": 500}
+          }
+        }
+      }
+    },
+    "nullableNonNegativeInteger": {
+      "type": ["integer", "null"],
+      "minimum": 0
+    },
+    "nullableNonNegativeNumber": {
+      "type": ["number", "null"],
+      "minimum": 0
+    },
+    "run": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["runId", "attempt", "harness", "outcome", "usage", "measurementNotes"],
+      "properties": {
+        "runId": {"type": "string", "minLength": 1, "maxLength": 160},
+        "attempt": {"type": "integer", "minimum": 1},
+        "traceId": {"type": ["string", "null"], "minLength": 1, "maxLength": 160},
+        "harness": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["name", "version", "configuration"],
+          "properties": {
+            "name": {"type": "string", "minLength": 1, "maxLength": 120},
+            "version": {"type": "string", "minLength": 1, "maxLength": 120},
+            "configuration": {"type": "string", "minLength": 1, "maxLength": 160}
+          }
+        },
+        "outcome": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": ["success", "score", "safetyPassed", "evaluator"],
+          "properties": {
+            "success": {"type": "boolean"},
+            "score": {"type": ["number", "null"], "minimum": 0, "maximum": 1},
+            "safetyPassed": {"type": ["boolean", "null"]},
+            "evaluator": {"type": "string", "minLength": 1, "maxLength": 160}
+          }
+        },
+        "usage": {
+          "type": "object",
+          "additionalProperties": false,
+          "required": [
+            "inputTokens",
+            "cachedInputTokens",
+            "outputTokens",
+            "reasoningTokens",
+            "initialContextTokens",
+            "instructionChars",
+            "toolSchemaBytes",
+            "turns",
+            "toolCalls",
+            "failedToolCalls",
+            "elapsedSeconds",
+            "humanInterventions",
+            "contextCompactions",
+            "estimatedApiCostUsd",
+            "pricingDate"
+          ],
+          "properties": {
+            "inputTokens": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "cachedInputTokens": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "outputTokens": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "reasoningTokens": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "initialContextTokens": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "instructionChars": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "toolSchemaBytes": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "turns": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "toolCalls": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "failedToolCalls": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "elapsedSeconds": {"$ref": "#/$defs/nullableNonNegativeNumber"},
+            "humanInterventions": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "contextCompactions": {"$ref": "#/$defs/nullableNonNegativeInteger"},
+            "estimatedApiCostUsd": {"$ref": "#/$defs/nullableNonNegativeNumber"},
+            "pricingDate": {
+              "type": ["string", "null"],
+              "pattern": "^[0-9]{4}-[0-9]{2}-[0-9]{2}$"
+            }
+          }
+        },
+        "measurementNotes": {
+          "type": "array",
+          "items": {"type": "string", "minLength": 1, "maxLength": 500},
+          "maxItems": 40
+        }
+      }
+    }
+  }
+}

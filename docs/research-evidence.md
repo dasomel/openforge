@@ -79,6 +79,8 @@ Required characteristics:
 
 Projects may extend the schema for domain-specific measurements, but extensions must be documented, machine-readable, reviewed, and backward compatible within a schema version.
 
+Explicit harness experiments may use the separate [Experimental Agent Harness Evaluation Profile](agent-harness-evaluation.md) to capture controlled model/harness identity, context and token usage, tool reliability, intervention, safety, and API-cost estimates. It is not required for normal development records. Do not compare runs across different task/model/revision/environment cohorts, and do not backfill unavailable telemetry.
+
 ## Recommended repository layout
 
 ```text

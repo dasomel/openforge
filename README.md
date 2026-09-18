@@ -58,6 +58,7 @@ See the [ADR index](docs/adr/README.md). The initial retrospective ADR set captu
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Agent Engineering Standard](docs/agent-engineering.md) ([한국어](docs/agent-engineering-ko.md))
 - [Agent Execution Security Contract](docs/agent-execution-security.md) ([한국어](docs/agent-execution-security-ko.md))
+- [Experimental Agent Harness Evaluation Profile](docs/agent-harness-evaluation.md) ([한국어](docs/agent-harness-evaluation-ko.md))
 - [Agent Engineering Adoption — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS Design System Standard](docs/design-system.md) ([한국어](docs/design-system-ko.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
