@@ -8,6 +8,7 @@ Thank you for contributing.
 
 - Check existing Issues and Pull Requests.
 - Open an Issue for significant feature, architecture, security, governance, compatibility, release, agent-engineering, or design-system changes.
+- Classify non-trivial work under the [Change Management Standard](docs/change-management.md). Class C/D and complex Class B work require an accepted Change Package before broad implementation.
 - Check the [Decision Management Standard](docs/decision-management.md) when a change may alter a reusable OpenForge default.
 - Keep changes small and reviewable.
 
@@ -26,6 +27,7 @@ Do not create ADR noise for typo fixes, wording-only changes, or project-local i
 - Use a focused branch.
 - Follow Conventional Commits.
 - Link the related Issue.
+- Link the accepted Change Package when required and map verification evidence to its acceptance scenarios.
 - Link the ADR when the change crosses the ADR threshold.
 - Explain tests, evidence, migration/adoption, and documentation impact.
 - Keep English and Korean user-facing documentation synchronized.

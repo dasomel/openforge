@@ -8,6 +8,7 @@
 
 - 기존 Issue와 Pull Request를 확인합니다.
 - 큰 기능, Architecture, Security, Governance, Compatibility, Release, Agent Engineering, Design System 변경은 먼저 Issue를 등록합니다.
+- 중요 작업은 [변경 관리 표준](docs/change-management-ko.md)에 따라 분류합니다. Class C/D와 복잡한 Class B 작업은 본격적인 구현 전에 수락된 Change Package가 필요합니다.
 - 재사용 가능한 OpenForge Default를 바꿀 가능성이 있다면 [의사결정 관리 표준](docs/decision-management-ko.md)을 확인합니다.
 - 변경을 작고 리뷰 가능한 단위로 유지합니다.
 
@@ -26,6 +27,7 @@
 - 목적이 명확한 Branch를 사용합니다.
 - Conventional Commits를 사용합니다.
 - 관련 Issue를 연결합니다.
+- 필요한 경우 수락된 Change Package를 연결하고 Verification Evidence를 Acceptance Scenario에 매핑합니다.
 - ADR Threshold를 넘는 변경이면 관련 ADR을 연결합니다.
 - Test, Evidence, Migration/Adoption, Documentation 영향을 설명합니다.
 - 사용자 문서의 English/Korean 버전을 동기화합니다.

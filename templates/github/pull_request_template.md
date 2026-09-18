@@ -9,6 +9,14 @@
 - [ ] AI-assisted engineering
 - [ ] Container / IaC
 
+## Change contract
+
+- Change class: `A` / `B` / `C` / `D`
+- Change Package: `not required` / link to accepted Issue or package
+- ADR: `not required` / link
+- Acceptance scenarios verified:
+- Material scope changes after acceptance:
+
 ## Change impact
 
 - Affected build/test commands:
@@ -37,3 +45,5 @@ Use `follow-up-required` only when documentation cannot safely be updated in the
 - [ ] Regression coverage was added where practical
 - [ ] Documentation / blog impact was explicitly reviewed
 - [ ] Release/rollback impact was reviewed where applicable
+- [ ] Class C/D or complex Class B requirements, tasks and evidence remain traceable
+- [ ] Rollback/recovery was verified where the change affects users, shared environments or artifacts

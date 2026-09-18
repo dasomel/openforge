@@ -22,6 +22,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - User-facing Markdown follows `<name>.md` and `<name>-ko.md`.
 - Projects should be reproducible, documented, testable, observable, accessible, and secure by default.
 - GitHub Issues and Pull Requests are the primary change-management mechanism.
+- Class C/D and complex Class B changes use a reviewed short-lived Change Package before broad implementation.
 - Architecture and durable cross-project decisions are recorded as ADRs.
 - Accepted ADRs preserve history; material changes supersede them instead of rewriting rationale.
 - CI validates quality before changes are merged.
@@ -118,7 +119,7 @@ Canonical portfolio state is stored under [`portfolio/`](portfolio/). Cross-proj
 
 ## Templates
 
-OpenForge provides reusable implementation and design templates under [`templates/`](templates/). Important project-level templates include [AGENTS.md](templates/AGENTS.md), [CODING_STANDARDS.md](templates/CODING_STANDARDS.md), [DESIGN.md](templates/DESIGN.md), and [ADR.md](templates/ADR.md).
+OpenForge provides reusable implementation and design templates under [`templates/`](templates/). Important project-level templates include [AGENTS.md](templates/AGENTS.md), [CODING_STANDARDS.md](templates/CODING_STANDARDS.md), [DESIGN.md](templates/DESIGN.md), [ADR.md](templates/ADR.md), and the [Change Package](templates/change/CHANGE.md).
 
 ```text
 templates/

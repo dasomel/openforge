@@ -94,9 +94,13 @@ java -version
 
 실행 또는 release contract가 변경되지 않는 문서 수정.
 
+Issue/PR 자체를 변경 기록으로 사용하며 별도 Change Package는 필요하지 않습니다.
+
 ### Class B — 내부 구현
 
 외부 build/release contract가 바뀌지 않는 내부 동작 변경.
+
+Issue에 Acceptance Criteria를 반드시 명시합니다. 독립적으로 검증 가능한 구현 단계가 여러 개라면 간단한 Task Checklist 사용을 권장합니다. 복잡하거나 Component Boundary를 넘거나 운영 위험이 큰 변경이 아니라면 전체 Change Package는 선택 사항입니다.
 
 ### Class C — Dependency / Runtime / Toolchain
 
@@ -110,11 +114,65 @@ java -version
 
 Class C는 반드시 변경 영향 분석을 포함합니다.
 
+Class C는 본격적인 구현을 시작하기 전에 Change Package를 반드시 사용합니다.
+
 ### Class D — Release / Deployment / Security Boundary
 
 생성 artifact, deployment 권한, release input 또는 security control을 바꾸는 변경입니다.
 
 Class D는 영향 분석과 security/release evidence를 포함합니다.
+
+Class D는 본격적인 구현을 시작하기 전에 Change Package를 반드시 사용합니다. `docs/decision-management-ko.md`의 Threshold를 넘는 변경은 ADR도 필요합니다.
+
+## Change Package
+
+Change Package는 구현 전에 Intent, Requirement, Acceptance Scenario, Verification을 고정하는 짧은 수명의 변경 단위 계약입니다. 전체 시스템을 다시 설명하는 별도의 장기 Spec이 아닙니다.
+
+Class C, Class D 및 복잡한 Class B 작업에는 재사용 가능한 [`CHANGE.md`](../templates/change/CHANGE.md), [`TASKS.md`](../templates/change/TASKS.md) Template을 사용합니다. Issue/PR이 가장 명확한 협업 공간이라면 Package 내용을 그 안에서 직접 관리할 수 있습니다. 작업 Branch에서 임시 파일을 사용할 수 있지만, 운영 문서로 계속 가치가 있는 경우가 아니라면 영구적인 `changes/` Archive로 Merge하지 않는 것을 권장합니다.
+
+Change Package에는 다음을 반드시 식별합니다.
+
+- Problem, Intent, Scope, Non-goals
+- Stable ID를 가진 테스트 가능한 Requirement
+- 명시적인 Acceptance Scenario(동작은 가능하면 `Given / When / Then`)
+- 관련 Architecture Decision 또는 ADR이 필요하지 않은 이유
+- 이 표준의 Matrix를 사용한 Change Impact
+- Implementation Task와 Dependency
+- Verification Plan과 Expected Evidence
+- 사용자 또는 운영에 영향을 줄 수 있는 변경의 Rollout, Rollback 또는 Recovery
+- 재사용 계약이 바뀌는 경우 Portfolio/Downstream Impact
+
+Requirement, Task, Evidence는 추적 가능해야 합니다. Reviewer가 각 주요 Requirement를 Acceptance Scenario, Implementation Task, Verification Result에 연결할 수 있어야 합니다.
+
+### Review Gate
+
+Class C/D는 본격적인 구현 전에 책임 Maintainer가 Change Package를 검토하고 수락해야 합니다. 수락 전에 탐색, 재현, 되돌릴 수 있는 Prototype은 가능하지만, 최종 계약을 암묵적으로 확정하거나 Production/Shared Environment를 변경해서는 안 됩니다.
+
+수락은 Problem, Intended Outcome, Boundary, Verification Approach가 구현을 시작할 만큼 명확하다는 뜻입니다. 모든 구현 세부사항을 미리 확정한다는 뜻은 아닙니다. 수락 이후 Scope 또는 Requirement가 실질적으로 바뀌면 Package에 반영하고 다시 검토합니다.
+
+### Lifecycle과 Source of Truth
+
+```text
+Issue
+  → Change 분류
+  → 필요한 경우 Change Package 작성/검토
+  → 추적 가능한 Task 구현
+  → Acceptance Scenario 검증
+  → Evidence 수집
+  → Durable Truth 동기화
+  → Review 및 Merge
+```
+
+완료할 때 장기적으로 유지할 정보는 이를 소유하는 Artifact로 승격합니다.
+
+- Behavior와 Invariant → Code와 Test
+- 현재 운영 계약 → Normative Documentation
+- 장기적인 Rationale → ADR
+- 측정 결과 → Evidence Record
+- Cross-project State → Portfolio Status
+- 변경 이력 → Issue, PR, Git History
+
+Code, Test, Documentation, ADR을 중복하는 별도의 장기 Spec Tree를 만들지 않습니다. Merge된 Issue/PR을 Change Intent와 Review History의 기본 Archive로 사용합니다.
 
 ## Regression Rule
 
