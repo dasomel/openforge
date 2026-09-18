@@ -6,6 +6,14 @@ Describe what changed and why.
 
 Closes #
 
+## Change contract
+
+- Change class: `A` / `B` / `C` / `D` —
+- Change Package: `not required` / link to accepted Issue or package —
+- ADR: `not required` / link —
+- Acceptance scenarios verified:
+- Material scope changes after acceptance:
+
 ## Documentation / Blog impact
 
 Required by the [Documentation Freshness Standard](../docs/documentation-freshness.md) PR contract.
@@ -26,6 +34,8 @@ change and name the tracking issue.
 - [ ] Documentation updated
 - [ ] English/Korean docs synchronized
 - [ ] Security impact reviewed
+- [ ] Class C/D or complex Class B requirements, tasks and evidence remain traceable
+- [ ] Rollback/recovery reviewed where the change affects users, shared environments or artifacts
 
 ## Notes
 

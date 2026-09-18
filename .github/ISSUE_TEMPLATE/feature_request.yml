@@ -16,6 +16,16 @@ body:
     validations:
       required: true
   - type: textarea
+    id: scope
+    attributes:
+      label: Scope and non-goals / 범위와 제외 범위
+      description: What is included and explicitly excluded? / 무엇을 포함하고 명시적으로 제외하나요?
+  - type: textarea
+    id: requirements
+    attributes:
+      label: Requirements and acceptance scenarios / 요구사항과 인수 시나리오
+      description: Use stable requirement IDs and Given/When/Then where practical. / 가능하면 Stable Requirement ID와 Given/When/Then을 사용하세요.
+  - type: textarea
     id: alternatives
     attributes:
       label: Alternatives / 대안
@@ -23,3 +33,9 @@ body:
     id: impact
     attributes:
       label: Impact / 영향 범위
+      description: Classify the change and identify runtime, workflow, security, release, documentation and downstream impact. / 변경 등급과 Runtime, Workflow, Security, Release, Documentation, Downstream 영향을 적으세요.
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification and expected evidence / 검증과 예상 Evidence
+      description: How will each acceptance scenario be proven? / 각 인수 시나리오를 어떻게 입증할 예정인가요?

@@ -31,10 +31,11 @@ metadata:
 ## Workflow
 
 1. Read the source-of-truth documents and inspect the current repository state.
-2. Reproduce or establish executable evidence before changing behavior when fixing a defect.
-3. Make the smallest coherent change inside the owned scope.
-4. Use deterministic scripts/tools for repeatable steps instead of rewriting them in prose.
-5. Run the verification appropriate to the changed path.
+2. Classify non-trivial work. For Class C/D or complex cross-component work, confirm an accepted Change Package defines requirements, acceptance scenarios, tasks, verification and recovery before broad implementation.
+3. Reproduce or establish executable evidence before changing behavior when fixing a defect.
+4. Make the smallest coherent change inside the owned scope.
+5. Use deterministic scripts/tools for repeatable steps instead of rewriting them in prose.
+6. Run the verification appropriate to the changed path and map the result back to the acceptance scenarios.
 
 ## Verification
 
@@ -51,5 +52,8 @@ metadata:
 ## References
 
 - `AGENTS.md`
+- `docs/change-management.md`
+- `templates/change/CHANGE.md`
+- `templates/change/TASKS.md`
 - Relevant architecture/design/development documentation
 - Relevant scripts/tests/Makefile targets

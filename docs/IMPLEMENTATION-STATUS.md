@@ -26,7 +26,7 @@ OpenForge currently documents shared standards for:
 
 ## ADR and decision governance
 
-Durable cross-project decisions are recorded as ADRs and linked to standards/templates rather than being buried in implementation history. `docs/adr/` currently holds 14 canonical decisions (0001-0014); `templates/scripts/generate-portfolio.py` fails its `--check` if `portfolio/projects.json`'s `portfolio.adr_count` drifts from the files on disk (`count_english_adrs`).
+Durable cross-project decisions are recorded as ADRs and linked to standards/templates rather than being buried in implementation history. `docs/adr/` currently holds 15 canonical decisions (0001-0015); `templates/scripts/generate-portfolio.py` fails its `--check` if `portfolio/projects.json`'s `portfolio.adr_count` drifts from the files on disk (`count_english_adrs`).
 
 ```text
 ADR -> Standard -> Template / CI / Policy -> Adoption record / Issue / PR

@@ -16,6 +16,7 @@ Repository structure, documentation, GitHub workflow, CI/CD, security, supply-ch
 - 사용자 대상 Markdown은 `<name>.md`와 `<name>-ko.md` 규칙을 사용합니다.
 - 프로젝트는 기본적으로 재현 가능하고, 문서화되고, 테스트 가능하며, 관측 가능하고, 접근 가능하며, 안전해야 합니다.
 - GitHub Issue와 Pull Request를 주요 변경 관리 수단으로 사용합니다.
+- Class C/D와 복잡한 Class B 변경은 본격적인 구현 전에 검토된 Short-lived Change Package를 사용합니다.
 - Architecture 및 장기적인 Cross-project Decision은 ADR로 기록합니다.
 - Accepted ADR은 History로 보존하고 실질적인 변경은 새로운 ADR로 Supersede합니다.
 - Merge 전에 CI가 품질을 검증합니다.
@@ -113,7 +114,7 @@ Canonical portfolio state는 [`portfolio/`](portfolio/)에서 관리합니다. C
 
 ## 재사용 가능한 템플릿
 
-OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md)입니다.
+OpenForge는 [`templates/`](templates/) 아래에 구현 및 디자인 템플릿을 제공합니다. 주요 Project-level Template은 [`AGENTS.md`](templates/AGENTS.md), [`CODING_STANDARDS.md`](templates/CODING_STANDARDS.md), [`DESIGN.md`](templates/DESIGN.md), [`ADR.md`](templates/ADR.md), [`ADR-ko.md`](templates/ADR-ko.md), [`Change Package`](templates/change/CHANGE-ko.md)입니다.
 
 ```text
 templates/

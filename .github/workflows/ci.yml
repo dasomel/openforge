@@ -22,6 +22,9 @@ jobs:
             CONTRIBUTING.md CONTRIBUTING-ko.md
             SECURITY.md SECURITY-ko.md
             CODE_OF_CONDUCT.md CODE_OF_CONDUCT-ko.md
+            docs/change-management.md docs/change-management-ko.md
+            templates/change/CHANGE.md templates/change/CHANGE-ko.md
+            templates/change/TASKS.md templates/change/TASKS-ko.md
             .editorconfig .gitignore
           )
           for file in "${required[@]}"; do
