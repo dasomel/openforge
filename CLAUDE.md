@@ -1,5 +1,7 @@
 @AGENTS.md
 
+> OpenForge retains this adapter as the reference example for repositories that need Claude-specific integration; downstream repositories without a real Claude-specific delta should rely on native `AGENTS.md` fallback instead.
+
 # OpenForge Claude adapter
 
 Repository-wide engineering rules are canonical in `AGENTS.md`. Keep this file limited to Claude Code-specific integration guidance; do not duplicate portable policy here.

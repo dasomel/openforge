@@ -6,6 +6,14 @@ OpenForge defines reusable engineering standards. Inspect the issue/spec and rep
 - Do not auto-fix unrelated findings; report them separately.
 - Preserve the separation between declarative standards, executable checks, and human-judgment guidance.
 - Prefer formatter/linter/test/policy enforcement over prose when a rule can be enforced reliably.
+
+## Instruction routing
+
+- `AGENTS.md` is the canonical portable repository contract.
+- Load detailed documents and `.agents/skills/` only when they are relevant to the current task; do not preload them by default.
+- Tool-specific adapters must contain only runtime-specific behavior and must not duplicate this contract.
+- Deterministic requirements belong in scripts, tests, linters, policy, or CI when they can be enforced reliably.
+
 - Keep canonical guidance model-agnostic; tool/model-specific files are thin adapters unless measured failure evidence justifies a narrow compatibility override.
 - Use `AGENTS.md` as the canonical portable repository contract. Claude Code adapters should import it with `@AGENTS.md` instead of copying shared rules; keep only Claude-specific integration below that import.
 - Treat template changes as portfolio-wide API changes: consider downstream repositories and backward compatibility.
