@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Iterable
 
 ADAPTER_FILES = ("CLAUDE.md", "GEMINI.md")
+CLAUDE_OVERLAY_HINTS = (".claude/", "hook", "command", "subagent", "agent", "permission", "model", "team", "runtime", "bedrock", "vertex", "foundry")
 SKILL_ROOTS = (Path(".agents/skills"), Path(".claude/skills"), Path("skills"))
 MODEL_PROMPT_RE = re.compile(r"(?i)(?:prompt|instructions?)[-_]?(?:gpt|claude|gemini|llama|mistral|astra)")
 UNCONDITIONAL_READ_RE = re.compile(
@@ -120,6 +121,23 @@ def audit_adapter(root: Path, path: Path) -> list[Finding]:
     findings = audit_instruction_file(root, path, persistent=True)
     text = read_text(path)
     rel = str(path.relative_to(root))
+
+    if path.name == "CLAUDE.md":
+        lowered = text.lower()
+        overlay_payload = "\n".join(
+            line for line in text.splitlines()
+            if line.strip() and not line.lstrip().startswith("@AGENTS.md") and not line.lstrip().startswith("#")
+        ).lower()
+        has_claude_delta = any(hint in overlay_payload for hint in CLAUDE_OVERLAY_HINTS)
+        if not has_claude_delta:
+            findings.append(
+                Finding(
+                    "info",
+                    "CLAUDE-ADAPTER-REDUNDANT",
+                    rel,
+                    "CLAUDE.md appears to contain no meaningful Claude-specific delta; for Claude Code v2.1.277+ consider removing it and relying on the native AGENTS.md fallback after verifying supported runtimes.",
+                )
+            )
 
     if "AGENTS.md" not in text:
         findings.append(
