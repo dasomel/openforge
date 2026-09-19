@@ -2,6 +2,8 @@
 
 # Claude adapter
 
+> Claude Code v2.1.277+ reads `AGENTS.md` natively only when this file is absent. Because this adapter exists, keep the explicit import above. If the repository no longer needs any Claude-only integration, delete `CLAUDE.md` instead of duplicating the shared contract.
+
 Keep this file limited to Claude-specific behavior. Repository-wide engineering rules belong in `AGENTS.md`; repeatable project workflows belong in project skills; deterministic checks belong in scripts/tests/CI.
 
 Follow the model-agnostic instruction design standard when changing this adapter:
