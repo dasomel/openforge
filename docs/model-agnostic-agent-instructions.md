@@ -132,6 +132,15 @@ Use these files only for:
 
 Do not duplicate generic engineering policy in each adapter. Prefer a thin pointer back to `AGENTS.md` or the canonical OpenForge standard.
 
+For Claude Code v2.1.277+, native `AGENTS.md` loading is a fallback when no `CLAUDE.md` exists. Therefore:
+
+- no Claude-specific repository instructions -> prefer `AGENTS.md` only;
+- Claude-specific instructions exist -> keep a thin `CLAUDE.md` with `@AGENTS.md` plus only the Claude-specific delta;
+- do not keep two independent copies of shared policy;
+- do not merge `.claude/` into `.agents/`: portable skills belong under `.agents/`, while Claude-only commands/hooks/rules/agents/config remain under `.claude/`.
+
+The initial v2.1.277 support excludes Bedrock, Vertex, and Foundry, so runtime compatibility must be considered before removing an existing adapter.
+
 Example:
 
 ```markdown
