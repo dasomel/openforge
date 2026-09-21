@@ -61,7 +61,7 @@ jobs:
           python3 - <<'PY'
           import json
           report = json.load(open('/tmp/agent005-pilots.json', encoding='utf-8'))
-          assert report['metricSetVersion'] == '2026.10', report.get('metricSetVersion')
+          assert report['metricSetVersion'] == '2026.11', report.get('metricSetVersion')
           expected = {'narwhal', 'kubemetal', 'nfs-quota-agent'}
           seen = set()
           for repo in report['results']:
