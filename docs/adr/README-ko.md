@@ -60,6 +60,9 @@ Accepted ADR은 역사 기록으로 취급합니다. 결정이 실질적으로 �
 | [0010](0010-reusable-templates-are-adaptable-baselines-ko.md) | Reusable Template은 adaptable baseline으로 제공 | Accepted |
 | [0011](0011-ci-resilience-must-not-encourage-security-bypass-ko.md) | CI resilience가 무분별한 Security bypass를 유도하지 않게 설계 | Accepted |
 | [0012](0012-document-and-time-bound-intentional-exceptions-ko.md) | 의도적인 예외는 문서화하고 review/expiry 적용 | Accepted |
+| [0013](0013-bind-agent-authority-to-canonical-resolved-invocations-ko.md) | Agent 권한·승인·Sandbox enforcement·Evidence를 하나의 canonical resolved invocation에 bind | Accepted |
+| [0014](0014-standardize-kubernetes-zero-trust-security-baseline-ko.md) | Exposure·Host·Workload·LSM·Identity·Egress를 아우르는 계층형 Kubernetes Zero Trust 보안 표준 | Accepted |
+| [0015](0015-use-short-lived-change-packages-for-high-risk-work-ko.md) | 고위험 작업에 Risk-scaled Short-lived Change Package 사용 | Accepted |
 
 ## Standard 및 Adoption Record와의 관계
 

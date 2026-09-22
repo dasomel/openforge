@@ -1,0 +1,15 @@
+name: CI
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Format
+        run: echo fmt
+      - name: Test
+        run: echo test
+      - name: Build
+        run: echo build
+      - name: Doc validate-adrs
+        run: echo validate-adrs
+      - name: Supply chain verify-supply-chain
+        run: echo supply-chain

@@ -13,6 +13,23 @@ Security is a default project requirement, not a release-only activity.
 - Publish a security policy and vulnerability-reporting process.
 - Record security-impacting architecture decisions.
 
+## Kubernetes and cluster runtime
+
+Projects that build, operate, or deploy to Kubernetes should adopt the [Kubernetes Zero Trust Security Baseline](kubernetes-zero-trust-security-baseline.md) at the profile appropriate to their ownership boundary and environment.
+
+The baseline treats the following as separate, complementary control layers:
+
+- External/Public and Internal/Private exposure
+- native OS firewall
+- Kubernetes-aware node firewall
+- workload NetworkPolicy
+- Pod Security and seccomp
+- AppArmor or SELinux according to the Linux host family
+- workload identity, mTLS and authorization
+- controlled egress
+
+Do not claim Zero Trust from adoption of one product or one firewall layer alone. Production exceptions must follow `docs/security-exceptions.md`.
+
 ## Supply chain
 
 OpenForge uses `docs/supply-chain.md` as the portfolio reference standard.

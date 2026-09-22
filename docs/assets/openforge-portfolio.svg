@@ -1,0 +1,101 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="940" viewBox="0 0 1400 940" role="img" aria-labelledby="title desc">
+  <title id="title">OpenForge OSS Portfolio</title>
+  <desc id="desc">OpenForge portfolio infographic showing governance, platform, AI and data, runtime services, project relationships, adoption and portfolio milestones.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#0b1220"/>
+      <stop offset="1" stop-color="#111827"/>
+    </linearGradient>
+    <filter id="shadow" x="-20%" y="-20%" width="140%" height="140%">
+      <feDropShadow dx="0" dy="8" stdDeviation="10" flood-opacity="0.22"/>
+    </filter>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#64748b"/>
+    </marker>
+  </defs>
+
+  <rect width="1400" height="940" rx="28" fill="url(#bg)"/>
+
+  <text x="70" y="76" fill="#f8fafc" font-family="Inter, Arial, sans-serif" font-size="34" font-weight="700">OpenForge OSS Portfolio</text>
+  <text x="70" y="112" fill="#94a3b8" font-family="Inter, Arial, sans-serif" font-size="17">Engineering control plane · dependency intelligence · development dashboard</text>
+
+  <g font-family="Inter, Arial, sans-serif" filter="url(#shadow)">
+    <g transform="translate(70 145)">
+      <rect width="220" height="92" rx="16" fill="#172033" stroke="#334155"/>
+      <text x="20" y="34" fill="#94a3b8" font-size="14">REGISTERED PROJECTS</text>
+      <text x="20" y="70" fill="#f8fafc" font-size="30" font-weight="700">14</text>
+    </g>
+    <g transform="translate(310 145)">
+      <rect width="220" height="92" rx="16" fill="#172033" stroke="#334155"/>
+      <text x="20" y="34" fill="#94a3b8" font-size="14">ENGINEERING METRICS</text>
+      <text x="20" y="70" fill="#f8fafc" font-size="30" font-weight="700">35</text>
+    </g>
+    <g transform="translate(550 145)">
+      <rect width="220" height="92" rx="16" fill="#172033" stroke="#334155"/>
+      <text x="20" y="34" fill="#94a3b8" font-size="14">STANDARD MATURITY</text>
+      <text x="20" y="70" fill="#f8fafc" font-size="30" font-weight="700">96.9%</text>
+    </g>
+    <g transform="translate(790 145)">
+      <rect width="220" height="92" rx="16" fill="#172033" stroke="#334155"/>
+      <text x="20" y="34" fill="#94a3b8" font-size="14">PORTFOLIO ADOPTION</text>
+      <text x="20" y="70" fill="#f8fafc" font-size="30" font-weight="700">61.6%</text>
+    </g>
+    <g transform="translate(1030 145)">
+      <rect width="300" height="92" rx="16" fill="#172033" stroke="#334155"/>
+      <text x="20" y="34" fill="#94a3b8" font-size="14">MILESTONE 2 TARGET</text>
+      <text x="20" y="70" fill="#f8fafc" font-size="30" font-weight="700">≥ 70%</text>
+    </g>
+  </g>
+
+  <g font-family="Inter, Arial, sans-serif">
+    <text x="70" y="290" fill="#e2e8f0" font-size="18" font-weight="700">ECOSYSTEM</text>
+
+    <rect x="500" y="320" width="400" height="116" rx="20" fill="#1d4ed8" opacity="0.95" filter="url(#shadow)"/>
+    <text x="700" y="360" text-anchor="middle" fill="#dbeafe" font-size="15">STANDARDS · GOVERNANCE · COMPLIANCE</text>
+    <text x="700" y="397" text-anchor="middle" fill="#ffffff" font-size="28" font-weight="700">OpenForge</text>
+    <text x="700" y="420" text-anchor="middle" fill="#bfdbfe" font-size="13">Portfolio Control Plane</text>
+
+    <line x1="700" y1="436" x2="700" y2="480" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="100" y="500" width="340" height="150" rx="20" fill="#172033" stroke="#475569"/>
+    <text x="125" y="532" fill="#93c5fd" font-size="13" font-weight="700">PLATFORM ENGINEERING</text>
+    <text x="125" y="572" fill="#f8fafc" font-size="24" font-weight="700">Narwhal</text>
+    <text x="125" y="602" fill="#cbd5e1" font-size="15">Reference implementation</text>
+    <text x="125" y="628" fill="#94a3b8" font-size="13">Narwhal Portal · ClusterDeck</text>
+
+    <rect x="530" y="500" width="340" height="150" rx="20" fill="#172033" stroke="#475569"/>
+    <text x="555" y="532" fill="#c4b5fd" font-size="13" font-weight="700">AI / MLOPS</text>
+    <text x="555" y="572" fill="#f8fafc" font-size="24" font-weight="700">KubeMetal</text>
+    <text x="555" y="602" fill="#cbd5e1" font-size="15">Local AI · Agent · Remediation</text>
+    <text x="555" y="628" fill="#94a3b8" font-size="13">Shared agent-security contract</text>
+
+    <rect x="960" y="500" width="340" height="150" rx="20" fill="#172033" stroke="#475569"/>
+    <text x="985" y="532" fill="#86efac" font-size="13" font-weight="700">DATA PLATFORM</text>
+    <text x="985" y="572" fill="#f8fafc" font-size="24" font-weight="700">Beluga</text>
+    <text x="985" y="602" fill="#cbd5e1" font-size="15">Operations Agent · Data Platform</text>
+    <text x="985" y="628" fill="#94a3b8" font-size="13">Beluga Manager control surface</text>
+
+    <line x1="590" y1="436" x2="270" y2="500" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="700" y1="436" x2="700" y2="500" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="810" y1="436" x2="1130" y2="500" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <rect x="100" y="705" width="1200" height="128" rx="20" fill="#111a2c" stroke="#334155"/>
+    <text x="125" y="738" fill="#fbbf24" font-size="13" font-weight="700">RUNTIME / SHARED CAPABILITIES</text>
+
+    <rect x="130" y="758" width="330" height="52" rx="12" fill="#1e293b"/>
+    <text x="295" y="790" text-anchor="middle" fill="#f8fafc" font-size="17" font-weight="600">kube-ready-box · sandbox evidence</text>
+
+    <rect x="535" y="758" width="330" height="52" rx="12" fill="#1e293b"/>
+    <text x="700" y="790" text-anchor="middle" fill="#f8fafc" font-size="17" font-weight="600">nfs-quota-agent · storage</text>
+
+    <rect x="940" y="758" width="330" height="52" rx="12" fill="#1e293b"/>
+    <text x="1105" y="790" text-anchor="middle" fill="#f8fafc" font-size="17" font-weight="600">ldapium · identity</text>
+
+    <line x1="270" y1="650" x2="295" y2="758" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="700" y1="650" x2="295" y2="758" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="270" y1="650" x2="700" y2="758" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+    <line x1="270" y1="650" x2="1105" y2="758" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
+
+    <text x="70" y="890" fill="#94a3b8" font-size="14">Official status flow: repository verification → OpenForge status PR → CI validation → merge → dashboard / graph refresh</text>
+  </g>
+</svg>

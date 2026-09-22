@@ -26,6 +26,9 @@ jobs:
             CONTRIBUTING.md CONTRIBUTING-ko.md
             SECURITY.md SECURITY-ko.md
             CODE_OF_CONDUCT.md CODE_OF_CONDUCT-ko.md
+            docs/change-management.md docs/change-management-ko.md
+            templates/change/CHANGE.md templates/change/CHANGE-ko.md
+            templates/change/TASKS.md templates/change/TASKS-ko.md
             .editorconfig .gitignore
           )
           for file in "${required[@]}"; do
@@ -36,10 +39,24 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
-          if find . -type f -name '*_ko.md' -o -type f -name '*.ko.md' | grep -q .; then
+          if find . -type f \( -name '*_ko.md' -o -name '*.ko.md' \) -not -path './.git/*' -not -path './tests/fixtures/*' | grep -q .; then
             echo 'Legacy Korean Markdown filename detected. Use <name>-ko.md.'
             exit 1
           fi
+
+  adr-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Validate ADR decision history
+        shell: bash
+        run: bash templates/scripts/validate-adrs.sh
+
+  supply-chain:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
 
       - name: Verify supply-chain baseline contracts
         shell: bash
@@ -63,3 +80,93 @@ jobs:
         run: cargo test --all-targets --all-features
       - name: Release build
         run: cargo build --release --bin openforge
+
+  compliance-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Run compliance audit engine unit tests
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 -m unittest discover -s tests -v
+
+      - name: Smoke test portfolio audit CLI with fixture config
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/audit-portfolio.py --config tests/fixtures/compliance/portfolio.yml --summary-only
+
+  agent-contract:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      # OpenForge runs its own agent-contract gate. The reusable workflow in
+      # agent-contract-gate.yml is the downstream adoption path; here the script is invoked
+      # directly so a pull request is validated by its own revision of the auditor rather than
+      # by whatever is on main. Without this job the repository would publish a fail-closed
+      # contract standard it does not itself apply.
+      - name: Validate agent instruction and skill contract
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/audit-agent-skills.py . --strict
+
+  portfolio-validation:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.11"
+
+      - name: Validate portfolio registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --validate-only
+
+      - name: Verify generated portfolio outputs are current
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --check
+
+      - name: Validate project status example
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-portfolio.py --validate-status templates/portfolio/status.example.json
+
+      - name: Validate maintenance and lifecycle governance
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/validate-portfolio-maintenance.py
+
+      - name: Validate agent engineering audit matrix
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/generate-agent-audit-matrix.py --validate
+
+      - name: Validate legacy evidence catalog
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/inventory-legacy-evidence.py --validate
+>>>>>>> origin/main

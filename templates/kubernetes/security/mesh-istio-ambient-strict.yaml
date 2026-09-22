@@ -1,0 +1,10 @@
+# Optional reference implementation for projects using Istio Ambient.
+# Apply only after verifying mesh enrollment and required plaintext exceptions.
+apiVersion: security.istio.io/v1
+kind: PeerAuthentication
+metadata:
+  name: default
+  namespace: app
+spec:
+  mtls:
+    mode: STRICT

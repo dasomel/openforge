@@ -6,15 +6,15 @@ English | [한국어](README-ko.md)
 
 OpenForge is a reusable engineering foundation for creating, evolving, deploying, and maintaining high-quality open-source projects.
 
-It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, **UI/UX design systems**, reusable implementation templates, deployment baselines, design templates, and project lifecycle practices.
+It standardizes the parts of OSS development that should be consistent across projects: repository structure, documentation, GitHub workflows, CI/CD, security, supply-chain governance, change impact analysis, upgrade/compatibility, developer environment security, AI-assisted engineering, container/IaC security, releases, maintainer governance, resilience, localization, engineering tooling, **UI/UX design systems**, reusable implementation templates, deployment baselines, design templates, project lifecycle practices, and **portfolio governance / dependency intelligence**.
 
-[About](docs/about.md) · [Decision History / ADRs](docs/adr/README.md)
+[About](docs/about.md) · [Decision History / ADRs](docs/adr/README.md) · [OSS Portfolio](PORTFOLIO.md)
 
 ## Why OpenForge?
 
 Starting an OSS project should not mean rebuilding the same engineering foundation every time. OpenForge provides a practical baseline based on patterns already proven across active projects.
 
-OpenForge is designed to be applied as a **repository blueprint, engineering standard, reusable project template, and implementation catalog**.
+OpenForge is designed to be applied as a **repository blueprint, engineering standard, reusable project template, implementation catalog, and OSS portfolio engineering control plane**.
 
 ## Core Principles
 
@@ -22,6 +22,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - User-facing Markdown follows `<name>.md` and `<name>-ko.md`.
 - Projects should be reproducible, documented, testable, observable, accessible, and secure by default.
 - GitHub Issues and Pull Requests are the primary change-management mechanism.
+- Class C/D and complex Class B changes use a reviewed short-lived Change Package before broad implementation.
 - Architecture and durable cross-project decisions are recorded as ADRs.
 - Accepted ADRs preserve history; material changes supersede them instead of rewriting rationale.
 - CI validates quality before changes are merged.
@@ -35,6 +36,7 @@ OpenForge is designed to be applied as a **repository blueprint, engineering sta
 - Reusable templates provide implementation starting points but are not universal drop-in configuration.
 - UI semantics and accessibility are shared while project personality, density, and platform conventions may vary intentionally.
 - Intentional deviations from the baseline are time-bounded and documented.
+- Cross-project completion is evidence-backed: downstream repositories publish verified status by pull request rather than OpenForge guessing from code activity.
 
 ## Decision History
 
@@ -78,6 +80,8 @@ See [Maturity Assessment](docs/maturity-assessment.md), [Assessment Profiles](do
 - [Engineering Tooling Standard](docs/tooling.md)
 - [Engineering Tooling Matrix](docs/tooling-matrix.md)
 - [Agent Engineering Standard](docs/agent-engineering.md) ([한국어](docs/agent-engineering-ko.md))
+- [Agent Execution Security Contract](docs/agent-execution-security.md) ([한국어](docs/agent-execution-security-ko.md))
+- [Experimental Agent Harness Evaluation Profile](docs/agent-harness-evaluation.md) ([한국어](docs/agent-harness-evaluation-ko.md))
 - [Agent Engineering Adoption — 2026-08](docs/agent-engineering-adoption-2026-08.md)
 - [OSS Design System Standard](docs/design-system.md) ([한국어](docs/design-system-ko.md))
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
@@ -106,9 +110,40 @@ See [Maturity Assessment](docs/maturity-assessment.md), [Assessment Profiles](do
 - [Reference Practices Audit](docs/reference-practices.md)
 - [Reference Implementation Metrics](docs/reference-metrics.md)
 
+## OSS Portfolio Control Plane
+
+![OpenForge OSS Portfolio](docs/assets/openforge-portfolio.svg)
+
+OpenForge aggregates the engineering state of the OSS portfolio without taking implementation ownership away from each repository.
+
+```text
+Downstream repository
+  implementation + verification
+            ↓
+openforge-project-status/v1
+            ↓
+OpenForge status PR
+            ↓
+registry / impact validation
+            ↓
+merge = official portfolio state
+            ↓
+dashboard / graph / infographic
+```
+
+Portfolio views:
+
+- [Development Dashboard](docs/portfolio-dashboard.md)
+- [Ecosystem Architecture](docs/portfolio-architecture.md)
+- [Dependency & Impact Intelligence](docs/portfolio-impact.md)
+- [Portfolio Governance / Status PR Workflow](docs/portfolio-governance.md)
+- [Portfolio entrypoint](PORTFOLIO.md)
+
+Canonical portfolio state is stored under [`portfolio/`](portfolio/). Cross-project relationship and status changes are reviewed like any other engineering contract rather than inferred from raw GitHub activity.
+
 ## Templates
 
-OpenForge provides reusable implementation and design templates under [`templates/`](templates/). Important project-level templates include [AGENTS.md](templates/AGENTS.md), [CODING_STANDARDS.md](templates/CODING_STANDARDS.md), [DESIGN.md](templates/DESIGN.md), and [ADR.md](templates/ADR.md).
+OpenForge provides reusable implementation and design templates under [`templates/`](templates/). Important project-level templates include [AGENTS.md](templates/AGENTS.md), [CODING_STANDARDS.md](templates/CODING_STANDARDS.md), [DESIGN.md](templates/DESIGN.md), [ADR.md](templates/ADR.md), and the [Change Package](templates/change/CHANGE.md).
 
 ```text
 templates/
@@ -117,8 +152,9 @@ templates/
 ├── DESIGN.md        # project design-system contract
 ├── ADR.md           # durable decision record
 ├── github/          # PR / CODEOWNERS patterns
-├── workflows/       # CI / release / SBOM workflows
-├── scripts/         # toolchain / validation helpers
+├── workflows/       # CI / release / SBOM / portfolio status publishing
+├── scripts/         # toolchain / validation / portfolio helpers
+├── portfolio/       # project status publication examples
 ├── policy/          # dependency / plugin-intake / engineering policies
 ├── container/       # Docker image baseline
 ├── kubernetes/      # Deployment / Service / Ingress / NetworkPolicy / PDB / Kustomize
@@ -166,6 +202,8 @@ CI / Security / Testing
   ↓
 Release / Publish Verification
   ↓
+Portfolio Status Publication
+  ↓
 Operations / Backup / Observability
   ↓
 Maintenance / Incident Learning
@@ -174,6 +212,26 @@ Lessons / Metrics
   ↓
 OpenForge Improvement
 ```
+
+## Compliance Assessment
+
+OpenForge provides a portable compliance audit engine to assess OSS repositories against shared engineering standards, generating reproducible scorecards, delta comparisons, and actionable GitHub gap issues.
+
+```bash
+# Run portfolio-wide compliance audit
+python3 templates/scripts/audit-portfolio.py --config templates/portfolio.example.yml
+
+# Audit a single local repository
+python3 templates/scripts/audit-portfolio.py --repo /path/to/repo
+
+# Compare against historical baseline
+python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-report.json
+```
+
+- [Portfolio Scorecard](docs/portfolio-scorecard.md) — 14-repository adoption scorecard and remediation ranking
+- [Reference Metrics](docs/reference-metrics.md) — 35 standard engineering and maturity metrics
+- [Branch Protection Standard](docs/branch-protection.md) — canonical branch gates and status check requirements
+- [Gap Issues Catalog](docs/gap-issues/) — structured GitHub issue drafts grouped by area
 
 ## Reference Projects
 
@@ -184,8 +242,8 @@ OpenForge is informed by active OSS development practices, including:
 - nfs-quota-agent
 - kube-ready-box
 - KubeMetal
+- Beluga / Beluga Manager
 - ldapium
-- Beluga Manager
 - eGovFrame Launcher
 
 These projects are references, not rigid dependencies. The goal is to capture repeatable engineering and design practices while keeping projects free to choose their own implementation details.

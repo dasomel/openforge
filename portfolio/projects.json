@@ -1,0 +1,341 @@
+{
+  "version": "openforge-portfolio/v1",
+  "updated_at": "2026-09-09",
+  "portfolio": {
+    "standard_metrics": 35,
+    "standard_maturity_percent": 96.9,
+    "adoption_percent": 61.6,
+    "adoption_target_percent": 70.0,
+    "adr_count": 15
+  },
+  "projects": [
+    {
+      "id": "openforge",
+      "repository": "dasomel/openforge",
+      "name": "OpenForge",
+      "category": "Standards & Blueprints",
+      "archetype": "Engineering Control Plane",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "portfolio-governance",
+      "domains": [
+        "standards",
+        "governance",
+        "security",
+        "compliance",
+        "portfolio"
+      ]
+    },
+    {
+      "id": "narwhal",
+      "repository": "dasomel/narwhal",
+      "name": "Narwhal",
+      "category": "Internal Developer Platform",
+      "archetype": "Platform",
+      "development_status": "active",
+      "adoption_percent": 81.8,
+      "role": "reference-implementation",
+      "domains": [
+        "kubernetes",
+        "platform-engineering",
+        "gitops",
+        "ai-agent"
+      ]
+    },
+    {
+      "id": "narwhal-portal",
+      "repository": "dasomel/narwhal-portal",
+      "name": "Narwhal Portal",
+      "category": "Internal Developer Platform",
+      "archetype": "Platform Portal",
+      "development_status": "active",
+      "adoption_percent": 83.8,
+      "role": "control-surface",
+      "domains": [
+        "portal",
+        "kubernetes",
+        "ai-agent",
+        "operations"
+      ]
+    },
+    {
+      "id": "kubemetal",
+      "repository": "dasomel/kubemetal",
+      "name": "KubeMetal",
+      "category": "Hybrid AI / MLOps",
+      "archetype": "Desktop Operator",
+      "development_status": "active",
+      "adoption_percent": 95.8,
+      "role": "adopter",
+      "domains": [
+        "kubernetes",
+        "local-ai",
+        "mlops",
+        "agent",
+        "remediation"
+      ],
+      "status": {
+        "revision": "ed1d870",
+        "updated_at": "2026-09-08",
+        "evidence": {
+          "commit": "ed1d8709823547c8c4ee1efb1843701dffc635f7"
+        },
+        "compliance_audit": {
+          "score_percent": 95.8,
+          "score_earned": 69,
+          "score_possible": 72,
+          "gap_count": 2,
+          "gaps": [
+            "DOC-004",
+            "I18N-001"
+          ],
+          "audit_timestamp": "2026-09-08T11:26:30.988917+00:00",
+          "audit_command": "python3 templates/scripts/audit-portfolio.py --config <workspace>/portfolio-kubemetal-only.yml (workspaceRoot=/Users/m/Documents/IdeaProjects/20.dasomel, path=kubemetal, archetype=Desktop Operator from templates/portfolio.example.yml)"
+        }
+      }
+    },
+    {
+      "id": "beluga",
+      "repository": "dasomel/beluga",
+      "name": "Beluga",
+      "category": "Data Platform IaC",
+      "archetype": "Data Platform",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "adopter",
+      "domains": [
+        "kubernetes",
+        "data-platform",
+        "operations-agent"
+      ],
+      "status": {
+        "revision": "8dedb46",
+        "updated_at": "2026-09-08",
+        "milestone": "openforge-compliance-baseline",
+        "progress_percent": 85,
+        "capabilities": {
+          "compliance-baseline": {
+            "status": "implemented",
+            "standard": "openforge/compliance-baseline",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "not-applicable",
+              "security": "pass"
+            }
+          },
+          "stream-iceberg": {
+            "status": "implemented",
+            "standard": "openforge/data-platform",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "partial",
+              "security": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "issue": 114,
+          "pull_request": null,
+          "commit": "8dedb4614da34752f07c15736ea06d3c3cbe9c4b",
+          "ci": "pass",
+          "security": "pass",
+          "runtime": "partial"
+        },
+        "proposed_relationships": [
+          {
+            "target": "beluga-manager",
+            "type": "provides",
+            "scope": "data-platform management capabilities"
+          }
+        ]
+      }
+    },
+    {
+      "id": "beluga-manager",
+      "repository": "dasomel/beluga-manager",
+      "name": "Beluga Manager",
+      "category": "Data Platform Management",
+      "archetype": "Data Control Plane",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "control-surface",
+      "domains": [
+        "data-platform",
+        "management",
+        "ui"
+      ],
+      "status": {
+        "revision": "670a076",
+        "updated_at": "2026-09-08",
+        "milestone": "reconcile-history",
+        "progress_percent": 80,
+        "capabilities": {
+          "policy-compiler": {
+            "status": "implemented",
+            "standard": "openforge/agent-engineering",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
+              "security": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "issue": null,
+          "pull_request": 49,
+          "commit": "670a076a86c84929ddb5eb83a057efea4ba26b27",
+          "ci": "pass",
+          "security": "pass",
+          "runtime": "pass"
+        },
+        "proposed_relationships": [
+          {
+            "target": "beluga",
+            "type": "control-surface",
+            "scope": "data-platform management operations"
+          }
+        ]
+      }
+    },
+    {
+      "id": "kube-ready-box",
+      "repository": "dasomel/kube-ready-box",
+      "name": "kube-ready-box",
+      "category": "OS & VM Infrastructure",
+      "archetype": "Runtime Foundation",
+      "development_status": "active",
+      "adoption_percent": 87.1,
+      "role": "enforcement-provider",
+      "domains": [
+        "kubernetes",
+        "runtime",
+        "sandbox",
+        "security",
+        "evidence"
+      ]
+    },
+    {
+      "id": "nfs-quota-agent",
+      "repository": "dasomel/nfs-quota-agent",
+      "name": "nfs-quota-agent",
+      "category": "Storage & Kubernetes Controllers",
+      "archetype": "Storage Controller",
+      "development_status": "active",
+      "adoption_percent": 81.8,
+      "role": "service-provider",
+      "domains": [
+        "kubernetes",
+        "storage",
+        "quota",
+        "controller"
+      ]
+    },
+    {
+      "id": "ldapium",
+      "repository": "dasomel/ldapium",
+      "name": "ldapium",
+      "category": "Identity & Directory Service",
+      "archetype": "Identity Service",
+      "development_status": "active",
+      "adoption_percent": 89.7,
+      "role": "service-provider",
+      "domains": [
+        "identity",
+        "ldap",
+        "admin"
+      ]
+    },
+    {
+      "id": "clusterdeck",
+      "repository": "dasomel/clusterdeck",
+      "name": "ClusterDeck",
+      "category": "Kubernetes Operations",
+      "archetype": "Desktop Operator",
+      "development_status": "active",
+      "adoption_percent": 82.4,
+      "role": "operations-client",
+      "domains": [
+        "kubernetes",
+        "desktop",
+        "operations",
+        "ui"
+      ]
+    },
+    {
+      "id": "egovframe-launcher",
+      "repository": "dasomel/egovframe-launcher",
+      "name": "eGovFrame Launcher",
+      "category": "Developer Tooling",
+      "archetype": "Developer Tool",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "developer-tool",
+      "domains": [
+        "developer-experience",
+        "egovframe"
+      ]
+    },
+    {
+      "id": "siqoq",
+      "repository": "dasomel/siqoq",
+      "name": "Siqoq",
+      "category": "Physical AI / Edge AI",
+      "archetype": "Edge AI Infrastructure",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "experiment",
+      "domains": [
+        "physical-ai",
+        "edge-ai",
+        "simulation",
+        "ai-agent"
+      ]
+    },
+    {
+      "id": "cka-lab",
+      "repository": "dasomel/cka-lab",
+      "name": "CKA Lab",
+      "category": "Certification & Labs",
+      "archetype": "Lab Simulator",
+      "development_status": "maintenance",
+      "adoption_percent": null,
+      "role": "lab",
+      "domains": [
+        "kubernetes",
+        "education",
+        "lab"
+      ]
+    },
+    {
+      "id": "dasomel-github-io",
+      "repository": "dasomel/dasomel.github.io",
+      "name": "dasomel.github.io",
+      "category": "Community & Documentation",
+      "archetype": "Portfolio Site",
+      "development_status": "active",
+      "adoption_percent": null,
+      "role": "presentation",
+      "domains": [
+        "documentation",
+        "community",
+        "portfolio"
+      ]
+    },
+    {
+      "id": "kairos",
+      "repository": "dasomel/kairos",
+      "name": "Kairos",
+      "category": "Automation",
+      "archetype": "Developer Tool",
+      "development_status": "maintenance",
+      "adoption_percent": null,
+      "role": "independent-adopter",
+      "domains": [
+        "automation"
+      ]
+    }
+  ]
+}

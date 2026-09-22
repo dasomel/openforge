@@ -95,9 +95,15 @@ Fail early on missing or incompatible tools instead of producing a later opaque 
 
 No executable or release contract changes.
 
+The Issue/PR is the change record. A separate Change Package is not required.
+
 ### Class B — Internal implementation
 
 Behavior changes without changing external build/release contracts.
+
+The Issue MUST state acceptance criteria. A lightweight task checklist is recommended when the
+implementation has multiple independently verifiable steps. A full Change Package is optional
+unless the change is complex, crosses component boundaries or has material operational risk.
 
 ### Class C — Dependency/runtime/toolchain
 
@@ -111,11 +117,80 @@ Examples:
 
 Class C MUST include change impact analysis.
 
+Class C MUST use a Change Package before broad implementation begins.
+
 ### Class D — Release/deployment/security boundary
 
 Changes that alter produced artifacts, deployment permissions, release inputs or security controls.
 
 Class D MUST include change impact analysis and explicit security/release evidence.
+
+Class D MUST use a Change Package before broad implementation begins. An ADR is also required when
+the change crosses the threshold in `docs/decision-management.md`.
+
+## Change Package
+
+A Change Package is a short-lived, change-scoped contract that fixes intent, requirements,
+acceptance scenarios and verification before implementation. It is not a second long-lived
+description of the whole system.
+
+Use the reusable [`CHANGE.md`](../templates/change/CHANGE.md) and
+[`TASKS.md`](../templates/change/TASKS.md) templates for Class C, Class D and complex Class B work.
+The package MAY be maintained directly in the Issue/PR when that is the clearest collaboration
+surface. Temporary files MAY be used on a working branch, but they SHOULD NOT be merged as a
+permanent `changes/` archive unless they remain useful operational documentation.
+
+The Change Package MUST identify:
+
+- problem, intent, scope and non-goals;
+- testable requirements with stable identifiers;
+- explicit acceptance scenarios, preferably `Given / When / Then` for behavior;
+- relevant architecture decisions or an explanation that no ADR is required;
+- change impact using the matrix in this standard;
+- implementation tasks and dependencies;
+- verification plan and expected evidence;
+- rollout, rollback or recovery for changes that can affect users or operations;
+- portfolio/downstream impact when a reusable contract changes.
+
+Requirements, tasks and evidence SHOULD remain traceable. A reviewer should be able to map each
+material requirement to an acceptance scenario, implementation task and verification result.
+
+### Review gate
+
+For Class C and D changes, the accountable maintainer MUST review and accept the Change Package
+before broad implementation. Exploration, reproduction and reversible prototypes MAY occur before
+acceptance, but they must not silently establish the final contract or mutate production/shared
+environments.
+
+Acceptance means the problem, intended outcome, boundaries and verification approach are clear
+enough to implement. It does not require every implementation detail to be known in advance.
+Material scope or requirement changes after acceptance MUST be reflected in the package and
+re-reviewed.
+
+### Lifecycle and source of truth
+
+```text
+Issue
+  → classify change
+  → create/review Change Package when required
+  → implement tracked tasks
+  → verify acceptance scenarios
+  → capture evidence
+  → synchronize durable truth
+  → review and merge
+```
+
+At completion, promote durable truth to the artifact that owns it:
+
+- behavior and invariants → code and tests;
+- current operating contract → normative documentation;
+- durable rationale → ADR;
+- measured result → evidence record;
+- cross-project state → portfolio status;
+- change history → Issue, PR and Git history.
+
+Do not create a parallel long-lived specification tree that duplicates code, tests, documentation
+or ADRs. The merged Issue/PR is the default archive for the change intent and review history.
 
 ## Regression rule
 

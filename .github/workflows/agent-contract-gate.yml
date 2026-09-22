@@ -1,0 +1,117 @@
+name: Agent Contract Gate
+
+# Reusable workflow (issue #72): make agent engineering contracts a first-class,
+# repository-local CI input instead of something only the central portfolio audit
+# would eventually notice. See templates/github/agent-contract-gate.yml for the
+# downstream caller and docs/agent-skills.md for the adoption/`--strict` contract.
+#
+# This workflow only defines `workflow_call` - it is not triggered directly by
+# push/pull_request in this repository, so it stays a template other repositories
+# invoke rather than an extra job openforge's own CI has to carry.
+
+on:
+  workflow_call:
+    inputs:
+      python-version:
+        description: Python version used to run the dependency-free audit scripts.
+        required: false
+        default: "3.11"
+        type: string
+      openforge-ref:
+        description: Git ref of dasomel/openforge the audit scripts are pulled from.
+        required: false
+        default: "main"
+        type: string
+      strict:
+        description: >-
+          Escalate advisory agent-contract findings (STRICT_CONTRACT_CODES in
+          audit-agent-skills.py) to a failing exit code. Keep this true for a
+          fail-closed gate; false reproduces report-only central-audit severities.
+        required: false
+        default: true
+        type: boolean
+      paths-filter:
+        description: >-
+          Extended regex (grep -E, matched per changed path) that decides whether
+          the audit runs at all. Only paths/expressions that plausibly change an
+          agent contract belong here - see docs/agent-skills.md.
+        required: false
+        default: '(^|/)(AGENTS\.md|CLAUDE\.md)$|(^|/)\.agents/skills/|(^|/)\.claude/skills/|(^|/)\.agents/skill-evals/|(^|/)skills/[^/]+/SKILL\.md$|(^|/)Makefile$|(^|/)package\.json$'
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout caller repository
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+
+      - name: Checkout OpenForge audit scripts
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          repository: dasomel/openforge
+          ref: ${{ inputs.openforge-ref }}
+          path: _openforge
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: ${{ inputs.python-version }}
+
+      - name: Detect agent-contract path changes
+        id: diff
+        shell: bash
+        env:
+          PATHS_FILTER: ${{ inputs.paths-filter }}
+          EVENT_NAME: ${{ github.event_name }}
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+          BEFORE_SHA: ${{ github.event.before }}
+        run: |
+          set -euo pipefail
+          head="${GITHUB_SHA}"
+          base=""
+          if [ "$EVENT_NAME" = "pull_request" ]; then
+            base="$BASE_SHA"
+          elif [ "$EVENT_NAME" = "push" ]; then
+            base="$BEFORE_SHA"
+            if [ -z "$base" ] || [ "$base" = "0000000000000000000000000000000000000000" ]; then
+              base=""
+            fi
+          fi
+
+          # No usable base revision (first push to a branch, workflow_dispatch, an
+          # unexpected event) - stay fail-closed and run the audit rather than guess.
+          if [ -z "$base" ] || ! git cat-file -e "${base}^{commit}" 2>/dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+            echo "No usable base revision for a diff (event=${EVENT_NAME}); running the audit to stay fail-closed."
+            exit 0
+          fi
+
+          changed_files="$(git diff --name-only "$base" "$head")"
+          echo "Changed files since ${base}:"
+          echo "$changed_files"
+          if echo "$changed_files" | grep -E "$PATHS_FILTER" > /dev/null; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+            echo "No agent-contract paths changed; skipping the audit."
+          fi
+
+      - name: Run agent contract audit
+        if: steps.diff.outputs.changed == 'true'
+        shell: bash
+        env:
+          STRICT: ${{ inputs.strict }}
+        run: |
+          set -euo pipefail
+          args=(_openforge/templates/scripts/audit-agent-skills.py .)
+          if [ "$STRICT" = "true" ]; then
+            args+=(--strict)
+          fi
+          echo "Running: python3 ${args[*]}"
+          python3 "${args[@]}"

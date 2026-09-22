@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "openforge-agent-skill-verification/v1",
+  "skill": "project-task",
+  "skillVersion": "1",
+  "freshSession": true,
+  "agentRuntime": "runtime-and-version-or-channel",
+  "happyPath": {
+    "status": "passed",
+    "scenario": "Representative project task executed from repository-local context only.",
+    "evidence": [
+      "artifact:path/to/happy-path-report"
+    ]
+  },
+  "edgeCase": {
+    "status": "passed",
+    "scenario": "Known project-specific failure or edge condition was reproduced and handled without a false completion claim.",
+    "evidence": [
+      "artifact:path/to/edge-regression-report"
+    ]
+  },
+  "deterministicChecks": [
+    {
+      "command": "make verify",
+      "status": "passed",
+      "scope": "Repository-owned deterministic baseline"
+    }
+  ],
+  "runtimeEvidence": [
+    "Describe any real cluster/filesystem/network/browser/device/service evidence used."
+  ],
+  "unverified": [
+    "List important paths or runtimes that were not exercised; use an empty array only when that is genuinely true."
+  ],
+  "verifiedAt": "2026-09-09"
+}

@@ -4,10 +4,30 @@ OpenForge provides copyable implementation and design templates for projects tha
 
 Templates are deliberately conservative. Adapt versions, permissions, paths, commands, domains, images, identities, and ecosystem-specific controls rather than treating them as universal drop-in configuration.
 
+## Project-level contracts
+
+- [`AGENTS.md`](AGENTS.md) — concise agent execution contract
+- [`CODING_STANDARDS.md`](CODING_STANDARDS.md) — detailed coding/review rules
+- [`DESIGN.md`](DESIGN.md) — project design-system contract
+- [`ADR.md`](ADR.md) — canonical English architecture/engineering decision record
+- [`ADR-ko.md`](ADR-ko.md) — Korean first-class ADR counterpart
+- [`change/CHANGE.md`](change/CHANGE.md) — short-lived intent, requirements, impact, verification and recovery contract
+- [`change/TASKS.md`](change/TASKS.md) — requirement-linked implementation and evidence checklist
+- [`agent-eval/harness-dataset.example.json`](agent-eval/harness-dataset.example.json) — neutral dataset for controlled, experimental agent harness comparisons
+- [`scripts/compare-agent-harness-runs.py`](scripts/compare-agent-harness-runs.py) — validates same-cohort runs and summarizes correctness, efficiency, reliability, and safety without selecting a winner
+
+A durable cross-project policy decision should be evaluated against the [Decision Management Standard](../docs/decision-management.md) before adopting a template change as a new OpenForge default.
+
 ## Structure
 
 ```text
 templates/
+├── AGENTS.md
+├── CODING_STANDARDS.md
+├── DESIGN.md
+├── ADR.md
+├── ADR-ko.md
+├── change/          # Change Package and task-tracking templates
 ├── github/          # PR / CODEOWNERS
 ├── workflows/       # CI / release / SBOM
 ├── scripts/         # toolchain / validation helpers
@@ -27,7 +47,9 @@ templates/
 
 1. Start from the closest ecosystem template.
 2. Replace placeholders and pin security-sensitive inputs.
-3. Run the project's CI, security, and compatibility checks.
-4. For OSS documentation, use `templates/documentation/blueprint.md` as the contract and expose the project through the shared `/oss/` hub.
-5. Document deviations from the baseline.
-6. Keep derived assets (such as SVG exports) generated from source-controlled definitions when possible.
+3. Determine whether the change crosses the ADR threshold when changing a reusable OpenForge default.
+4. Use the Change Package templates before broad implementation for Class C/D and complex Class B work.
+5. Run the project's CI, security, and compatibility checks.
+6. For OSS documentation, use `templates/documentation/blueprint.md` as the contract and expose the project through the shared `/oss/` hub.
+7. Document intentional deviations from the baseline.
+8. Keep derived assets (such as SVG exports) generated from source-controlled definitions when possible.

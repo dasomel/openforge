@@ -1,0 +1,62 @@
+version: openforge-kubernetes-security/v1
+profile: production
+
+exposure:
+  externalGateway:
+    enabled: true
+    className: ""
+    addressPool: external
+  internalGateway:
+    enabled: true
+    className: ""
+    addressPool: internal
+
+host:
+  osFirewall:
+    enabled: true
+    provider: auto # auto | nftables | firewalld | ufw | external
+    preserveCniRules: true
+    changeMode: audit-then-enforce
+  lsm:
+    provider: auto # auto | apparmor | selinux
+    appArmor:
+      targetMode: runtime-default
+    selinux:
+      targetMode: enforcing
+
+nodeNetwork:
+  kubernetesAwareFirewall:
+    enabled: true
+    provider: cilium # cilium | equivalent | none
+    initialMode: audit
+    targetMode: enforce
+
+workload:
+  podSecurityStandard: restricted
+  runAsNonRoot: true
+  allowPrivilegeEscalation: false
+  seccompProfile: RuntimeDefault
+  dropCapabilities:
+    - ALL
+  networkPolicy:
+    defaultDenyIngress: true
+    defaultDenyEgress: true
+
+serviceIdentity:
+  enabled: true
+  provider: istio-ambient # istio-ambient | equivalent | none
+  mtls: true
+  rejectPlaintext: true
+  authorizationMode: identity
+
+egress:
+  defaultDeny: true
+  fqdnAllowList: []
+  fixedSourceIp:
+    enabled: false
+    gateway: ""
+
+verification:
+  requireConnectivityRegression: true
+  requireRollbackProcedure: true
+  requireExceptionExpiry: true

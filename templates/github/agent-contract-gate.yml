@@ -1,0 +1,31 @@
+# Copy into <your-repo>/.github/workflows/agent-contract-gate.yml.
+#
+# Repository-local agent-contract CI gate (OpenForge issue #72). Calls the reusable
+# workflow in dasomel/openforge that runs templates/scripts/audit-agent-skills.py
+# against AGENTS.md/CLAUDE.md/Agent Skills so an invalid agent-engineering contract
+# fails a PR here, instead of the central portfolio audit being the first place it is
+# discovered. See docs/agent-skills.md ("Repository-local agent contract gate") for the
+# full contract, including exactly which advisory codes --strict escalates.
+#
+# IMPORTANT - do NOT add `on.pull_request.paths` to this trigger. If this job is set
+# as a required status check and GitHub skips the run because of a `paths` filter, the
+# required check never reports and the PR is blocked forever (a well-known GitHub
+# Actions required-checks pitfall). Trigger on every PR instead and let the reusable
+# workflow's own internal git-diff step decide whether to run the audit: an app-only
+# PR still gets a fast green "skipped" result rather than a hang, which is what keeps
+# app-only builds from being unnecessarily forced by docs/skill-only changes.
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  agent-contract-gate:
+    uses: dasomel/openforge/.github/workflows/agent-contract-gate.yml@main
+    with:
+      strict: true
+      # openforge-ref: main          # pin to a specific OpenForge ref/tag if your policy requires it
+      # paths-filter: '...'          # override only if this repository's contract paths differ

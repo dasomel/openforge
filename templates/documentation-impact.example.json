@@ -1,0 +1,15 @@
+{
+  "schemaVersion": "openforge-doc-impact/v1",
+  "documentation": {
+    "impact": "updated",
+    "updated_paths": ["README.md", "docs/architecture.md"]
+  },
+  "blog_portfolio": {
+    "impact": "candidate",
+    "candidate_topic": "Explain the implemented architecture change and its operational evidence"
+  },
+  "evidence": [
+    "ci:test-pass",
+    "runtime:verified-path"
+  ]
+}
