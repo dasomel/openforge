@@ -13,6 +13,10 @@ on:
       - "examples/runtime-fixtures/*-post-restore/**"
       - ".github/workflows/runtime-storage-recovery-calibration.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
