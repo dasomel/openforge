@@ -169,4 +169,3 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/inventory-legacy-evidence.py --validate
->>>>>>> origin/main
