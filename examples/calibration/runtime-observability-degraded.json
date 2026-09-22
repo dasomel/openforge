@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/degraded-observability",
+  "profile": "runtime-observability-fixture",
+  "expectations": {
+    "RT-014": {"classification": "true_finding", "rationale": "The recorded Prometheus instance has fewer available replicas than desired."},
+    "RT-017": {"classification": "true_finding", "rationale": "The recorded Prometheus target set includes a down scrape target."},
+    "RT-018": {"classification": "true_finding", "rationale": "The recorded Alertmanager instance has fewer available replicas than desired."}
+  }
+}

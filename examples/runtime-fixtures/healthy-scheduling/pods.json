@@ -1,0 +1,19 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"namespace": "apps", "name": "api-0"},
+      "status": {
+        "phase": "Running",
+        "conditions": [{"type": "PodScheduled", "status": "True"}]
+      }
+    },
+    {
+      "metadata": {"namespace": "apps", "name": "api-1"},
+      "status": {
+        "phase": "Running",
+        "conditions": [{"type": "PodScheduled", "status": "True"}]
+      }
+    }
+  ]
+}

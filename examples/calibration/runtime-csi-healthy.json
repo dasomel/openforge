@@ -1,0 +1,8 @@
+{
+  "project": "openforge/runtime-fixture/healthy-csi",
+  "profile": "runtime-csi-fixture",
+  "expectations": {
+    "RT-019": {"classification": "accepted", "rationale": "The recorded CSI provisioner is registered and its active VolumeAttachment is attached without errors."},
+    "RT-020": {"classification": "accepted", "rationale": "The recorded CSI node plugin is registered on every Ready node."}
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "apiVersion": "cert-manager.io/v1",
+  "items": [
+    {
+      "metadata": {"namespace": "apps", "name": "api-tls"},
+      "status": {"notAfter": "2026-12-01T00:00:00Z"}
+    }
+  ]
+}

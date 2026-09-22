@@ -1,0 +1,7 @@
+{
+  "profile": {
+    "name": "runtime-csi-fixture",
+    "include_rules": ["RT-019", "RT-020"]
+  },
+  "waivers": []
+}

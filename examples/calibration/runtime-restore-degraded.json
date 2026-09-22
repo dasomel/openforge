@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/degraded-restore",
+  "profile": "runtime-restore-fixture",
+  "expectations": {
+    "RT-016": {"classification": "true_finding", "rationale": "The latest recorded completed Velero restore is older than the 30-day evidence window at the fixed replay time."}
+  }
+}

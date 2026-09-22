@@ -1,0 +1,12 @@
+{
+  "apiVersion": "v1",
+  "kind": "NodeList",
+  "items": [
+    {
+      "apiVersion": "v1",
+      "kind": "Node",
+      "metadata": {"name": "worker-bad"},
+      "status": {"conditions": [{"type": "Ready", "status": "False"}]}
+    }
+  ]
+}

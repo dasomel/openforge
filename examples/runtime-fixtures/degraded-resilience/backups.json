@@ -1,0 +1,12 @@
+{
+  "apiVersion": "velero.io/v1",
+  "items": [
+    {
+      "metadata": {"namespace": "velero", "name": "weekly-old"},
+      "status": {
+        "phase": "Completed",
+        "completionTimestamp": "2026-08-10T07:00:00Z"
+      }
+    }
+  ]
+}

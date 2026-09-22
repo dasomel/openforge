@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+set -euo pipefail
+while (($#)); do
+  case "$1" in
+    --context) shift 2 ;;
+    get) shift ;;
+    --raw) path="$2"; shift 2 ;;
+    *) shift ;;
+  esac
+done
+case "${path:-}" in
+  "/api/v1/namespaces/prod/services/http:api:8080/proxy/healthz") printf '{"status":"ok"}\n' ;;
+  "/api/v1/namespaces/prod/services/http:api:8080/proxy/data") printf '{"state":"empty"}\n' ;;
+  *) echo "post-restore fixture does not provide path: ${path:-<none>}" >&2; exit 1 ;;
+esac

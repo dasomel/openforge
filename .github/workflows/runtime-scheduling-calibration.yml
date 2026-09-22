@@ -1,0 +1,68 @@
+name: Runtime Scheduling Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/runtime_scheduling.rs"
+      - "src/assessment.rs"
+      - "src/lib.rs"
+      - "tests/cli_integration.rs"
+      - "examples/calibration/runtime-scheduling-*.json"
+      - "examples/runtime-fixtures/*-scheduling/**"
+      - ".github/workflows/runtime-scheduling-calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  scheduling:
+    name: ${{ matrix.name }} runtime scheduling replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-scheduling
+            manifest: openforge/examples/calibration/runtime-scheduling-healthy.json
+            output_prefix: runtime-scheduling-healthy
+          - name: Degraded
+            fixture: degraded-scheduling
+            manifest: openforge/examples/calibration/runtime-scheduling-degraded.json
+            output_prefix: runtime-scheduling-degraded
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded scheduling fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded scheduling evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate scheduling expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json

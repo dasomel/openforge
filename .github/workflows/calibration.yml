@@ -1,0 +1,353 @@
+name: Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/**"
+      - "rules/**"
+      - "examples/calibration/**"
+      - "examples/runtime-fixtures/**"
+      - "tests/**"
+      - ".github/workflows/calibration.yml"
+
+permissions:
+  contents: read
+
+jobs:
+  static-reference:
+    name: ${{ matrix.name }} static
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Narwhal
+            repository: dasomel/narwhal
+            ref: 5e7dd392d8fe443681d6363028e9069c070ad1c9
+            checkout_path: reference
+            profile: kubernetes-platform
+            manifest: openforge/examples/calibration/narwhal.json
+            artifact: narwhal-openforge-calibration
+            output_prefix: narwhal
+          - name: NFS Quota Agent
+            repository: dasomel/nfs-quota-agent
+            ref: 2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c
+            checkout_path: reference
+            profile: kubernetes-platform
+            manifest: openforge/examples/calibration/nfs-quota-agent.json
+            artifact: nfs-quota-agent-openforge-calibration
+            output_prefix: nfs-quota-agent
+
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Checkout reference project
+        uses: actions/checkout@v4
+        with:
+          repository: ${{ matrix.repository }}
+          ref: ${{ matrix.ref }}
+          path: ${{ matrix.checkout_path }}
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Assess reference repository evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./${{ matrix.checkout_path }} \
+            --profile ${{ matrix.profile }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+
+      - name: Calibrate reviewed expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+
+      - name: Calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
+
+      - name: Upload calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
+
+  execution-reference:
+    name: NFS Quota Agent execution
+    runs-on: ubuntu-24.04
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Checkout NFS Quota Agent
+        uses: actions/checkout@v4
+        with:
+          repository: dasomel/nfs-quota-agent
+          ref: 2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c
+          path: reference
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Set up Go
+        uses: actions/setup-go@v6
+        with:
+          go-version: '1.26'
+          cache-dependency-path: reference/go.sum
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Assess trusted execution evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./reference \
+            --profile kubernetes-platform \
+            --run-execution \
+            --format json \
+            --output nfs-quota-agent-execution-assessment.json
+
+      - name: Calibrate trusted execution expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            nfs-quota-agent-execution-assessment.json \
+            openforge/examples/calibration/nfs-quota-agent-execution.json \
+            --format json \
+            --output nfs-quota-agent-execution-calibration.json \
+            --require-complete
+
+      - name: Execution calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            nfs-quota-agent-execution-assessment.json \
+            openforge/examples/calibration/nfs-quota-agent-execution.json
+
+      - name: Upload execution calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: nfs-quota-agent-openforge-execution-calibration
+          path: |
+            nfs-quota-agent-execution-assessment.json
+            nfs-quota-agent-execution-calibration.json
+
+  runtime-core-reference:
+    name: ${{ matrix.name }} runtime core replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-core
+            manifest: openforge/examples/calibration/runtime-core-healthy.json
+            output_prefix: runtime-core-healthy
+            artifact: openforge-runtime-core-healthy-calibration
+          - name: Degraded
+            fixture: degraded-core
+            manifest: openforge/examples/calibration/runtime-core-degraded.json
+            output_prefix: runtime-core-degraded
+            artifact: openforge-runtime-core-degraded-calibration
+
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Enable recorded kubectl replay fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+
+      - name: Assess recorded Kubernetes runtime evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+
+      - name: Calibrate core runtime expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+
+      - name: Runtime calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
+
+      - name: Upload runtime calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
+
+  runtime-security-reference:
+    name: ${{ matrix.name }} runtime security replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-security
+            manifest: openforge/examples/calibration/runtime-security-healthy.json
+            output_prefix: runtime-security-healthy
+            artifact: openforge-runtime-security-healthy-calibration
+          - name: Degraded
+            fixture: degraded-security
+            manifest: openforge/examples/calibration/runtime-security-degraded.json
+            output_prefix: runtime-security-degraded
+            artifact: openforge-runtime-security-degraded-calibration
+
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Enable recorded runtime security fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+
+      - name: Assess recorded compatibility and security evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+
+      - name: Calibrate compatibility and security expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+
+      - name: Runtime security calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
+
+      - name: Upload runtime security calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json
+
+  runtime-resilience-reference:
+    name: ${{ matrix.name }} runtime resilience replay
+    runs-on: ubuntu-24.04
+    env:
+      OPENFORGE_NOW: "2026-08-27T07:00:00Z"
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-resilience
+            manifest: openforge/examples/calibration/runtime-resilience-healthy.json
+            output_prefix: runtime-resilience-healthy
+            artifact: openforge-runtime-resilience-healthy-calibration
+          - name: Degraded
+            fixture: degraded-resilience
+            manifest: openforge/examples/calibration/runtime-resilience-degraded.json
+            output_prefix: runtime-resilience-degraded
+            artifact: openforge-runtime-resilience-degraded-calibration
+
+    steps:
+      - name: Checkout OpenForge
+        uses: actions/checkout@v4
+        with:
+          path: openforge
+
+      - name: Install Rust
+        uses: dtolnay/rust-toolchain@stable
+
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+
+      - name: Enable recorded runtime resilience fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+
+      - name: Assess recorded storage, certificate and backup evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+
+      - name: Calibrate resilience expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+
+      - name: Runtime resilience calibration summary
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }}
+
+      - name: Upload runtime resilience calibration reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.artifact }}
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json

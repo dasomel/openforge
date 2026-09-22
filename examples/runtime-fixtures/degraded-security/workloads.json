@@ -1,0 +1,29 @@
+{
+  "fixture": true,
+  "apiVersion": "v1",
+  "items": [
+    {
+      "kind": "Deployment",
+      "metadata": {"namespace": "fixture", "name": "unsafe-api"},
+      "spec": {
+        "template": {
+          "spec": {
+            "hostNetwork": true,
+            "volumes": [{"name": "host", "hostPath": {"path": "/tmp"}}],
+            "containers": [
+              {
+                "name": "api",
+                "securityContext": {
+                  "privileged": true,
+                  "allowPrivilegeEscalation": true,
+                  "runAsUser": 0,
+                  "capabilities": {"add": ["SYS_ADMIN"]}
+                }
+              }
+            ]
+          }
+        }
+      }
+    }
+  ]
+}

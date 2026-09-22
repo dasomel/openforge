@@ -1,0 +1,6 @@
+{
+  "probes": [
+    {"name":"api-health","namespace":"prod","service":"api","port":8080,"path":"healthz","expect_contains":"ok"},
+    {"name":"api-data","namespace":"prod","service":"api","port":8080,"path":"data","expect_contains":"restored"}
+  ]
+}

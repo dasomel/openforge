@@ -1,0 +1,12 @@
+{
+  "project": "openforge/runtime-fixture/degraded-core",
+  "profile": "runtime-core-fixture",
+  "expectations": {
+    "RT-001": {"classification":"true_finding","rationale":"The replay fixture contains a node with Ready=False."},
+    "RT-002": {"classification":"true_finding","rationale":"The replayed Deployment has only one available replica while two are desired."},
+    "RT-003": {"classification":"true_finding","rationale":"The replayed workload container defines no readiness, liveness or startup probe."},
+    "RT-004": {"classification":"true_finding","rationale":"The replayed workload container has requests but no resource limits."},
+    "RT-005": {"classification":"true_finding","rationale":"The replicated Deployment has no matching PodDisruptionBudget."},
+    "RT-006": {"classification":"true_finding","rationale":"The replayed workload has no matching NetworkPolicy."}
+  }
+}

@@ -1,0 +1,9 @@
+{
+  "project": "openforge/runtime-fixture/degraded-resilience",
+  "profile": "runtime-resilience-fixture",
+  "expectations": {
+    "RT-011": {"classification": "true_finding", "rationale": "The recorded PVC is Pending and has no bound volume."},
+    "RT-012": {"classification": "true_finding", "rationale": "The recorded cert-manager Certificate expires within the 30-day threshold at the fixed replay time."},
+    "RT-013": {"classification": "true_finding", "rationale": "The latest recorded completed Velero backup is older than the seven-day freshness window at the fixed replay time."}
+  }
+}

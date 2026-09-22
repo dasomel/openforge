@@ -1,0 +1,72 @@
+name: Runtime Autoscaling Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/runtime_autoscaling.rs"
+      - "src/assessment.rs"
+      - "src/lib.rs"
+      - "tests/cli_integration.rs"
+      - "examples/calibration/runtime-autoscaling-*.json"
+      - "examples/runtime-fixtures/*-autoscaling/**"
+      - ".github/workflows/runtime-autoscaling-calibration.yml"
+
+permissions:
+  contents: read
+
+concurrency:
+  group: runtime-autoscaling-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  autoscaling:
+    name: ${{ matrix.name }} runtime autoscaling replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-autoscaling
+            manifest: openforge/examples/calibration/runtime-autoscaling-healthy.json
+            output_prefix: runtime-autoscaling-healthy
+          - name: Degraded
+            fixture: degraded-autoscaling
+            manifest: openforge/examples/calibration/runtime-autoscaling-degraded.json
+            output_prefix: runtime-autoscaling-degraded
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded autoscaling fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded autoscaling evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate autoscaling expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json

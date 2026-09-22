@@ -1,0 +1,1 @@
+{"apiVersion":"v1","items":[{"metadata":{"namespace":"apps","name":"api"},"spec":{"containers":[{"name":"api","resources":{"limits":{"cpu":"500m","memory":"512Mi"}}}]},"status":{"containerStatuses":[{"name":"api","restartCount":7,"lastState":{"terminated":{"reason":"OOMKilled"}}}]}}]}

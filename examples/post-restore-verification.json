@@ -1,0 +1,19 @@
+{
+  "probes": [
+    {
+      "name": "api-health",
+      "namespace": "production",
+      "service": "api",
+      "port": 8080,
+      "path": "/healthz",
+      "expect_contains": "ok"
+    },
+    {
+      "name": "frontend-ready",
+      "namespace": "production",
+      "service": "frontend",
+      "port": 80,
+      "path": "/ready"
+    }
+  ]
+}

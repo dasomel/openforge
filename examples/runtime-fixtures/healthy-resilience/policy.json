@@ -1,0 +1,7 @@
+{
+  "profile": {
+    "name": "runtime-resilience-fixture",
+    "include_rules": ["RT-011", "RT-012", "RT-013"]
+  },
+  "waivers": []
+}

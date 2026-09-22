@@ -1,0 +1,11 @@
+#!/usr/bin/env bash
+set -euo pipefail
+DIR="$(cd "$(dirname "$0")" && pwd)"
+ARGS="$*"
+case "$ARGS" in
+  *"get --raw /apis/metrics.k8s.io/v1beta1/pods"*) cat "$DIR/podmetrics.json" ;;
+  *"get --raw /apis/metrics.k8s.io/v1beta1/nodes"*) cat "$DIR/nodemetrics.json" ;;
+  *"get pods"*) cat "$DIR/pods.json" ;;
+  *"get nodes"*) cat "$DIR/nodes.json" ;;
+  *) echo "unsupported recorded kubectl call: $ARGS" >&2; exit 1 ;;
+esac

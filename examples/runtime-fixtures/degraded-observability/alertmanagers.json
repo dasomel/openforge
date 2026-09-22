@@ -1,0 +1,1 @@
+{"apiVersion":"monitoring.coreos.com/v1","kind":"AlertmanagerList","items":[{"metadata":{"namespace":"monitoring","name":"main"},"spec":{"replicas":2},"status":{"availableReplicas":1}}]}

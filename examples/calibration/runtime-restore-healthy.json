@@ -1,0 +1,7 @@
+{
+  "project": "openforge/runtime-fixture/healthy-restore",
+  "profile": "runtime-restore-fixture",
+  "expectations": {
+    "RT-016": {"classification": "accepted", "rationale": "The recorded Velero restore completed within the 30-day evidence window at the fixed replay time."}
+  }
+}

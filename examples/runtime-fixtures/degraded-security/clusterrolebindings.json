@@ -1,0 +1,16 @@
+{
+  "fixture": true,
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"name": "fixture-admin-binding"},
+      "roleRef": {"kind": "ClusterRole", "name": "cluster-admin"},
+      "subjects": [{"kind": "User", "name": "fixture-user"}]
+    },
+    {
+      "metadata": {"name": "fixture-risky-binding"},
+      "roleRef": {"kind": "ClusterRole", "name": "fixture-risky-role"},
+      "subjects": [{"kind": "ServiceAccount", "name": "fixture-sa", "namespace": "fixture"}]
+    }
+  ]
+}

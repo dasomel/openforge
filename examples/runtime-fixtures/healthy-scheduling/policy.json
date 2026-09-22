@@ -1,0 +1,7 @@
+{
+  "profile": {
+    "name": "runtime-scheduling-fixture",
+    "include_rules": ["RT-022", "RT-023", "RT-024"]
+  },
+  "waivers": []
+}

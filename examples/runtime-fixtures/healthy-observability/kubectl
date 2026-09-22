@@ -1,0 +1,29 @@
+#!/usr/bin/env bash
+set -euo pipefail
+fixture_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+args=()
+while (($#)); do
+  case "$1" in
+    --context|-n|--namespace)
+      shift 2
+      ;;
+    -A|--all-namespaces)
+      shift
+      ;;
+    -o|--output)
+      shift 2
+      ;;
+    *)
+      args+=("$1")
+      shift
+      ;;
+  esac
+done
+key="${args[*]}"
+case "$key" in
+  "get prometheuses.monitoring.coreos.com") cat "$fixture_dir/prometheuses.json" ;;
+  "get pods -l prometheus=main") cat "$fixture_dir/prometheus-pods.json" ;;
+  "get --raw /api/v1/namespaces/monitoring/pods/http:prometheus-main-0:9090/proxy/api/v1/targets") cat "$fixture_dir/targets.json" ;;
+  "get alertmanagers.monitoring.coreos.com") cat "$fixture_dir/alertmanagers.json" ;;
+  *) echo "runtime observability fixture does not provide: kubectl $key" >&2; exit 1 ;;
+esac

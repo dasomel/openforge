@@ -1,0 +1,72 @@
+name: Runtime Stability Calibration
+
+on:
+  workflow_dispatch:
+  pull_request:
+    paths:
+      - "src/runtime_stability.rs"
+      - "src/assessment.rs"
+      - "src/lib.rs"
+      - "tests/cli_integration.rs"
+      - "examples/calibration/runtime-stability-*.json"
+      - "examples/runtime-fixtures/*-stability/**"
+      - ".github/workflows/runtime-stability-calibration.yml"
+
+concurrency:
+  group: runtime-stability-calibration-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  stability:
+    name: ${{ matrix.name }} runtime stability replay
+    runs-on: ubuntu-24.04
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - name: Healthy
+            fixture: healthy-stability
+            manifest: openforge/examples/calibration/runtime-stability-healthy.json
+            output_prefix: runtime-stability-healthy
+          - name: Degraded
+            fixture: degraded-stability
+            manifest: openforge/examples/calibration/runtime-stability-degraded.json
+            output_prefix: runtime-stability-degraded
+    steps:
+      - uses: actions/checkout@v5
+        with:
+          path: openforge
+      - uses: dtolnay/rust-toolchain@stable
+      - name: Build OpenForge
+        working-directory: openforge
+        run: cargo build --bin openforge
+      - name: Enable recorded stability fixture
+        run: |
+          chmod +x openforge/examples/runtime-fixtures/${{ matrix.fixture }}/kubectl
+          echo "$GITHUB_WORKSPACE/openforge/examples/runtime-fixtures/${{ matrix.fixture }}" >> "$GITHUB_PATH"
+      - name: Assess recorded stability evidence
+        run: |
+          ./openforge/target/debug/openforge assess ./openforge \
+            --runtime \
+            --policy openforge/examples/runtime-fixtures/${{ matrix.fixture }}/policy.json \
+            --format json \
+            --output ${{ matrix.output_prefix }}-assessment.json
+      - name: Calibrate stability expectations
+        run: |
+          ./openforge/target/debug/openforge calibrate \
+            ${{ matrix.output_prefix }}-assessment.json \
+            ${{ matrix.manifest }} \
+            --format json \
+            --output ${{ matrix.output_prefix }}-calibration.json \
+            --require-complete
+      - name: Calibration summary
+        run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
+      - uses: actions/upload-artifact@v4
+        with:
+          name: openforge-${{ matrix.output_prefix }}-calibration
+          path: |
+            ${{ matrix.output_prefix }}-assessment.json
+            ${{ matrix.output_prefix }}-calibration.json

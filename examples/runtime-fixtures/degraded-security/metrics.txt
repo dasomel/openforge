@@ -1,0 +1,2 @@
+# Synthetic CI fixture: not a live cluster configuration.
+apiserver_requested_deprecated_apis{group="extensions",removed_release="1.22",resource="ingresses",version="v1beta1"} 3

@@ -1,0 +1,10 @@
+{
+  "apiVersion": "v1",
+  "items": [
+    {
+      "metadata": {"namespace": "apps", "name": "data"},
+      "spec": {"volumeName": "pv-data"},
+      "status": {"phase": "Bound"}
+    }
+  ]
+}

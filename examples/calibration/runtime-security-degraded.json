@@ -1,0 +1,22 @@
+{
+  "project": "openforge/runtime-fixture/degraded-security",
+  "profile": "runtime-security-fixture",
+  "expectations": {
+    "RT-007": {
+      "classification": "true_finding",
+      "rationale": "The recorded API-server metrics contain an active deprecated API request series."
+    },
+    "RT-008": {
+      "classification": "true_finding",
+      "rationale": "The inert fixture binds a non-system test subject to cluster-admin."
+    },
+    "RT-009": {
+      "classification": "true_finding",
+      "rationale": "The inert fixture binds a test role with a high-risk RBAC bind verb to a non-system service account."
+    },
+    "RT-010": {
+      "classification": "true_finding",
+      "rationale": "The inert workload fixture explicitly enables high-risk Pod security settings."
+    }
+  }
+}

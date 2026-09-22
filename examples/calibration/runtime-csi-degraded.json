@@ -1,0 +1,8 @@
+{
+  "project": "openforge/runtime-fixture/degraded-csi",
+  "profile": "runtime-csi-fixture",
+  "expectations": {
+    "RT-019": {"classification": "true_finding", "rationale": "A CSI StorageClass lacks its CSIDriver and an active VolumeAttachment reports a backend timeout."},
+    "RT-020": {"classification": "true_finding", "rationale": "A Ready node is missing one of the CSI node-plugin registrations required by the recorded StorageClasses."}
+  }
+}

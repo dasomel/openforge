@@ -1,0 +1,18 @@
+{
+  "apiVersion": "policy/v1",
+  "kind": "PodDisruptionBudgetList",
+  "items": [
+    {
+      "apiVersion": "policy/v1",
+      "kind": "PodDisruptionBudget",
+      "metadata": {"namespace": "platform", "name": "api"},
+      "spec": {"minAvailable": 1, "selector": {"matchLabels": {"app": "api"}}}
+    },
+    {
+      "apiVersion": "policy/v1",
+      "kind": "PodDisruptionBudget",
+      "metadata": {"namespace": "platform", "name": "database"},
+      "spec": {"minAvailable": 1, "selector": {"matchLabels": {"app": "database"}}}
+    }
+  ]
+}

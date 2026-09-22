@@ -1,0 +1,8 @@
+{
+  "profile": {
+    "name": "runtime-autoscaling-fixture",
+    "include_rules": ["RT-028", "RT-029", "RT-030"],
+    "exclude_rules": []
+  },
+  "waivers": []
+}
