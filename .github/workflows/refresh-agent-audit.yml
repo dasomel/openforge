@@ -12,6 +12,10 @@ on:
       - 'templates/scripts/generate-agent-audit-matrix.py'
       - '.github/workflows/refresh-agent-audit.yml'
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
+
 permissions:
   contents: write
   pull-requests: write
