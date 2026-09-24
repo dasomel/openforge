@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-09-09",
+  "updated_at": "2026-09-24",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -109,47 +109,16 @@
         "operations-agent"
       ],
       "status": {
-        "revision": "8dedb46",
-        "updated_at": "2026-09-08",
+        "revision": "d7023516422f19d708f4114475ec43dcd336c96f",
+        "updated_at": "2026-09-24",
         "milestone": "openforge-compliance-baseline",
-        "progress_percent": 85,
-        "capabilities": {
-          "compliance-baseline": {
-            "status": "implemented",
-            "standard": "openforge/compliance-baseline",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "not-applicable",
-              "security": "pass"
-            }
-          },
-          "stream-iceberg": {
-            "status": "implemented",
-            "standard": "openforge/data-platform",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "partial",
-              "security": "pass"
-            }
-          }
-        },
+        "progress_percent": 90.0,
+        "capabilities": {},
         "evidence": {
-          "issue": 114,
-          "pull_request": null,
-          "commit": "8dedb4614da34752f07c15736ea06d3c3cbe9c4b",
           "ci": "pass",
-          "security": "pass",
-          "runtime": "partial"
-        },
-        "proposed_relationships": [
-          {
-            "target": "beluga-manager",
-            "type": "provides",
-            "scope": "data-platform management capabilities"
-          }
-        ]
+          "commit": "d7023516422f19d708f4114475ec43dcd336c96f",
+          "workflow": "https://github.com/dasomel/beluga/actions/runs/35955423468"
+        }
       }
     },
     {
