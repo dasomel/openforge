@@ -7,7 +7,7 @@
     "portfolio/maintenance.json",
     "portfolio/agent-audit.json"
   ],
-  "updated_at": "2026-09-09",
+  "updated_at": "2026-09-23",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -302,10 +302,10 @@
         "operations-agent"
       ],
       "status": {
-        "revision": "8dedb46",
-        "updated_at": "2026-09-08",
+        "revision": "2f78873",
+        "updated_at": "2026-09-23",
         "milestone": "openforge-compliance-baseline",
-        "progress_percent": 85,
+        "progress_percent": 90,
         "capabilities": {
           "compliance-baseline": {
             "status": "implemented",
@@ -323,7 +323,17 @@
             "verification": {
               "unit": "pass",
               "integration": "pass",
-              "runtime": "partial",
+              "runtime": "pass",
+              "security": "pass"
+            }
+          },
+          "policy-compiler-seam": {
+            "status": "implemented",
+            "standard": "openforge/data-platform",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
               "security": "pass"
             }
           }
@@ -331,16 +341,41 @@
         "evidence": {
           "issue": 114,
           "pull_request": null,
-          "commit": "8dedb4614da34752f07c15736ea06d3c3cbe9c4b",
+          "commit": "2f7887376cc4e048e04d715b7d429c1991ec4d60",
           "ci": "pass",
           "security": "pass",
-          "runtime": "partial"
+          "runtime": "pass"
         },
         "proposed_relationships": [
           {
             "target": "beluga-manager",
             "type": "provides",
             "scope": "data-platform management capabilities"
+          },
+          {
+            "target": "ldapium",
+            "type": "consumes",
+            "scope": "OpenLDAP directory data plane"
+          },
+          {
+            "target": "kube-ready-box",
+            "type": "consumes",
+            "scope": "node OS image; readiness evidence (expected)"
+          },
+          {
+            "target": "narwhal",
+            "type": "peer",
+            "scope": "shared platform patterns; no runtime dependency"
+          },
+          {
+            "target": "kubemetal",
+            "type": "unavailable",
+            "scope": "local/offline AI inference; no consumption point implemented yet"
+          },
+          {
+            "target": "nfs-quota-agent",
+            "type": "not-applicable",
+            "scope": "filesystem quota enforcement; no NFS/RWX storage class in any profile"
           }
         ]
       },
