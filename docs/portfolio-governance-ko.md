@@ -98,6 +98,8 @@ Downstream Repository에서 코드가 merge됐다는 사실만으로 Feature Com
 
 실제보다 높은 Evidence Class를 표시해서 Portfolio 상태를 Green으로 만들면 안 됩니다.
 
+Evidence는 Revision에 귀속됩니다. `templates/scripts/apply-portfolio-status.py`는 Payload의 `revision`이 Registry에 기록된 이전 `status.revision`과 다를 경우, 이전 Status에는 있었지만 새 Payload에 없는 `security`/`runtime` Evidence와 Capability를 `not-run`으로 명시적으로 낮춥니다 — 조용히 삭제(#106/#108)하거나 이전 Revision의 값을 그대로 이어받지(#107) 않습니다. 같은 Revision을 다시 게시하는 경우에는 이 강등 로직이 적용되지 않고 Payload 값이 그대로 반영됩니다. `.github/workflows/publish-project-status.yml`은 이 값을 신선하게 검증했을 때만 채우도록 선택적 `security_evidence`/`runtime_evidence` Input을 제공하며, 비워두면 Payload에서 생략되어 Revision이 바뀔 때 위 강등 로직의 대상이 됩니다.
+
 ## Status PR 정책
 
 권장 제목:
@@ -184,8 +186,10 @@ python3 templates/scripts/generate-portfolio.py
 python3 templates/scripts/generate-portfolio.py --validate-only
 python3 templates/scripts/generate-portfolio.py --check
 python3 templates/scripts/generate-portfolio.py --validate-status <payload.json>
-python3 templates/scripts/apply-portfolio-status.py <payload.json>
+python3 templates/scripts/apply-portfolio-status.py <payload.json> --report <report.md>
 ```
+
+`--report <path>`는 Revision 변화, Dimension별 Evidence 변경, `not-run`으로 강등된 Evidence/Capability, 그리고 새 Revision에서 이전 값과 동일하게 반복된 Claim(리뷰어 재검증 필요, #107 신호)을 담은 Markdown 변경 보고서를 생성합니다. `.github/workflows/publish-project-status.yml`과 `templates/workflows/publish-openforge-status.yml` 모두 이 보고서를 생성해 `gh pr create --body-file`의 PR 본문에 포함시킵니다.
 
 `templates/workflows/publish-openforge-status.yml`은 각 OSS가 자기 Status를 OpenForge PR로 게시하기 위한 재사용 가능한 Workflow Baseline입니다.
 

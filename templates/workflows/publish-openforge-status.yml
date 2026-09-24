@@ -50,7 +50,7 @@ jobs:
           cp .openforge/status.json openforge/.project-status.json
           cd openforge
           python3 templates/scripts/generate-portfolio.py --validate-status .project-status.json
-          python3 templates/scripts/apply-portfolio-status.py .project-status.json
+          python3 templates/scripts/apply-portfolio-status.py .project-status.json --report .status-report.md
           python3 templates/scripts/generate-portfolio.py
           python3 templates/scripts/generate-portfolio.py --check
           rm .project-status.json
@@ -98,12 +98,18 @@ jobs:
         run: |
           set -euo pipefail
           cd openforge
+          {
+            printf "Automated portfolio status proposal from \`%s\` at revision \`%s\`.\n\n" "$GITHUB_REPOSITORY" "$REVISION"
+            printf "The PR includes regenerated dashboard/report artifacts and remains reviewable. OpenForge CI must validate registry integrity and generated-output freshness before merge.\n\n"
+            cat .status-report.md
+          } > .pr-body.md
           gh pr create \
             --repo dasomel/openforge \
             --base main \
             --head "$BRANCH" \
             --title "chore(portfolio): update ${PROJECT} development status" \
-            --body "Automated portfolio status proposal from \`${GITHUB_REPOSITORY}\` at revision \`${REVISION}\`.\n\nThe PR includes regenerated dashboard/report artifacts and remains reviewable. OpenForge CI must validate registry integrity and generated-output freshness before merge."
+            --body-file .pr-body.md
+          rm -f .pr-body.md .status-report.md
 
 # Replace APPROVED_IMMUTABLE_REVISION with an approved immutable checkout SHA
 # before production use. This is a template, not a drop-in workflow.

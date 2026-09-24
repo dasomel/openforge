@@ -45,6 +45,16 @@ on:
         required: false
         default: ''
         type: string
+      security_evidence:
+        description: Optional security verification evidence for this revision (pass/fail/partial/not-run/not-applicable); omit if not freshly verified
+        required: false
+        default: ''
+        type: string
+      runtime_evidence:
+        description: Optional runtime verification evidence for this revision (pass/fail/partial/not-run/not-applicable); omit if not freshly verified
+        required: false
+        default: ''
+        type: string
     secrets:
       OPENFORGE_STATUS_TOKEN:
         description: Narrowly scoped token able to push a branch and open a PR in dasomel/openforge
@@ -90,6 +100,8 @@ jobs:
           RELATIONSHIPS_JSON: ${{ inputs.relationships_json }}
           REVISION_OVERRIDE: ${{ inputs.revision }}
           WORKFLOW_URL_OVERRIDE: ${{ inputs.evidence_workflow_url }}
+          SECURITY_EVIDENCE: ${{ inputs.security_evidence }}
+          RUNTIME_EVIDENCE: ${{ inputs.runtime_evidence }}
           CALLER_REVISION: ${{ github.sha }}
           CALLER_RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         shell: bash
@@ -121,6 +133,28 @@ jobs:
           if not workflow_url.startswith(('https://github.com/', 'https://github.example.com/')):
               raise SystemExit('evidence workflow URL must be a GitHub HTTPS URL')
 
+          # D4: security/runtime evidence is opt-in per call. Left at the default '' it stays
+          # omitted from the payload rather than guessed at, so apply-portfolio-status.py's
+          # revision-bound downgrade (D1) is what marks it not-run at a new revision instead of
+          # this workflow inventing a claim it did not verify.
+          allowed_evidence_values = {'pass', 'fail', 'partial', 'not-run', 'not-applicable'}
+          security_evidence = os.environ.get('SECURITY_EVIDENCE', '').strip()
+          runtime_evidence = os.environ.get('RUNTIME_EVIDENCE', '').strip()
+          if security_evidence and security_evidence not in allowed_evidence_values:
+              raise SystemExit(f'security_evidence must be one of {sorted(allowed_evidence_values)}')
+          if runtime_evidence and runtime_evidence not in allowed_evidence_values:
+              raise SystemExit(f'runtime_evidence must be one of {sorted(allowed_evidence_values)}')
+
+          evidence = {
+              'ci': 'pass',
+              'commit': revision,
+              'workflow': workflow_url,
+          }
+          if security_evidence:
+              evidence['security'] = security_evidence
+          if runtime_evidence:
+              evidence['runtime'] = runtime_evidence
+
           payload = {
               'version': 'openforge-project-status/v1',
               'project': os.environ['PROJECT'],
@@ -134,11 +168,7 @@ jobs:
               },
               'capabilities': decode('CAPABILITIES_JSON', dict),
               'relationships': decode('RELATIONSHIPS_JSON', list),
-              'evidence': {
-                  'ci': 'pass',
-                  'commit': revision,
-                  'workflow': workflow_url,
-              },
+              'evidence': evidence,
           }
           Path('openforge/.project-status.json').write_text(
               json.dumps(payload, ensure_ascii=False, indent=2) + '\n', encoding='utf-8'
@@ -155,7 +185,7 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/generate-portfolio.py --validate-status .project-status.json
-          python3 templates/scripts/apply-portfolio-status.py .project-status.json
+          python3 templates/scripts/apply-portfolio-status.py .project-status.json --report .status-report.md
           python3 templates/scripts/generate-portfolio.py
           python3 templates/scripts/generate-portfolio.py --check
 
@@ -202,9 +232,16 @@ jobs:
         shell: bash
         run: |
           set -euo pipefail
+          {
+            printf "Automated portfolio status proposal from \`%s\` at verified revision \`%s\`.\n\n" "$SOURCE_REPOSITORY" "$REVISION"
+            printf "Verification evidence: %s\n\n" "$EVIDENCE_WORKFLOW_URL"
+            printf "OpenForge CI independently validates registry integrity and generated-output freshness; merge remains the official portfolio state transition.\n\n"
+            cat .status-report.md
+          } > .pr-body.md
           gh pr create \
             --repo dasomel/openforge \
             --base main \
             --head "$BRANCH" \
             --title "chore(portfolio): update ${PROJECT} development status" \
-            --body "Automated portfolio status proposal from \`${SOURCE_REPOSITORY}\` at verified revision \`${REVISION}\`.\n\nVerification evidence: ${EVIDENCE_WORKFLOW_URL}\n\nOpenForge CI independently validates registry integrity and generated-output freshness; merge remains the official portfolio state transition."
+            --body-file .pr-body.md
+          rm -f .pr-body.md .status-report.md
