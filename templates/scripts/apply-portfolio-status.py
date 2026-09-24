@@ -112,10 +112,13 @@ def apply_status_update(
                 continue
             retained = dict(capability)
             verification = retained.get("verification")
-            if isinstance(verification, dict):
+            # Only count this as a downgrade when there was a non-empty verification claim to
+            # actually escalate down to not-run; a capability with no recorded verification is
+            # retained as-is and isn't reported as if evidence were lost.
+            if isinstance(verification, dict) and verification:
                 retained["verification"] = {field: "not-run" for field in verification}
+                downgraded_capabilities.append(capability_id)
             capabilities[capability_id] = retained
-            downgraded_capabilities.append(capability_id)
 
     # D3: flag claims that look re-affirmed rather than re-verified -- the same value present
     # at the old revision and repeated verbatim in the payload for a new revision. This is not
@@ -271,6 +274,8 @@ def main() -> int:
         raise SystemExit("payload.development must be an object")
     if not isinstance(evidence, dict):
         raise SystemExit("payload.evidence must be an object")
+    if not payload.get("revision"):
+        raise SystemExit("payload.revision is required")
 
     allowed_statuses = set(milestones_doc.get("allowed_statuses", []))
     new_status = development.get("status")
