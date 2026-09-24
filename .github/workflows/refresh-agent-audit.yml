@@ -55,13 +55,15 @@ jobs:
             --repo dasomel/kube-ready-box=/tmp/agent-audit/kube-ready-box \
             --repo dasomel/siqoq=/tmp/agent-audit/siqoq
           python3 templates/scripts/generate-agent-audit-matrix.py --validate
+          # The dashboard embeds audit counts; regenerate it so the refresh PR passes the freshness check.
+          python3 templates/scripts/generate-portfolio.py
       - name: Open reviewable refresh PR when state changed
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
-          if git diff --quiet -- portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md; then
+          if git diff --quiet -- portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md portfolio/dashboard.json docs/portfolio-dashboard.md; then
             echo 'Agent audit matrix is current.'
             exit 0
           fi
@@ -70,7 +72,7 @@ jobs:
           git config user.name github-actions[bot]
           git config user.email 41898282+github-actions[bot]@users.noreply.github.com
           git switch -c "$branch"
-          git add portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md
+          git add portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md portfolio/dashboard.json docs/portfolio-dashboard.md
           git commit -m 'chore(agent): refresh portfolio audit matrix'
           git push origin "$branch"
 
