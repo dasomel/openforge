@@ -80,9 +80,9 @@
 | dasomel/beluga | `d702351` | 1 | 1 | 0 | 0 |
 | dasomel/beluga-manager | `df5378b` | 1 | 1 | 0 | 0 |
 | dasomel/kubemetal | `8de686f` | 2 | 1 | 1 | 1 |
-| dasomel/clusterdeck | `ec0b454` | 2 | 1 | 1 | 1 |
-| dasomel/ldapium | `9f033fb` | 2 | 1 | 1 | 1 |
-| dasomel/nfs-quota-agent | `984f6f1` | 1 | 1 | 1 | 0 |
+| dasomel/clusterdeck | `2a710c2` | 2 | 1 | 1 | 1 |
+| dasomel/ldapium | `ff0ca16` | 2 | 1 | 1 | 1 |
+| dasomel/nfs-quota-agent | `8de5a41` | 1 | 1 | 1 | 0 |
 | dasomel/egovframe-launcher | `e30597f` | 1 | 1 | 0 | 0 |
 | dasomel/kube-ready-box | `b4d3256` | 0 | 9 | 1 | 0 |
 | dasomel/siqoq | `a916914` | 2 | 1 | 1 | 1 |
