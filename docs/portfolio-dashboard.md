@@ -66,26 +66,26 @@
 
 - Audited repositories: **11**
 - Repositories with false-green findings: **9**
-- False-green findings (total): **12**
-- Canonical agent skills: **16**
-- Evidence-backed mature skills: **1**
-- Skill audit errors: **0**
-- Swallowed-failure findings: **3** (measured in 11 of 11 repositories)
+- False-green findings (total): **15**
+- Canonical agent skills: **24**
+- Evidence-backed mature skills: **6**
+- Skill audit errors: **4**
+- Swallowed-failure findings: **2** (measured in 11 of 11 repositories)
 - Repositories with a local agent CI gate: **2** (measured in 11 of 11 repositories)
 
 | Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
-| dasomel/narwhal | `314b318` | 4 | 4 | 0 | 0 |
-| dasomel/narwhal-portal | `d27a2ea` | 0 | 3 | 0 | 0 |
-| dasomel/beluga | `9de2366` | 1 | 1 | 0 | 0 |
-| dasomel/beluga-manager | `5e772ce` | 1 | 1 | 0 | 0 |
-| dasomel/kubemetal | `b117c0f` | 1 | 1 | 0 | 0 |
-| dasomel/clusterdeck | `2f19a2d` | 1 | 1 | 0 | 0 |
-| dasomel/ldapium | `c1ba5b3` | 1 | 1 | 0 | 0 |
-| dasomel/nfs-quota-agent | `bb66077` | 1 | 1 | 1 | 0 |
-| dasomel/egovframe-launcher | `4e12355` | 1 | 1 | 0 | 0 |
-| dasomel/kube-ready-box | `c56de5d` | 0 | 1 | 0 | 0 |
-| dasomel/siqoq | `a967d6c` | 1 | 1 | 0 | 0 |
+| dasomel/narwhal | `72102a7` | 3 | 4 | 2 | 0 |
+| dasomel/narwhal-portal | `816e958` | 0 | 3 | 2 | 0 |
+| dasomel/beluga | `d702351` | 1 | 1 | 0 | 0 |
+| dasomel/beluga-manager | `df5378b` | 1 | 1 | 0 | 0 |
+| dasomel/kubemetal | `8de686f` | 2 | 1 | 1 | 1 |
+| dasomel/clusterdeck | `ec0b454` | 2 | 1 | 1 | 1 |
+| dasomel/ldapium | `9f033fb` | 2 | 1 | 1 | 1 |
+| dasomel/nfs-quota-agent | `984f6f1` | 1 | 1 | 1 | 0 |
+| dasomel/egovframe-launcher | `e30597f` | 1 | 1 | 0 | 0 |
+| dasomel/kube-ready-box | `b4d3256` | 0 | 9 | 1 | 0 |
+| dasomel/siqoq | `a916914` | 2 | 1 | 1 | 1 |
 
 ## Status publication workflow
 
