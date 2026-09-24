@@ -7,7 +7,7 @@
     "portfolio/maintenance.json",
     "portfolio/agent-audit.json"
   ],
-  "updated_at": "2026-09-09",
+  "updated_at": "2026-09-24",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -370,37 +370,16 @@
         "ui"
       ],
       "status": {
-        "revision": "670a076",
-        "updated_at": "2026-09-08",
-        "milestone": "reconcile-history",
-        "progress_percent": 80,
-        "capabilities": {
-          "policy-compiler": {
-            "status": "implemented",
-            "standard": "openforge/agent-engineering",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "pass",
-              "security": "pass"
-            }
-          }
-        },
+        "revision": "df5378b0e42dda37108fb452d3b5385899d16557",
+        "updated_at": "2026-09-24",
+        "milestone": "web-console-i18n-ci-gate",
+        "progress_percent": 85.0,
+        "capabilities": {},
         "evidence": {
-          "issue": null,
-          "pull_request": 49,
-          "commit": "670a076a86c84929ddb5eb83a057efea4ba26b27",
           "ci": "pass",
-          "security": "pass",
-          "runtime": "pass"
-        },
-        "proposed_relationships": [
-          {
-            "target": "beluga",
-            "type": "control-surface",
-            "scope": "data-platform management operations"
-          }
-        ]
+          "commit": "df5378b0e42dda37108fb452d3b5385899d16557",
+          "workflow": "https://github.com/dasomel/beluga-manager/actions/runs/35954931654"
+        }
       },
       "impact_score": 8,
       "maintenance": {
