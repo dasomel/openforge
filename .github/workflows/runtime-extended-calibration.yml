@@ -17,6 +17,10 @@ on:
       - "examples/runtime-fixtures/*-restore/**"
       - ".github/workflows/runtime-extended-calibration.yml"
 
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
 permissions:
   contents: read
 
