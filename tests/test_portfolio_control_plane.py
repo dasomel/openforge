@@ -99,24 +99,91 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         self.assertIn('siqoq["Siqoq\\nexperiment"]', architecture)
         self.assertIn("adr-0013-agent-execution-security", impact)
 
+    @staticmethod
+    def _dashboard_evidence_fixture():
+        """A small synthetic projects doc exercising the dashboard's revision/evidence/
+        capability-verification rendering, independent of live portfolio/projects.json
+        values (which change via automated portfolio-status/* PRs)."""
+        return {
+            "projects": [
+                {
+                    "id": "proj-with-evidence",
+                    "repository": "acme/proj-with-evidence",
+                    "name": "Proj With Evidence",
+                    "development_status": "active",
+                    "adoption_percent": None,
+                    "role": "adopter",
+                    "domains": ["testing"],
+                    "status": {
+                        "revision": "abc1234",
+                        "evidence": {
+                            "commit": "abc1234def5678901234567890123456789abcd",
+                            "ci": "pass",
+                            "security": "pass",
+                            "runtime": "partial",
+                        },
+                        "capabilities": {
+                            "sample-capability": {
+                                "verification": {
+                                    "unit": "pass",
+                                    "integration": "pass",
+                                    "runtime": "pass",
+                                    "security": "pass",
+                                },
+                            },
+                        },
+                    },
+                },
+                {
+                    "id": "proj-without-status",
+                    "repository": "acme/proj-without-status",
+                    "name": "Proj Without Status",
+                    "development_status": "active",
+                    "adoption_percent": None,
+                    "role": "portfolio-governance",
+                    "domains": ["standards", "governance"],
+                },
+            ],
+        }
+
     def test_dashboard_exposes_revision_evidence_and_capability_verification(self):
-        dashboard = portfolio.render_dashboard(self.projects, self.milestones, self.agent_audit)
+        projects_doc = self._dashboard_evidence_fixture()
+        dashboard = portfolio.render_dashboard(
+            projects_doc, {"milestones": []}, {"repositories": []}
+        )
+        fixture_projects = portfolio.project_map(projects_doc)
+        with_evidence = fixture_projects["proj-with-evidence"]
+        without_status = fixture_projects["proj-without-status"]
+
         # A project with a recorded status/evidence gets a linked short-SHA revision
         # and a compact ci/security/runtime evidence summary.
-        beluga = portfolio.project_map(self.projects)["beluga"]
-        commit = beluga["status"]["evidence"]["commit"]
-        revision = beluga["status"]["revision"]
-        self.assertIn(f"[`{revision}`](https://github.com/{beluga['repository']}/commit/{commit})", dashboard)
-        self.assertIn("ci: pass · security: pass · runtime: partial", dashboard)
-        # Per-capability verification is rendered as a compact unit/integration/runtime/security summary.
+        commit = with_evidence["status"]["evidence"]["commit"]
+        revision = with_evidence["status"]["revision"]
         self.assertIn(
-            "| Beluga Manager | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |",
+            f"[`{revision}`](https://github.com/{with_evidence['repository']}/commit/{commit})",
             dashboard,
         )
-        # A project with no recorded status/evidence renders "—" rather than inventing a value.
+        self.assertIn(portfolio.fmt_revision(with_evidence), dashboard)
+        self.assertIn(portfolio.fmt_evidence(with_evidence), dashboard)
+        self.assertIn("ci: pass · security: pass · runtime: partial", dashboard)
+
+        # Per-capability verification is rendered as a compact unit/integration/runtime/security summary.
+        [(name, capability_id, summary)] = portfolio.capability_verification_rows(with_evidence)
+        self.assertIn(f"| {name} | `{capability_id}` | {summary} |", dashboard)
         self.assertIn(
-            "| [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | "
-            "— | standards, governance, security, compliance, portfolio | — | — |",
+            "| Proj With Evidence | `sample-capability` | "
+            "unit pass · integration pass · runtime pass · security pass |",
+            dashboard,
+        )
+
+        # A project with no recorded status/evidence renders "—" rather than inventing a value.
+        self.assertEqual(portfolio.fmt_revision(without_status), "—")
+        self.assertEqual(portfolio.fmt_evidence(without_status), "—")
+        self.assertIn(
+            f"| {portfolio.repo_link(without_status)} | `{without_status['role']}` | "
+            f"**{without_status['development_status']}** | "
+            f"{portfolio.fmt_percent(without_status.get('adoption_percent'))} | "
+            f"{', '.join(without_status['domains'])} | — | — |",
             dashboard,
         )
 
