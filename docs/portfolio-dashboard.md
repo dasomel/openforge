@@ -20,7 +20,7 @@
 | [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent | — | — |
 | [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations | — | — |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`ed1d870`](https://github.com/dasomel/kubemetal/commit/ed1d8709823547c8c4ee1efb1843701dffc635f7) | — |
-| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent | [`8dedb46`](https://github.com/dasomel/beluga/commit/8dedb4614da34752f07c15736ea06d3c3cbe9c4b) | ci: pass · security: pass · runtime: partial |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
 | [Beluga Manager](https://github.com/dasomel/beluga-manager) | `control-surface` | **active** | — | data-platform, management, ui | [`670a076`](https://github.com/dasomel/beluga-manager/commit/670a076a86c84929ddb5eb83a057efea4ba26b27) | ci: pass · security: pass · runtime: pass |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | — | — |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
@@ -37,7 +37,8 @@
 | Project | Capability | Verification (unit · integration · runtime · security) |
 |---|---|---|
 | Beluga | `compliance-baseline` | unit pass · integration pass · runtime not-applicable · security pass |
-| Beluga | `stream-iceberg` | unit pass · integration pass · runtime partial · security pass |
+| Beluga | `stream-iceberg` | unit pass · integration pass · runtime pass · security pass |
+| Beluga | `policy-compiler-seam` | unit pass · integration pass · runtime pass · security pass |
 | Beluga Manager | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
 
 ## Adoption snapshot
