@@ -9,15 +9,11 @@ OpenForge defines reusable engineering standards. Inspect the issue/spec and rep
 
 ## Instruction routing
 
-- `AGENTS.md` is the canonical portable repository contract.
-- Load detailed documents and `.agents/skills/` only when they are relevant to the current task; do not preload them by default.
-- Tool-specific adapters must contain only runtime-specific behavior and must not duplicate this contract.
+- `AGENTS.md` is the canonical portable repository contract. Claude Code adapters import it with `@AGENTS.md` and keep only Claude-specific integration below that import.
+- Keep canonical guidance model-agnostic; tool/model-specific files are thin adapters that do not duplicate this contract, unless measured failure evidence justifies a narrow compatibility override.
+- Load detailed documents and skills only when they are relevant to the current task.
 - Deterministic requirements belong in scripts, tests, linters, policy, or CI when they can be enforced reliably.
-
-- Keep canonical guidance model-agnostic; tool/model-specific files are thin adapters unless measured failure evidence justifies a narrow compatibility override.
-- Use `AGENTS.md` as the canonical portable repository contract. Claude Code adapters should import it with `@AGENTS.md` instead of copying shared rules; keep only Claude-specific integration below that import.
 - Treat template changes as portfolio-wide API changes: consider downstream repositories and backward compatibility.
-- Classify non-trivial work with `docs/change-management.md`. Class C/D and complex Class B work require an accepted Change Package that fixes requirements, acceptance scenarios, tasks, verification, rollback/recovery and expected evidence before broad implementation.
 - For bugs in templates/scripts, prefer reproduce -> failing test/evidence -> minimal fix -> same evidence passes -> relevant regression checks.
 - Preserve reproducible, privacy-safe engineering measurements during normal development according to `docs/research-evidence.md`; prefer structured machine-generated evidence and retain failures as well as successes.
 - Run verification appropriate to the change's risk and user impact. Safe local build/test/fix/retest work within the requested scope may proceed without repeated approval.
@@ -32,6 +28,8 @@ Detailed standards:
 
 
 ## Risk-scaled change workflow
+
+Classify non-trivial work with `docs/change-management.md`. A Change Package fixes requirements, acceptance scenarios, tasks, verification, rollback/recovery and expected evidence.
 
 - Class A documentation-only changes use the Issue/PR as the change record.
 - Class B internal behavior changes require explicit acceptance criteria; use a Change Package when the work is complex, cross-component, or operationally risky.
