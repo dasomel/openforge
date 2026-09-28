@@ -58,5 +58,3 @@ End substantive work as one of:
 - A: complete and verified
 - B: meaningful verified progress with the next blocker isolated
 - C: stop because further work needs unjustified scope, fragile patches, unsupported assumptions, or unacceptable risk
-
-Activity is not progress. Continue through implementation, relevant verification, and fixes caused by the change until one of these states is reached.
