@@ -1,5 +1,7 @@
 # Agent Skills Portfolio Audit — 2026-09
 
+> Historical: status as of 2026-09-09. Current maturity is tracked in `portfolio/agent-audit.json` and `docs/agent-audit-matrix.md`.
+
 This audit applies the OpenForge agent-skills layering model to actively developed `dasomel` OSS repositories and records the first portfolio rollout. The structural rollout was merged on 2026-09-09; project skills remain `draft` until the fresh-session verification work tracked by OpenForge issue #54 produces the machine-readable evidence required by the Agent Skills standard.
 
 ## Portfolio findings

@@ -2,7 +2,7 @@
 
 > Review date: **2026-08-28**
 >
-> Scope: the 10 projects currently presented as the CnE OSS portfolio. This is a documentation/adoption review, not a product maturity score. Repository evidence and the existing OpenForge portfolio audit were used as the baseline; items marked as gaps mean the evidence is missing, incomplete, inconsistent, or not yet optimized for an external first-time user.
+> Scope: the 10 projects presented as the CnE OSS portfolio at the 2026-08-28 review (a dated snapshot; `portfolio/projects.json` now lists 15). This is a documentation/adoption review, not a product maturity score. Repository evidence and the existing OpenForge portfolio audit were used as the baseline; items marked as gaps mean the evidence is missing, incomplete, inconsistent, or not yet optimized for an external first-time user.
 
 ## Review model
 
@@ -139,7 +139,7 @@ explicit fetch, and the scheduled CI audit -- which clones fresh -- is the autho
 
 | Repository | Local clone | `docs/IMPLEMENTATION-STATUS.md` on `origin/main` | Last verified |
 |---|---|---|---|
-| openforge | current | present | 2026-08-28 (local `main` carries an unpushed refresh to 2026-09-10) |
+| openforge | current | present | 2026-08-28 at fetch; refreshed to 2026-09-24 since (#121) |
 | narwhal | 10 behind | present | 2026-08-28 |
 | narwhal-portal | 12 behind | present | 2026-09-09 |
 | nfs-quota-agent | 8 behind | present | 2026-09-03 |
@@ -151,7 +151,7 @@ explicit fetch, and the scheduled CI audit -- which clones fresh -- is the autho
 All eight satisfy the presence half of `DOC-010`. The spread in verification dates is the useful
 signal: **narwhal** and **kubemetal** were last verified 2026-08-28 and therefore predate the
 Wave A-C changes tracked in #73, which makes them the drift candidates to re-verify first.
-OpenForge's own published snapshot is equally old until its local refresh is pushed.
+OpenForge's own snapshot was equally old at fetch time; it has since been refreshed (2026-09-24, #121).
 
 ### Not audited
 
