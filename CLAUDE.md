@@ -8,8 +8,6 @@ Repository-wide engineering rules are canonical in `AGENTS.md`. Keep this file l
 
 ## Claude Code
 
-- Use project skills and references only when their trigger/scope matches the task.
-- Keep deterministic validation in scripts/tests/CI rather than restating it here.
 - Put Claude-only hooks, commands, or harness behavior under `.claude/` when needed.
 - Do not require maintainer-global `~/.claude/CLAUDE.md` state for repository correctness.
 
