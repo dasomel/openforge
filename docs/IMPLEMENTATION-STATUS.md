@@ -47,7 +47,7 @@ A portable portfolio audit engine is implemented under the reusable template/scr
 - actionable gap-issue generation
 - parser/false-positive regression fixtures
 
-`portfolio/projects.json` registers 15 repositories (`portfolio.standard_metrics: 35`); the scored table in `docs/portfolio-scorecard.md` covers 14 of them, since Siqoq is registered with `role: "experiment"` and `adoption_percent: null` and is not yet scored. After the first adoption wave the portfolio scorecard records 61.6% adoption (`portfolio/dashboard.json` → `portfolio.adoption_percent`); that value is an evidence snapshot, not a permanent target.
+`portfolio/projects.json` registers 15 repositories (`portfolio.standard_metrics: 35`); the scored table in `docs/portfolio-scorecard.md` covers 14 of them, since Siqoq is registered with `role: "experiment"` and `adoption_percent: null` and is not yet scored. The registry-bound portfolio adoption figure is 61.6% (`portfolio/dashboard.json` → `portfolio.adoption_percent`, from revision-bound `portfolio/projects.json` evidence); it is an evidence snapshot, not a permanent target. The 70.6% in `docs/portfolio-scorecard.md` is a separate audit baseline across the 14 scored repositories and is not the dashboard figure.
 
 ## Branch / repository governance
 
