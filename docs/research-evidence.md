@@ -94,6 +94,26 @@ research/
 
 Legacy evidence may remain in its historical location and format. Reference it from the catalog rather than moving or rewriting it solely for research organization.
 
+## Portable recorder and validation
+
+Copy `templates/scripts/record-evidence.py` and `templates/scripts/check-research-evidence.py` to a project's `scripts/research/`. The recorder requires Python 3 and `jsonschema` and reads the repository slug from `origin` and the immutable revision from `HEAD`. It runs argv directly, measures wall-clock duration, and appends a record to `research/evidence/YYYY-MM.jsonl`. Command arguments, environment variables, and raw output are not stored. Explicit metadata is limited to scalar fields and secret-like values are redacted before writing.
+
+```sh
+python3 -m pip install 'jsonschema>=4.18,<5'
+python3 scripts/research/record-evidence.py --task 'make test' --event-type test -- make test
+make research-check
+```
+
+Use `RESEARCH_EVIDENCE_DIR` to write a disposable record outside the checkout. Record `agent_task` only with observed `--human-interventions` and `--review-corrections`. The recorder normalizes new task/environment labels to the v1 character rules; it does not rewrite old records or invent measurements. New records always have measured `duration_ms`; the schema permits `null` for evidence produced elsewhere when elapsed time was not observed. A validation failure after the recorded command returns exit code 2 and writes no record.
+
+Use the `test` event type for verification runs. The recorder accepts legacy CLI input `--event-type verification` and writes `test`; `verification` is not a v1 schema event type.
+
+The validator uses the canonical v1 schema, checks UTC timestamps, scans for secret patterns, and verifies each revision exists as a local commit. Run it before publishing structured evidence. If a shallow checkout lacks historical commits, fetch the required history before validating; the validator does not silently accept an unresolvable revision.
+
+### Historical schema exceptions
+
+Existing invalid lines stay append-only. List each known exception in `research/evidence/known-invalid.json` as an array of `{file, line, sha256, reason}` objects. `sha256` hashes the exact line bytes, including the newline. The validator skips only those exact bytes and fails if a listed line changes or disappears, or if a new invalid line appears. This exception is for existing records only; new records must conform. Remove an exception only after a linked correction record exists. Do not edit or delete the historical line.
+
 ## Research integrity
 
 Evidence collection is observational by default. A later paper may select a subset and define hypotheses, baselines, experimental controls, exclusion criteria, and statistical analysis separately. Do not optimize or selectively discard development records merely to improve a future result. Preserve schema versions, source references, limitations, failures, and exclusion reasons so future analysis can distinguish unavailable data from intentionally excluded data.
