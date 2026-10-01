@@ -99,31 +99,14 @@
         "warning_count": 0,
         "findings": []
       },
-      "swallowed_failures": [
-        {
-          "path": ".claude/commands/check.md",
-          "line": 25,
-          "command": "yq eval '.' \"$f\" > /dev/null",
-          "pattern": "echo-branch",
-          "reason": "every branch that reports the validator's result also exits 0, so a failing check still reports success"
-        },
-        {
-          "path": ".claude/commands/verify.md",
-          "line": 22,
-          "command": "yq eval '.' \"$f\" > /dev/null 2>&1",
-          "pattern": "echo-branch",
-          "reason": "every branch that reports the validator's result also exits 0, so a failing check still reports success"
-        }
-      ],
-      "swallowed_failure_count": 2,
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
       "local_agent_ci_gate": {
         "configured": false,
         "evidence": null,
         "reason": "no-gate-workflow"
       },
       "false_green_findings": [
-        "deterministic validator failure is neutralized: .claude/commands/check.md:25 (yq eval '.' \"$f\" > /dev/null)",
-        "deterministic validator failure is neutralized: .claude/commands/verify.md:22 (yq eval '.' \"$f\" > /dev/null 2>&1)",
         "agent contract changes have no repository-local CI gate (no-gate-workflow)"
       ],
       "manual_review": {
@@ -132,7 +115,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "72102a7d7c70a9d7e5b71a542bdb3d33f211ec2c"
+      "revision": "6bf756eba1f13d2b4e6e4363ab81063a060f7c7b"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -156,7 +139,9 @@
         "test": [
           "npm run test"
         ],
-        "lint": []
+        "lint": [
+          "npm run lint"
+        ]
       },
       "deterministic_controls": {
         "formatting": true,
@@ -174,9 +159,9 @@
             "path": ".agents/skills/narwhal-portal-backend/SKILL.md",
             "scope": "project",
             "owner": "dasomel/narwhal-portal",
-            "maturity": "draft",
+            "maturity": "verified",
             "version": "1",
-            "evidence_present": false
+            "evidence_present": true
           },
           {
             "name": "narwhal-portal-frontend",
@@ -200,13 +185,13 @@
         "canonical_count": 3,
         "adapter_count": 4,
         "maturity_counts": {
-          "draft": 1,
-          "verified": 2,
+          "draft": 0,
+          "verified": 3,
           "stable": 0,
           "deprecated": 0,
           "unspecified": 0
         },
-        "evidence_backed_mature_count": 2,
+        "evidence_backed_mature_count": 3,
         "error_count": 0,
         "warning_count": 0,
         "findings": []
@@ -225,13 +210,14 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "816e958c75e6f1e714bec940b32bfc33dba0b76f"
+      "revision": "a37968600b97196c20a0aa617e45fc19c4af0127"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
       "repository": "dasomel/beluga",
       "instructions": [
-        "AGENTS.md"
+        "AGENTS.md",
+        "CLAUDE.md"
       ],
       "source_of_truth_docs": [
         "README.md",
@@ -301,7 +287,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "d7023516422f19d708f4114475ec43dcd336c96f"
+      "revision": "d7436eb8faecb0b3a59bde0a4199882b8a9cf695"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -335,7 +321,7 @@
         "formatting": false,
         "lint": true,
         "tests": true,
-        "static-analysis": false,
+        "static-analysis": true,
         "security-policy": true,
         "generated-files": true
       },
@@ -382,7 +368,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "df5378b0e42dda37108fb452d3b5385899d16557"
+      "revision": "f25b4c96056b8db63c977872535d79ae862ffe15"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -478,7 +464,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "8de686fcbf204441a882b48fe49ce3710c9a1a8f"
+      "revision": "7269a101c01c611d6478a1189f975a67393d7d7c"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -515,9 +501,7 @@
         "security-policy": true,
         "generated-files": true
       },
-      "prompt_deterministic_hints": [
-        "naming"
-      ],
+      "prompt_deterministic_hints": [],
       "agent_skills": {
         "canonical": [
           {
@@ -568,7 +552,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "2a710c274088acd7d2aa456f933754e55f746191"
+      "revision": "2540f95f077fc871fa77f3bcf6a09f6115b32fba"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -649,7 +633,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "ff0ca1674d3666bb5c1e453577f31fd5754dacc6"
+      "revision": "e2c00a46a3b961077b4ad9e11cf913064632fd60"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -740,7 +724,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "8de5a418dbb367b0314d2c465defa3141a35d7ee"
+      "revision": "5d8f079cb1ca068c50297f81a1c6d40d1d9f4125"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -773,8 +757,8 @@
         "lint": true,
         "tests": true,
         "static-analysis": false,
-        "security-policy": false,
-        "generated-files": false
+        "security-policy": true,
+        "generated-files": true
       },
       "prompt_deterministic_hints": [],
       "agent_skills": {
@@ -784,7 +768,7 @@
             "path": ".agents/skills/egovframe-launcher-target-workflow/SKILL.md",
             "scope": "project",
             "owner": "dasomel/egovframe-launcher",
-            "maturity": "draft",
+            "maturity": "verified",
             "version": "1",
             "evidence_present": false
           }
@@ -792,16 +776,23 @@
         "canonical_count": 1,
         "adapter_count": 0,
         "maturity_counts": {
-          "draft": 1,
-          "verified": 0,
+          "draft": 0,
+          "verified": 1,
           "stable": 0,
           "deprecated": 0,
           "unspecified": 0
         },
         "evidence_backed_mature_count": 0,
-        "error_count": 0,
+        "error_count": 1,
         "warning_count": 0,
-        "findings": []
+        "findings": [
+          {
+            "severity": "error",
+            "code": "SKILL-VERIFICATION-EVIDENCE",
+            "path": ".agents/skills/egovframe-launcher-target-workflow/SKILL.md",
+            "message": "verified skill requires .agents/skill-evals/egovframe-launcher-target-workflow.json."
+          }
+        ]
       },
       "swallowed_failures": [],
       "swallowed_failure_count": 0,
@@ -811,6 +802,7 @@
         "reason": "no-gate-workflow"
       },
       "false_green_findings": [
+        "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
         "agent contract changes have no repository-local CI gate (no-gate-workflow)"
       ],
       "manual_review": {
@@ -819,7 +811,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "e30597f5881639a1b7424572fe288cb5ed74b81f"
+      "revision": "638706b2312068fcba0a57b386fd75c7b2bea720"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -950,14 +942,8 @@
         },
         "evidence_backed_mature_count": 1,
         "error_count": 0,
-        "warning_count": 9,
+        "warning_count": 8,
         "findings": [
-          {
-            "severity": "warn",
-            "code": "CLAUDE-GLOBAL-DEPENDENCY",
-            "path": "CLAUDE.md",
-            "message": "Repository behavior references a maintainer-global Claude configuration; keep it optional."
-          },
           {
             "severity": "warn",
             "code": "SKILL-MATURITY-MISSING",
@@ -1070,7 +1056,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "b4d3256de9c089c686b1cdf43c35442207c86e56"
+      "revision": "fbaca4bc619d1c95562fcf7792acaaa40098f16e"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -1157,7 +1143,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "a916914b336b3cab31f62b319157947b814d18bf"
+      "revision": "0c4ee549b2a3765f2d1a7467699ccee3ffe15cb5"
     }
   ]
 }
