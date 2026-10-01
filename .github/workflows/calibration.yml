@@ -45,12 +45,12 @@ jobs:
 
     steps:
       - name: Checkout OpenForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: openforge
 
       - name: Checkout reference project
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: ${{ matrix.repository }}
           ref: ${{ matrix.ref }}
@@ -98,12 +98,12 @@ jobs:
     runs-on: ubuntu-24.04
     steps:
       - name: Checkout OpenForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: openforge
 
       - name: Checkout NFS Quota Agent
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           repository: dasomel/nfs-quota-agent
           ref: 2e8ff66eb26f40964aeaf44bfcbf94ebe110fc8c
@@ -173,7 +173,7 @@ jobs:
 
     steps:
       - name: Checkout OpenForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: openforge
 
@@ -240,7 +240,7 @@ jobs:
 
     steps:
       - name: Checkout OpenForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: openforge
 
@@ -309,7 +309,7 @@ jobs:
 
     steps:
       - name: Checkout OpenForge
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
         with:
           path: openforge
 
