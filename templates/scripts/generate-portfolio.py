@@ -369,7 +369,14 @@ def build_agent_audit_view(agent_audit_doc: dict[str, Any]) -> dict[str, Any]:
         skills = repo.get("agent_skills", {})
         maturity_counts = skills.get("maturity_counts", {})
         canonical_skills_total += skills.get("canonical_count", 0)
-        evidence_backed_total += skills.get("evidence_backed_mature_count", 0)
+        # D1: Derive rows and totals from evidence to avoid claimed-maturity false greens.
+        # Cost: one canonical-skill scan per repo; revert if the audit schema replaces canonical.
+        evidence_backed_count = sum(
+            skill.get("maturity") in {"verified", "stable"}
+            and skill.get("evidence_present") is True
+            for skill in skills.get("canonical") or []
+        )
+        evidence_backed_total += evidence_backed_count
         error_total += skills.get("error_count", 0)
         for level in MATURITY_LEVELS:
             maturity_totals[level] += maturity_counts.get(level, 0)
@@ -405,7 +412,7 @@ def build_agent_audit_view(agent_audit_doc: dict[str, Any]) -> dict[str, Any]:
                     "canonical_count": skills.get("canonical_count", 0),
                     "adapter_count": skills.get("adapter_count", 0),
                     "maturity_counts": maturity_counts,
-                    "evidence_backed_mature_count": skills.get("evidence_backed_mature_count", 0),
+                    "evidence_backed_mature_count": evidence_backed_count,
                     "error_count": skills.get("error_count", 0),
                     "warning_count": skills.get("warning_count", 0),
                 },
@@ -531,12 +538,11 @@ def render_dashboard(
         f"- Repositories with a local agent CI gate: **{fmt_optional_int(audit_summary['repositories_with_local_ci_gate'])}** "
         f"(measured in {audit_summary['local_ci_gate_measured_repositories']} of {audit_summary['repositories']} repositories)",
         "",
-        "| Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |",
+        "| Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |",
         "|---|---|---:|---:|---:|---:|",
     ]
     for repo in agent_audit["repositories"]:
-        maturity = repo["agent_skills"]["maturity_counts"]
-        verified_stable = maturity.get("verified", 0) + maturity.get("stable", 0)
+        verified_stable = repo["agent_skills"]["evidence_backed_mature_count"]
         lines.append(
             f"| {repo['repository']} | {fmt_short_revision(repo['revision'])} | "
             f"{len(repo['false_green_findings'])} | {repo['agent_skills']['canonical_count']} | "

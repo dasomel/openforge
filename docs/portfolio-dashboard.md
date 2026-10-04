@@ -74,19 +74,19 @@
 - Swallowed-failure findings: **0** (measured in 11 of 11 repositories)
 - Repositories with a local agent CI gate: **2** (measured in 11 of 11 repositories)
 
-| Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |
+| Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
 | dasomel/narwhal | `6bf756e` | 1 | 4 | 2 | 0 |
 | dasomel/narwhal-portal | `a379686` | 0 | 3 | 3 | 0 |
 | dasomel/beluga | `d7436eb` | 1 | 1 | 0 | 0 |
 | dasomel/beluga-manager | `f25b4c9` | 1 | 1 | 0 | 0 |
-| dasomel/kubemetal | `7269a10` | 2 | 1 | 1 | 1 |
-| dasomel/clusterdeck | `2540f95` | 2 | 1 | 1 | 1 |
-| dasomel/ldapium | `e2c00a4` | 2 | 1 | 1 | 1 |
+| dasomel/kubemetal | `7269a10` | 2 | 1 | 0 | 1 |
+| dasomel/clusterdeck | `2540f95` | 2 | 1 | 0 | 1 |
+| dasomel/ldapium | `e2c00a4` | 2 | 1 | 0 | 1 |
 | dasomel/nfs-quota-agent | `5d8f079` | 1 | 1 | 1 | 0 |
-| dasomel/egovframe-launcher | `638706b` | 2 | 1 | 1 | 1 |
+| dasomel/egovframe-launcher | `638706b` | 2 | 1 | 0 | 1 |
 | dasomel/kube-ready-box | `fbaca4b` | 0 | 9 | 1 | 0 |
-| dasomel/siqoq | `0c4ee54` | 2 | 1 | 1 | 1 |
+| dasomel/siqoq | `0c4ee54` | 2 | 1 | 0 | 1 |
 
 ## Status publication workflow
 
