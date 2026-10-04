@@ -97,31 +97,14 @@
         "warning_count": 0,
         "findings": []
       },
-      "swallowed_failures": [
-        {
-          "path": ".claude/commands/check.md",
-          "line": 25,
-          "command": "yq eval '.' \"$f\" > /dev/null",
-          "pattern": "echo-branch",
-          "reason": "every branch that reports the validator's result also exits 0, so a failing check still reports success"
-        },
-        {
-          "path": ".claude/commands/verify.md",
-          "line": 22,
-          "command": "yq eval '.' \"$f\" > /dev/null",
-          "pattern": "echo-branch",
-          "reason": "every branch that reports the validator's result also exits 0, so a failing check still reports success"
-        }
-      ],
-      "swallowed_failure_count": 2,
+      "swallowed_failures": [],
+      "swallowed_failure_count": 0,
       "local_agent_ci_gate": {
         "configured": false,
         "evidence": null,
         "reason": "no-gate-workflow"
       },
       "false_green_findings": [
-        "deterministic validator failure is neutralized: .claude/commands/check.md:25 (yq eval '.' \"$f\" > /dev/null)",
-        "deterministic validator failure is neutralized: .claude/commands/verify.md:22 (yq eval '.' \"$f\" > /dev/null)",
         "agent contract changes have no repository-local CI gate (no-gate-workflow)"
       ],
       "manual_review": {
@@ -130,7 +113,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "c4080aa76f499a7e01d7abd4c7119bb6cfd56e09"
+      "revision": "330a3fbe1dcfab3129a7767b3c3bb6a152a68185"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -383,7 +366,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "022ff305a8ed1d9f42aa2a9204f6a1f448b8feb9"
+      "revision": "2081fef95dccac1960e7dbf1668d8daf4777e079"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -446,15 +429,8 @@
         },
         "evidence_backed_mature_count": 1,
         "error_count": 0,
-        "warning_count": 1,
-        "findings": [
-          {
-            "severity": "warn",
-            "code": "CLAUDE-GLOBAL-DEPENDENCY",
-            "path": "CLAUDE.md",
-            "message": "Repository behavior references a maintainer-global Claude configuration; keep it optional."
-          }
-        ]
+        "warning_count": 0,
+        "findings": []
       },
       "swallowed_failures": [],
       "swallowed_failure_count": 0,
@@ -846,186 +822,89 @@
           {
             "name": "source-command-add-mistake",
             "path": ".agents/skills/source-command-add-mistake/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-build",
             "path": ".agents/skills/source-command-build/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-check",
             "path": ".agents/skills/source-command-check/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-commit-push-pr",
             "path": ".agents/skills/source-command-commit-push-pr/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-ralph",
             "path": ".agents/skills/source-command-ralph/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-test-box",
             "path": ".agents/skills/source-command-test-box/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-upload",
             "path": ".agents/skills/source-command-upload/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           },
           {
             "name": "source-command-validate",
             "path": ".agents/skills/source-command-validate/SKILL.md",
-            "scope": null,
-            "owner": null,
-            "maturity": null,
-            "version": null,
+            "scope": "project",
+            "owner": "dasomel/kube-ready-box",
+            "maturity": "draft",
+            "version": "1",
             "evidence_present": false
           }
         ],
         "canonical_count": 9,
         "adapter_count": 0,
         "maturity_counts": {
-          "draft": 0,
+          "draft": 8,
           "verified": 1,
           "stable": 0,
           "deprecated": 0,
-          "unspecified": 8
+          "unspecified": 0
         },
         "evidence_backed_mature_count": 1,
         "error_count": 0,
-        "warning_count": 8,
-        "findings": [
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-add-mistake/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-add-mistake/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-build/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-build/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-check/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-check/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-commit-push-pr/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-commit-push-pr/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-ralph/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-ralph/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-test-box/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-test-box/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-upload/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-upload/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          },
-          {
-            "severity": "warn",
-            "code": "SKILL-MATURITY-MISSING",
-            "path": ".agents/skills/source-command-validate/SKILL.md",
-            "message": "Canonical skill has no metadata.openforge-maturity; add draft, verified, stable, or deprecated."
-          },
-          {
-            "severity": "info",
-            "code": "SKILL-SCOPE-MISSING",
-            "path": ".agents/skills/source-command-validate/SKILL.md",
-            "message": "Add OpenForge scope/owner/maturity/version metadata during migration."
-          }
-        ]
+        "warning_count": 0,
+        "findings": []
       },
       "swallowed_failures": [],
       "swallowed_failure_count": 0,
@@ -1041,7 +920,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "5e1c467ff1b64c6161c7cd35d08a1dd817e4348b"
+      "revision": "62010a9695aa1560c00137a7653bceba170ea708"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",

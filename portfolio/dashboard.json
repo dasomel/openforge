@@ -963,18 +963,18 @@
     "summary": {
       "repositories": 11,
       "repositories_with_false_green": 9,
-      "false_green_findings": 11,
+      "false_green_findings": 9,
       "canonical_skills": 24,
       "skill_maturity": {
-        "draft": 4,
+        "draft": 12,
         "verified": 12,
         "stable": 0,
         "deprecated": 0,
-        "unspecified": 8
+        "unspecified": 0
       },
       "evidence_backed_mature_skills": 12,
       "skill_audit_errors": 0,
-      "swallowed_failure_findings": 2,
+      "swallowed_failure_findings": 0,
       "swallowed_failure_findings_measured_repositories": 11,
       "repositories_with_local_ci_gate": 2,
       "local_ci_gate_measured_repositories": 11
@@ -982,10 +982,8 @@
     "repositories": [
       {
         "repository": "dasomel/narwhal",
-        "revision": "c4080aa76f499a7e01d7abd4c7119bb6cfd56e09",
+        "revision": "330a3fbe1dcfab3129a7767b3c3bb6a152a68185",
         "false_green_findings": [
-          "deterministic validator failure is neutralized: .claude/commands/check.md:25 (yq eval '.' \"$f\" > /dev/null)",
-          "deterministic validator failure is neutralized: .claude/commands/verify.md:22 (yq eval '.' \"$f\" > /dev/null)",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1010,7 +1008,7 @@
           "error_count": 0,
           "warning_count": 0
         },
-        "swallowed_failure_count": 2,
+        "swallowed_failure_count": 0,
         "local_agent_ci_gate": {
           "configured": false,
           "evidence": null,
@@ -1087,7 +1085,7 @@
       },
       {
         "repository": "dasomel/beluga-manager",
-        "revision": "022ff305a8ed1d9f42aa2a9204f6a1f448b8feb9",
+        "revision": "2081fef95dccac1960e7dbf1668d8daf4777e079",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1146,7 +1144,7 @@
           },
           "evidence_backed_mature_count": 1,
           "error_count": 0,
-          "warning_count": 1
+          "warning_count": 0
         },
         "swallowed_failure_count": 0,
         "local_agent_ci_gate": {
@@ -1297,7 +1295,7 @@
       },
       {
         "repository": "dasomel/kube-ready-box",
-        "revision": "5e1c467ff1b64c6161c7cd35d08a1dd817e4348b",
+        "revision": "62010a9695aa1560c00137a7653bceba170ea708",
         "false_green_findings": [],
         "deterministic_controls": {
           "formatting": true,
@@ -1311,15 +1309,15 @@
           "canonical_count": 9,
           "adapter_count": 0,
           "maturity_counts": {
-            "draft": 0,
+            "draft": 8,
             "verified": 1,
             "stable": 0,
             "deprecated": 0,
-            "unspecified": 8
+            "unspecified": 0
           },
           "evidence_backed_mature_count": 1,
           "error_count": 0,
-          "warning_count": 8
+          "warning_count": 0
         },
         "swallowed_failure_count": 0,
         "local_agent_ci_gate": {
