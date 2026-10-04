@@ -29,7 +29,7 @@ ABSOLUTE_PATH_RE = re.compile(r"(?:/Users/[^/\s]+|/home/[^/\s]+|[A-Za-z]:\\Users
 # very check asks maintainers to use) is compliant, not a violation -- match on presence alone
 # would flag the disclaimer sentence itself as the thing it's disclaiming.
 GLOBAL_DEPENDENCY_DISCLAIMER_RE = re.compile(
-    r"\b(?:do(?:es)?\s+not|don'?t|never|without)\b.{0,40}\brequir", re.IGNORECASE
+    r"\b(?:(?:do(?:es)?|is|are)\s+not|don'?t|never|without)\b.{0,40}\brequir", re.IGNORECASE
 )
 GENERIC_PROJECT_NAMES = {
     "build",
