@@ -446,6 +446,76 @@ class EscapeHatchTests(DetectorTestCase):
 class EchoBranchFalseGreenTests(DetectorTestCase):
     """Issue #91: both branches of a conditional report a validator's result but exit 0."""
 
+    def test_narwhal_failure_only_echo_loop_is_detected(self):
+        """narwhal@6bf756e commands report yq failures, then helm hides the status."""
+        root = self.repo()
+        self.write(
+            root,
+            ".claude/commands/check.md",
+            '# Check\n\n```bash\n'
+            'for f in gitops/resources/*.yaml; do\n'
+            '  yq eval \'.\' "$f" > /dev/null || echo "FAIL: $f"\n'
+            'done\n'
+            'helm template demo ./chart\n'
+            '```\n',
+        )
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+        self.assertEqual(5, findings[0].line)
+        self.assertIn("yq eval", findings[0].command)
+
+    def test_failure_only_printf_is_detected(self):
+        root = self.repo()
+        self.write(root, "scripts/check.sh", 'yq eval "." config.yaml > /dev/null || printf "FAIL\\n"\n')
+        findings = self.scan(root)
+        self.assertEqual(1, len(findings))
+        self.assertEqual("echo-branch", findings[0].pattern)
+
+    def test_failure_only_report_redirected_to_stderr_is_detected(self):
+        # `>&2` carries an `&` that must not read as a background operator and hide the finding.
+        for redirect in ('>&2', '2>&1', '&> /dev/null'):
+            with self.subTest(redirect=redirect):
+                root = self.repo()
+                self.write(root, "scripts/check.sh", f'yq eval "." config.yaml > /dev/null || echo "FAIL" {redirect}\n')
+                findings = self.scan(root)
+                self.assertEqual(1, len(findings))
+                self.assertEqual("echo-branch", findings[0].pattern)
+
+    def test_failure_only_report_with_exit_propagation_is_not_flagged(self):
+        for command in (
+            'fail=0\nfor f in gitops/resources/*.yaml; do\n'
+            '  yq eval \'.\' "$f" > /dev/null || echo "FAIL: $f"; fail=1\n'
+            'done\nexit $fail\n',
+            'yq eval "." config.yaml > /dev/null || { echo FAIL; exit 1; }\n',
+            'yq eval "." config.yaml > /dev/null || echo FAIL && exit 1\n',
+            'yq eval "." config.yaml > /dev/null || echo FAIL; exit 1\n',
+        ):
+            with self.subTest(command=command):
+                root = self.repo()
+                self.write(root, ".claude/commands/verify.md", "```bash\n" + command + "```\n")
+                self.assertNoFindings(root)
+
+    def test_failure_only_report_for_unknown_program_or_data_is_not_flagged(self):
+        for command in (
+            "codegraph impact get_cluster_status || echo FAIL",
+            'grep -r "TODO" . || printf "Nothing found"',
+        ):
+            with self.subTest(command=command):
+                root = self.repo()
+                self.write(root, "scripts/check.sh", command + "\n")
+                self.assertNoFindings(root)
+
+    def test_failure_only_report_suppression_markers_are_respected(self):
+        for command in (
+            'yq eval "." config.yaml > /dev/null || echo FAIL # openforge: allow-swallow',
+            '# openforge: allow-swallow\nyq eval "." config.yaml > /dev/null || echo FAIL',
+        ):
+            with self.subTest(command=command):
+                root = self.repo()
+                self.write(root, "scripts/check.sh", command + "\n")
+                self.assertNoFindings(root)
+
     def test_narwhal_pre_fix_validate_target_is_detected(self):
         """narwhal's original `validate:` (PR #197's diff) -- `make validate` always exits 0."""
         root = self.repo()

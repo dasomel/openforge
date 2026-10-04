@@ -67,26 +67,26 @@
 
 - Audited repositories: **11**
 - Repositories with false-green findings: **9**
-- False-green findings (total): **15**
+- False-green findings (total): **14**
 - Canonical agent skills: **24**
-- Evidence-backed mature skills: **6**
-- Skill audit errors: **4**
-- Swallowed-failure findings: **2** (measured in 11 of 11 repositories)
+- Evidence-backed mature skills: **7**
+- Skill audit errors: **5**
+- Swallowed-failure findings: **0** (measured in 11 of 11 repositories)
 - Repositories with a local agent CI gate: **2** (measured in 11 of 11 repositories)
 
-| Repository | Revision | False-green findings | Canonical skills | Verified+stable skills | Skill audit errors |
+| Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
-| dasomel/narwhal | `72102a7` | 3 | 4 | 2 | 0 |
-| dasomel/narwhal-portal | `816e958` | 0 | 3 | 2 | 0 |
-| dasomel/beluga | `d702351` | 1 | 1 | 0 | 0 |
-| dasomel/beluga-manager | `df5378b` | 1 | 1 | 0 | 0 |
-| dasomel/kubemetal | `8de686f` | 2 | 1 | 1 | 1 |
-| dasomel/clusterdeck | `2a710c2` | 2 | 1 | 1 | 1 |
-| dasomel/ldapium | `ff0ca16` | 2 | 1 | 1 | 1 |
-| dasomel/nfs-quota-agent | `8de5a41` | 1 | 1 | 1 | 0 |
-| dasomel/egovframe-launcher | `e30597f` | 1 | 1 | 0 | 0 |
-| dasomel/kube-ready-box | `b4d3256` | 0 | 9 | 1 | 0 |
-| dasomel/siqoq | `a916914` | 2 | 1 | 1 | 1 |
+| dasomel/narwhal | `6bf756e` | 1 | 4 | 2 | 0 |
+| dasomel/narwhal-portal | `a379686` | 0 | 3 | 3 | 0 |
+| dasomel/beluga | `d7436eb` | 1 | 1 | 0 | 0 |
+| dasomel/beluga-manager | `f25b4c9` | 1 | 1 | 0 | 0 |
+| dasomel/kubemetal | `7269a10` | 2 | 1 | 0 | 1 |
+| dasomel/clusterdeck | `2540f95` | 2 | 1 | 0 | 1 |
+| dasomel/ldapium | `e2c00a4` | 2 | 1 | 0 | 1 |
+| dasomel/nfs-quota-agent | `5d8f079` | 1 | 1 | 1 | 0 |
+| dasomel/egovframe-launcher | `638706b` | 2 | 1 | 0 | 1 |
+| dasomel/kube-ready-box | `fbaca4b` | 0 | 9 | 1 | 0 |
+| dasomel/siqoq | `0c4ee54` | 2 | 1 | 0 | 1 |
 
 ## Status publication workflow
 

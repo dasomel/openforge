@@ -268,6 +268,7 @@ STATUS_READ_RE = re.compile(r"\$\?|\bif\s*!|\|\|\s*exit\b|\bexit\s+\$|\breturn\s
 AND_OR_ECHO_RE = re.compile(
     r"^(?P<pre>.*?)&&\s*(?:echo|printf)\b[^;|]*?\|\|\s*(?:echo|printf)\b"
 )
+OR_ECHO_RE = re.compile(r"^(?P<pre>.*?)\|\|\s*(?P<report>(?:echo|printf)\b.*)$")
 IF_THEN_ELSE_ECHO_RE = re.compile(
     r"\bif\s+(?P<command>.+?)\s*;\s*then\s+(?:echo|printf)\b.*?;\s*else\s+(?:echo|printf)\b.*?;\s*fi\b"
 )
@@ -407,13 +408,28 @@ def _last_statement(segment: str) -> str:
 def _detect_echo_branch_false_green(stripped: str) -> Optional[str]:
     """Return the validator command when every branch reporting its result also succeeds.
 
-    Covers both `cmd && echo ok || echo fail` and `if cmd; then echo ok; else echo fail; fi`.
+    Covers failure-only reports, both-report chains, and inline if/then/else reports.
     Only the command, not the finding -- callers still run it through `classify_command` and
     the same escape hatches as every other pattern here.
     """
     match = AND_OR_ECHO_RE.match(stripped)
     if match:
-        return _last_statement(match.group("pre"))
+        report = _split_outside_quotes(_strip_trailing_comment(stripped), "||")[-1]
+        statements = [report]
+        for operator in (";", "&&", "||"):
+            statements = [part for statement in statements for part in _split_outside_quotes(statement, operator)]
+        if not any(re.match(r"\s*exit\s+(?:[1-9][0-9]*|\$)", statement) for statement in statements):
+            return _last_statement(match.group("pre"))
+        return None
+    report_match = OR_ECHO_RE.match(_strip_trailing_comment(stripped).rstrip().rstrip(";"))
+    if report_match:
+        # D1: Require a sole report command to avoid hiding same-statement exits; cost:
+        # compound report handlers are skipped. Extend parsing here if evidence needs them.
+        # `>&2` / `&>` are redirections, not the `&` background operator -- `echo FAIL >&2` is
+        # the usual way to report a failure and still exits 0.
+        report = re.sub(r"\d*>&\d+|&>>?", "", report_match.group("report"))
+        if all(len(_split_outside_quotes(report, operator)) == 1 for operator in (";", "&&", "||", "|", "&")):
+            return _last_statement(report_match.group("pre"))
     match = IF_THEN_ELSE_ECHO_RE.search(stripped)
     if match:
         return match.group("command").strip()
