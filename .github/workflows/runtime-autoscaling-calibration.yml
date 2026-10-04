@@ -36,7 +36,7 @@ jobs:
             manifest: openforge/examples/calibration/runtime-autoscaling-degraded.json
             output_prefix: runtime-autoscaling-degraded
     steps:
-      - uses: actions/checkout@v5
+      - uses: actions/checkout@v7
         with:
           path: openforge
       - uses: dtolnay/rust-toolchain@stable

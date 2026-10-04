@@ -36,7 +36,7 @@ jobs:
             manifest: openforge/examples/calibration/runtime-scheduling-degraded.json
             output_prefix: runtime-scheduling-degraded
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           path: openforge
       - uses: dtolnay/rust-toolchain@stable
