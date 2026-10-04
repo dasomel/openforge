@@ -9,6 +9,7 @@ on:
     paths:
       - 'templates/scripts/audit-agent-engineering.py'
       - 'templates/scripts/audit-agent-skills.py'
+      - 'templates/scripts/swallowed_failure_detector.py'
       - 'templates/scripts/generate-agent-audit-matrix.py'
       - '.github/workflows/refresh-agent-audit.yml'
 
