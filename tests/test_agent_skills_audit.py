@@ -111,6 +111,25 @@ metadata:
         )
         self.assertNotIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
 
+    def test_claude_md_saying_global_config_is_not_required_is_not_flagged(self):
+        root = self.make_repo("draft")
+        (root / "CLAUDE.md").write_text(
+            "@AGENTS.md\n\n"
+            "A maintainer-global `~/.claude/CLAUDE.md` may add personal preferences but is not "
+            "required for repository correctness.\n",
+            encoding="utf-8",
+        )
+        self.assertNotIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
+
+    def test_claude_md_with_unrelated_not_is_still_flagged(self):
+        root = self.make_repo("draft")
+        (root / "CLAUDE.md").write_text(
+            "@AGENTS.md\n\n"
+            "This is not optional: ~/.claude/CLAUDE.md must be installed first.\n",
+            encoding="utf-8",
+        )
+        self.assertIn("CLAUDE-GLOBAL-DEPENDENCY", self.all_codes(root))
+
     def test_claude_md_requiring_global_config_is_flagged(self):
         root = self.make_repo("draft")
         (root / "CLAUDE.md").write_text(
