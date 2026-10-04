@@ -963,7 +963,7 @@
     "summary": {
       "repositories": 11,
       "repositories_with_false_green": 9,
-      "false_green_findings": 16,
+      "false_green_findings": 11,
       "canonical_skills": 24,
       "skill_maturity": {
         "draft": 4,
@@ -972,8 +972,8 @@
         "deprecated": 0,
         "unspecified": 8
       },
-      "evidence_backed_mature_skills": 7,
-      "skill_audit_errors": 5,
+      "evidence_backed_mature_skills": 12,
+      "skill_audit_errors": 0,
       "swallowed_failure_findings": 2,
       "swallowed_failure_findings_measured_repositories": 11,
       "repositories_with_local_ci_gate": 2,
@@ -1052,7 +1052,7 @@
       },
       {
         "repository": "dasomel/beluga",
-        "revision": "6d0111e37d1aaac8af70da91c5422de8b9bda14b",
+        "revision": "742ca497710a688c1db9b9f3855bb073f82a3b36",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1087,7 +1087,7 @@
       },
       {
         "repository": "dasomel/beluga-manager",
-        "revision": "bcc97a5f66b5b29c6737d623ffcf0005183470c3",
+        "revision": "022ff305a8ed1d9f42aa2a9204f6a1f448b8feb9",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1122,9 +1122,8 @@
       },
       {
         "repository": "dasomel/kubemetal",
-        "revision": "4e48a5e2a67a96e5fb41097778e15d9cb8f7c42d",
+        "revision": "1b4e1d34fa45c23089589a81624567c80d6d2929",
         "false_green_findings": [
-          "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1145,8 +1144,8 @@
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
-          "error_count": 1,
+          "evidence_backed_mature_count": 1,
+          "error_count": 0,
           "warning_count": 1
         },
         "swallowed_failure_count": 0,
@@ -1158,9 +1157,8 @@
       },
       {
         "repository": "dasomel/clusterdeck",
-        "revision": "2540f95f077fc871fa77f3bcf6a09f6115b32fba",
+        "revision": "36f9207eeb64a948421ce9612611bc828484c983",
         "false_green_findings": [
-          "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1181,8 +1179,8 @@
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
-          "error_count": 1,
+          "evidence_backed_mature_count": 1,
+          "error_count": 0,
           "warning_count": 0
         },
         "swallowed_failure_count": 0,
@@ -1194,9 +1192,8 @@
       },
       {
         "repository": "dasomel/ldapium",
-        "revision": "593c1d218ecc0501991bf8a4a46ba5e4ae7345b4",
+        "revision": "5937b2cbcbbadb06e9fba61da4d6fd987831bdd6",
         "false_green_findings": [
-          "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1217,8 +1214,8 @@
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
-          "error_count": 1,
+          "evidence_backed_mature_count": 1,
+          "error_count": 0,
           "warning_count": 0
         },
         "swallowed_failure_count": 0,
@@ -1265,9 +1262,8 @@
       },
       {
         "repository": "dasomel/egovframe-launcher",
-        "revision": "638706b2312068fcba0a57b386fd75c7b2bea720",
+        "revision": "7304c08bf268b70e5d980ac01ee78e5edcf557ea",
         "false_green_findings": [
-          "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1288,8 +1284,8 @@
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
-          "error_count": 1,
+          "evidence_backed_mature_count": 1,
+          "error_count": 0,
           "warning_count": 0
         },
         "swallowed_failure_count": 0,
@@ -1334,9 +1330,8 @@
       },
       {
         "repository": "dasomel/siqoq",
-        "revision": "82112116609fb8710b6ed798264e4009c744a3c8",
+        "revision": "8faac049c8878d84fa4d472e6416349ad1508607",
         "false_green_findings": [
-          "Agent Skills audit reports 1 error(s); maturity/evidence claims are not fully valid",
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
         "deterministic_controls": {
@@ -1357,8 +1352,8 @@
             "deprecated": 0,
             "unspecified": 0
           },
-          "evidence_backed_mature_count": 0,
-          "error_count": 1,
+          "evidence_backed_mature_count": 1,
+          "error_count": 0,
           "warning_count": 0
         },
         "swallowed_failure_count": 0,
