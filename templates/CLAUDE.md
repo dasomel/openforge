@@ -2,7 +2,7 @@
 
 # Claude adapter
 
-> Claude Code v2.1.277+ reads `AGENTS.md` natively only when this file is absent. Because this adapter exists, keep the explicit import above. If the repository no longer needs any Claude-only integration, delete `CLAUDE.md` instead of duplicating the shared contract.
+> Claude Code v2.1.277+ reads `AGENTS.md` natively only when this file is absent. Keep this bridge even without Claude-only content: wrappers such as `agyp` inject only `CLAUDE.md` (expanding `@AGENTS.md` one level), so a repository without it is invisible to those workers. Never duplicate the shared contract here.
 
 Keep this file limited to Claude-specific behavior. Repository-wide engineering rules belong in `AGENTS.md`; repeatable project workflows belong in project skills; deterministic checks belong in scripts/tests/CI.
 
