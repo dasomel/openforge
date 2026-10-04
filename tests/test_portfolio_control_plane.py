@@ -208,6 +208,10 @@ class PortfolioControlPlaneTests(unittest.TestCase):
             "deterministic_controls": {"formatting": True, "lint": True, "tests": False},
             "agent_skills": {
                 "canonical_count": 2,
+                "canonical": [
+                    {"maturity": "draft", "evidence_present": False},
+                    {"maturity": "verified", "evidence_present": True},
+                ],
                 "adapter_count": 1,
                 "maturity_counts": {"draft": 1, "verified": 1, "stable": 0, "deprecated": 0, "unspecified": 0},
                 "evidence_backed_mature_count": 1,
@@ -222,6 +226,7 @@ class PortfolioControlPlaneTests(unittest.TestCase):
             "deterministic_controls": {"formatting": True, "lint": True, "tests": True},
             "agent_skills": {
                 "canonical_count": 1,
+                "canonical": [{"maturity": "stable", "evidence_present": True}],
                 "adapter_count": 0,
                 "maturity_counts": {"draft": 0, "verified": 0, "stable": 1, "deprecated": 0, "unspecified": 0},
                 "evidence_backed_mature_count": 1,
@@ -261,6 +266,25 @@ class PortfolioControlPlaneTests(unittest.TestCase):
             [repo["repository"] for repo in view["repositories"]],
             ["dasomel/repo-a", "dasomel/repo-b"],
         )
+
+    def test_dashboard_counts_only_evidence_backed_mature_skills(self):
+        fixture = self._agent_audit_fixture()
+        skills = fixture["repositories"][0]["agent_skills"]
+        skills["canonical"] = [
+            {"maturity": "draft", "evidence_present": True},
+            {"maturity": "verified", "evidence_present": False},
+        ]
+        skills["evidence_backed_mature_count"] = 0
+        fixture["repositories"][1]["agent_skills"]["canonical"] = [
+            {"maturity": "stable", "evidence_present": True},
+        ]
+        dashboard = portfolio.render_dashboard(self.projects, self.milestones, fixture)
+        rows = [line for line in dashboard.splitlines() if line.startswith("| dasomel/repo-")]
+        counts = [int(row.split("|")[5].strip()) for row in rows]
+        self.assertEqual(counts, [0, 1])
+        self.assertIn("| Evidence-backed verified+stable skills |", dashboard)
+        summary = portfolio.build_agent_audit_view(fixture)["summary"]
+        self.assertEqual(summary["evidence_backed_mature_skills"], sum(counts))
 
     def test_repository_without_swallowed_failure_count_yields_null_not_zero(self):
         view = portfolio.build_agent_audit_view(self._agent_audit_fixture())
