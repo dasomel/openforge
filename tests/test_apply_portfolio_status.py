@@ -374,6 +374,37 @@ class ApplyPortfolioStatusCliTests(unittest.TestCase):
         with self.assertRaises(SystemExit):
             self._run_main([str(payload_path)])
 
+    def _registry_date_after(self, payload_date: Any, registry_date: Any = "2026-09-24") -> Any:
+        doc = json.loads(self.projects_path.read_text(encoding="utf-8"))
+        doc["updated_at"] = registry_date
+        self.projects_path.write_text(json.dumps(doc), encoding="utf-8")
+        payload = make_payload()
+        if payload_date is None:
+            payload.pop("updated_at")
+        else:
+            payload["updated_at"] = payload_date
+        self.assertEqual(self._run_main([str(self._write_payload(payload))]), 0)
+        return json.loads(self.projects_path.read_text(encoding="utf-8"))["updated_at"]
+
+    def test_older_payload_date_does_not_regress_registry_date(self):
+        # beluga-manager (09-24) then beluga (09-23) status PRs flipped the registry date back.
+        self.assertEqual(self._registry_date_after("2026-09-23"), "2026-09-24")
+
+    def test_newer_payload_date_advances_registry_date(self):
+        self.assertEqual(self._registry_date_after("2026-09-25"), "2026-09-25")
+
+    def test_missing_payload_date_keeps_registry_date(self):
+        self.assertEqual(self._registry_date_after(None), "2026-09-24")
+
+    def test_invalid_payload_date_keeps_registry_date_without_crashing(self):
+        for bad in ("not-a-date", "2026-13-40", "", 20260930, "2026-9-30"):
+            with self.subTest(bad=bad):
+                self.assertEqual(self._registry_date_after(bad), "2026-09-24")
+
+    def test_invalid_registry_date_is_replaced_only_by_valid_payload_date(self):
+        self.assertEqual(self._registry_date_after("2026-09-23", registry_date="garbage"), "2026-09-23")
+        self.assertEqual(self._registry_date_after("garbage", registry_date=None), None)
+
 
 if __name__ == "__main__":
     unittest.main()

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+from datetime import date
 from pathlib import Path
 from typing import Any
 
@@ -32,6 +33,29 @@ def load(path: Path) -> dict[str, Any]:
 
 def write(path: Path, value: dict[str, Any]) -> None:
     path.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+
+
+def _iso_date(value: Any) -> date | None:
+    if not isinstance(value, str):
+        return None
+    try:
+        return date.fromisoformat(value)
+    except ValueError:
+        return None
+
+
+def monotonic_date(old: Any, new: Any) -> Any:
+    """Registry-level dates never move backwards: each project's payload carries its own date,
+    so last-writer-wins flipped the registry date between consecutive status PRs. Keep `old`
+    unless `new` is a valid YYYY-MM-DD strictly later than it (or `old` is not a valid date
+    and `new` is)."""
+    new_date = _iso_date(new)
+    if new_date is None or len(new) != 10:
+        return old
+    old_date = _iso_date(old)
+    if old_date is None or len(old) != 10 or new_date > old_date:
+        return new
+    return old
 
 
 def validate_capabilities(capabilities: Any) -> None:
@@ -313,7 +337,7 @@ def main() -> int:
     target["development_status"] = new_status
     target["status"] = status_update
 
-    projects_doc["updated_at"] = payload.get("updated_at") or projects_doc.get("updated_at")
+    projects_doc["updated_at"] = monotonic_date(projects_doc.get("updated_at"), payload.get("updated_at"))
     write(PROJECTS_PATH, projects_doc)
     print(f"Applied portfolio status for {project_id}: {new_status} @ {payload.get('revision')}")
 
