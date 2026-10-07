@@ -68,9 +68,20 @@
             "previous_ref": {"type": "string", "minLength": 1},
             "previous_observed_at": {"$ref": "#/$defs/datetime"},
             "delta": {"enum": ["improved", "unchanged", "regressed"]},
-            "finding_ids": {"type": "array", "items": {"type": "string", "minLength": 1}}
+            "finding_ids": {"type": "array", "items": {"type": "string", "minLength": 1}},
+            "resolved_findings": {"type": "array", "items": {"$ref": "#/$defs/resolved_finding"}}
           }
         }
+      }
+    },
+    "resolved_finding": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["id", "summary", "resolved_by"],
+      "properties": {
+        "id": {"type": "string", "minLength": 1},
+        "summary": {"type": "string", "minLength": 1},
+        "resolved_by": {"type": "string", "minLength": 1}
       }
     },
     "finding": {

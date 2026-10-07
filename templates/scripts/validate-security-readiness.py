@@ -117,6 +117,7 @@ def check_semantics(doc: dict, today: dt.date, now: dt.datetime) -> list[str]:
     elif record_at > now:
         errors.append(f"observed_at {doc['observed_at']} is in the future (now {now:%Y-%m-%dT%H:%M:%SZ})")
     finding_ids = {f["id"] for sig in doc["signals"] for f in sig.get("findings", [])}
+    active_ids = finding_ids | {e["id"] for sig in doc["signals"] for e in sig.get("exceptions", [])}
     signals = doc["signals"]
     seen_signals: set[str] = set()
     seen_ids: set[str] = set()
@@ -176,6 +177,16 @@ def check_semantics(doc: dict, today: dt.date, now: dt.datetime) -> list[str]:
             elif source_at is not None and previous_at >= source_at:
                 errors.append(f"{where}: rescan.previous_observed_at must be earlier than source.observed_at")
             errors.extend(f"{where}: rescan references unknown finding {ref}" for ref in rescan.get("finding_ids", []) if ref not in finding_ids)
+            resolved = rescan.get("resolved_findings", [])
+            if rescan["delta"] == "improved" and not resolved:
+                errors.append(f"{where}: rescan delta improved needs resolved_findings naming what was fixed")
+            resolved_seen: set[str] = set()
+            for item in resolved:
+                if item["id"] in resolved_seen:
+                    errors.append(f"{where}: rescan.resolved_findings duplicate id {item['id']}")
+                resolved_seen.add(item["id"])
+                if item["id"] in active_ids:
+                    errors.append(f"{where}: rescan.resolved_findings id {item['id']} is still an active finding/exception in this record")
     summary = doc["summary"]
     if summary["total"] != len(signals):
         errors.append(f"summary.total {summary['total']} != {len(signals)} signals")

@@ -43,11 +43,25 @@ upstream check -> normalized evidence -> gap/remediation or exception -> re-scan
 - `revision` is the full git SHA that was actually observed; `observed_at` and `source.observed_at` are UTC.
 - Timestamps must be valid UTC datetimes; `observed_at` may not be in the future and `source.observed_at` may not be later than the record's `observed_at` (`--now` makes this deterministic).
 - `fail` needs a finding, an exception or a remediation; `partial` needs a finding; `pass` carries no findings or exceptions; `not-run` carries neither findings nor exceptions.
-- `finding_ids` in exceptions and re-scans must resolve to findings in the same record.
+- `finding_ids` in exceptions and re-scans claim a CURRENT finding and must resolve to findings in the same record.
+- **Resolved findings:** a finding that no longer exists after remediation cannot be referenced by `finding_ids`. Record it in the optional `rescan.resolved_findings[]` as `{id, summary, resolved_by}` (`resolved_by` is the PR or commit that fixed it). `delta: improved` requires at least one entry; an id there must not still be an active finding or exception in the record, and ids may not repeat.
 - `summary` counts are derived from `signals` and checked.
 - Exceptions require `owner`, `rationale` and `expires`; `review_date` is optional.
 - **Fail-closed expiry:** an exception whose `expires` date is before today is a validation error in CI, not a warning. Renew it with a new rationale or remediate. `--today YYYY-MM-DD` makes the check deterministic for tests.
 - Strings are scanned for secret patterns; evidence holds references, never credentials.
+
+## Re-scan after remediation
+
+The `resolved_findings` field is an additive optional extension of `openforge-security-readiness-evidence/v1`, so the schema version is unchanged and existing records stay valid. The one new obligation applies only to a record that claims `delta: improved`; no committed record did before this change.
+
+```json
+"rescan": {
+  "previous_ref": "<previous revision>", "previous_observed_at": "<UTC>", "delta": "improved",
+  "resolved_findings": [{"id": "narwhal-pin-1", "summary": "...", "resolved_by": "https://github.com/<owner>/<repo>/pull/<n>"}]
+}
+```
+
+The current record then carries the new status and no finding for what was fixed; the finding id stays correlatable through `resolved_findings`.
 
 ## Validate
 
@@ -58,4 +72,4 @@ python3 templates/scripts/validate-security-readiness.py --today 2026-10-07 path
 
 ## Scope
 
-This is the first slice: schema, validator, tests and three observed samples (`narwhal`, `kubemetal`, `clusterdeck`). Exposing readiness in the portfolio summary or `dashboard.json` is a planned second slice and will be an additive key without an `openforge-dashboard/v1` version bump. Adapters that automatically convert upstream output into this record are not part of this slice.
+The first slice defined the schema, validator, tests and three observed samples (`narwhal`, `kubemetal`, `clusterdeck`); the re-scan slice added `rescan.resolved_findings` and re-observed `narwhal` and `kubemetal` after their `actions-pinning` remediation. Exposing readiness in the portfolio summary or `dashboard.json` is a planned second slice and will be an additive key without an `openforge-dashboard/v1` version bump. Adapters that automatically convert upstream output into this record are not part of this slice.

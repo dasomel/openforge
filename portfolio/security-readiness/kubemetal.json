@@ -1,15 +1,15 @@
 {
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/kubemetal",
-  "revision": "0f5e162fecd9dcfcb82b753caf40d96086578154",
-  "observed_at": "2026-10-07T04:28:29Z",
+  "revision": "51f19e7ca721cacb1d666d9a609bb6058e2cb30c",
+  "observed_at": "2026-10-07T04:58:44Z",
   "signals": [
     {
       "id": "scorecard",
       "status": "not-run",
       "source": {
         "tool": "curl",
-        "observed_at": "2026-10-07T04:28:29Z",
+        "observed_at": "2026-10-07T04:58:44Z",
         "ref": "curl -s -o /dev/null -w '%{http_code}' https://api.securityscorecards.dev/projects/github.com/dasomel/kubemetal -> 404 (no published Scorecard result)"
       },
       "note": "Scorecard API returned HTTP 404; no score is recorded. Not-run, not pass."
@@ -19,27 +19,29 @@
       "status": "pass",
       "source": {
         "tool": "gh-api",
-        "observed_at": "2026-10-07T04:28:29Z",
-        "ref": "gh api repos/dasomel/kubemetal/contents/SECURITY.md --jq .path -> SECURITY.md (revision 0f5e162)"
+        "observed_at": "2026-10-07T04:58:44Z",
+        "ref": "gh api repos/dasomel/kubemetal/contents/SECURITY.md --jq .path -> SECURITY.md (revision 51f19e7)"
       }
     },
     {
       "id": "actions-pinning",
-      "status": "partial",
+      "status": "pass",
       "source": {
         "tool": "grep",
-        "observed_at": "2026-10-07T04:28:29Z",
-        "ref": "gh api repos/dasomel/kubemetal/contents/.github/workflows (all files) | grep uses: lines, exclude ./ and @<40-hex>: 17 uses: lines, 1 not pinned to a 40-hex SHA"
+        "observed_at": "2026-10-07T04:58:44Z",
+        "ref": "gh api repos/dasomel/kubemetal/contents/.github/workflows (all files) | grep uses: lines, exclude ./ and @<40-hex>: 17 uses: lines, 0 not pinned to a 40-hex SHA"
       },
-      "findings": [
-        {
-          "id": "kubemetal-pin-1",
-          "summary": "1 workflow action reference(s) not pinned to a full commit SHA: research-evidence.yml:27 actions/setup-python@v7",
-          "severity": "medium"
-        }
-      ],
-      "remediation": {
-        "state": "not-started"
+      "rescan": {
+        "previous_ref": "0f5e162fecd9dcfcb82b753caf40d96086578154",
+        "previous_observed_at": "2026-10-07T04:28:29Z",
+        "delta": "improved",
+        "resolved_findings": [
+          {
+            "id": "kubemetal-pin-1",
+            "summary": "1 workflow action reference(s) not pinned to a full commit SHA: research-evidence.yml:27 actions/setup-python@v7",
+            "resolved_by": "https://github.com/dasomel/kubemetal/pull/174 (51f19e7ca721cacb1d666d9a609bb6058e2cb30c); upstream template fix https://github.com/dasomel/openforge/pull/151 (6ed97950333193ca04e1e2a873e15697dc377733)"
+          }
+        ]
       }
     },
     {
@@ -47,7 +49,7 @@
       "status": "partial",
       "source": {
         "tool": "grep+gh-api",
-        "observed_at": "2026-10-07T04:28:29Z",
+        "observed_at": "2026-10-07T04:58:44Z",
         "ref": "grep -i 'sbom|cyclonedx|spdx' .github/workflows/release.yml -> 'Generate SBOM' step runs scripts/release/gen_sbom.sh and stages sbom-cyclonedx.json, sbom-spdx.json; gh release download v0.2.0 -R dasomel/kubemetal -p '*.zip' + unzip -l -> no sbom files in KubeMetal-v0.2.0-aarch64.zip"
       },
       "findings": [
@@ -66,7 +68,7 @@
       "status": "fail",
       "source": {
         "tool": "grep",
-        "observed_at": "2026-10-07T04:28:29Z",
+        "observed_at": "2026-10-07T04:58:44Z",
         "ref": "grep -i 'attest|slsa|id-token' .github/workflows/*.yml -> no match in workflows of dasomel/kubemetal"
       },
       "findings": [
@@ -85,7 +87,7 @@
       "status": "fail",
       "source": {
         "tool": "grep+gh-api",
-        "observed_at": "2026-10-07T04:28:29Z",
+        "observed_at": "2026-10-07T04:58:44Z",
         "ref": "grep -i 'cosign|sigstore' .github/workflows/*.yml -> no match; latest release v0.2.0 assets (KubeMetal-v0.2.0-aarch64.zip) include no signature/certificate files"
       },
       "findings": [
@@ -102,9 +104,9 @@
   ],
   "summary": {
     "total": 6,
-    "pass": 1,
+    "pass": 2,
     "fail": 2,
-    "partial": 2,
+    "partial": 1,
     "not_run": 1,
     "not_applicable": 0
   },
