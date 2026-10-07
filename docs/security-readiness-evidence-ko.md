@@ -43,11 +43,25 @@ upstream check -> normalized evidence -> gap/remediation or exception -> re-scan
 - `revision`은 실제 관찰한 전체 git SHA이고, `observed_at`과 `source.observed_at`은 UTC입니다.
 - 타임스탬프는 유효한 UTC 일시여야 하며, `observed_at`은 미래일 수 없고 `source.observed_at`은 레코드의 `observed_at`보다 늦을 수 없습니다(`--now`로 결정적 검증).
 - `fail`에는 finding, 예외, remediation 중 하나가 필요하고, `partial`에는 finding이 필요하며, `pass`에는 finding과 예외가 없고, `not-run`에는 finding도 예외도 없습니다.
-- 예외와 재스캔의 `finding_ids`는 같은 레코드의 finding으로 해석되어야 합니다.
+- 예외와 재스캔의 `finding_ids`는 현재 유효한 finding을 가리키며 같은 레코드의 finding으로 해석되어야 합니다.
+- **해결된 finding:** 개선 후 더 이상 존재하지 않는 finding은 `finding_ids`로 참조할 수 없습니다. 선택 필드 `rescan.resolved_findings[]`에 `{id, summary, resolved_by}`로 기록합니다(`resolved_by`는 수정한 PR 또는 커밋). `delta: improved`에는 항목이 하나 이상 필요하고, 그 id는 레코드의 활성 finding이나 예외와 같을 수 없으며 중복될 수 없습니다.
 - `summary` 수치는 `signals`에서 파생되며 검증됩니다.
 - 예외에는 `owner`, `rationale`, `expires`가 필수이고 `review_date`는 선택입니다.
 - **만료 시 실패(fail-closed):** `expires`가 오늘보다 이전인 예외는 CI에서 경고가 아니라 검증 오류입니다. 새 근거로 갱신하거나 해결합니다. `--today YYYY-MM-DD`로 테스트를 결정적으로 만듭니다.
 - 문자열은 비밀 패턴을 검사하며, 증거에는 참조만 두고 자격 증명은 두지 않습니다.
+
+## 개선 후 재스캔
+
+`resolved_findings`는 `openforge-security-readiness-evidence/v1`에 대한 추가(additive) 선택 확장이므로 스키마 버전은 그대로이며 기존 레코드는 계속 유효합니다. 새 의무는 `delta: improved`를 주장하는 레코드에만 적용되고, 이 변경 이전에 커밋된 레코드 중에는 해당하는 것이 없었습니다.
+
+```json
+"rescan": {
+  "previous_ref": "<이전 revision>", "previous_observed_at": "<UTC>", "delta": "improved",
+  "resolved_findings": [{"id": "narwhal-pin-1", "summary": "...", "resolved_by": "https://github.com/<owner>/<repo>/pull/<n>"}]
+}
+```
+
+현재 레코드는 새 상태를 담고 수정된 항목의 finding은 두지 않으며, finding id는 `resolved_findings`로 계속 대응시킬 수 있습니다.
 
 ## 검증
 
@@ -58,4 +72,4 @@ python3 templates/scripts/validate-security-readiness.py --today 2026-10-07 path
 
 ## 범위
 
-첫 번째 조각으로 스키마, 검증기, 테스트, 관찰된 샘플 세 개(`narwhal`, `kubemetal`, `clusterdeck`)만 포함합니다. 포트폴리오 요약이나 `dashboard.json`에 준비도를 노출하는 것은 두 번째 조각으로 계획되어 있으며 `openforge-dashboard/v1` 버전 변경 없이 추가 키로 도입합니다. 업스트림 출력을 이 레코드로 자동 변환하는 어댑터는 이번 조각에 포함되지 않습니다.
+첫 번째 조각은 스키마, 검증기, 테스트, 관찰된 샘플 세 개(`narwhal`, `kubemetal`, `clusterdeck`)를 정의했고, 재스캔 조각은 `rescan.resolved_findings`를 추가하고 `actions-pinning` 개선 후 `narwhal`과 `kubemetal`을 다시 관찰했습니다. 포트폴리오 요약이나 `dashboard.json`에 준비도를 노출하는 것은 두 번째 조각으로 계획되어 있으며 `openforge-dashboard/v1` 버전 변경 없이 추가 키로 도입합니다. 업스트림 출력을 이 레코드로 자동 변환하는 어댑터는 이번 조각에 포함되지 않습니다.

@@ -166,6 +166,40 @@ class SecurityReadinessTests(unittest.TestCase):
         doc["signals"][2]["rescan"]["finding_ids"] = ["NOPE-2"]
         self.assertTrue(any("rescan references unknown finding" in error for error in errors_for(doc)))
 
+    def test_improved_rescan_with_resolved_findings_passes(self):
+        doc = fixture("valid-synthetic-improved")
+        self.assertEqual(errors_for(doc), [])
+        resolved = doc["signals"][1]["rescan"]["resolved_findings"][0]["id"]
+        self.assertNotIn(resolved, [f["id"] for sig in doc["signals"] for f in sig.get("findings", [])])
+
+    def test_resolved_id_still_active_rejected(self):
+        self.assertRejected("invalid-resolved-still-active", "is still an active finding")
+
+    def test_improved_without_resolved_findings_rejected(self):
+        self.assertRejected("invalid-improved-without-resolved", "improved needs resolved_findings")
+        doc = fixture("valid-synthetic-improved")
+        doc["signals"][1]["rescan"]["resolved_findings"] = []
+        self.assertTrue(any("improved needs resolved_findings" in error for error in errors_for(doc)))
+
+    def test_resolved_entry_missing_resolved_by_rejected(self):
+        self.assertRejected("invalid-resolved-missing-resolved-by", "resolved_by")
+
+    def test_resolved_id_matching_active_exception_rejected(self):
+        doc = fixture("valid-synthetic-improved")
+        doc["signals"][1]["rescan"]["resolved_findings"][0]["id"] = "SYN-EXC-1"
+        self.assertTrue(any("is still an active" in error for error in errors_for(doc)))
+
+    def test_duplicate_resolved_id_rejected(self):
+        doc = fixture("valid-synthetic-improved")
+        rescan = doc["signals"][1]["rescan"]
+        rescan["resolved_findings"].append(dict(rescan["resolved_findings"][0]))
+        self.assertTrue(any("duplicate id" in error for error in errors_for(doc)))
+
+    def test_resolved_finding_ids_do_not_relax_dangling_rule(self):
+        doc = fixture("valid-synthetic-improved")
+        doc["signals"][1]["rescan"]["finding_ids"] = [doc["signals"][1]["rescan"]["resolved_findings"][0]["id"]]
+        self.assertTrue(any("rescan references unknown finding" in error for error in errors_for(doc)))
+
     def test_cli_exit_codes(self):
         ok = cli("--today", "2026-10-07", str(FIXTURES / "valid-synthetic.json"))
         self.assertEqual(ok.returncode, 0, ok.stderr)
