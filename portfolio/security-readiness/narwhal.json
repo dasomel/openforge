@@ -1,0 +1,112 @@
+{
+  "schema_version": "openforge-security-readiness-evidence/v1",
+  "repository": "dasomel/narwhal",
+  "revision": "a4b91c7040e66bf31e8075d9fff30d4e05889386",
+  "observed_at": "2026-10-07T04:28:29Z",
+  "signals": [
+    {
+      "id": "scorecard",
+      "status": "not-run",
+      "source": {
+        "tool": "curl",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "curl -s -o /dev/null -w '%{http_code}' https://api.securityscorecards.dev/projects/github.com/dasomel/narwhal -> 404 (no published Scorecard result)"
+      },
+      "note": "Scorecard API returned HTTP 404; no score is recorded. Not-run, not pass."
+    },
+    {
+      "id": "security-policy",
+      "status": "pass",
+      "source": {
+        "tool": "gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "gh api repos/dasomel/narwhal/contents/SECURITY.md --jq .path -> SECURITY.md (revision a4b91c7)"
+      }
+    },
+    {
+      "id": "actions-pinning",
+      "status": "partial",
+      "source": {
+        "tool": "grep",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "gh api repos/dasomel/narwhal/contents/.github/workflows (all files) | grep uses: lines, exclude ./ and @<40-hex>: 20 uses: lines, 1 not pinned to a 40-hex SHA"
+      },
+      "findings": [
+        {
+          "id": "narwhal-pin-1",
+          "summary": "1 workflow action reference(s) not pinned to a full commit SHA: research-evidence.yml:27 actions/setup-python@v7",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "sbom",
+      "status": "fail",
+      "source": {
+        "tool": "grep+gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'sbom|syft|cyclonedx|spdx' .github/workflows/*.yml -> no match; gh api repos/dasomel/narwhal/releases/latest assets: no assets"
+      },
+      "findings": [
+        {
+          "id": "narwhal-sbom-1",
+          "summary": "No SBOM generation in workflows and none among latest release (v1.2.0) assets",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "provenance",
+      "status": "fail",
+      "source": {
+        "tool": "grep",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'attest|slsa|id-token' .github/workflows/*.yml -> no match in workflows of dasomel/narwhal"
+      },
+      "findings": [
+        {
+          "id": "narwhal-prov-1",
+          "summary": "No build provenance attestation (attest-build-provenance / slsa-github-generator) found in workflows",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "release-signing",
+      "status": "fail",
+      "source": {
+        "tool": "grep+gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'cosign|sigstore' .github/workflows/*.yml -> no match; latest release v1.2.0 assets (no assets) include no signature/certificate files"
+      },
+      "findings": [
+        {
+          "id": "narwhal-sign-1",
+          "summary": "No release signing (cosign/sigstore) found in workflows or latest release assets",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "pass": 1,
+    "fail": 3,
+    "partial": 1,
+    "not_run": 1,
+    "not_applicable": 0
+  },
+  "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."
+}

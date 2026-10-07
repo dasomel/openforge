@@ -1,0 +1,88 @@
+{
+  "schema_version": "openforge-security-readiness-evidence/v1",
+  "repository": "example/synthetic-repo",
+  "revision": "0123456789abcdef0123456789abcdef01234567",
+  "observed_at": "2026-10-01T00:00:00Z",
+  "signals": [
+    {
+      "id": "codeql",
+      "status": "not-run",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    },
+    {
+      "id": "security-policy",
+      "status": "pass",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    },
+    {
+      "id": "actions-pinning",
+      "status": "fail",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      },
+      "findings": [
+        {
+          "id": "SYN-1",
+          "summary": "SYNTHETIC finding: one action not SHA-pinned",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "in-progress",
+        "issue_or_pr": "example/synthetic-repo#1"
+      },
+      "exceptions": [
+        {
+          "id": "SYN-EXC-1",
+          "owner": "synthetic-owner",
+          "rationale": "SYNTHETIC documented exception: pinned upgrade blocked upstream",
+          "expires": "2099-12-31",
+          "review_date": "2099-06-30",
+          "finding_ids": [
+            "SYN-1"
+          ]
+        }
+      ],
+      "rescan": {
+        "previous_ref": "synthetic-scan-0",
+        "previous_observed_at": "2026-09-01T00:00:00Z",
+        "delta": "unchanged",
+        "finding_ids": [
+          "SYN-1"
+        ]
+      }
+    },
+    {
+      "id": "sbom",
+      "status": "not-applicable",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "pass": 1,
+    "fail": 1,
+    "partial": 0,
+    "not_run": 1,
+    "not_applicable": 1
+  },
+  "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."
+}

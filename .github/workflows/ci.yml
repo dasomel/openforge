@@ -169,3 +169,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/inventory-legacy-evidence.py --validate
+
+      - name: Validate security readiness evidence
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/validate-security-readiness.py --validate
