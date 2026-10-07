@@ -1,0 +1,112 @@
+{
+  "schema_version": "openforge-security-readiness-evidence/v1",
+  "repository": "dasomel/clusterdeck",
+  "revision": "2f25ed744a2feb59749606b78e416df2e1063ccf",
+  "observed_at": "2026-10-07T04:28:29Z",
+  "signals": [
+    {
+      "id": "scorecard",
+      "status": "not-run",
+      "source": {
+        "tool": "curl",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "curl -s -o /dev/null -w '%{http_code}' https://api.securityscorecards.dev/projects/github.com/dasomel/clusterdeck -> 404 (no published Scorecard result)"
+      },
+      "note": "Scorecard API returned HTTP 404; no score is recorded. Not-run, not pass."
+    },
+    {
+      "id": "security-policy",
+      "status": "pass",
+      "source": {
+        "tool": "gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "gh api repos/dasomel/clusterdeck/contents/SECURITY.md --jq .path -> SECURITY.md (revision 2f25ed7)"
+      }
+    },
+    {
+      "id": "actions-pinning",
+      "status": "partial",
+      "source": {
+        "tool": "grep",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "gh api repos/dasomel/clusterdeck/contents/.github/workflows (all files) | grep uses: lines, exclude ./ and @<40-hex>: 12 uses: lines, 5 not pinned to a 40-hex SHA"
+      },
+      "findings": [
+        {
+          "id": "clusterdeck-pin-1",
+          "summary": "5 workflow action reference(s) not pinned to a full commit SHA: ci.yml:25,28,33,38,43 (actions/checkout@v7, pnpm/action-setup@v6, actions/setup-node@v7, dtolnay/rust-toolchain@stable, Swatinem/rust-cache@v2)",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "sbom",
+      "status": "fail",
+      "source": {
+        "tool": "grep+gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'sbom|syft|cyclonedx|spdx' .github/workflows/*.yml -> no match; gh api repos/dasomel/clusterdeck/releases/latest assets: ClusterDeck_0.4.1_aarch64.app.tar.gz, ClusterDeck_0.4.1_aarch64.dmg"
+      },
+      "findings": [
+        {
+          "id": "clusterdeck-sbom-1",
+          "summary": "No SBOM generation in workflows and none among latest release (v0.4.1) assets",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "provenance",
+      "status": "fail",
+      "source": {
+        "tool": "grep",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'attest|slsa|id-token' .github/workflows/*.yml -> no match in workflows of dasomel/clusterdeck"
+      },
+      "findings": [
+        {
+          "id": "clusterdeck-prov-1",
+          "summary": "No build provenance attestation (attest-build-provenance / slsa-github-generator) found in workflows",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    },
+    {
+      "id": "release-signing",
+      "status": "fail",
+      "source": {
+        "tool": "grep+gh-api",
+        "observed_at": "2026-10-07T04:28:29Z",
+        "ref": "grep -i 'cosign|sigstore' .github/workflows/*.yml -> no match; latest release v0.4.1 assets (ClusterDeck_0.4.1_aarch64.app.tar.gz, ClusterDeck_0.4.1_aarch64.dmg) include no signature/certificate files"
+      },
+      "findings": [
+        {
+          "id": "clusterdeck-sign-1",
+          "summary": "No release signing (cosign/sigstore) found in workflows or latest release assets",
+          "severity": "medium"
+        }
+      ],
+      "remediation": {
+        "state": "not-started"
+      }
+    }
+  ],
+  "summary": {
+    "total": 6,
+    "pass": 1,
+    "fail": 3,
+    "partial": 1,
+    "not_run": 1,
+    "not_applicable": 0
+  },
+  "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."
+}

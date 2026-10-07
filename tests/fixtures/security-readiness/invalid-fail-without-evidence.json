@@ -1,0 +1,57 @@
+{
+  "schema_version": "openforge-security-readiness-evidence/v1",
+  "repository": "example/synthetic-repo",
+  "revision": "0123456789abcdef0123456789abcdef01234567",
+  "observed_at": "2026-10-01T00:00:00Z",
+  "signals": [
+    {
+      "id": "scorecard",
+      "status": "not-run",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    },
+    {
+      "id": "security-policy",
+      "status": "pass",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    },
+    {
+      "id": "actions-pinning",
+      "status": "fail",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    },
+    {
+      "id": "sbom",
+      "status": "not-applicable",
+      "note": "SYNTHETIC TEST FIXTURE - not a real observation",
+      "source": {
+        "tool": "synthetic",
+        "observed_at": "2026-10-01T00:00:00Z",
+        "ref": "tests/fixtures/security-readiness (synthetic)"
+      }
+    }
+  ],
+  "summary": {
+    "total": 4,
+    "pass": 1,
+    "fail": 1,
+    "partial": 0,
+    "not_run": 1,
+    "not_applicable": 1
+  },
+  "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."
+}

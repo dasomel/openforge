@@ -87,6 +87,7 @@ See [Maturity Assessment](docs/maturity-assessment.md), [Assessment Profiles](do
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security.md)
 - [Supply Chain Security Standard](docs/supply-chain.md)
+- [Security Readiness Evidence Contract](docs/security-readiness-evidence.md) ([한국어](docs/security-readiness-evidence-ko.md))
 - [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain.md)
 - [Package and Artifact Identity](docs/package-identity.md)
 - [CI/CD Security Standard](docs/ci-security.md)
