@@ -41,7 +41,9 @@ upstream check -> normalized evidence -> gap/remediation or exception -> re-scan
 ## Rules
 
 - `revision` is the full git SHA that was actually observed; `observed_at` and `source.observed_at` are UTC.
-- `fail` needs a finding, an exception or a remediation; `not-run` carries no findings; `pass` carries no exceptions.
+- Timestamps must be valid UTC datetimes; `observed_at` may not be in the future and `source.observed_at` may not be later than the record's `observed_at` (`--now` makes this deterministic).
+- `fail` needs a finding, an exception or a remediation; `partial` needs a finding; `pass` carries no findings or exceptions; `not-run` carries neither findings nor exceptions.
+- `finding_ids` in exceptions and re-scans must resolve to findings in the same record.
 - `summary` counts are derived from `signals` and checked.
 - Exceptions require `owner`, `rationale` and `expires`; `review_date` is optional.
 - **Fail-closed expiry:** an exception whose `expires` date is before today is a validation error in CI, not a warning. Renew it with a new rationale or remediate. `--today YYYY-MM-DD` makes the check deterministic for tests.

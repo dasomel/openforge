@@ -41,7 +41,9 @@ upstream check -> normalized evidence -> gap/remediation or exception -> re-scan
 ## 규칙
 
 - `revision`은 실제 관찰한 전체 git SHA이고, `observed_at`과 `source.observed_at`은 UTC입니다.
-- `fail`에는 finding, 예외, remediation 중 하나가 필요하고, `not-run`에는 finding이 없으며, `pass`에는 예외가 없습니다.
+- 타임스탬프는 유효한 UTC 일시여야 하며, `observed_at`은 미래일 수 없고 `source.observed_at`은 레코드의 `observed_at`보다 늦을 수 없습니다(`--now`로 결정적 검증).
+- `fail`에는 finding, 예외, remediation 중 하나가 필요하고, `partial`에는 finding이 필요하며, `pass`에는 finding과 예외가 없고, `not-run`에는 finding도 예외도 없습니다.
+- 예외와 재스캔의 `finding_ids`는 같은 레코드의 finding으로 해석되어야 합니다.
 - `summary` 수치는 `signals`에서 파생되며 검증됩니다.
 - 예외에는 `owner`, `rationale`, `expires`가 필수이고 `review_date`는 선택입니다.
 - **만료 시 실패(fail-closed):** `expires`가 오늘보다 이전인 예외는 CI에서 경고가 아니라 검증 오류입니다. 새 근거로 갱신하거나 해결합니다. `--today YYYY-MM-DD`로 테스트를 결정적으로 만듭니다.

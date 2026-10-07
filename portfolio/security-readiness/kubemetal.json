@@ -53,7 +53,7 @@
       "findings": [
         {
           "id": "kubemetal-sbom-1",
-          "summary": "Release workflow on main generates an SBOM, but the latest release v0.2.0 asset contains none (release predates the workflow change of 2026-09-16)",
+          "summary": "Release workflow on main generates an SBOM, but the latest release v0.2.0 asset contains none (release (2026-08-09) predates the SBOM step added 2026-09-08 in 8b16240)",
           "severity": "low"
         }
       ],

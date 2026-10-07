@@ -40,6 +40,13 @@ def parse_date(value: object) -> dt.date | None:
         return None
 
 
+def parse_datetime(value: object) -> dt.datetime | None:
+    try:
+        return dt.datetime.strptime(value, "%Y-%m-%dT%H:%M:%SZ").replace(tzinfo=dt.timezone.utc) if isinstance(value, str) else None
+    except ValueError:
+        return None
+
+
 def is_type(value: object, name: str) -> bool:
     if name == "object":
         return isinstance(value, dict)
@@ -69,7 +76,7 @@ def check_schema(value: object, schema: dict, root: dict, path: str) -> list[str
     if isinstance(value, str):
         if len(value) < schema.get("minLength", 0):
             errors.append(f"{path}: must not be empty")
-        if "pattern" in schema and not re.search(schema["pattern"], value):
+        if "pattern" in schema and not re.fullmatch(schema["pattern"], value):
             errors.append(f"{path}: {value!r} does not match {schema['pattern']}")
     elif isinstance(value, int) and not isinstance(value, bool):
         if value < schema.get("minimum", value):
@@ -102,8 +109,14 @@ def strings(value: object, path: str = "$"):
             yield from strings(child, f"{path}[{index}]")
 
 
-def check_semantics(doc: dict, today: dt.date) -> list[str]:
+def check_semantics(doc: dict, today: dt.date, now: dt.datetime) -> list[str]:
     errors: list[str] = []
+    record_at = parse_datetime(doc["observed_at"])
+    if record_at is None:
+        errors.append(f"observed_at {doc['observed_at']!r} is not a valid UTC datetime")
+    elif record_at > now:
+        errors.append(f"observed_at {doc['observed_at']} is in the future (now {now:%Y-%m-%dT%H:%M:%SZ})")
+    finding_ids = {f["id"] for sig in doc["signals"] for f in sig.get("findings", [])}
     signals = doc["signals"]
     seen_signals: set[str] = set()
     seen_ids: set[str] = set()
@@ -134,15 +147,35 @@ def check_semantics(doc: dict, today: dt.date) -> list[str]:
                     errors.append(f"{where}: exception {exc['id']} has invalid review_date {review!r}")
                 elif expires is not None and review_date > expires:
                     errors.append(f"{where}: exception {exc['id']} review_date is after expires")
+        source_at = parse_datetime(signal["source"]["observed_at"])
+        if source_at is None:
+            errors.append(f"{where}: source.observed_at {signal['source']['observed_at']!r} is not a valid UTC datetime")
+        elif source_at > now:
+            errors.append(f"{where}: source.observed_at is in the future")
+        elif record_at is not None and source_at > record_at:
+            errors.append(f"{where}: source.observed_at is later than the record observed_at")
         if status == "pass" and exceptions:
             errors.append(f"{where}: status pass contradicts having exceptions")
+        if status == "pass" and findings:
+            errors.append(f"{where}: status pass contradicts having findings")
+        if status == "partial" and not findings:
+            errors.append(f"{where}: status partial needs at least one finding describing the gap")
+        if status == "not-run" and exceptions:
+            errors.append(f"{where}: status not-run must not carry exceptions (nothing was measured)")
+        for exc in exceptions:
+            errors.extend(f"{where}: exception {exc['id']} references unknown finding {ref}" for ref in exc.get("finding_ids", []) if ref not in finding_ids)
         if status == "fail" and not (findings or exceptions or signal.get("remediation")):
             errors.append(f"{where}: status fail needs a finding, an exception, or a remediation")
         if status == "not-run" and findings:
             errors.append(f"{where}: status not-run must not carry findings (nothing was measured)")
         rescan = signal.get("rescan")
-        if rescan and rescan["previous_observed_at"] >= signal["source"]["observed_at"]:
-            errors.append(f"{where}: rescan.previous_observed_at must be earlier than source.observed_at")
+        if rescan:
+            previous_at = parse_datetime(rescan["previous_observed_at"])
+            if previous_at is None:
+                errors.append(f"{where}: rescan.previous_observed_at is not a valid UTC datetime")
+            elif source_at is not None and previous_at >= source_at:
+                errors.append(f"{where}: rescan.previous_observed_at must be earlier than source.observed_at")
+            errors.extend(f"{where}: rescan references unknown finding {ref}" for ref in rescan.get("finding_ids", []) if ref not in finding_ids)
     summary = doc["summary"]
     if summary["total"] != len(signals):
         errors.append(f"summary.total {summary['total']} != {len(signals)} signals")
@@ -152,12 +185,12 @@ def check_semantics(doc: dict, today: dt.date) -> list[str]:
     return errors
 
 
-def validate(doc: object, today: dt.date, path: Path | None = None) -> list[str]:
+def validate(doc: object, today: dt.date, path: Path | None = None, now: dt.datetime | None = None) -> list[str]:
     schema = load_json(SCHEMA)
     errors = check_schema(doc, schema, schema, "$")
     if errors:
         return errors
-    errors.extend(check_semantics(doc, today))
+    errors.extend(check_semantics(doc, today, now or dt.datetime.now(dt.timezone.utc)))
     for location, text in strings(doc):
         if SECRET_PATTERN.search(text):
             errors.append(f"{location}: secret-pattern match")
@@ -172,7 +205,12 @@ def main() -> int:
     parser.add_argument("paths", nargs="*", type=Path, help="default: portfolio/security-readiness/*.json")
     parser.add_argument("--validate", action="store_true", help="validate (default behaviour)")
     parser.add_argument("--today", help="YYYY-MM-DD used for expiry checks (default: current UTC date)")
+    parser.add_argument("--now", help="YYYY-MM-DDTHH:MM:SSZ upper bound for observed_at (default: current UTC time)")
     args = parser.parse_args()
+    now = parse_datetime(args.now) if args.now else None
+    if args.now and now is None:
+        print(f"ERROR: invalid --now {args.now!r}", file=sys.stderr)
+        return 2
     today = parse_date(args.today) if args.today else dt.datetime.now(dt.timezone.utc).date()
     if today is None:
         print(f"ERROR: invalid --today {args.today!r}", file=sys.stderr)
@@ -184,7 +222,7 @@ def main() -> int:
     failed = False
     for path in paths:
         try:
-            errors = validate(load_json(path), today, path)
+            errors = validate(load_json(path), today, path, now)
         except ValueError as exc:
             errors = [str(exc)]
         if errors:
