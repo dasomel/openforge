@@ -9,7 +9,10 @@
       "control-surface-for",
       "consumes",
       "integrates-with",
-      "experiment-only"
+      "experiment-only",
+      "peer",
+      "unavailable",
+      "not-applicable"
     ]
   },
   "capabilities": [
