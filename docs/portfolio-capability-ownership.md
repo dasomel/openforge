@@ -16,7 +16,7 @@ OpenForge treats the Dasomel OSS portfolio as a set of independently releasable 
 | Capability | Owner | Primary consumers / surfaces |
 | --- | --- | --- |
 | Portfolio engineering governance | OpenForge | all portfolio projects |
-| Kubernetes platform control plane | Narwhal | Narwhal Portal, Beluga, KubeMetal |
+| Kubernetes platform control plane | Narwhal | Narwhal Portal, KubeMetal (Beluga is a peer, not a consumer; see below) |
 | Data platform / lakehouse | Beluga | Beluga Manager |
 | Local / edge AI runtime | KubeMetal | Beluga, Siqoq |
 | Node runtime foundation | kube-ready-box | Narwhal, Beluga |
@@ -42,4 +42,4 @@ Research, acceptance evidence, operations exercises, and control-surface work sh
 
 ## Beluga-specific application
 
-Beluga issue `#97` remains the repository taxonomy and `#99` the cross-OSS integration contract. Beluga should own data-platform semantics and consume portfolio capabilities such as cluster lifecycle, node readiness, LDAP lifecycle, local AI runtime, and filesystem quota enforcement through explicit contracts rather than duplicating their implementation scope.
+Beluga issue `#97` remains the repository taxonomy and `#99` the cross-OSS integration contract. Beluga should own data-platform semantics and consume portfolio capabilities such as node readiness, LDAP lifecycle, local AI runtime, and filesystem quota enforcement through explicit contracts rather than duplicating their implementation scope. Beluga is a `peer` of Narwhal with a standalone profile and does not consume Narwhal's Kubernetes platform control plane (Beluga ADR-0003, Q1 decided 2026-10-07; see `portfolio/projects.json`).

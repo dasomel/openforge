@@ -26,7 +26,7 @@
       "id": "kubernetes-platform-control-plane",
       "owner": "narwhal",
       "control_surfaces": ["narwhal-portal"],
-      "consumers": ["beluga", "kubemetal"],
+      "consumers": ["kubemetal"],
       "scope": "cluster lifecycle, GitOps, platform security/governance, observability and platform operations contracts"
     },
     {
