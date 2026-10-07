@@ -131,6 +131,11 @@ class SecurityReadinessTests(unittest.TestCase):
         doc["signals"][0]["source"]["observed_at"] = "2026-10-02T00:00:00Z"
         self.assertTrue(any("later than the record" in error for error in errors_for(doc)))
 
+    def test_cli_source_after_record_fails(self):
+        result = cli("--today", "2026-10-07", "--now", "2026-10-07T12:00:00Z", str(FIXTURES / "invalid-source-after-record.json"))
+        self.assertEqual(result.returncode, 1)
+        self.assertIn("source.observed_at is later than the record observed_at", result.stderr)
+
     def test_trailing_newline_rejected(self):
         for mutate in (lambda d: d.__setitem__("repository", "example/synthetic-repo\n"), lambda d: d.__setitem__("observed_at", "2026-10-01T00:00:00Z\n")):
             doc = fixture("valid-synthetic")
