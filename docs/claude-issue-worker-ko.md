@@ -8,7 +8,7 @@
 
 Claude Console Workload identity에 issuer https://token.actions.githubusercontent.com 등록. audience https://api.anthropic.com, subject repo:dasomel/openforge:ref:refs/heads/main으로 제한하고 규칙/서비스 계정을 사용할 workspace에 연결한다. 저장소 Actions 변수 ANTHROPIC_FEDERATION_RULE_ID와 ANTHROPIC_ORGANIZATION_ID를 지정한다. ANTHROPIC_SERVICE_ACCOUNT_ID와 ANTHROPIC_WORKSPACE_ID는 필요시 지정한다. 식별자는 비밀 키가 아니다. workflow에 정적 API/OAuth 키를 추가하지 않는다.
 
-검토·merge 뒤 ai-ready 라벨을 생성하고 좁은 이슈에 붙여 Claude issue worker (WIF)를 수동 실행한다. 처음 100개 후보 중 가장 오래된 하나를 선택한다. 대상이 없으면 모델 호출이 없다. 기존 worker PR이 있으면 중복 제안을 막고 다른 이슈로 진행하려면 라벨을 제거한다. 실패 시 브랜치/라벨이 남을 수 있으므로 재실행 전에 확인한다.
+검토·merge 뒤 auth_only=true(기본값)로 먼저 실행한다. OIDC/WIF 토큰 교환과 읽기 전용 Models API만 확인하고 모델 생성·이슈 쓰기는 하지 않는다. SERVICE_ACCOUNT_ID를 포함한 ANTHROPIC 식별자 네 개가 모두 필요하다. 이슈 처리는 auth_only=false로 실행한다. ai-ready 라벨을 생성하고 좁은 이슈에 붙여 Claude issue worker (WIF)를 수동 실행한다. 처음 100개 후보 중 가장 오래된 하나를 선택한다. 대상이 없으면 모델 호출이 없다. 기존 worker PR이 있으면 중복 제안을 막고 다른 이슈로 진행하려면 라벨을 제거한다. 실패 시 브랜치/라벨이 남을 수 있으므로 재실행 전에 확인한다.
 
 ## 영향과 경계
 
@@ -20,7 +20,7 @@ Claude Console Workload identity에 issuer https://token.actions.githubuserconte
 ## 합격 기준과 증거
 
 - [x] actionlint 문법·표현식 검사 통과.
-- [x] Python tests 289개 OK(7.961s), agent-skills strict/instruction-debt audits 0 findings, exit 0.
+- [x] Python tests 291개 OK(인증 교환 계약·토큰 로그 노출 방지 테스트 포함), agent-skills strict/instruction-debt audits 0 findings, exit 0.
 - [ ] 설계 패키지 검토, WIF 식별자와 subject 제한 확인.
 - [ ] ai-ready 없는 실행에서 모델 미호출 확인.
 - [ ] 좁은 이슈 하나의 인증·실제 테스트·최대 한 개 Draft PR 생성 확인.

@@ -8,7 +8,7 @@ Goal: process one explicitly queued GitHub issue per maintainer dispatch, propos
 
 Register GitHub issuer https://token.actions.githubusercontent.com in Claude Console Workload identity. Set audience https://api.anthropic.com and subject repo:dasomel/openforge:ref:refs/heads/main. Bind the rule/service account to the intended workspace. Set repository Actions variables ANTHROPIC_FEDERATION_RULE_ID and ANTHROPIC_ORGANIZATION_ID, optionally ANTHROPIC_SERVICE_ACCOUNT_ID and ANTHROPIC_WORKSPACE_ID. These identifiers are not secrets. Do not add static API or OAuth credentials to this workflow.
 
-After review and merge, create ai-ready label, apply it to a narrow issue, and manually dispatch Claude issue worker (WIF). It selects the oldest issue among the first 100 candidates. No eligible issue means no model call. Existing worker PRs prevent duplicate proposals; remove the label before moving to another issue. A failed run may leave a branch or label: inspect before retrying.
+After review and merge, first dispatch with auth_only=true (the default). This exchanges OIDC/WIF tokens and checks the read-only Models API without inference or issue writes. All four ANTHROPIC identifiers, including SERVICE_ACCOUNT_ID, are required for this check. Set auth_only=false for issue processing. Create ai-ready label, apply it to a narrow issue, and manually dispatch Claude issue worker (WIF). It selects the oldest issue among the first 100 candidates. No eligible issue means no model call. Existing worker PRs prevent duplicate proposals; remove the label before moving to another issue. A failed run may leave a branch or label: inspect before retrying.
 
 ## Impact and boundaries
 
@@ -20,7 +20,7 @@ After review and merge, create ai-ready label, apply it to a narrow issue, and m
 ## Acceptance and evidence
 
 - [x] actionlint passes on workflow syntax and expressions.
-- [x] Repository Python tests: 289 tests, OK (7.961s); agent-skills strict and instruction-debt audits: 0 findings, exit 0.
+- [x] Repository Python tests: 291 tests, OK (including auth-only exchange contract and no-token-logging tests); agent-skills strict and instruction-debt audits: 0 findings, exit 0.
 - [ ] Design package reviewed; WIF identifiers registered and subject restrictions confirmed.
 - [ ] Dispatch without ai-ready ends with no model execution.
 - [ ] One narrow queued issue authenticates, runs actual tests and creates at most one draft PR.
