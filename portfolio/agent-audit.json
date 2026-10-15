@@ -68,9 +68,9 @@
             "path": ".agents/skills/narwhal-verification/SKILL.md",
             "scope": "project",
             "owner": "dasomel/narwhal",
-            "maturity": "draft",
+            "maturity": "verified",
             "version": "1",
-            "evidence_present": false
+            "evidence_present": true
           },
           {
             "name": "narwhal-version-upgrade",
@@ -85,13 +85,13 @@
         "canonical_count": 4,
         "adapter_count": 1,
         "maturity_counts": {
-          "draft": 2,
-          "verified": 2,
+          "draft": 1,
+          "verified": 3,
           "stable": 0,
           "deprecated": 0,
           "unspecified": 0
         },
-        "evidence_backed_mature_count": 2,
+        "evidence_backed_mature_count": 3,
         "error_count": 0,
         "warning_count": 0,
         "findings": []
@@ -112,7 +112,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "330a3fbe1dcfab3129a7767b3c3bb6a152a68185"
+      "revision": "0935ac127a6836665076e096a35869ff44db0459"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -207,7 +207,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "c0f03fb8984496ea4cbb9eeb1d1665595ef42707"
+      "revision": "39c00797801110e131f994190080515364449d5c"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -245,25 +245,34 @@
       "agent_skills": {
         "canonical": [
           {
-            "name": "beluga-platform-change",
-            "path": ".agents/skills/beluga-platform-change/SKILL.md",
+            "name": "beluga-manager-integration-contract",
+            "path": ".agents/skills/beluga-manager-integration-contract/SKILL.md",
             "scope": "project",
             "owner": "dasomel/beluga",
             "maturity": "draft",
             "version": "1",
             "evidence_present": false
+          },
+          {
+            "name": "beluga-platform-change",
+            "path": ".agents/skills/beluga-platform-change/SKILL.md",
+            "scope": "project",
+            "owner": "dasomel/beluga",
+            "maturity": "verified",
+            "version": "1",
+            "evidence_present": true
           }
         ],
-        "canonical_count": 1,
+        "canonical_count": 2,
         "adapter_count": 0,
         "maturity_counts": {
           "draft": 1,
-          "verified": 0,
+          "verified": 1,
           "stable": 0,
           "deprecated": 0,
           "unspecified": 0
         },
-        "evidence_backed_mature_count": 0,
+        "evidence_backed_mature_count": 1,
         "error_count": 0,
         "warning_count": 0,
         "findings": []
@@ -284,7 +293,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "742ca497710a688c1db9b9f3855bb073f82a3b36"
+      "revision": "ffbfe82a9b4ecc7ab7f726857f89506a5ded4bfd"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -366,7 +375,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "1b4e1d34fa45c23089589a81624567c80d6d2929"
+      "revision": "a7acdbaf46497130ef843f23aff666aedcb11102"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -446,7 +455,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "36f9207eeb64a948421ce9612611bc828484c983"
+      "revision": "2f25ed744a2feb59749606b78e416df2e1063ccf"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -520,7 +529,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "5937b2cbcbbadb06e9fba61da4d6fd987831bdd6"
+      "revision": "2da51c842f80390b6e336f6ebd22166f76c3c7ec"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -585,15 +594,8 @@
         },
         "evidence_backed_mature_count": 1,
         "error_count": 0,
-        "warning_count": 1,
-        "findings": [
-          {
-            "severity": "warn",
-            "code": "SKILL-GENERIC-NAME",
-            "path": ".claude/skills/verification/SKILL.md",
-            "message": "Project skill name 'verification' can collide globally; prefer <project>-<task>."
-          }
-        ]
+        "warning_count": 0,
+        "findings": []
       },
       "swallowed_failures": [],
       "swallowed_failure_count": 0,
@@ -611,7 +613,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "e9e9ad6a323fda64af81df01adc3af2a6a154cc4"
+      "revision": "bfc4ab020c43d7a7f5b5f4ec6c8b8dc190f75528"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -690,7 +692,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "7304c08bf268b70e5d980ac01ee78e5edcf557ea"
+      "revision": "26ad1fb9d06b721e6d9ad106db65665f240671e7"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -838,7 +840,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "62010a9695aa1560c00137a7653bceba170ea708"
+      "revision": "1f047ffea49c83363347201e0ba324137b799462"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",
@@ -918,7 +920,7 @@
         "duplicated_or_obsolete_prompt_rules": "review-required",
         "architecture_boundary_guidance": "review-required"
       },
-      "revision": "8faac049c8878d84fa4d472e6416349ad1508607"
+      "revision": "fe1804bb1d10ddb8f971f08230c8b39cfbabd6ae"
     }
   ]
 }

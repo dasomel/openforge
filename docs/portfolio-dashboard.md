@@ -68,24 +68,24 @@
 - Audited repositories: **10**
 - Repositories with false-green findings: **8**
 - False-green findings (total): **8**
-- Canonical agent skills: **23**
-- Evidence-backed mature skills: **12**
+- Canonical agent skills: **24**
+- Evidence-backed mature skills: **14**
 - Skill audit errors: **0**
 - Swallowed-failure findings: **0** (measured in 10 of 10 repositories)
 - Repositories with a local agent CI gate: **2** (measured in 10 of 10 repositories)
 
 | Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
-| dasomel/narwhal | `330a3fb` | 1 | 4 | 2 | 0 |
-| dasomel/narwhal-portal | `c0f03fb` | 0 | 3 | 3 | 0 |
-| dasomel/beluga | `742ca49` | 1 | 1 | 0 | 0 |
-| dasomel/kubemetal | `1b4e1d3` | 1 | 1 | 1 | 0 |
-| dasomel/clusterdeck | `36f9207` | 1 | 1 | 1 | 0 |
-| dasomel/ldapium | `5937b2c` | 1 | 1 | 1 | 0 |
-| dasomel/nfs-quota-agent | `e9e9ad6` | 1 | 1 | 1 | 0 |
-| dasomel/egovframe-launcher | `7304c08` | 1 | 1 | 1 | 0 |
-| dasomel/kube-ready-box | `62010a9` | 0 | 9 | 1 | 0 |
-| dasomel/siqoq | `8faac04` | 1 | 1 | 1 | 0 |
+| dasomel/narwhal | `0935ac1` | 1 | 4 | 3 | 0 |
+| dasomel/narwhal-portal | `39c0079` | 0 | 3 | 3 | 0 |
+| dasomel/beluga | `ffbfe82` | 1 | 2 | 1 | 0 |
+| dasomel/kubemetal | `a7acdba` | 1 | 1 | 1 | 0 |
+| dasomel/clusterdeck | `2f25ed7` | 1 | 1 | 1 | 0 |
+| dasomel/ldapium | `2da51c8` | 1 | 1 | 1 | 0 |
+| dasomel/nfs-quota-agent | `bfc4ab0` | 1 | 1 | 1 | 0 |
+| dasomel/egovframe-launcher | `26ad1fb` | 1 | 1 | 1 | 0 |
+| dasomel/kube-ready-box | `1f047ff` | 0 | 9 | 1 | 0 |
+| dasomel/siqoq | `fe1804b` | 1 | 1 | 1 | 0 |
 
 ## Status publication workflow
 
