@@ -243,7 +243,7 @@ OpenForge is informed by active OSS development practices, including:
 - nfs-quota-agent
 - kube-ready-box
 - KubeMetal
-- Beluga / Beluga Manager
+- Beluga (including its Manager)
 - ldapium
 - eGovFrame Launcher
 

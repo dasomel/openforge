@@ -189,7 +189,7 @@ python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-rep
 OpenForge의 디자인 시스템 표준은 현재 개발 중인 프로젝트의 서로 다른 UI 성격을 참고합니다.
 
 - Narwhal (Portal 포함) — Platform Portal
-- Beluga / Beluga Manager — Data Platform / Control Plane
+- Beluga (Manager 포함) — Data Platform / Control Plane
 - ClusterDeck — Desktop Operator
 - KubeMetal — Desktop ML Infrastructure
 - ldapium — Admin Console

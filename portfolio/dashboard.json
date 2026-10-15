@@ -722,7 +722,7 @@
       "target": "kubemetal",
       "type": "shared-contract",
       "impact": "medium",
-      "scope": "agent execution and remediation security patterns"
+      "scope": "agent execution and remediation security patterns; exact-invocation approval and recomputable evidence (portal/)"
     },
     {
       "source": "narwhal",

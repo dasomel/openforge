@@ -73,7 +73,7 @@
     <text x="985" y="532" fill="#86efac" font-size="13" font-weight="700">DATA PLATFORM</text>
     <text x="985" y="572" fill="#f8fafc" font-size="24" font-weight="700">Beluga</text>
     <text x="985" y="602" fill="#cbd5e1" font-size="15">Operations Agent · Data Platform</text>
-    <text x="985" y="628" fill="#94a3b8" font-size="13">Beluga Manager control surface</text>
+    <text x="985" y="628" fill="#94a3b8" font-size="13">Beluga Manager (manager/) control surface</text>
 
     <line x1="590" y1="436" x2="270" y2="500" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>
     <line x1="700" y1="436" x2="700" y2="500" stroke="#64748b" stroke-width="2" marker-end="url(#arrow)"/>

@@ -46,7 +46,7 @@ OpenForge Improvement
 
 ## 참고 프로젝트
 
-Reference Implementation에는 Narwhal(Portal 포함), nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, Beluga Manager 등의 실제 프로젝트가 포함됩니다.
+Reference Implementation에는 Narwhal(Portal 포함), nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, Beluga(Manager 포함) 등의 실제 프로젝트가 포함됩니다.
 
 이 프로젝트들은 의존 대상이 아니라 참고 구현입니다. OpenForge는 반복 가능한 Engineering Practice를 표준화하면서 각 프로젝트의 구현 선택권을 유지합니다.
 

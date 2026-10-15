@@ -36,7 +36,7 @@
     {"source":"narwhal","target":"ldapium","type":"consumes","impact":"medium","scope":"identity/directory capability"},
     {"source":"ldapium","target":"narwhal","type":"provides","impact":"medium","scope":"identity/directory capability"},
 
-    {"source":"narwhal","target":"kubemetal","type":"shared-contract","impact":"medium","scope":"agent execution and remediation security patterns"},
+    {"source":"narwhal","target":"kubemetal","type":"shared-contract","impact":"medium","scope":"agent execution and remediation security patterns; exact-invocation approval and recomputable evidence (portal/)"},
     {"source":"narwhal","target":"beluga","type":"shared-contract","impact":"medium","scope":"agent execution and operations-agent security patterns"},
 
     {"source":"clusterdeck","target":"narwhal","type":"consumes","impact":"low","scope":"Kubernetes operations UX patterns"},

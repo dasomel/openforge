@@ -17,7 +17,7 @@ OpenForge treats the Dasomel OSS portfolio as a set of independently releasable 
 | --- | --- | --- |
 | Portfolio engineering governance | OpenForge | all portfolio projects |
 | Kubernetes platform control plane | Narwhal | Narwhal Portal (`portal/` in the Narwhal monorepo), KubeMetal (Beluga is a peer, not a consumer; see below) |
-| Data platform / lakehouse | Beluga | Beluga Manager |
+| Data platform / lakehouse | Beluga | Beluga Manager (`manager/` in the Beluga monorepo) |
 | Local / edge AI runtime | KubeMetal | Beluga, Siqoq |
 | Node runtime foundation | kube-ready-box | Narwhal, Beluga |
 | Directory identity data plane | LDAPium | Narwhal, Beluga |
