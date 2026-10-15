@@ -41,6 +41,13 @@ class MutableInputGuardTests(unittest.TestCase):
             failures = module.scan_file(p)
             self.assertTrue(any("40-char commit SHA" in item[1] for item in failures))
 
+    def test_rejects_floating_action_tag_in_step_list_item(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "workflow.yml"
+            p.write_text("    steps:\n      - uses: actions/checkout@v4\n", encoding="utf-8")
+            failures = module.scan_file(p)
+            self.assertTrue(any("40-char commit SHA" in item[1] for item in failures))
+
     def test_ignores_comments(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "notes.yml"

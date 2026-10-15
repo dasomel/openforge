@@ -6,7 +6,7 @@ import re
 import sys
 from pathlib import Path
 
-ACTION_RE = re.compile(r"^\s*uses:\s*([^\s#]+)")
+ACTION_RE = re.compile(r"^\s*(?:-\s+)?uses:\s*([^\s#]+)")
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 MUTABLE_PATTERNS = (
     ("container latest tag", re.compile(r":latest\b")),
