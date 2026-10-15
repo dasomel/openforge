@@ -65,21 +65,20 @@
 
 > Counts what the revision-bound audit can observe. A zero false-green count means no finding matched the detector's current rules at that revision; it is not proof that every validation path fails closed. A `—` means the control was not measured at that revision, which is different from measured and clean.
 
-- Audited repositories: **11**
-- Repositories with false-green findings: **9**
-- False-green findings (total): **9**
-- Canonical agent skills: **24**
+- Audited repositories: **10**
+- Repositories with false-green findings: **8**
+- False-green findings (total): **8**
+- Canonical agent skills: **23**
 - Evidence-backed mature skills: **12**
 - Skill audit errors: **0**
-- Swallowed-failure findings: **0** (measured in 11 of 11 repositories)
-- Repositories with a local agent CI gate: **2** (measured in 11 of 11 repositories)
+- Swallowed-failure findings: **0** (measured in 10 of 10 repositories)
+- Repositories with a local agent CI gate: **2** (measured in 10 of 10 repositories)
 
 | Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
 | dasomel/narwhal | `330a3fb` | 1 | 4 | 2 | 0 |
 | dasomel/narwhal-portal | `c0f03fb` | 0 | 3 | 3 | 0 |
 | dasomel/beluga | `742ca49` | 1 | 1 | 0 | 0 |
-| dasomel/beluga-manager | `2081fef` | 1 | 1 | 0 | 0 |
 | dasomel/kubemetal | `1b4e1d3` | 1 | 1 | 1 | 0 |
 | dasomel/clusterdeck | `36f9207` | 1 | 1 | 1 | 0 |
 | dasomel/ldapium | `5937b2c` | 1 | 1 | 1 | 0 |

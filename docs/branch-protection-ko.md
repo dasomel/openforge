@@ -47,7 +47,7 @@ main
 - **Enforce Admins:** 실수로 인한 직접 푸시 방지를 위해 권장.
 - **Linear History / Squash Merges:** 릴리스 변경 이력 추적성을 위해 활성화.
 
-### Tier 2: 활성 데스크톱 및 플랫폼 오퍼레이터 (`clusterdeck`, `kubemetal`, `beluga-manager`)
+### Tier 2: 활성 데스크톱 및 플랫폼 오퍼레이터 (`clusterdeck`, `kubemetal`)
 - **Branch Protection:** `main` 브랜치 활성화.
 - **Require Status Checks to Pass:** 필수 적용 (`ci.yml`, `markdown.yml`, `test`).
 - **직접 푸시:** 제한하고 PR 또는 검증된 스테이징 브랜치 경유.

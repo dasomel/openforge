@@ -1,5 +1,7 @@
 # chore(openforge): close architecture compliance gaps (beluga-manager)
 
+> **Superseded:** `dasomel/beluga-manager` was merged into `dasomel/beluga` under `manager/` on 2026-10-15 (beluga PR #261, ADR 0005) and the repository is archived. This is a historical draft; any remaining gap is tracked in `dasomel/beluga` (`manager/`, label `area:manager`).
+
 **Labels:** `openforge, compliance, engineering, architecture`
 
 ## Current Score: `15.6%` (Foundation work required)
