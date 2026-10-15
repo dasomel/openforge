@@ -80,7 +80,7 @@ python3 templates/scripts/validate-security-readiness.py
 python3 templates/scripts/generate-portfolio.py
 ```
 
-원본 출력은 수정 없이 `portfolio/security-readiness/scorecard/<repo>.json`에 원천 증거로 보관합니다. `source.tool`은 `openssf-scorecard`이고 `version`, UTC `observed_at`, 정확한 명령·스캔한 커밋·원본 파일 경로·전체 점수와 모든 점검의 이름·점수·사유에 대한 SHA-256 점검 다이제스트를 담은 `ref`가 함께 기록됩니다.
+원본 출력은 수정 없이 `portfolio/security-readiness/scorecard/<repo>.json`에 원천 증거로 보관합니다. `source.tool`은 `openssf-scorecard`이고 `version`, UTC `observed_at`, 정확한 명령·스캔한 커밋·원본 파일 경로·스캔 사실에 대한 SHA-256 점검 다이제스트(아래 참고)를 담은 `ref`가 함께 기록됩니다.
 
 | Scorecard 점검(v5) | OpenForge 신호 | 적용 |
 |--------------------|----------------|------|
@@ -94,7 +94,7 @@ python3 templates/scripts/generate-portfolio.py
 
 채워진 신호의 점검별 상태: `10` pass, `0` fail, `1-9` partial, `-1`(판정 불가) `not-run`. `-1`은 절대 `pass`가 아니며 전체 상태 판단에서 확정 점검으로 세지 않습니다. 직접 관찰한 신호(`pass`, `fail`, `partial`, `not-applicable`)는 덮어쓰지 않고 유지하며 `NOTE`를 출력합니다.
 
-다음 경우 어댑터는 0이 아닌 종료 코드와 메시지로 실패하고 아무것도 쓰지 않습니다: Scorecard JSON이 아닌 입력, `checks` 누락 또는 빈 값, 5가 아닌 Scorecard 메이저 버전, -1..10 밖의 전체·점검 점수, `github.com/<레코드 repository>`와 다른 `repo.name`, 40자리 hex가 아닌 커밋, UTC 오프셋 없는 날짜, 중복 점검, 이미 측정된 `scorecard` 신호(재스캔 delta는 계산하지 않으므로 `rescan` 블록을 직접 추가). 유일한 예외는 같은 실행(도구, 버전, 날짜, 스캔 커밋이 같고 모든 사실이 그대로)을 다시 가져오는 경우로, `source.ref`의 점검 다이제스트만 갱신합니다.
+다음 경우 어댑터는 0이 아닌 종료 코드와 메시지로 실패하고 아무것도 쓰지 않습니다: Scorecard JSON이 아닌 입력, `checks` 누락 또는 빈 값, 5가 아닌 Scorecard 메이저 버전, -1..10 밖의 전체·점검 점수, `github.com/<레코드 repository>`와 다른 `repo.name`, 40자리 hex가 아닌 커밋, UTC 오프셋 없는 날짜, 중복 점검, 이미 측정된 `scorecard` 신호(재스캔 delta는 계산하지 않으므로 `rescan` 블록을 직접 추가). 유일한 예외는 동일한 입력을 다시 가져오는 경우로, `source.ref`에 저장된 점검 다이제스트가 입력의 다이제스트와 같으면 아무것도 바꾸지 않는 no-op입니다. 다이제스트가 없는 레코드는 거부합니다. 다이제스트는 전체 점수, 각 점검의 이름·점수·사유, Scorecard 버전과 실행 커밋, 스캔 날짜, 스캔한 커밋을 포함합니다.
 
 레코드 필드: `revision`은 직접 관찰한 revision 그대로 두며, Scorecard가 스캔한 커밋은 각 `source.ref`에 있고 다를 수 있습니다. `observed_at`은 레코드에 담긴 가장 최근 관찰 시각이 됩니다.
 

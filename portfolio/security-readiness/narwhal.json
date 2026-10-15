@@ -10,7 +10,7 @@
         "tool": "openssf-scorecard",
         "version": "v5.6.0",
         "observed_at": "2026-10-15T11:44:48Z",
-        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit bb1e12fbbd7d9dd42fcf749f99d06757e501339f; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:dd64a2ae1b0f4d02bda567756070582373cccaa7f0f123db3e312c64ea69f925)"
+        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit bb1e12fbbd7d9dd42fcf749f99d06757e501339f; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:98a6e6c8f036236215b3b41f788b3ffbc6c8fdae7635c709189cab0c959da452)"
       },
       "status": "partial",
       "note": "Scorecard v5.6.0 overall 4.1/10 over 18 checks (16 conclusive). Inconclusive (-1, never counted as pass): Packaging, Signed-Releases. Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",

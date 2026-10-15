@@ -207,23 +207,31 @@ class MappingTests(unittest.TestCase):
         self.assertEqual(validator.validate(record, validator.parse_date("2026-10-15")), [])
         self.assertFalse(any("security-policy" in n for n in notes))
 
-    def test_same_run_reimport_changes_no_facts(self):
+    def test_identical_reimport_is_a_noop(self):
         record, _ = apply()
-        stale = copy.deepcopy(record)
-        signal(stale, "scorecard")["source"]["ref"] = signal(stale, "scorecard")["source"]["ref"].split("; checks digest")[0] + ")"
-        self.assertNotIn("checks digest", signal(stale, "scorecard")["source"]["ref"])
-        refreshed, _ = apply(record=stale)
-        self.assertEqual(refreshed, record)
-        self.assertIn(adapter.checks_digest(adapter.parse_scorecard(synthetic_raw(), REPO)), signal(refreshed, "scorecard")["source"]["ref"])
+        again, notes = apply(record=record)
+        self.assertEqual(again, record)
+        self.assertTrue(any("record unchanged" in n for n in notes))
 
-    def test_measured_scorecard_signal_is_not_overwritten_by_a_different_run(self):
+    def test_legacy_signal_without_digest_is_refused(self):
+        record, _ = apply()
+        source = signal(record, "scorecard")["source"]
+        source["ref"] = source["ref"].split("; checks digest")[0] + ")"
+        with self.assertRaises(adapter.ScorecardError) as ctx:
+            apply(record=record)
+        self.assertIn("refusing to overwrite", str(ctx.exception))
+
+    def test_measured_scorecard_signal_is_not_overwritten_by_a_different_input(self):
         record, _ = apply()
         changes = {
             "date": lambda raw: raw.update(date="2026-10-16T00:00:00Z"),
             "commit": lambda raw: raw["repo"].update(commit="f" * 40),
             "version": lambda raw: raw["scorecard"].update(version="v5.5.0"),
+            "scorecard executable commit": lambda raw: raw["scorecard"].update(commit="e" * 40),
             "score": lambda raw: raw.update(score=10),
-            "check": lambda raw: raw["checks"][1].update(score=0),
+            "failing check": lambda raw: raw["checks"][1].update(score=0),
+            "passing-check reason": lambda raw: raw["checks"][1].update(reason="changed"),
+            "passing-check name": lambda raw: raw["checks"][1].update(name="Renamed"),
         }
         for label, change in changes.items():
             with self.subTest(change=label):

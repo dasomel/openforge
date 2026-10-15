@@ -10,7 +10,7 @@
         "tool": "openssf-scorecard",
         "version": "v5.6.0",
         "observed_at": "2026-10-15T11:45:09Z",
-        "ref": "scorecard --repo=github.com/dasomel/kubemetal --format=json (scanned commit a7acdbaf46497130ef843f23aff666aedcb11102; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/kubemetal.json; checks digest sha256:728f5f2a1637171f8879a5bf48f8da5338300dd69e5e8112fb3dcd6d892ad2f7)"
+        "ref": "scorecard --repo=github.com/dasomel/kubemetal --format=json (scanned commit a7acdbaf46497130ef843f23aff666aedcb11102; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/kubemetal.json; checks digest sha256:57fa073e882038cffc609cdbc18bf946bf96de234c160d3b1ffadb36796f5589)"
       },
       "status": "partial",
       "note": "Scorecard v5.6.0 overall 3.5/10 over 18 checks (17 conclusive). Inconclusive (-1, never counted as pass): Packaging. Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",

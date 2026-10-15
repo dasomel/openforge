@@ -129,10 +129,10 @@ def finding(record_name: str, key: str, name: str, score: int, reason: str) -> d
 
 def checks_digest(parsed: dict) -> str:
     # D6: the overall signal's source.ref carries this digest so generate-portfolio.py can prove the raw
-    # file still holds the score and checks the record was mapped from (date/version/commit alone do not).
-    # Cost: any change to the raw score, a check name/score/reason or the check set breaks the match.
-    # Escape hatch: re-run this adapter on the record (scorecard reset to not-run) to refresh it.
-    canonical = json.dumps({"score": parsed["score"], "checks": parsed["checks"]}, sort_keys=True, separators=(",", ":"))
+    # file still holds everything the record was mapped from: overall score, each check name/score/reason,
+    # Scorecard version and executable commit, scan date and scanned repo commit.
+    # Cost: any change to those breaks the match. Escape hatch: a real re-scan goes through D3.
+    canonical = json.dumps({k: parsed[k] for k in ("score", "checks", "version", "scorecard_commit", "observed_at", "commit")}, sort_keys=True, separators=(",", ":"))
     return "sha256:" + hashlib.sha256(canonical.encode("utf-8")).hexdigest()
 
 
@@ -193,17 +193,6 @@ def gap_signal(parsed: dict, repository: str, raw_path: str, check: tuple[str, i
     return signal
 
 
-def same_run(existing: dict, fresh: dict, parsed: dict) -> bool:
-    # D7: allows only the digest refresh of the same Scorecard run: identical tool/version/date, same
-    # scanned commit and every fact (status, note, findings) equal; only source.ref may differ.
-    # Cost: a raw file whose score/checks changed under the same run is refused, not refreshed.
-    # Escape hatch: a real re-scan carries a new date/commit and goes through D3.
-    source = existing.get("source") or {}
-    keep = lambda signal: {k: v for k, v in signal.items() if k != "source"}
-    same_source = {k: source.get(k) for k in ("tool", "version", "observed_at")} == {k: fresh["source"][k] for k in ("tool", "version", "observed_at")}
-    return same_source and f"scanned commit {parsed['commit']}" in source.get("ref", "") and keep(existing) == keep(fresh)
-
-
 def apply_scorecard(record: dict, parsed: dict, raw_path: str) -> tuple[dict, list[str]]:
     """Return (updated copy of record, notes about signals deliberately left untouched)."""
     repository, out, notes = record["repository"], copy.deepcopy(record), []
@@ -213,13 +202,16 @@ def apply_scorecard(record: dict, parsed: dict, raw_path: str) -> tuple[dict, li
         signals[signal["id"]] = signal
 
     existing = signals.get("scorecard")
-    fresh = overall_signal(parsed, repository, raw_path)
-    if existing and existing["status"] != "not-run" and not same_run(existing, fresh, parsed):
+    if existing and existing["status"] != "not-run":
+        # D7: re-importing the identical run is an idempotent no-op: the stored checks digest must equal
+        # the digest of this input, and the record is returned unchanged. A record without a digest, or
+        # any differing input, is refused (D3).
+        if checks_digest(parsed) in (existing.get("source") or {}).get("ref", ""):
+            return out, [f"scorecard signal already holds this run ({checks_digest(parsed)}); record unchanged"]
         # D3: refuse instead of guessing a rescan delta. Cost: a refresh needs a hand-written
         # `rescan` block; escape hatch: set the old scorecard signal to not-run in a scratch copy.
-        # D7: the one exception is re-importing the SAME run (see same_run), which changes no fact.
         raise ScorecardError(f"scorecard signal is already {existing['status']}; refusing to overwrite a measured signal (re-scan deltas are not computed)")
-    put(fresh)
+    put(overall_signal(parsed, repository, raw_path))
     by_name = {c[0]: c for c in parsed["checks"]}
     for check_name, (signal_id, caveat) in GAP_FILL.items():
         if check_name not in by_name:
