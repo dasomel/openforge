@@ -100,6 +100,35 @@ class SecurityReadinessDashboardTests(unittest.TestCase):
             self.view()
         self.assertIn("does not match", str(ctx.exception))
 
+    def mutate_raw(self, name, change):
+        raw_path = self.directory / f"scorecard/{name}.json"
+        raw = load(raw_path)
+        change(raw)
+        raw_path.write_text(json.dumps(raw), encoding="utf-8")
+
+    def test_raw_scorecard_score_drift_fails_loudly(self):
+        for name in REPOS:
+            with self.subTest(name=name):
+                shutil.copyfile(EVIDENCE / f"scorecard/{name}.json", self.directory / f"scorecard/{name}.json")
+                self.mutate_raw(name, lambda raw: raw.update(score=10))
+                with self.assertRaises(RuntimeError) as ctx:
+                    self.view()
+                self.assertIn("does not match", str(ctx.exception))
+
+    def test_raw_scorecard_check_drift_fails_loudly(self):
+        changes = {
+            "score to 0": lambda check: check.update(score=0),
+            "score to -1": lambda check: check.update(score=-1),
+            "rename": lambda check: check.update(name=check["name"] + "-X"),
+        }
+        for label, change in changes.items():
+            with self.subTest(change=label):
+                shutil.copyfile(EVIDENCE / "scorecard/kubemetal.json", self.directory / "scorecard/kubemetal.json")
+                self.mutate_raw("kubemetal", lambda raw: change(next(c for c in raw["checks"] if c["score"] == 10)))
+                with self.assertRaises(RuntimeError) as ctx:
+                    self.view()
+                self.assertIn("does not match", str(ctx.exception))
+
     def test_missing_raw_scorecard_fails_loudly(self):
         (self.directory / "scorecard/clusterdeck.json").unlink()
         with self.assertRaises(RuntimeError) as ctx:

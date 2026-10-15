@@ -9,6 +9,7 @@ from __future__ import annotations
 
 import argparse
 import datetime as dt
+import importlib.util
 import json
 import re
 import sys
@@ -470,7 +471,18 @@ def utc_datetime(value: Any, where: str) -> str:
     return parsed.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
-def security_scorecard_view(signal: dict[str, Any] | None, raw_path: Path, rel: str) -> dict[str, Any]:
+def load_scorecard_adapter() -> Any:
+    """Load import-scorecard.py so the dashboard recomputes the adapter's digest instead of re-implementing it."""
+    path = Path(__file__).with_name("import-scorecard.py")
+    spec = importlib.util.spec_from_file_location("openforge_import_scorecard", path)
+    if spec is None or spec.loader is None or not path.is_file():
+        raise RuntimeError(f"{path} is required to verify the Scorecard evidence")
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    return module
+
+
+def security_scorecard_view(signal: dict[str, Any] | None, raw_path: Path, rel: str, repository: str) -> dict[str, Any]:
     """Scorecard facts for the dashboard, read from the raw upstream file and cross-checked.
 
     The raw `scorecard/<repo>.json` is the source of the score; the record only carries the
@@ -493,6 +505,13 @@ def security_scorecard_view(signal: dict[str, Any] | None, raw_path: Path, rel: 
     version = (raw.get("scorecard") or {}).get("version")
     if observed_at != source.get("observed_at") or version != source.get("version") or not commit or commit not in source.get("ref", ""):
         raise RuntimeError(f"{rel} does not match the record's scorecard signal (date/version/commit); re-run import-scorecard.py")
+    adapter = load_scorecard_adapter()
+    try:
+        digest = adapter.checks_digest(adapter.parse_scorecard(raw, repository))
+    except ValueError as exc:
+        raise RuntimeError(f"{rel}: {exc}") from exc
+    if digest not in source.get("ref", ""):
+        raise RuntimeError(f"{rel} does not match the record's scorecard signal (overall score or check scores/names changed, expected {digest}); re-run import-scorecard.py")
     view.update(score=None if score == -1 else score, tool_version=version, observed_at=observed_at, commit=commit)
     return view
 
@@ -524,7 +543,7 @@ def build_security_readiness_view(directory: Path = SECURITY_READINESS_DIR, root
             counts[SECURITY_STATUS_KEYS[signal["status"]]] += 1
         raw_path = directory / "scorecard" / path.name
         raw_rel = raw_path.relative_to(root).as_posix()
-        scorecard = security_scorecard_view(next((s for s in signals if s["id"] == "scorecard"), None), raw_path, raw_rel)
+        scorecard = security_scorecard_view(next((s for s in signals if s["id"] == "scorecard"), None), raw_path, raw_rel, record["repository"])
         overall = security_overall(counts)
         overall_counts[overall] += 1
         for key, value in counts.items():

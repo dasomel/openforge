@@ -207,11 +207,31 @@ class MappingTests(unittest.TestCase):
         self.assertEqual(validator.validate(record, validator.parse_date("2026-10-15")), [])
         self.assertFalse(any("security-policy" in n for n in notes))
 
-    def test_measured_scorecard_signal_is_not_overwritten(self):
+    def test_same_run_reimport_changes_no_facts(self):
         record, _ = apply()
-        with self.assertRaises(adapter.ScorecardError) as ctx:
-            apply(record=record)
-        self.assertIn("refusing to overwrite", str(ctx.exception))
+        stale = copy.deepcopy(record)
+        signal(stale, "scorecard")["source"]["ref"] = signal(stale, "scorecard")["source"]["ref"].split("; checks digest")[0] + ")"
+        self.assertNotIn("checks digest", signal(stale, "scorecard")["source"]["ref"])
+        refreshed, _ = apply(record=stale)
+        self.assertEqual(refreshed, record)
+        self.assertIn(adapter.checks_digest(adapter.parse_scorecard(synthetic_raw(), REPO)), signal(refreshed, "scorecard")["source"]["ref"])
+
+    def test_measured_scorecard_signal_is_not_overwritten_by_a_different_run(self):
+        record, _ = apply()
+        changes = {
+            "date": lambda raw: raw.update(date="2026-10-16T00:00:00Z"),
+            "commit": lambda raw: raw["repo"].update(commit="f" * 40),
+            "version": lambda raw: raw["scorecard"].update(version="v5.5.0"),
+            "score": lambda raw: raw.update(score=10),
+            "check": lambda raw: raw["checks"][1].update(score=0),
+        }
+        for label, change in changes.items():
+            with self.subTest(change=label):
+                raw = synthetic_raw()
+                change(raw)
+                with self.assertRaises(adapter.ScorecardError) as ctx:
+                    apply(raw=raw, record=record)
+                self.assertIn("refusing to overwrite", str(ctx.exception))
 
     def test_summary_is_recomputed(self):
         record, _ = apply()

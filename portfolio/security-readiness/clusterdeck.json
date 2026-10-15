@@ -10,7 +10,7 @@
         "tool": "openssf-scorecard",
         "version": "v5.6.0",
         "observed_at": "2026-10-15T11:45:29Z",
-        "ref": "scorecard --repo=github.com/dasomel/clusterdeck --format=json (scanned commit 2f25ed744a2feb59749606b78e416df2e1063ccf; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/clusterdeck.json)"
+        "ref": "scorecard --repo=github.com/dasomel/clusterdeck --format=json (scanned commit 2f25ed744a2feb59749606b78e416df2e1063ccf; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/clusterdeck.json; checks digest sha256:8c8587c79b2bc1b685e4f2db02b89e2334b7f9374d98ab04bf174f17f8b82628)"
       },
       "status": "partial",
       "note": "Scorecard v5.6.0 overall 3.6/10 over 18 checks (17 conclusive). Inconclusive (-1, never counted as pass): Packaging. Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
