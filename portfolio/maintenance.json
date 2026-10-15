@@ -75,15 +75,6 @@
       "review_cadence": "quarterly"
     },
     {
-      "project": "beluga-manager",
-      "maintenance_owner": "dasomel",
-      "maintenance_status": "owned",
-      "strategic_role": "enabler",
-      "blast_radius": "medium",
-      "exit_path_status": "defined",
-      "review_cadence": "quarterly"
-    },
-    {
       "project": "kube-ready-box",
       "maintenance_owner": "dasomel",
       "maintenance_status": "owned",

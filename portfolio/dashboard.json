@@ -17,7 +17,7 @@
   },
   "maintenance": {
     "summary": {
-      "owned_projects": 15,
+      "owned_projects": 14,
       "unowned_projects": 0,
       "high_blast_radius_projects": 3,
       "exit_path_review_required": 14,
@@ -67,15 +67,6 @@
         "strategic_role": "differentiator",
         "blast_radius": "medium",
         "exit_path_status": "review-required",
-        "review_cadence": "quarterly"
-      },
-      {
-        "project": "beluga-manager",
-        "maintenance_owner": "dasomel",
-        "maintenance_status": "owned",
-        "strategic_role": "enabler",
-        "blast_radius": "medium",
-        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       },
       {
@@ -299,7 +290,9 @@
       "domains": [
         "kubernetes",
         "data-platform",
-        "operations-agent"
+        "operations-agent",
+        "management",
+        "ui"
       ],
       "status": {
         "revision": "2f78873",
@@ -392,47 +385,6 @@
         "strategic_role": "differentiator",
         "blast_radius": "medium",
         "exit_path_status": "review-required",
-        "review_cadence": "quarterly"
-      }
-    },
-    {
-      "id": "beluga-manager",
-      "repository": "dasomel/beluga-manager",
-      "name": "Beluga Manager",
-      "category": "Data Platform Management",
-      "archetype": "Data Control Plane",
-      "development_status": "deprecated",
-      "adoption_percent": null,
-      "role": "control-surface",
-      "domains": [
-        "data-platform",
-        "management",
-        "ui"
-      ],
-      "status": {
-        "revision": "e6397c0",
-        "updated_at": "2026-09-24",
-        "milestone": "web-console-i18n-ci-gate",
-        "progress_percent": 85,
-        "capabilities": {},
-        "evidence": {
-          "issue": null,
-          "pull_request": 49,
-          "commit": "e6397c01944bfc346299b16c578ab58497fc6298",
-          "ci": "pass",
-          "security": "pass",
-          "runtime": "pass"
-        },
-        "proposed_relationships": []
-      },
-      "impact_score": 0,
-      "maintenance": {
-        "project": "beluga-manager",
-        "maintenance_owner": "dasomel",
-        "maintenance_status": "owned",
-        "strategic_role": "enabler",
-        "blast_radius": "medium",
-        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       }
     },

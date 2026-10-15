@@ -17,7 +17,6 @@ flowchart TB
   subgraph AIData["AI / Data Platforms"]
     kubemetal["KubeMetal\nadopter"]
     beluga["Beluga\nadopter"]
-    beluga_manager["Beluga Manager\ncontrol-surface"]
     siqoq["Siqoq\nexperiment"]
   end
   subgraph Foundation["Runtime / Shared Services"]
