@@ -336,6 +336,16 @@
               "runtime": "pass",
               "security": "pass"
             }
+          },
+          "policy-compiler": {
+            "status": "implemented",
+            "standard": "openforge/agent-engineering",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
+              "security": "pass"
+            }
           }
         },
         "evidence": {
@@ -347,11 +357,6 @@
           "runtime": "pass"
         },
         "proposed_relationships": [
-          {
-            "target": "beluga-manager",
-            "type": "provides",
-            "scope": "data-platform management capabilities"
-          },
           {
             "target": "ldapium",
             "type": "consumes",

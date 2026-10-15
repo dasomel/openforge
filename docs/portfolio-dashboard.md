@@ -39,6 +39,7 @@
 | Beluga | `compliance-baseline` | unit pass · integration pass · runtime not-applicable · security pass |
 | Beluga | `stream-iceberg` | unit pass · integration pass · runtime pass · security pass |
 | Beluga | `policy-compiler-seam` | unit pass · integration pass · runtime pass · security pass |
+| Beluga | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
 | Beluga Manager | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
 
 ## Adoption snapshot
