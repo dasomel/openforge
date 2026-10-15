@@ -2,17 +2,70 @@
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/narwhal",
   "revision": "626ed66fd365a2e7104e94cbfe4bbaecad262212",
-  "observed_at": "2026-10-07T04:58:44Z",
+  "observed_at": "2026-10-15T11:44:48Z",
   "signals": [
     {
       "id": "scorecard",
-      "status": "not-run",
       "source": {
-        "tool": "curl",
-        "observed_at": "2026-10-07T04:58:44Z",
-        "ref": "curl -s -o /dev/null -w '%{http_code}' https://api.securityscorecards.dev/projects/github.com/dasomel/narwhal -> 404 (no published Scorecard result)"
+        "tool": "openssf-scorecard",
+        "version": "v5.6.0",
+        "observed_at": "2026-10-15T11:44:48Z",
+        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit bb1e12fbbd7d9dd42fcf749f99d06757e501339f; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:98a6e6c8f036236215b3b41f788b3ffbc6c8fdae7635c709189cab0c959da452)"
       },
-      "note": "Scorecard API returned HTTP 404; no score is recorded. Not-run, not pass."
+      "status": "partial",
+      "note": "Scorecard v5.6.0 overall 4.1/10 over 18 checks (16 conclusive). Inconclusive (-1, never counted as pass): Packaging, Signed-Releases. Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
+      "findings": [
+        {
+          "id": "narwhal-scorecard-branch-protection",
+          "summary": "Branch-Protection 3/10: branch protection is not maximal on development and all release branches",
+          "severity": "high"
+        },
+        {
+          "id": "narwhal-scorecard-cii-best-practices",
+          "summary": "CII-Best-Practices 0/10: no effort to earn an OpenSSF best practices badge detected",
+          "severity": "low"
+        },
+        {
+          "id": "narwhal-scorecard-code-review",
+          "summary": "Code-Review 0/10: Found 0/12 approved changesets -- score normalized to 0",
+          "severity": "high"
+        },
+        {
+          "id": "narwhal-scorecard-contributors",
+          "summary": "Contributors 0/10: project has 0 contributing companies or organizations -- score normalized to 0",
+          "severity": "low"
+        },
+        {
+          "id": "narwhal-scorecard-dangerous-workflow",
+          "summary": "Dangerous-Workflow 0/10: dangerous workflow patterns detected",
+          "severity": "critical"
+        },
+        {
+          "id": "narwhal-scorecard-fuzzing",
+          "summary": "Fuzzing 0/10: project is not fuzzed",
+          "severity": "medium"
+        },
+        {
+          "id": "narwhal-scorecard-pinned-dependencies",
+          "summary": "Pinned-Dependencies 6/10: dependency not pinned by hash detected -- score normalized to 6",
+          "severity": "medium"
+        },
+        {
+          "id": "narwhal-scorecard-sast",
+          "summary": "SAST 0/10: SAST tool is not run on all commits -- score normalized to 0",
+          "severity": "medium"
+        },
+        {
+          "id": "narwhal-scorecard-token-permissions",
+          "summary": "Token-Permissions 0/10: detected GitHub workflow tokens with excessive permissions",
+          "severity": "high"
+        },
+        {
+          "id": "narwhal-scorecard-vulnerabilities",
+          "summary": "Vulnerabilities 0/10: 54 existing vulnerabilities detected",
+          "severity": "high"
+        }
+      ]
     },
     {
       "id": "security-policy",
@@ -106,8 +159,8 @@
     "total": 6,
     "pass": 2,
     "fail": 3,
-    "partial": 0,
-    "not_run": 1,
+    "partial": 1,
+    "not_run": 0,
     "not_applicable": 0
   },
   "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."

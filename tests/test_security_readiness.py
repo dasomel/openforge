@@ -17,6 +17,8 @@ spec.loader.exec_module(validator)
 
 TODAY = dt.date(2026, 10, 7)
 NOW = dt.datetime(2026, 10, 7, 12, 0, 0, tzinfo=dt.timezone.utc)
+# Committed samples were re-observed with OpenSSF Scorecard on 2026-10-15; they need a later clock.
+SAMPLES_NOW = dt.datetime(2026, 10, 16, 0, 0, 0, tzinfo=dt.timezone.utc)
 
 
 def fixture(name):
@@ -43,7 +45,7 @@ class SecurityReadinessTests(unittest.TestCase):
         files = sorted((ROOT / "portfolio/security-readiness").glob("*.json"))
         self.assertGreaterEqual(len(files), 3)
         for path in files:
-            self.assertEqual(validator.validate(json.loads(path.read_text(encoding="utf-8")), TODAY, path, NOW), [], path)
+            self.assertEqual(validator.validate(json.loads(path.read_text(encoding="utf-8")), TODAY, path, SAMPLES_NOW), [], path)
 
     def test_expired_exception_is_hard_error(self):
         self.assertRejected("invalid-expired-exception", "EXPIRED")

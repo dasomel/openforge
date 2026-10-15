@@ -1,0 +1,23 @@
+{
+  "date": "2026-10-02T09:00:00+09:00",
+  "repo": {
+    "name": "github.com/example/synthetic-repo",
+    "commit": "fedcba9876543210fedcba9876543210fedcba98"
+  },
+  "scorecard": {
+    "version": "v5.6.0",
+    "commit": "0123456789abcdef0123456789abcdef01234567"
+  },
+  "score": 5.5,
+  "checks": [
+    {"name": "Code-Review", "score": 0, "reason": "Found 0/4 approved changesets -- score normalized to 0"},
+    {"name": "Dangerous-Workflow", "score": 10, "reason": "no dangerous workflow patterns detected"},
+    {"name": "License", "score": 10, "reason": "license file detected"},
+    {"name": "Pinned-Dependencies", "score": 5, "reason": "dependency not pinned by hash detected -- score normalized to 5"},
+    {"name": "SBOM", "score": 0, "reason": "no SBOM file found"},
+    {"name": "Security-Policy", "score": 10, "reason": "security policy file detected"},
+    {"name": "Signed-Releases", "score": -1, "reason": "no releases found"},
+    {"name": "Synthetic-Future-Check", "score": 3, "reason": "a check this adapter has never heard of"},
+    {"name": "Vulnerabilities", "score": 7, "reason": "3 existing vulnerabilities detected"}
+  ]
+}
