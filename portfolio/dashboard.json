@@ -17,10 +17,10 @@
   },
   "maintenance": {
     "summary": {
-      "owned_projects": 14,
+      "owned_projects": 13,
       "unowned_projects": 0,
-      "high_blast_radius_projects": 3,
-      "exit_path_review_required": 14,
+      "high_blast_radius_projects": 2,
+      "exit_path_review_required": 13,
       "review_cadence_default": "quarterly"
     },
     "projects": [
@@ -35,15 +35,6 @@
       },
       {
         "project": "narwhal",
-        "maintenance_owner": "dasomel",
-        "maintenance_status": "owned",
-        "strategic_role": "differentiator",
-        "blast_radius": "high",
-        "exit_path_status": "review-required",
-        "review_cadence": "quarterly"
-      },
-      {
-        "project": "narwhal-portal",
         "maintenance_owner": "dasomel",
         "maintenance_status": "owned",
         "strategic_role": "differentiator",
@@ -169,7 +160,7 @@
         "compliance",
         "portfolio"
       ],
-      "impact_score": 26,
+      "impact_score": 23,
       "maintenance": {
         "project": "openforge",
         "maintenance_owner": "dasomel",
@@ -193,37 +184,13 @@
         "kubernetes",
         "platform-engineering",
         "gitops",
-        "ai-agent"
-      ],
-      "impact_score": 29,
-      "maintenance": {
-        "project": "narwhal",
-        "maintenance_owner": "dasomel",
-        "maintenance_status": "owned",
-        "strategic_role": "differentiator",
-        "blast_radius": "high",
-        "exit_path_status": "review-required",
-        "review_cadence": "quarterly"
-      }
-    },
-    {
-      "id": "narwhal-portal",
-      "repository": "dasomel/narwhal-portal",
-      "name": "Narwhal Portal",
-      "category": "Internal Developer Platform",
-      "archetype": "Platform Portal",
-      "development_status": "active",
-      "adoption_percent": 83.8,
-      "role": "control-surface",
-      "domains": [
-        "portal",
-        "kubernetes",
         "ai-agent",
+        "portal",
         "operations"
       ],
-      "impact_score": 11,
+      "impact_score": 23,
       "maintenance": {
-        "project": "narwhal-portal",
+        "project": "narwhal",
         "maintenance_owner": "dasomel",
         "maintenance_status": "owned",
         "strategic_role": "differentiator",
@@ -267,7 +234,7 @@
           "audit_command": "python3 templates/scripts/audit-portfolio.py --config <workspace>/portfolio-kubemetal-only.yml (workspaceRoot=/Users/m/Documents/IdeaProjects/20.dasomel, path=kubemetal, archetype=Desktop Operator from templates/portfolio.example.yml)"
         }
       },
-      "impact_score": 11,
+      "impact_score": 9,
       "maintenance": {
         "project": "kubemetal",
         "maintenance_owner": "dasomel",
@@ -626,13 +593,6 @@
     },
     {
       "source": "openforge",
-      "target": "narwhal-portal",
-      "type": "standardizes",
-      "impact": "high",
-      "scope": "engineering standards and agent execution security"
-    },
-    {
-      "source": "openforge",
       "target": "kubemetal",
       "type": "standardizes",
       "impact": "high",
@@ -702,20 +662,6 @@
       "scope": "platform, security and agent execution patterns"
     },
     {
-      "source": "narwhal",
-      "target": "narwhal-portal",
-      "type": "provides",
-      "impact": "high",
-      "scope": "platform capabilities and execution contracts"
-    },
-    {
-      "source": "narwhal-portal",
-      "target": "narwhal",
-      "type": "control-surface",
-      "impact": "high",
-      "scope": "platform user and agent operations"
-    },
-    {
       "source": "kubemetal",
       "target": "kube-ready-box",
       "type": "consumes",
@@ -776,7 +722,7 @@
       "target": "kubemetal",
       "type": "shared-contract",
       "impact": "medium",
-      "scope": "agent execution and remediation security patterns"
+      "scope": "agent execution and remediation security patterns; exact-invocation approval and recomputable evidence (portal/)"
     },
     {
       "source": "narwhal",
@@ -784,13 +730,6 @@
       "type": "shared-contract",
       "impact": "medium",
       "scope": "agent execution and operations-agent security patterns"
-    },
-    {
-      "source": "narwhal-portal",
-      "target": "kubemetal",
-      "type": "shared-contract",
-      "impact": "medium",
-      "scope": "exact-invocation approval and recomputable evidence"
     },
     {
       "source": "clusterdeck",
@@ -814,10 +753,6 @@
       "affected_projects": [
         {
           "project": "narwhal",
-          "impact": "high"
-        },
-        {
-          "project": "narwhal-portal",
           "impact": "high"
         },
         {
@@ -862,7 +797,7 @@
       "name": "Agent Execution Security Rollout",
       "status": "implementing",
       "projects": {
-        "narwhal-portal": "design-adopted",
+        "narwhal": "design-adopted",
         "kubemetal": "design-adopted",
         "beluga": "design-adopted",
         "kube-ready-box": "design-adopted"
@@ -880,23 +815,23 @@
   "agent_audit": {
     "schema": "openforge-agent-audit-matrix/v1",
     "summary": {
-      "repositories": 10,
+      "repositories": 9,
       "repositories_with_false_green": 8,
       "false_green_findings": 8,
-      "canonical_skills": 23,
+      "canonical_skills": 20,
       "skill_maturity": {
         "draft": 11,
-        "verified": 12,
+        "verified": 9,
         "stable": 0,
         "deprecated": 0,
         "unspecified": 0
       },
-      "evidence_backed_mature_skills": 12,
+      "evidence_backed_mature_skills": 9,
       "skill_audit_errors": 0,
       "swallowed_failure_findings": 0,
-      "swallowed_failure_findings_measured_repositories": 10,
-      "repositories_with_local_ci_gate": 2,
-      "local_ci_gate_measured_repositories": 10
+      "swallowed_failure_findings_measured_repositories": 9,
+      "repositories_with_local_ci_gate": 1,
+      "local_ci_gate_measured_repositories": 9
     },
     "repositories": [
       {
@@ -932,39 +867,6 @@
           "configured": false,
           "evidence": null,
           "reason": "no-gate-workflow"
-        }
-      },
-      {
-        "repository": "dasomel/narwhal-portal",
-        "revision": "c0f03fb8984496ea4cbb9eeb1d1665595ef42707",
-        "false_green_findings": [],
-        "deterministic_controls": {
-          "formatting": true,
-          "lint": true,
-          "tests": true,
-          "static-analysis": true,
-          "security-policy": true,
-          "generated-files": true
-        },
-        "agent_skills": {
-          "canonical_count": 3,
-          "adapter_count": 4,
-          "maturity_counts": {
-            "draft": 0,
-            "verified": 3,
-            "stable": 0,
-            "deprecated": 0,
-            "unspecified": 0
-          },
-          "evidence_backed_mature_count": 3,
-          "error_count": 0,
-          "warning_count": 0
-        },
-        "swallowed_failure_count": 0,
-        "local_agent_ci_gate": {
-          "configured": true,
-          "evidence": ".github/workflows/agent-contract.yml",
-          "reason": "ok"
         }
       },
       {

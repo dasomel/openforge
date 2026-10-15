@@ -46,7 +46,7 @@ OpenForge Improvement
 
 ## Reference Projects
 
-The reference implementation set includes projects such as Narwhal, Narwhal Portal, nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, and Beluga Manager.
+The reference implementation set includes projects such as Narwhal (including its Portal), nfs-quota-agent, kube-ready-box, KubeMetal, ldapium, and Beluga (including its Manager).
 
 These projects are references rather than dependencies. OpenForge captures repeatable engineering practices while preserving freedom in implementation choices.
 

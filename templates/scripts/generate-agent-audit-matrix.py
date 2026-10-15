@@ -18,7 +18,6 @@ OUTPUT_MD_KO = ROOT / "docs" / "agent-audit-matrix-ko.md"
 SCHEMA = "openforge-agent-audit-matrix/v1"
 PRIORITY_REPOSITORIES = [
     "dasomel/narwhal",
-    "dasomel/narwhal-portal",
     "dasomel/beluga",
     "dasomel/kubemetal",
     "dasomel/clusterdeck",

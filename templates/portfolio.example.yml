@@ -25,16 +25,6 @@ repositories:
     container: true
     env: true
 
-  - id: narwhal-portal
-    repository: dasomel/narwhal-portal
-    path: idp/narwhal-portal
-    category: Internal Developer Platform
-    archetype: Platform Portal
-    profile: desktop
-    ui: true
-    container: true
-    env: true
-
   - id: clusterdeck
     repository: dasomel/clusterdeck
     path: clusterdeck

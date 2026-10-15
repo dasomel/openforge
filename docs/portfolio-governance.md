@@ -179,7 +179,6 @@ Example:
 ADR-0013 / Agent Execution Security
         │
         ├─ HIGH → Narwhal
-        ├─ HIGH → Narwhal Portal
         ├─ HIGH → KubeMetal
         ├─ MED  → Beluga
         └─ MED  → kube-ready-box

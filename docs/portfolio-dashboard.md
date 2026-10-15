@@ -4,21 +4,20 @@
 
 ## Portfolio pulse
 
-- Projects: **14**
+- Projects: **13**
 - Engineering metrics: **35**
 - OpenForge standard maturity: **96.9%**
 - Portfolio adoption: **61.6%**
 - Adoption target: **70.0%**
 - ADRs: **15**
-- Active projects: **12**
+- Active projects: **11**
 
 ## Development board
 
 | Project | Role | Development | OpenForge adoption | Domains | Verified revision | Evidence (ci · security · runtime) |
 |---|---|---|---:|---|---|---|
 | [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio | — | — |
-| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent | — | — |
-| [Narwhal Portal](https://github.com/dasomel/narwhal-portal) | `control-surface` | **active** | 83.8% | portal, kubernetes, ai-agent, operations | — | — |
+| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | — | — |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`ed1d870`](https://github.com/dasomel/kubemetal/commit/ed1d8709823547c8c4ee1efb1843701dffc635f7) | — |
 | [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | — | — |
@@ -47,7 +46,6 @@
 | KubeMetal | 95.8% |
 | ldapium | 89.7% |
 | kube-ready-box | 87.1% |
-| Narwhal Portal | 83.8% |
 | ClusterDeck | 82.4% |
 | Narwhal | 81.8% |
 | nfs-quota-agent | 81.8% |
@@ -57,26 +55,25 @@
 | Milestone | Status | Progress |
 |---|---|---|
 | Portfolio Adoption M2 | **implementing** | 61.6% / 70.0% |
-| Agent Execution Security Rollout | **implementing** | narwhal-portal: design-adopted, kubemetal: design-adopted, beluga: design-adopted, kube-ready-box: design-adopted |
+| Agent Execution Security Rollout | **implementing** | narwhal: design-adopted, kubemetal: design-adopted, beluga: design-adopted, kube-ready-box: design-adopted |
 | OSS Portfolio Control Plane | **implementing** | openforge: implementing |
 
 ## Agent engineering audit
 
 > Counts what the revision-bound audit can observe. A zero false-green count means no finding matched the detector's current rules at that revision; it is not proof that every validation path fails closed. A `—` means the control was not measured at that revision, which is different from measured and clean.
 
-- Audited repositories: **10**
+- Audited repositories: **9**
 - Repositories with false-green findings: **8**
 - False-green findings (total): **8**
-- Canonical agent skills: **23**
-- Evidence-backed mature skills: **12**
+- Canonical agent skills: **20**
+- Evidence-backed mature skills: **9**
 - Skill audit errors: **0**
-- Swallowed-failure findings: **0** (measured in 10 of 10 repositories)
-- Repositories with a local agent CI gate: **2** (measured in 10 of 10 repositories)
+- Swallowed-failure findings: **0** (measured in 9 of 9 repositories)
+- Repositories with a local agent CI gate: **1** (measured in 9 of 9 repositories)
 
 | Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
 | dasomel/narwhal | `330a3fb` | 1 | 4 | 2 | 0 |
-| dasomel/narwhal-portal | `c0f03fb` | 0 | 3 | 3 | 0 |
 | dasomel/beluga | `742ca49` | 1 | 1 | 0 | 0 |
 | dasomel/kubemetal | `1b4e1d3` | 1 | 1 | 1 | 0 |
 | dasomel/clusterdeck | `36f9207` | 1 | 1 | 1 | 0 |

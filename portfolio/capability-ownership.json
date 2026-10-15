@@ -19,13 +19,12 @@
     {
       "id": "portfolio-engineering-governance",
       "owner": "openforge",
-      "consumers": ["narwhal", "narwhal-portal", "beluga", "kubemetal", "kube-ready-box", "ldapium", "nfs-quota-agent", "clusterdeck", "egovframe-launcher", "siqoq"],
+      "consumers": ["narwhal", "beluga", "kubemetal", "kube-ready-box", "ldapium", "nfs-quota-agent", "clusterdeck", "egovframe-launcher", "siqoq"],
       "scope": "engineering standards, portfolio state, evidence, maintenance and cross-project ownership contracts"
     },
     {
       "id": "kubernetes-platform-control-plane",
       "owner": "narwhal",
-      "control_surfaces": ["narwhal-portal"],
       "consumers": ["kubemetal"],
       "scope": "cluster lifecycle, GitOps, platform security/governance, observability and platform operations contracts"
     },

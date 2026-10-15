@@ -6,11 +6,10 @@
 
 | Project | Impact score | Incoming edges | Outgoing edges |
 |---|---:|---:|---:|
-| Narwhal | 29 | 6 | 7 |
-| OpenForge | 26 | 2 | 11 |
-| KubeMetal | 11 | 4 | 1 |
-| Narwhal Portal | 11 | 2 | 2 |
+| Narwhal | 23 | 5 | 6 |
+| OpenForge | 23 | 2 | 10 |
 | kube-ready-box | 10 | 3 | 2 |
+| KubeMetal | 9 | 3 | 1 |
 | ldapium | 6 | 2 | 1 |
 | nfs-quota-agent | 6 | 2 | 1 |
 | Beluga | 4 | 2 | 0 |
@@ -30,8 +29,6 @@ flowchart LR
   standard["adr-0013-agent-execution-security"]
   narwhal["Narwhal\nHIGH"]
   standard -->|high| narwhal
-  narwhal_portal["Narwhal Portal\nHIGH"]
-  standard -->|high| narwhal_portal
   kubemetal["KubeMetal\nHIGH"]
   standard -->|high| kubemetal
   beluga["Beluga\nMEDIUM"]
