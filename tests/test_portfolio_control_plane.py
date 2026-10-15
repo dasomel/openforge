@@ -94,7 +94,7 @@ class PortfolioControlPlaneTests(unittest.TestCase):
         architecture = portfolio.render_architecture(self.projects, self.relationships)
         impact = portfolio.render_impact(self.projects, self.relationships)
         self.assertIn("OpenForge OSS Portfolio Dashboard", dashboard)
-        self.assertIn("Narwhal Portal", dashboard)
+        self.assertIn("Narwhal", dashboard)
         self.assertIn("flowchart TB", architecture)
         self.assertIn('siqoq["Siqoq\\nexperiment"]', architecture)
         self.assertIn("adr-0013-agent-execution-security", impact)

@@ -238,7 +238,7 @@ python3 templates/scripts/audit-portfolio.py --baseline docs/portfolio-audit-rep
 
 OpenForge is informed by active OSS development practices, including:
 
-- Narwhal / Narwhal Portal
+- Narwhal (including its Portal)
 - ClusterDeck
 - nfs-quota-agent
 - kube-ready-box

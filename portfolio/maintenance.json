@@ -48,15 +48,6 @@
       "review_cadence": "quarterly"
     },
     {
-      "project": "narwhal-portal",
-      "maintenance_owner": "dasomel",
-      "maintenance_status": "owned",
-      "strategic_role": "differentiator",
-      "blast_radius": "high",
-      "exit_path_status": "review-required",
-      "review_cadence": "quarterly"
-    },
-    {
       "project": "kubemetal",
       "maintenance_owner": "dasomel",
       "maintenance_status": "owned",

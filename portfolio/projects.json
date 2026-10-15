@@ -39,22 +39,8 @@
         "kubernetes",
         "platform-engineering",
         "gitops",
-        "ai-agent"
-      ]
-    },
-    {
-      "id": "narwhal-portal",
-      "repository": "dasomel/narwhal-portal",
-      "name": "Narwhal Portal",
-      "category": "Internal Developer Platform",
-      "archetype": "Platform Portal",
-      "development_status": "active",
-      "adoption_percent": 83.8,
-      "role": "control-surface",
-      "domains": [
-        "portal",
-        "kubernetes",
         "ai-agent",
+        "portal",
         "operations"
       ]
     },

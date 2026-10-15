@@ -2,7 +2,6 @@
   "schemaVersion": "openforge-agent-audit-matrix/v1",
   "priority_repositories": [
     "dasomel/narwhal",
-    "dasomel/narwhal-portal",
     "dasomel/beluga",
     "dasomel/kubemetal",
     "dasomel/clusterdeck",
@@ -113,101 +112,6 @@
         "architecture_boundary_guidance": "review-required"
       },
       "revision": "330a3fbe1dcfab3129a7767b3c3bb6a152a68185"
-    },
-    {
-      "schemaVersion": "openforge-agent-audit/v1",
-      "repository": "dasomel/narwhal-portal",
-      "instructions": [
-        "AGENTS.md",
-        "CLAUDE.md"
-      ],
-      "source_of_truth_docs": [
-        "README.md",
-        "CONTRIBUTING.md",
-        "DESIGN.md",
-        "docs/architecture.md"
-      ],
-      "canonical_commands": {
-        "verify": [],
-        "build": [
-          "make build",
-          "npm run build"
-        ],
-        "test": [
-          "npm run test"
-        ],
-        "lint": [
-          "npm run lint"
-        ]
-      },
-      "deterministic_controls": {
-        "formatting": true,
-        "lint": true,
-        "tests": true,
-        "static-analysis": true,
-        "security-policy": true,
-        "generated-files": true
-      },
-      "prompt_deterministic_hints": [],
-      "agent_skills": {
-        "canonical": [
-          {
-            "name": "narwhal-portal-backend",
-            "path": ".agents/skills/narwhal-portal-backend/SKILL.md",
-            "scope": "project",
-            "owner": "dasomel/narwhal-portal",
-            "maturity": "verified",
-            "version": "1",
-            "evidence_present": true
-          },
-          {
-            "name": "narwhal-portal-frontend",
-            "path": ".agents/skills/narwhal-portal-frontend/SKILL.md",
-            "scope": "project",
-            "owner": "dasomel/narwhal-portal",
-            "maturity": "verified",
-            "version": "1",
-            "evidence_present": true
-          },
-          {
-            "name": "narwhal-portal-qa",
-            "path": ".agents/skills/narwhal-portal-qa/SKILL.md",
-            "scope": "project",
-            "owner": "dasomel/narwhal-portal",
-            "maturity": "verified",
-            "version": "1",
-            "evidence_present": true
-          }
-        ],
-        "canonical_count": 3,
-        "adapter_count": 4,
-        "maturity_counts": {
-          "draft": 0,
-          "verified": 3,
-          "stable": 0,
-          "deprecated": 0,
-          "unspecified": 0
-        },
-        "evidence_backed_mature_count": 3,
-        "error_count": 0,
-        "warning_count": 0,
-        "findings": []
-      },
-      "swallowed_failures": [],
-      "swallowed_failure_count": 0,
-      "local_agent_ci_gate": {
-        "configured": true,
-        "evidence": ".github/workflows/agent-contract.yml",
-        "reason": "ok"
-      },
-      "false_green_findings": [],
-      "manual_review": {
-        "high_risk_paths": "review-required",
-        "bug_reproduction_automation": "review-required",
-        "duplicated_or_obsolete_prompt_rules": "review-required",
-        "architecture_boundary_guidance": "review-required"
-      },
-      "revision": "c0f03fb8984496ea4cbb9eeb1d1665595ef42707"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",

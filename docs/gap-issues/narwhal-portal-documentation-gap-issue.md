@@ -1,5 +1,7 @@
 # chore(openforge): close documentation compliance gaps (narwhal-portal)
 
+> **Superseded:** `dasomel/narwhal-portal` was consolidated into `dasomel/narwhal` under `portal/` (narwhal PR #347, ADR-0001) and the repository is archived. This is a historical draft; any remaining gap is tracked in `dasomel/narwhal` (`portal/`; issues transferred as narwhal#356-#382).
+
 **Labels:** `openforge, compliance, engineering, documentation`
 
 ## Current Score: `83.8%` (Healthy / minor gaps)

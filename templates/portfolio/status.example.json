@@ -23,7 +23,7 @@
   },
   "relationships": [
     {
-      "target": "narwhal-portal",
+      "target": "narwhal",
       "type": "provides",
       "scope": "example capability"
     }

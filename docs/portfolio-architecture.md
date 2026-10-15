@@ -11,7 +11,6 @@ flowchart TB
   end
   subgraph Platform["Platform Engineering"]
     narwhal["Narwhal\nreference-implementation"]
-    narwhal_portal["Narwhal Portal\ncontrol-surface"]
     clusterdeck["ClusterDeck\noperations-client"]
   end
   subgraph AIData["AI / Data Platforms"]
@@ -31,7 +30,6 @@ flowchart TB
     kairos["Kairos\nindependent-adopter"]
   end
   openforge -->|standardizes| narwhal
-  openforge -->|standardizes| narwhal_portal
   openforge -->|standardizes| kubemetal
   openforge -->|standardizes| beluga
   openforge -->|standardizes| kube_ready_box
@@ -42,8 +40,6 @@ flowchart TB
   openforge -->|standardizes| siqoq
   openforge -->|standardizes| dasomel_github_io
   narwhal -->|reference-implementation| openforge
-  narwhal -->|provides| narwhal_portal
-  narwhal_portal -->|control-surface| narwhal
   kubemetal -->|consumes| kube_ready_box
   narwhal -->|consumes| kube_ready_box
   kube_ready_box -->|provides| narwhal
@@ -54,7 +50,6 @@ flowchart TB
   ldapium -->|provides| narwhal
   narwhal -->|shared-contract| kubemetal
   narwhal -->|shared-contract| beluga
-  narwhal_portal -->|shared-contract| kubemetal
   clusterdeck -->|consumes| narwhal
   dasomel_github_io -->|consumes| openforge
 ```

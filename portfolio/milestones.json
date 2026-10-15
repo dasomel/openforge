@@ -16,7 +16,7 @@
       "name": "Agent Execution Security Rollout",
       "status": "implementing",
       "projects": {
-        "narwhal-portal": "design-adopted",
+        "narwhal": "design-adopted",
         "kubemetal": "design-adopted",
         "beluga": "design-adopted",
         "kube-ready-box": "design-adopted"
