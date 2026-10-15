@@ -386,7 +386,12 @@ class PortfolioControlPlaneTests(unittest.TestCase):
 
     def test_checked_in_dashboard_json_round_trips(self):
         regenerated = portfolio.render_dashboard_json(
-            self.projects, self.relationships, self.milestones, self.maintenance, self.agent_audit
+            self.projects,
+            self.relationships,
+            self.milestones,
+            self.maintenance,
+            self.agent_audit,
+            portfolio.build_security_readiness_view(),
         )
         checked_in = (ROOT / "portfolio" / "dashboard.json").read_text(encoding="utf-8")
         self.assertEqual(checked_in, regenerated)

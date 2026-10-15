@@ -2,17 +2,80 @@
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/clusterdeck",
   "revision": "2f25ed744a2feb59749606b78e416df2e1063ccf",
-  "observed_at": "2026-10-07T04:28:29Z",
+  "observed_at": "2026-10-15T11:45:29Z",
   "signals": [
     {
       "id": "scorecard",
-      "status": "not-run",
       "source": {
-        "tool": "curl",
-        "observed_at": "2026-10-07T04:28:29Z",
-        "ref": "curl -s -o /dev/null -w '%{http_code}' https://api.securityscorecards.dev/projects/github.com/dasomel/clusterdeck -> 404 (no published Scorecard result)"
+        "tool": "openssf-scorecard",
+        "version": "v5.6.0",
+        "observed_at": "2026-10-15T11:45:29Z",
+        "ref": "scorecard --repo=github.com/dasomel/clusterdeck --format=json (scanned commit 2f25ed744a2feb59749606b78e416df2e1063ccf; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/clusterdeck.json)"
       },
-      "note": "Scorecard API returned HTTP 404; no score is recorded. Not-run, not pass."
+      "status": "partial",
+      "note": "Scorecard v5.6.0 overall 3.6/10 over 18 checks (17 conclusive). Inconclusive (-1, never counted as pass): Packaging. Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
+      "findings": [
+        {
+          "id": "clusterdeck-scorecard-branch-protection",
+          "summary": "Branch-Protection 0/10: branch protection not enabled on development/release branches",
+          "severity": "high"
+        },
+        {
+          "id": "clusterdeck-scorecard-cii-best-practices",
+          "summary": "CII-Best-Practices 0/10: no effort to earn an OpenSSF best practices badge detected",
+          "severity": "low"
+        },
+        {
+          "id": "clusterdeck-scorecard-code-review",
+          "summary": "Code-Review 0/10: Found 0/13 approved changesets -- score normalized to 0",
+          "severity": "high"
+        },
+        {
+          "id": "clusterdeck-scorecard-contributors",
+          "summary": "Contributors 0/10: project has 0 contributing companies or organizations -- score normalized to 0",
+          "severity": "low"
+        },
+        {
+          "id": "clusterdeck-scorecard-fuzzing",
+          "summary": "Fuzzing 0/10: project is not fuzzed",
+          "severity": "medium"
+        },
+        {
+          "id": "clusterdeck-scorecard-maintained",
+          "summary": "Maintained 0/10: project was created within the last 90 days. Please review its contents carefully",
+          "severity": "high"
+        },
+        {
+          "id": "clusterdeck-scorecard-pinned-dependencies",
+          "summary": "Pinned-Dependencies 6/10: dependency not pinned by hash detected -- score normalized to 6",
+          "severity": "medium"
+        },
+        {
+          "id": "clusterdeck-scorecard-sast",
+          "summary": "SAST 0/10: SAST tool is not run on all commits -- score normalized to 0",
+          "severity": "medium"
+        },
+        {
+          "id": "clusterdeck-scorecard-security-policy",
+          "summary": "Security-Policy 4/10: security policy file detected",
+          "severity": "medium"
+        },
+        {
+          "id": "clusterdeck-scorecard-signed-releases",
+          "summary": "Signed-Releases 0/10: Project has not signed or included provenance with any releases.",
+          "severity": "high"
+        },
+        {
+          "id": "clusterdeck-scorecard-token-permissions",
+          "summary": "Token-Permissions 0/10: detected GitHub workflow tokens with excessive permissions",
+          "severity": "high"
+        },
+        {
+          "id": "clusterdeck-scorecard-vulnerabilities",
+          "summary": "Vulnerabilities 2/10: 8 existing vulnerabilities detected",
+          "severity": "high"
+        }
+      ]
     },
     {
       "id": "security-policy",
@@ -104,8 +167,8 @@
     "total": 6,
     "pass": 1,
     "fail": 3,
-    "partial": 1,
-    "not_run": 1,
+    "partial": 2,
+    "not_run": 0,
     "not_applicable": 0
   },
   "disclaimer": "Upstream tools remain the source of the underlying checks; OpenForge only normalizes the evidence. This record is not a compliance or certification claim."

@@ -8,6 +8,7 @@ and impact reports are generated artifacts and must not become independent sourc
 from __future__ import annotations
 
 import argparse
+import datetime as dt
 import json
 import re
 import sys
@@ -26,6 +27,7 @@ DASHBOARD_PATH = ROOT / "docs" / "portfolio-dashboard.md"
 ARCHITECTURE_PATH = ROOT / "docs" / "portfolio-architecture.md"
 IMPACT_PATH = ROOT / "docs" / "portfolio-impact.md"
 DASHBOARD_JSON_PATH = ROOT / "portfolio" / "dashboard.json"
+SECURITY_READINESS_DIR = ROOT / "portfolio" / "security-readiness"
 
 ALLOWED_IMPACT = {"high", "medium", "low"}
 
@@ -442,8 +444,148 @@ def build_agent_audit_view(agent_audit_doc: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+SECURITY_READINESS_CONTRACT = "openforge-security-readiness-evidence/v1"
+SECURITY_STATUS_KEYS = {"pass": "pass", "fail": "fail", "partial": "partial", "not-run": "not_run", "not-applicable": "not_applicable"}
+SCORECARD_TOOL = "openssf-scorecard"
+
+
+def security_overall(counts: dict[str, int]) -> str:
+    """Worst-signal roll-up. `not-run` beside a measured signal is `partial`, never `pass`."""
+    if counts["fail"]:
+        return "fail"
+    if counts["partial"] or (counts["pass"] and counts["not_run"]):
+        return "partial"
+    if counts["pass"]:
+        return "pass"
+    return "not-run" if counts["not_run"] else "not-applicable"
+
+
+def utc_datetime(value: Any, where: str) -> str:
+    try:
+        parsed = dt.datetime.fromisoformat(str(value).replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise RuntimeError(f"{where}: {value!r} is not ISO 8601") from exc
+    if parsed.tzinfo is None:
+        raise RuntimeError(f"{where}: {value!r} has no UTC offset")
+    return parsed.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+
+
+def security_scorecard_view(signal: dict[str, Any] | None, raw_path: Path, rel: str) -> dict[str, Any]:
+    """Scorecard facts for the dashboard, read from the raw upstream file and cross-checked.
+
+    The raw `scorecard/<repo>.json` is the source of the score; the record only carries the
+    normalized status. A record that claims Scorecard output but disagrees with (or lacks) the
+    raw file fails the build instead of publishing a score nobody can trace.
+    """
+    view: dict[str, Any] = {"status": signal["status"] if signal else "not-run", "score": None, "tool_version": None, "observed_at": None, "commit": None}
+    source = signal.get("source", {}) if signal else {}
+    if source.get("tool") != SCORECARD_TOOL:
+        if raw_path.exists():
+            raise RuntimeError(f"{rel} exists but the record's scorecard signal is not sourced from {SCORECARD_TOOL}; re-run import-scorecard.py")
+        return view
+    if not raw_path.is_file():
+        raise RuntimeError(f"scorecard signal cites {SCORECARD_TOOL} output but {rel} is missing")
+    raw = load_json(raw_path)
+    score, commit = raw.get("score"), (raw.get("repo") or {}).get("commit")
+    if isinstance(score, bool) or not isinstance(score, (int, float)) or not -1 <= score <= 10:
+        raise RuntimeError(f"{rel}: score {score!r} is outside -1..10")
+    observed_at = utc_datetime(raw.get("date"), f"{rel}: date")
+    version = (raw.get("scorecard") or {}).get("version")
+    if observed_at != source.get("observed_at") or version != source.get("version") or not commit or commit not in source.get("ref", ""):
+        raise RuntimeError(f"{rel} does not match the record's scorecard signal (date/version/commit); re-run import-scorecard.py")
+    view.update(score=None if score == -1 else score, tool_version=version, observed_at=observed_at, commit=commit)
+    return view
+
+
+def build_security_readiness_view(directory: Path = SECURITY_READINESS_DIR, root: Path = ROOT) -> dict[str, Any] | None:
+    """Additive dashboard block summarizing portfolio/security-readiness/*.json per repository.
+
+    Returns None (key omitted) when no evidence exists, so repositories without the contract keep
+    byte-identical output. Counts are derived from the signals, not copied from the record's
+    summary; every entry links back to its source evidence file(s) by repo-relative path.
+    """
+    files = sorted(directory.glob("*.json")) if directory.is_dir() else []
+    if not files:
+        return None
+    repositories: list[dict[str, Any]] = []
+    sources: list[str] = []
+    totals = {key: 0 for key in SECURITY_STATUS_KEYS.values()}
+    overall_counts: Counter[str] = Counter()
+    for path in files:
+        rel = path.relative_to(root).as_posix()
+        record = load_json(path)
+        signals = record.get("signals")
+        if record.get("schema_version") != SECURITY_READINESS_CONTRACT or not isinstance(record.get("repository"), str) or not isinstance(signals, list):
+            raise RuntimeError(f"{rel}: not a {SECURITY_READINESS_CONTRACT} record")
+        counts = {key: 0 for key in SECURITY_STATUS_KEYS.values()}
+        for signal in signals:
+            if not isinstance(signal, dict) or signal.get("status") not in SECURITY_STATUS_KEYS or not isinstance(signal.get("id"), str):
+                raise RuntimeError(f"{rel}: malformed signal {signal!r}")
+            counts[SECURITY_STATUS_KEYS[signal["status"]]] += 1
+        raw_path = directory / "scorecard" / path.name
+        raw_rel = raw_path.relative_to(root).as_posix()
+        scorecard = security_scorecard_view(next((s for s in signals if s["id"] == "scorecard"), None), raw_path, raw_rel)
+        overall = security_overall(counts)
+        overall_counts[overall] += 1
+        for key, value in counts.items():
+            totals[key] += value
+        sources.append(rel)
+        if scorecard["tool_version"]:
+            sources.append(raw_rel)
+        repositories.append(
+            {
+                "repository": record["repository"],
+                "revision": record.get("revision"),
+                "observed_at": record.get("observed_at"),
+                "overall": overall,
+                "signal_counts": {"total": len(signals), **counts},
+                "signal_status": {signal["id"]: signal["status"] for signal in signals},
+                "scorecard": scorecard,
+                "evidence": {"record": rel, "scorecard": raw_rel if scorecard["tool_version"] else None},
+            }
+        )
+    return {
+        "contract": SECURITY_READINESS_CONTRACT,
+        "generated_from": sources,
+        "summary": {
+            "repositories": len(repositories),
+            "overall": {key: overall_counts.get(key, 0) for key in ("pass", "partial", "fail", "not-run", "not-applicable")},
+            "signals": {"total": sum(totals.values()), **totals},
+        },
+        "repositories": repositories,
+    }
+
+
+def render_security_readiness(view: dict[str, Any]) -> list[str]:
+    lines = [
+        "",
+        "## Security readiness",
+        "",
+        "> Normalized from `portfolio/security-readiness/*.json`; upstream tools (OpenSSF Scorecard, ...) remain the "
+        "source of the checks. Not a compliance or certification claim. See [Security Readiness Evidence](security-readiness-evidence.md).",
+        "",
+        "| Repository | Overall | pass · fail · partial · not-run · n/a | Scorecard | Source evidence |",
+        "|---|---|---|---|---|",
+    ]
+    for repo in view["repositories"]:
+        counts, scorecard, evidence = repo["signal_counts"], repo["scorecard"], repo["evidence"]
+        if scorecard["score"] is None:
+            score = scorecard["status"]
+        else:
+            score = f"{scorecard['score']:g}/10 ({scorecard['observed_at'][:10]}, {fmt_short_revision(scorecard['commit'])})"
+        links = [f"[record](../{evidence['record']})"] + ([f"[scorecard](../{evidence['scorecard']})"] if evidence["scorecard"] else [])
+        lines.append(
+            f"| {repo['repository']} | **{repo['overall']}** | {counts['pass']} · {counts['fail']} · {counts['partial']} · "
+            f"{counts['not_run']} · {counts['not_applicable']} | {score} | {' · '.join(links)} |"
+        )
+    return lines
+
+
 def render_dashboard(
-    projects_doc: dict[str, Any], milestones_doc: dict[str, Any], agent_audit_doc: dict[str, Any]
+    projects_doc: dict[str, Any],
+    milestones_doc: dict[str, Any],
+    agent_audit_doc: dict[str, Any],
+    security_readiness: dict[str, Any] | None = None,
 ) -> str:
     projects = list(project_map(projects_doc).values())
     portfolio = projects_doc.get("portfolio", {})
@@ -548,6 +690,9 @@ def render_dashboard(
             f"{len(repo['false_green_findings'])} | {repo['agent_skills']['canonical_count']} | "
             f"{verified_stable} | {repo['agent_skills']['error_count']} |"
         )
+
+    if security_readiness is not None:
+        lines += render_security_readiness(security_readiness)
 
     lines += [
         "",
@@ -706,6 +851,7 @@ def render_dashboard_json(
     milestones_doc: dict[str, Any],
     maintenance_doc: dict[str, Any],
     agent_audit_doc: dict[str, Any],
+    security_readiness: dict[str, Any] | None = None,
 ) -> str:
     projects = project_map(projects_doc)
     weights = {"high": 3, "medium": 2, "low": 1}
@@ -760,6 +906,10 @@ def render_dashboard_json(
         # keys are ignored by the downstream consumer, so this does not require a version bump.
         "agent_audit": build_agent_audit_view(agent_audit_doc),
     }
+    # Additive sixth input (issue #146): omitted entirely when no security-readiness evidence
+    # exists, so downstream consumers and `openforge-dashboard/v1` are unchanged.
+    if security_readiness is not None:
+        output["security_readiness"] = security_readiness
     return json.dumps(output, ensure_ascii=False, indent=2) + "\n"
 
 
@@ -801,12 +951,13 @@ def generated_files(
     maintenance_doc: dict[str, Any],
     agent_audit_doc: dict[str, Any],
 ) -> dict[Path, str]:
+    security_readiness = build_security_readiness_view()
     return {
-        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc, agent_audit_doc),
+        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc, agent_audit_doc, security_readiness),
         ARCHITECTURE_PATH: render_architecture(projects_doc, relationships_doc),
         IMPACT_PATH: render_impact(projects_doc, relationships_doc),
         DASHBOARD_JSON_PATH: render_dashboard_json(
-            projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc
+            projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc, security_readiness
         ),
     }
 
@@ -841,7 +992,11 @@ def main() -> int:
         print("Portfolio registry validation: PASS")
         return 0
 
-    outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc)
+    try:
+        outputs = generated_files(projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc)
+    except (RuntimeError, ValueError) as exc:
+        print(f"ERROR: {exc}", file=sys.stderr)
+        return 1
     stale: list[Path] = []
     for path, content in outputs.items():
         if args.check:
