@@ -80,7 +80,7 @@
       "maintenance_status": "owned",
       "strategic_role": "enabler",
       "blast_radius": "medium",
-      "exit_path_status": "review-required",
+      "exit_path_status": "defined",
       "review_cadence": "quarterly"
     },
     {

@@ -211,18 +211,7 @@
         "updated_at": "2026-09-24",
         "milestone": "web-console-i18n-ci-gate",
         "progress_percent": 85,
-        "capabilities": {
-          "policy-compiler": {
-            "status": "implemented",
-            "standard": "openforge/agent-engineering",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "pass",
-              "security": "pass"
-            }
-          }
-        },
+        "capabilities": {},
         "evidence": {
           "issue": null,
           "pull_request": 49,

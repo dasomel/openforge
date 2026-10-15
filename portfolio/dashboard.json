@@ -20,7 +20,7 @@
       "owned_projects": 15,
       "unowned_projects": 0,
       "high_blast_radius_projects": 3,
-      "exit_path_review_required": 15,
+      "exit_path_review_required": 14,
       "review_cadence_default": "quarterly"
     },
     "projects": [
@@ -75,7 +75,7 @@
         "maintenance_status": "owned",
         "strategic_role": "enabler",
         "blast_radius": "medium",
-        "exit_path_status": "review-required",
+        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       },
       {
@@ -414,18 +414,7 @@
         "updated_at": "2026-09-24",
         "milestone": "web-console-i18n-ci-gate",
         "progress_percent": 85,
-        "capabilities": {
-          "policy-compiler": {
-            "status": "implemented",
-            "standard": "openforge/agent-engineering",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "pass",
-              "security": "pass"
-            }
-          }
-        },
+        "capabilities": {},
         "evidence": {
           "issue": null,
           "pull_request": 49,
@@ -443,7 +432,7 @@
         "maintenance_status": "owned",
         "strategic_role": "enabler",
         "blast_radius": "medium",
-        "exit_path_status": "review-required",
+        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       }
     },
