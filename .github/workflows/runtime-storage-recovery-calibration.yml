@@ -41,6 +41,8 @@ jobs:
         with:
           path: openforge
       - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
       - name: Build OpenForge
         working-directory: openforge
         run: cargo build --bin openforge
@@ -92,6 +94,8 @@ jobs:
         with:
           path: openforge
       - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
       - name: Build OpenForge
         working-directory: openforge
         run: cargo build --bin openforge
