@@ -35,7 +35,7 @@ jobs:
         run: |
           set -euo pipefail
           mkdir -p /tmp/agent-audit
-          repos=(narwhal narwhal-portal beluga beluga-manager kubemetal clusterdeck ldapium nfs-quota-agent egovframe-launcher kube-ready-box siqoq)
+          repos=(narwhal narwhal-portal beluga kubemetal clusterdeck ldapium nfs-quota-agent egovframe-launcher kube-ready-box siqoq)
           for repo in "${repos[@]}"; do
             git clone --depth=1 "https://github.com/dasomel/${repo}.git" "/tmp/agent-audit/${repo}"
           done
@@ -47,7 +47,6 @@ jobs:
             --repo dasomel/narwhal=/tmp/agent-audit/narwhal \
             --repo dasomel/narwhal-portal=/tmp/agent-audit/narwhal-portal \
             --repo dasomel/beluga=/tmp/agent-audit/beluga \
-            --repo dasomel/beluga-manager=/tmp/agent-audit/beluga-manager \
             --repo dasomel/kubemetal=/tmp/agent-audit/kubemetal \
             --repo dasomel/clusterdeck=/tmp/agent-audit/clusterdeck \
             --repo dasomel/ldapium=/tmp/agent-audit/ldapium \

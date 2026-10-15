@@ -85,16 +85,6 @@ repositories:
     container: false
     env: true
 
-  - id: beluga-manager
-    repository: dasomel/beluga-manager
-    path: beluga-manager
-    category: Data Platform Management
-    archetype: Data Control Plane
-    profile: standard
-    ui: true
-    container: false
-    env: true
-
   - id: ldapium
     repository: dasomel/ldapium
     path: ldapium

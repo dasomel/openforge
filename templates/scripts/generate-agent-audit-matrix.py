@@ -20,7 +20,6 @@ PRIORITY_REPOSITORIES = [
     "dasomel/narwhal",
     "dasomel/narwhal-portal",
     "dasomel/beluga",
-    "dasomel/beluga-manager",
     "dasomel/kubemetal",
     "dasomel/clusterdeck",
     "dasomel/ldapium",

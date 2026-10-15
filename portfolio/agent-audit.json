@@ -4,7 +4,6 @@
     "dasomel/narwhal",
     "dasomel/narwhal-portal",
     "dasomel/beluga",
-    "dasomel/beluga-manager",
     "dasomel/kubemetal",
     "dasomel/clusterdeck",
     "dasomel/ldapium",
@@ -286,87 +285,6 @@
         "architecture_boundary_guidance": "review-required"
       },
       "revision": "742ca497710a688c1db9b9f3855bb073f82a3b36"
-    },
-    {
-      "schemaVersion": "openforge-agent-audit/v1",
-      "repository": "dasomel/beluga-manager",
-      "instructions": [
-        "AGENTS.md",
-        "CLAUDE.md"
-      ],
-      "source_of_truth_docs": [
-        "README.md",
-        "CONTRIBUTING.md",
-        "docs/architecture.md",
-        "docs/development.md"
-      ],
-      "canonical_commands": {
-        "verify": [
-          "make verify"
-        ],
-        "build": [
-          "npm run build"
-        ],
-        "test": [
-          "make test",
-          "npm run test"
-        ],
-        "lint": [
-          "make lint"
-        ]
-      },
-      "deterministic_controls": {
-        "formatting": false,
-        "lint": true,
-        "tests": true,
-        "static-analysis": true,
-        "security-policy": true,
-        "generated-files": true
-      },
-      "prompt_deterministic_hints": [],
-      "agent_skills": {
-        "canonical": [
-          {
-            "name": "beluga-manager-integration-contract",
-            "path": ".agents/skills/beluga-manager-integration-contract/SKILL.md",
-            "scope": "project",
-            "owner": "dasomel/beluga-manager",
-            "maturity": "draft",
-            "version": "1",
-            "evidence_present": false
-          }
-        ],
-        "canonical_count": 1,
-        "adapter_count": 0,
-        "maturity_counts": {
-          "draft": 1,
-          "verified": 0,
-          "stable": 0,
-          "deprecated": 0,
-          "unspecified": 0
-        },
-        "evidence_backed_mature_count": 0,
-        "error_count": 0,
-        "warning_count": 0,
-        "findings": []
-      },
-      "swallowed_failures": [],
-      "swallowed_failure_count": 0,
-      "local_agent_ci_gate": {
-        "configured": false,
-        "evidence": null,
-        "reason": "no-gate-workflow"
-      },
-      "false_green_findings": [
-        "agent contract changes have no repository-local CI gate (no-gate-workflow)"
-      ],
-      "manual_review": {
-        "high_risk_paths": "review-required",
-        "bug_reproduction_automation": "review-required",
-        "duplicated_or_obsolete_prompt_rules": "review-required",
-        "architecture_boundary_guidance": "review-required"
-      },
-      "revision": "2081fef95dccac1960e7dbf1668d8daf4777e079"
     },
     {
       "schemaVersion": "openforge-agent-audit/v1",

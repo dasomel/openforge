@@ -928,12 +928,12 @@
   "agent_audit": {
     "schema": "openforge-agent-audit-matrix/v1",
     "summary": {
-      "repositories": 11,
-      "repositories_with_false_green": 9,
-      "false_green_findings": 9,
-      "canonical_skills": 24,
+      "repositories": 10,
+      "repositories_with_false_green": 8,
+      "false_green_findings": 8,
+      "canonical_skills": 23,
       "skill_maturity": {
-        "draft": 12,
+        "draft": 11,
         "verified": 12,
         "stable": 0,
         "deprecated": 0,
@@ -942,9 +942,9 @@
       "evidence_backed_mature_skills": 12,
       "skill_audit_errors": 0,
       "swallowed_failure_findings": 0,
-      "swallowed_failure_findings_measured_repositories": 11,
+      "swallowed_failure_findings_measured_repositories": 10,
       "repositories_with_local_ci_gate": 2,
-      "local_ci_gate_measured_repositories": 11
+      "local_ci_gate_measured_repositories": 10
     },
     "repositories": [
       {
@@ -1026,41 +1026,6 @@
           "lint": true,
           "tests": true,
           "static-analysis": false,
-          "security-policy": true,
-          "generated-files": true
-        },
-        "agent_skills": {
-          "canonical_count": 1,
-          "adapter_count": 0,
-          "maturity_counts": {
-            "draft": 1,
-            "verified": 0,
-            "stable": 0,
-            "deprecated": 0,
-            "unspecified": 0
-          },
-          "evidence_backed_mature_count": 0,
-          "error_count": 0,
-          "warning_count": 0
-        },
-        "swallowed_failure_count": 0,
-        "local_agent_ci_gate": {
-          "configured": false,
-          "evidence": null,
-          "reason": "no-gate-workflow"
-        }
-      },
-      {
-        "repository": "dasomel/beluga-manager",
-        "revision": "2081fef95dccac1960e7dbf1668d8daf4777e079",
-        "false_green_findings": [
-          "agent contract changes have no repository-local CI gate (no-gate-workflow)"
-        ],
-        "deterministic_controls": {
-          "formatting": false,
-          "lint": true,
-          "tests": true,
-          "static-analysis": true,
           "security-policy": true,
           "generated-files": true
         },

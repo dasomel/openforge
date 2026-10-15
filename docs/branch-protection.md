@@ -47,7 +47,7 @@ In alignment with [ADR-0003 (Risk-Based OSS Security Governance)](adr/0003-risk-
 - **Enforce Admins:** Recommended to prevent accidental direct pushes.
 - **Linear History / Squash Merges:** Enforced to keep release changelog traceable.
 
-### Tier 2: Active Desktop & Platform Operators (`clusterdeck`, `kubemetal`, `beluga-manager`)
+### Tier 2: Active Desktop & Platform Operators (`clusterdeck`, `kubemetal`)
 - **Branch Protection:** Enabled on `main`.
 - **Require Status Checks to Pass:** Yes (`ci.yml`, `markdown.yml`, `test`).
 - **Direct Pushes:** Restricted; changes land via PR or verified staging branch.
