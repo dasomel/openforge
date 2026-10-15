@@ -18,7 +18,6 @@
 | dasomel.github.io | 2 | 1 | 1 |
 | eGovFrame Launcher | 1 | 1 | 0 |
 | Siqoq | 1 | 1 | 0 |
-| Beluga Manager | 0 | 0 | 0 |
 | CKA Lab | 0 | 0 | 0 |
 | Kairos | 0 | 0 | 0 |
 

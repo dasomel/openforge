@@ -106,7 +106,9 @@
       "domains": [
         "kubernetes",
         "data-platform",
-        "operations-agent"
+        "operations-agent",
+        "management",
+        "ui"
       ],
       "status": {
         "revision": "2f78873",
@@ -190,37 +192,6 @@
             "scope": "filesystem quota enforcement; no NFS/RWX storage class in any profile"
           }
         ]
-      }
-    },
-    {
-      "id": "beluga-manager",
-      "repository": "dasomel/beluga-manager",
-      "name": "Beluga Manager",
-      "category": "Data Platform Management",
-      "archetype": "Data Control Plane",
-      "development_status": "deprecated",
-      "adoption_percent": null,
-      "role": "control-surface",
-      "domains": [
-        "data-platform",
-        "management",
-        "ui"
-      ],
-      "status": {
-        "revision": "e6397c0",
-        "updated_at": "2026-09-24",
-        "milestone": "web-console-i18n-ci-gate",
-        "progress_percent": 85,
-        "capabilities": {},
-        "evidence": {
-          "issue": null,
-          "pull_request": 49,
-          "commit": "e6397c01944bfc346299b16c578ab58497fc6298",
-          "ci": "pass",
-          "security": "pass",
-          "runtime": "pass"
-        },
-        "proposed_relationships": []
       }
     },
     {
