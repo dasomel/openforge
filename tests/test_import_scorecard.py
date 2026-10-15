@@ -175,6 +175,20 @@ class MappingTests(unittest.TestCase):
         raw["score"] = 0
         self.assertEqual(signal(apply(raw)[0], "scorecard")["status"], "fail")
 
+    def test_overall_ten_with_an_inconclusive_check_is_not_pass(self):
+        raw = synthetic_raw()
+        raw["score"] = 10
+        raw["checks"] = [
+            {"name": "License", "score": 10, "reason": "ok"},
+            {"name": "Fuzzing", "score": -1, "reason": "internal error"},
+        ]
+        record, _ = apply(raw)
+        sign = signal(record, "scorecard")
+        self.assertEqual(sign["status"], "partial")
+        self.assertEqual([f["id"] for f in sign["findings"]], ["synthetic-repo-scorecard-fuzzing"])
+        self.assertIn("inconclusive", sign["findings"][0]["summary"])
+        self.assertEqual(validator.validate(record, validator.parse_date("2026-10-15")), [])
+
     def test_directly_observed_signals_are_kept(self):
         record, notes = apply()
         original = synthetic_record()

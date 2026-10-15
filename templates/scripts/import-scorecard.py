@@ -146,8 +146,16 @@ def overall_signal(parsed: dict, repository: str, raw_path: str) -> dict:
         if score != -1:
             raise ScorecardError(f"overall score {fmt_score(score)} but every check is inconclusive")
         return {**signal, "status": "not-run", "note": detail + " No conclusive result; not-run, not pass."}
-    if score == 10 and not findings:
+    if score == 10 and not findings and not inconclusive:
         status = "pass"
+    elif score == 10 and not findings:
+        # Overall 10 with a -1 check: nothing measured is wrong, but the run is not fully conclusive.
+        # The validator requires a finding for partial, so name each inconclusive check as the gap.
+        status = "partial"
+        findings = [
+            {"id": f"{name}-scorecard-{c[0].lower()}", "summary": f"{c[0]} inconclusive (-1)" + (f": {c[2]}" if c[2] else ""), "severity": RISK.get(c[0], "info")}
+            for c in parsed["checks"] if c[1] < 0
+        ]
     elif findings and score == 0:
         status = "fail"
     elif findings:
