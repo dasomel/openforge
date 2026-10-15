@@ -19,7 +19,7 @@
     {
       "id": "portfolio-engineering-governance",
       "owner": "openforge",
-      "consumers": ["narwhal", "narwhal-portal", "beluga", "beluga-manager", "kubemetal", "kube-ready-box", "ldapium", "nfs-quota-agent", "clusterdeck", "egovframe-launcher", "siqoq"],
+      "consumers": ["narwhal", "narwhal-portal", "beluga", "kubemetal", "kube-ready-box", "ldapium", "nfs-quota-agent", "clusterdeck", "egovframe-launcher", "siqoq"],
       "scope": "engineering standards, portfolio state, evidence, maintenance and cross-project ownership contracts"
     },
     {
@@ -32,7 +32,6 @@
     {
       "id": "data-platform-lakehouse",
       "owner": "beluga",
-      "control_surfaces": ["beluga-manager"],
       "consumers": [],
       "scope": "ingestion, Medallion, data quality, catalog, lineage, data products, analytics and data-platform operations"
     },

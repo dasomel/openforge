@@ -20,7 +20,7 @@
       "owned_projects": 15,
       "unowned_projects": 0,
       "high_blast_radius_projects": 3,
-      "exit_path_review_required": 15,
+      "exit_path_review_required": 14,
       "review_cadence_default": "quarterly"
     },
     "projects": [
@@ -75,7 +75,7 @@
         "maintenance_status": "owned",
         "strategic_role": "enabler",
         "blast_radius": "medium",
-        "exit_path_status": "review-required",
+        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       },
       {
@@ -178,7 +178,7 @@
         "compliance",
         "portfolio"
       ],
-      "impact_score": 28,
+      "impact_score": 26,
       "maintenance": {
         "project": "openforge",
         "maintenance_owner": "dasomel",
@@ -336,6 +336,16 @@
               "runtime": "pass",
               "security": "pass"
             }
+          },
+          "policy-compiler": {
+            "status": "implemented",
+            "standard": "openforge/agent-engineering",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
+              "security": "pass"
+            }
           }
         },
         "evidence": {
@@ -347,11 +357,6 @@
           "runtime": "pass"
         },
         "proposed_relationships": [
-          {
-            "target": "beluga-manager",
-            "type": "provides",
-            "scope": "data-platform management capabilities"
-          },
           {
             "target": "ldapium",
             "type": "consumes",
@@ -379,7 +384,7 @@
           }
         ]
       },
-      "impact_score": 10,
+      "impact_score": 4,
       "maintenance": {
         "project": "beluga",
         "maintenance_owner": "dasomel",
@@ -396,7 +401,7 @@
       "name": "Beluga Manager",
       "category": "Data Platform Management",
       "archetype": "Data Control Plane",
-      "development_status": "active",
+      "development_status": "deprecated",
       "adoption_percent": null,
       "role": "control-surface",
       "domains": [
@@ -409,18 +414,7 @@
         "updated_at": "2026-09-24",
         "milestone": "web-console-i18n-ci-gate",
         "progress_percent": 85,
-        "capabilities": {
-          "policy-compiler": {
-            "status": "implemented",
-            "standard": "openforge/agent-engineering",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "pass",
-              "security": "pass"
-            }
-          }
-        },
+        "capabilities": {},
         "evidence": {
           "issue": null,
           "pull_request": 49,
@@ -429,22 +423,16 @@
           "security": "pass",
           "runtime": "pass"
         },
-        "proposed_relationships": [
-          {
-            "target": "beluga",
-            "type": "control-surface",
-            "scope": "data-platform management operations"
-          }
-        ]
+        "proposed_relationships": []
       },
-      "impact_score": 8,
+      "impact_score": 0,
       "maintenance": {
         "project": "beluga-manager",
         "maintenance_owner": "dasomel",
         "maintenance_status": "owned",
         "strategic_role": "enabler",
         "blast_radius": "medium",
-        "exit_path_status": "review-required",
+        "exit_path_status": "defined",
         "review_cadence": "quarterly"
       }
     },
@@ -735,13 +723,6 @@
     },
     {
       "source": "openforge",
-      "target": "beluga-manager",
-      "type": "standardizes",
-      "impact": "medium",
-      "scope": "engineering and design-system standards"
-    },
-    {
-      "source": "openforge",
       "target": "egovframe-launcher",
       "type": "standardizes",
       "impact": "low",
@@ -809,20 +790,6 @@
       "type": "provides",
       "impact": "medium",
       "scope": "sandbox/runtime enforcement evidence"
-    },
-    {
-      "source": "beluga",
-      "target": "beluga-manager",
-      "type": "provides",
-      "impact": "high",
-      "scope": "data-platform management capabilities"
-    },
-    {
-      "source": "beluga-manager",
-      "target": "beluga",
-      "type": "control-surface",
-      "impact": "high",
-      "scope": "data-platform management operations"
     },
     {
       "source": "narwhal",

@@ -143,6 +143,16 @@
               "runtime": "pass",
               "security": "pass"
             }
+          },
+          "policy-compiler": {
+            "status": "implemented",
+            "standard": "openforge/agent-engineering",
+            "verification": {
+              "unit": "pass",
+              "integration": "pass",
+              "runtime": "pass",
+              "security": "pass"
+            }
           }
         },
         "evidence": {
@@ -154,11 +164,6 @@
           "runtime": "pass"
         },
         "proposed_relationships": [
-          {
-            "target": "beluga-manager",
-            "type": "provides",
-            "scope": "data-platform management capabilities"
-          },
           {
             "target": "ldapium",
             "type": "consumes",
@@ -193,7 +198,7 @@
       "name": "Beluga Manager",
       "category": "Data Platform Management",
       "archetype": "Data Control Plane",
-      "development_status": "active",
+      "development_status": "deprecated",
       "adoption_percent": null,
       "role": "control-surface",
       "domains": [
@@ -206,18 +211,7 @@
         "updated_at": "2026-09-24",
         "milestone": "web-console-i18n-ci-gate",
         "progress_percent": 85,
-        "capabilities": {
-          "policy-compiler": {
-            "status": "implemented",
-            "standard": "openforge/agent-engineering",
-            "verification": {
-              "unit": "pass",
-              "integration": "pass",
-              "runtime": "pass",
-              "security": "pass"
-            }
-          }
-        },
+        "capabilities": {},
         "evidence": {
           "issue": null,
           "pull_request": 49,
@@ -226,13 +220,7 @@
           "security": "pass",
           "runtime": "pass"
         },
-        "proposed_relationships": [
-          {
-            "target": "beluga",
-            "type": "control-surface",
-            "scope": "data-platform management operations"
-          }
-        ]
+        "proposed_relationships": []
       }
     },
     {
