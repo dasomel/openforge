@@ -21,7 +21,6 @@
     {"source":"openforge","target":"nfs-quota-agent","type":"standardizes","impact":"medium","scope":"engineering standards"},
     {"source":"openforge","target":"ldapium","type":"standardizes","impact":"medium","scope":"engineering standards"},
     {"source":"openforge","target":"clusterdeck","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
-    {"source":"openforge","target":"beluga-manager","type":"standardizes","impact":"medium","scope":"engineering and design-system standards"},
     {"source":"openforge","target":"egovframe-launcher","type":"standardizes","impact":"low","scope":"developer-tool standards"},
     {"source":"openforge","target":"siqoq","type":"standardizes","impact":"low","scope":"engineering and Agent Skills standards"},
     {"source":"openforge","target":"dasomel-github-io","type":"standardizes","impact":"low","scope":"documentation and presentation"},
@@ -34,9 +33,6 @@
     {"source":"narwhal","target":"kube-ready-box","type":"consumes","impact":"medium","scope":"runtime/sandbox capability and enforcement evidence"},
     {"source":"kube-ready-box","target":"narwhal","type":"provides","impact":"medium","scope":"sandbox/runtime enforcement evidence"},
     {"source":"kube-ready-box","target":"kubemetal","type":"provides","impact":"medium","scope":"sandbox/runtime enforcement evidence"},
-
-    {"source":"beluga","target":"beluga-manager","type":"provides","impact":"high","scope":"data-platform management capabilities"},
-    {"source":"beluga-manager","target":"beluga","type":"control-surface","impact":"high","scope":"data-platform management operations"},
 
     {"source":"narwhal","target":"nfs-quota-agent","type":"consumes","impact":"medium","scope":"storage quota capability"},
     {"source":"nfs-quota-agent","target":"narwhal","type":"provides","impact":"medium","scope":"storage quota capability"},

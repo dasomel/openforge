@@ -7,18 +7,18 @@
 | Project | Impact score | Incoming edges | Outgoing edges |
 |---|---:|---:|---:|
 | Narwhal | 29 | 6 | 7 |
-| OpenForge | 28 | 2 | 12 |
+| OpenForge | 26 | 2 | 11 |
 | KubeMetal | 11 | 4 | 1 |
 | Narwhal Portal | 11 | 2 | 2 |
-| Beluga | 10 | 3 | 1 |
 | kube-ready-box | 10 | 3 | 2 |
-| Beluga Manager | 8 | 2 | 1 |
 | ldapium | 6 | 2 | 1 |
 | nfs-quota-agent | 6 | 2 | 1 |
+| Beluga | 4 | 2 | 0 |
 | ClusterDeck | 3 | 1 | 1 |
 | dasomel.github.io | 2 | 1 | 1 |
 | eGovFrame Launcher | 1 | 1 | 0 |
 | Siqoq | 1 | 1 | 0 |
+| Beluga Manager | 0 | 0 | 0 |
 | CKA Lab | 0 | 0 | 0 |
 | Kairos | 0 | 0 | 0 |
 

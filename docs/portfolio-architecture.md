@@ -39,7 +39,6 @@ flowchart TB
   openforge -->|standardizes| nfs_quota_agent
   openforge -->|standardizes| ldapium
   openforge -->|standardizes| clusterdeck
-  openforge -->|standardizes| beluga_manager
   openforge -->|standardizes| egovframe_launcher
   openforge -->|standardizes| siqoq
   openforge -->|standardizes| dasomel_github_io
@@ -50,8 +49,6 @@ flowchart TB
   narwhal -->|consumes| kube_ready_box
   kube_ready_box -->|provides| narwhal
   kube_ready_box -->|provides| kubemetal
-  beluga -->|provides| beluga_manager
-  beluga_manager -->|control-surface| beluga
   narwhal -->|consumes| nfs_quota_agent
   nfs_quota_agent -->|provides| narwhal
   narwhal -->|consumes| ldapium
