@@ -44,10 +44,12 @@ jobs:
             manifest: openforge/examples/calibration/runtime-observability-degraded.json
             output_prefix: runtime-observability-degraded
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: openforge
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
       - name: Build OpenForge
         working-directory: openforge
         run: cargo build --bin openforge
@@ -72,7 +74,7 @@ jobs:
             --require-complete
       - name: Calibration summary
         run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: openforge-${{ matrix.output_prefix }}-calibration
           path: |
@@ -95,10 +97,12 @@ jobs:
             manifest: openforge/examples/calibration/runtime-gitops-degraded.json
             output_prefix: runtime-gitops-degraded
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: openforge
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
       - name: Build OpenForge
         working-directory: openforge
         run: cargo build --bin openforge
@@ -123,7 +127,7 @@ jobs:
             --require-complete
       - name: Calibration summary
         run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: openforge-${{ matrix.output_prefix }}-calibration
           path: |
@@ -146,10 +150,12 @@ jobs:
             manifest: openforge/examples/calibration/runtime-restore-degraded.json
             output_prefix: runtime-restore-degraded
     steps:
-      - uses: actions/checkout@v7
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
           path: openforge
-      - uses: dtolnay/rust-toolchain@stable
+      - uses: dtolnay/rust-toolchain@686976e191b89faba57d3206551f0f330d8cb249 # stable
+        with:
+          toolchain: stable
       - name: Build OpenForge
         working-directory: openforge
         run: cargo build --bin openforge
@@ -174,7 +180,7 @@ jobs:
             --require-complete
       - name: Calibration summary
         run: ./openforge/target/debug/openforge calibrate ${{ matrix.output_prefix }}-assessment.json ${{ matrix.manifest }}
-      - uses: actions/upload-artifact@v7
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: openforge-${{ matrix.output_prefix }}-calibration
           path: |

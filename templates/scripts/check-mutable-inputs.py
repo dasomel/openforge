@@ -6,7 +6,9 @@ import re
 import sys
 from pathlib import Path
 
-ACTION_RE = re.compile(r"^\s*uses:\s*([^\s#]+)")
+ACTION_RE = re.compile(r"^\s*(?:-\s+)?uses:\s*([^\s#]+)")
+RUST_TOOLCHAIN_RE = re.compile(r"^dtolnay/rust-toolchain@")
+TOOLCHAIN_INPUT_RE = re.compile(r"^\s+toolchain:\s*\S")
 SHA40_RE = re.compile(r"^[0-9a-f]{40}$")
 MUTABLE_PATTERNS = (
     ("container latest tag", re.compile(r":latest\b")),
@@ -25,6 +27,22 @@ def iter_files(paths):
         for child in sorted(path.rglob("*")):
             if child.is_file() and ".git" not in child.parts:
                 yield child
+
+
+def step_has_toolchain_input(lines, index):
+    """True if the workflow step containing lines[index] sets a `toolchain:` input."""
+    indent = len(lines[index]) - len(lines[index].lstrip())
+    start = index
+    if not lines[index].lstrip().startswith("-"):
+        while start > 0 and not lines[start].lstrip().startswith("- "):
+            start -= 1
+        indent = len(lines[start]) - len(lines[start].lstrip())
+    for line in [lines[start]] + lines[start + 1:]:
+        if line.strip() and len(line) - len(line.lstrip()) <= indent and line is not lines[start]:
+            break
+        if TOOLCHAIN_INPUT_RE.match(line):
+            return True
+    return False
 
 
 def scan_file(path):
@@ -51,6 +69,9 @@ def scan_file(path):
             action_ref = ref.rsplit("@", 1)[1]
             if not SHA40_RE.fullmatch(action_ref):
                 failures.append((lineno, "GitHub Action ref is not a 40-char commit SHA", stripped))
+            elif RUST_TOOLCHAIN_RE.match(ref) and not step_has_toolchain_input(lines, lineno - 1):
+                # The action derives its default toolchain from the ref name, which a SHA hides.
+                failures.append((lineno, "dtolnay/rust-toolchain pinned by SHA needs an explicit toolchain input", stripped))
     return failures
 
 

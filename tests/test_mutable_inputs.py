@@ -41,6 +41,36 @@ class MutableInputGuardTests(unittest.TestCase):
             failures = module.scan_file(p)
             self.assertTrue(any("40-char commit SHA" in item[1] for item in failures))
 
+    def test_rejects_floating_action_tag_in_step_list_item(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "workflow.yml"
+            p.write_text("    steps:\n      - uses: actions/checkout@v4\n", encoding="utf-8")
+            failures = module.scan_file(p)
+            self.assertTrue(any("40-char commit SHA" in item[1] for item in failures))
+
+    def test_rejects_sha_pinned_rust_toolchain_without_toolchain_input(self):
+        sha = "686976e191b89faba57d3206551f0f330d8cb249"
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "workflow.yml"
+            p.write_text(
+                f"    steps:\n      - uses: dtolnay/rust-toolchain@{sha} # stable\n"
+                "        with:\n          components: clippy\n      - run: cargo test\n",
+                encoding="utf-8",
+            )
+            failures = module.scan_file(p)
+            self.assertTrue(any("toolchain input" in item[1] for item in failures))
+
+    def test_accepts_sha_pinned_rust_toolchain_with_toolchain_input(self):
+        sha = "686976e191b89faba57d3206551f0f330d8cb249"
+        with tempfile.TemporaryDirectory() as tmp:
+            p = Path(tmp) / "workflow.yml"
+            p.write_text(
+                f"    steps:\n      - name: Rust\n        uses: dtolnay/rust-toolchain@{sha} # stable\n"
+                "        with:\n          toolchain: stable\n      - run: cargo test\n",
+                encoding="utf-8",
+            )
+            self.assertEqual(module.scan_file(p), [])
+
     def test_ignores_comments(self):
         with tempfile.TemporaryDirectory() as tmp:
             p = Path(tmp) / "notes.yml"
