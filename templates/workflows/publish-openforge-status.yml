@@ -22,7 +22,15 @@ permissions:
 
 jobs:
   publish-status:
-    # When using workflow_run, add a condition that the upstream workflow succeeded.
+    # When using workflow_run, guard the job. workflow_run matches the upstream workflow by
+    # NAME only, so a fork PR that defines a workflow with the same name would otherwise
+    # trigger this job with OPENFORGE_STATUS_TOKEN. Bind the run to a push in this repository
+    # (a tag push for release-gated publishing) and to the upstream workflow's success:
+    # if: >-
+    #   github.event_name == 'workflow_dispatch' ||
+    #   (github.event.workflow_run.conclusion == 'success' &&
+    #    github.event.workflow_run.event == 'push' &&
+    #    github.event.workflow_run.head_repository.full_name == github.repository)
     runs-on: ubuntu-latest
     steps:
       - name: Checkout source repository
