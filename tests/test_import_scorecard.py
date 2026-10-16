@@ -257,7 +257,8 @@ class RealOutputTests(unittest.TestCase):
         record = json.loads((EVIDENCE / f"{name}.json").read_text(encoding="utf-8"))
         placeholder = {"id": "scorecard", "status": "not-run", "note": "placeholder", "source": {"tool": "curl", "observed_at": "2026-10-07T04:00:00Z", "ref": "placeholder"}}
         record["signals"] = [placeholder if s["id"] == "scorecard" else s for s in record["signals"]]
-        record["observed_at"] = "2026-10-07T04:58:44Z"
+        # Latest non-Scorecard observation, e.g. a later direct re-scan of another signal.
+        record["observed_at"] = max(s["source"]["observed_at"] for s in record["signals"] if s["id"] != "scorecard")
         return record
 
     def test_committed_samples_reproduce_from_raw_output(self):
