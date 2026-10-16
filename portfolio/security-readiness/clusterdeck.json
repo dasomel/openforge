@@ -1,8 +1,8 @@
 {
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/clusterdeck",
-  "revision": "2f25ed744a2feb59749606b78e416df2e1063ccf",
-  "observed_at": "2026-10-15T11:45:29Z",
+  "revision": "ca391f71fef27a94a5551d6768e6c92d44b04046",
+  "observed_at": "2026-10-16T01:02:17Z",
   "signals": [
     {
       "id": "scorecard",
@@ -88,21 +88,23 @@
     },
     {
       "id": "actions-pinning",
-      "status": "partial",
+      "status": "pass",
       "source": {
         "tool": "grep",
-        "observed_at": "2026-10-07T04:28:29Z",
-        "ref": "gh api repos/dasomel/clusterdeck/contents/.github/workflows (all files) | grep uses: lines, exclude ./ and @<40-hex>: 12 uses: lines, 5 not pinned to a 40-hex SHA"
+        "observed_at": "2026-10-16T01:02:17Z",
+        "ref": "gh api repos/dasomel/clusterdeck/contents/.github/workflows?ref=ca391f7 (all files) | grep uses: lines, exclude ./ and @<40-hex>: 12 uses: lines, 0 not pinned to a 40-hex SHA; corroborated by scorecard v5.6.0 Pinned-Dependencies 10/10 at ca391f7 (2026-10-16)"
       },
-      "findings": [
-        {
-          "id": "clusterdeck-pin-1",
-          "summary": "5 workflow action reference(s) not pinned to a full commit SHA: ci.yml:25,28,33,38,43 (actions/checkout@v7, pnpm/action-setup@v6, actions/setup-node@v7, dtolnay/rust-toolchain@stable, Swatinem/rust-cache@v2)",
-          "severity": "medium"
-        }
-      ],
-      "remediation": {
-        "state": "not-started"
+      "rescan": {
+        "previous_ref": "2f25ed744a2feb59749606b78e416df2e1063ccf",
+        "previous_observed_at": "2026-10-07T04:28:29Z",
+        "delta": "improved",
+        "resolved_findings": [
+          {
+            "id": "clusterdeck-pin-1",
+            "summary": "5 workflow action reference(s) not pinned to a full commit SHA: ci.yml:25,28,33,38,43 (actions/checkout@v7, pnpm/action-setup@v6, actions/setup-node@v7, dtolnay/rust-toolchain@stable, Swatinem/rust-cache@v2)",
+            "resolved_by": "https://github.com/dasomel/clusterdeck/pull/72 (ca391f71fef27a94a5551d6768e6c92d44b04046)"
+          }
+        ]
       }
     },
     {
@@ -165,9 +167,9 @@
   ],
   "summary": {
     "total": 6,
-    "pass": 1,
+    "pass": 2,
     "fail": 3,
-    "partial": 2,
+    "partial": 1,
     "not_run": 0,
     "not_applicable": 0
   },

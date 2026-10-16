@@ -1170,9 +1170,9 @@
       },
       "signals": {
         "total": 18,
-        "pass": 5,
+        "pass": 6,
         "fail": 8,
-        "partial": 5,
+        "partial": 4,
         "not_run": 0,
         "not_applicable": 0
       }
@@ -1180,21 +1180,21 @@
     "repositories": [
       {
         "repository": "dasomel/clusterdeck",
-        "revision": "2f25ed744a2feb59749606b78e416df2e1063ccf",
-        "observed_at": "2026-10-15T11:45:29Z",
+        "revision": "ca391f71fef27a94a5551d6768e6c92d44b04046",
+        "observed_at": "2026-10-16T01:02:17Z",
         "overall": "fail",
         "signal_counts": {
           "total": 6,
-          "pass": 1,
+          "pass": 2,
           "fail": 3,
-          "partial": 2,
+          "partial": 1,
           "not_run": 0,
           "not_applicable": 0
         },
         "signal_status": {
           "scorecard": "partial",
           "security-policy": "pass",
-          "actions-pinning": "partial",
+          "actions-pinning": "pass",
           "sbom": "fail",
           "provenance": "fail",
           "release-signing": "fail"
