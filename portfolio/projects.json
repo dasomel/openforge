@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-10-22",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -42,7 +42,19 @@
         "ai-agent",
         "portal",
         "operations"
-      ]
+      ],
+      "status": {
+        "revision": "00b08708bce934f05fa38e0d85b2f9cb58730b23",
+        "updated_at": "2026-10-22",
+        "milestone": "release",
+        "progress_percent": null,
+        "capabilities": {},
+        "evidence": {
+          "ci": "pass",
+          "commit": "00b08708bce934f05fa38e0d85b2f9cb58730b23",
+          "workflow": "https://github.com/dasomel/narwhal/actions/runs/39712292486"
+        }
+      }
     },
     {
       "id": "kubemetal",
