@@ -664,6 +664,8 @@ def render_external_contributions(view: dict[str, Any]) -> list[str]:
         thread = f"[{entry['repository']}#{entry['number']}]({entry['url']})"
         handles = ", ".join(f"[{h}](https://github.com/{h})" for h in entry["contributors"])
         text = entry["summary"] + (f" — outcome: {entry['outcome']}" if entry.get("outcome") else "")
+        # Free text must stay inside one table cell.
+        text = " ".join(text.split()).replace("|", "\\|")
         lines.append(f"| {thread} | {handles} | `{entry['contribution_type']}` | **{entry['state']}** | {text} |")
     return lines
 

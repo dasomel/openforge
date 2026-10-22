@@ -140,6 +140,15 @@ class ExternalContributionsDashboardTests(unittest.TestCase):
     def test_absent_registry_omits_key(self):
         self.assertIsNone(portfolio.build_external_contributions_view(ROOT / "portfolio/does-not-exist.json"))
 
+
+    def test_table_cells_escape_pipes_and_newlines(self):
+        view = portfolio.build_external_contributions_view()
+        entry = copy.deepcopy(view["entries"][0])
+        entry["summary"] = "a | b\nc"
+        entry["outcome"] = "x|y"
+        rows = [line for line in portfolio.render_external_contributions({**view, "entries": [entry]}) if line.startswith("| [")]
+        self.assertEqual(len(rows), 1)
+        self.assertIn("a \\| b c — outcome: x\\|y", rows[0])
     def test_wrong_contract_fails_loudly(self):
         bad = FIXTURES / "invalid-wrong-contract.json"
         with self.assertRaises(RuntimeError):
