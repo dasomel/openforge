@@ -93,6 +93,24 @@
 | dasomel/kubemetal | **fail** | 2 · 2 · 2 · 0 · 0 | 3.5/10 (2026-10-15, `a7acdba`) | [record](../portfolio/security-readiness/kubemetal.json) · [scorecard](../portfolio/security-readiness/scorecard/kubemetal.json) |
 | dasomel/narwhal | **fail** | 2 · 3 · 1 · 0 · 0 | 4.1/10 (2026-10-15, `bb1e12f`) | [record](../portfolio/security-readiness/narwhal.json) · [scorecard](../portfolio/security-readiness/scorecard/narwhal.json) |
 
+## External contributions
+
+> Public discussions by external (non-owner, non-bot) GitHub accounts, from `portfolio/external-contributions.json`. State is a snapshot as of 2026-10-22T21:00:00Z; re-check the thread for the current state. GitHub handles only. See [External Contributions](external-contributions.md).
+
+- Threads: **7** from **7** contributors
+- By state: closed 1 · merged 1 · open 5
+- By type: bug-report 1 · design 1 · design-review 2 · docs 1 · proposal 1 · support-offer 1
+
+| Thread | Contributors | Type | State | Summary |
+|---|---|---|---|---|
+| [dasomel/kube-ready-box#79](https://github.com/dasomel/kube-ready-box/issues/79) | [Evantage-WS](https://github.com/Evantage-WS) | `bug-report` | **open** | 26.04 box dracut loop on VirtualBox, macOS 27, M4 |
+| [dasomel/kubemetal#84](https://github.com/dasomel/kubemetal/issues/84) | [Lulzx](https://github.com/Lulzx) | `support-offer` | **open** | CuMetal maintainer offered support when issues are reported |
+| [dasomel/narwhal#4](https://github.com/dasomel/narwhal/pull/4) | [iamroseyoung](https://github.com/iamroseyoung) | `docs` | **merged** | Staged verification guide (docs/evaluation) with stage-0 static validation |
+| [dasomel/narwhal#73](https://github.com/dasomel/narwhal/issues/73) | [23A91A6183](https://github.com/23A91A6183), [Aliipou](https://github.com/Aliipou) | `proposal` | **open** | Agent identity / MCP tool authorization: PDP-PEP separation, spend-once grants, signed evidence log |
+| [dasomel/narwhal#155](https://github.com/dasomel/narwhal/issues/155) | [ozereray](https://github.com/ozereray) | `design-review` | **open** | Tool authorization, approval and execution evidence reviewed from the contributor's own project perspective |
+| [dasomel/narwhal#372](https://github.com/dasomel/narwhal/issues/372) | [ozereray](https://github.com/ozereray) | `design-review` | **open** | Roadmap issue for agent/MCP tool authorization, approval and execution evidence, reviewed from the contributor's own project perspective |
+| [dasomel/openforge#128](https://github.com/dasomel/openforge/issues/128) | [saniya-malik](https://github.com/saniya-malik) | `design` | **closed** | Figma dashboard/infographic reference design for the portfolio control plane — outcome: Reflected in the live portfolio dashboard |
+
 ## Status publication workflow
 
 ```text

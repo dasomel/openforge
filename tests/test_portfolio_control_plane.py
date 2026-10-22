@@ -392,6 +392,7 @@ class PortfolioControlPlaneTests(unittest.TestCase):
             self.maintenance,
             self.agent_audit,
             portfolio.build_security_readiness_view(),
+            portfolio.build_external_contributions_view(),
         )
         checked_in = (ROOT / "portfolio" / "dashboard.json").read_text(encoding="utf-8")
         self.assertEqual(checked_in, regenerated)

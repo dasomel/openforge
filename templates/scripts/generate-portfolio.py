@@ -29,6 +29,8 @@ ARCHITECTURE_PATH = ROOT / "docs" / "portfolio-architecture.md"
 IMPACT_PATH = ROOT / "docs" / "portfolio-impact.md"
 DASHBOARD_JSON_PATH = ROOT / "portfolio" / "dashboard.json"
 SECURITY_READINESS_DIR = ROOT / "portfolio" / "security-readiness"
+EXTERNAL_CONTRIBUTIONS_PATH = ROOT / "portfolio" / "external-contributions.json"
+EXTERNAL_CONTRIBUTIONS_CONTRACT = "openforge-external-contributions/v1"
 
 ALLOWED_IMPACT = {"high", "medium", "low"}
 
@@ -600,11 +602,78 @@ def render_security_readiness(view: dict[str, Any]) -> list[str]:
     return lines
 
 
+def build_external_contributions_view(path: Path = EXTERNAL_CONTRIBUTIONS_PATH, root: Path = ROOT) -> dict[str, Any] | None:
+    """Additive dashboard block summarizing portfolio/external-contributions.json.
+
+    Returns None (key omitted) when the registry does not exist, so repositories without it keep
+    byte-identical output. Full validation lives in validate-external-contributions.py (CI); this
+    only refuses input that is not the contract. State is a snapshot as of `observed_at`.
+    """
+    if not path.is_file():
+        return None
+    rel = path.relative_to(root).as_posix()
+    record = load_json(path)
+    entries = record.get("entries")
+    if record.get("schema_version") != EXTERNAL_CONTRIBUTIONS_CONTRACT or not isinstance(entries, list) or not isinstance(record.get("observed_at"), str):
+        raise RuntimeError(f"{rel}: not a {EXTERNAL_CONTRIBUTIONS_CONTRACT} record")
+    required = ("id", "repository", "kind", "number", "url", "contributors", "contribution_type", "summary", "state", "observed_at")
+    for entry in entries:
+        if not isinstance(entry, dict) or any(key not in entry for key in required):
+            raise RuntimeError(f"{rel}: malformed entry {entry!r}")
+    view_entries = [
+        {key: entry[key] for key in (*required, "outcome") if key in entry}
+        for entry in sorted(entries, key=lambda e: (e["repository"], e["number"]))
+    ]
+
+    def count(key: str) -> dict[str, int]:
+        return dict(sorted(Counter(entry[key] for entry in view_entries).items()))
+
+    return {
+        "contract": EXTERNAL_CONTRIBUTIONS_CONTRACT,
+        "generated_from": [rel],
+        "observed_at": record["observed_at"],
+        "summary": {
+            "entries": len(view_entries),
+            "contributors": len({h.lower() for entry in view_entries for h in entry["contributors"]}),
+            "by_state": count("state"),
+            "by_type": count("contribution_type"),
+            "by_repository": count("repository"),
+        },
+        "entries": view_entries,
+    }
+
+
+def render_external_contributions(view: dict[str, Any]) -> list[str]:
+    summary = view["summary"]
+    lines = [
+        "",
+        "## External contributions",
+        "",
+        f"> Public discussions by external (non-owner, non-bot) GitHub accounts, from `{view['generated_from'][0]}`. "
+        f"State is a snapshot as of {view['observed_at']}; re-check the thread for the current state. "
+        "GitHub handles only. See [External Contributions](external-contributions.md).",
+        "",
+        f"- Threads: **{summary['entries']}** from **{summary['contributors']}** contributors",
+        "- By state: " + " · ".join(f"{key} {value}" for key, value in summary["by_state"].items()),
+        "- By type: " + " · ".join(f"{key} {value}" for key, value in summary["by_type"].items()),
+        "",
+        "| Thread | Contributors | Type | State | Summary |",
+        "|---|---|---|---|---|",
+    ]
+    for entry in view["entries"]:
+        thread = f"[{entry['repository']}#{entry['number']}]({entry['url']})"
+        handles = ", ".join(f"[{h}](https://github.com/{h})" for h in entry["contributors"])
+        text = entry["summary"] + (f" — outcome: {entry['outcome']}" if entry.get("outcome") else "")
+        lines.append(f"| {thread} | {handles} | `{entry['contribution_type']}` | **{entry['state']}** | {text} |")
+    return lines
+
+
 def render_dashboard(
     projects_doc: dict[str, Any],
     milestones_doc: dict[str, Any],
     agent_audit_doc: dict[str, Any],
     security_readiness: dict[str, Any] | None = None,
+    external_contributions: dict[str, Any] | None = None,
 ) -> str:
     projects = list(project_map(projects_doc).values())
     portfolio = projects_doc.get("portfolio", {})
@@ -712,6 +781,9 @@ def render_dashboard(
 
     if security_readiness is not None:
         lines += render_security_readiness(security_readiness)
+
+    if external_contributions is not None:
+        lines += render_external_contributions(external_contributions)
 
     lines += [
         "",
@@ -871,6 +943,7 @@ def render_dashboard_json(
     maintenance_doc: dict[str, Any],
     agent_audit_doc: dict[str, Any],
     security_readiness: dict[str, Any] | None = None,
+    external_contributions: dict[str, Any] | None = None,
 ) -> str:
     projects = project_map(projects_doc)
     weights = {"high": 3, "medium": 2, "low": 1}
@@ -929,6 +1002,9 @@ def render_dashboard_json(
     # exists, so downstream consumers and `openforge-dashboard/v1` are unchanged.
     if security_readiness is not None:
         output["security_readiness"] = security_readiness
+    # Additive seventh input: omitted when portfolio/external-contributions.json is absent.
+    if external_contributions is not None:
+        output["external_contributions"] = external_contributions
     return json.dumps(output, ensure_ascii=False, indent=2) + "\n"
 
 
@@ -971,12 +1047,13 @@ def generated_files(
     agent_audit_doc: dict[str, Any],
 ) -> dict[Path, str]:
     security_readiness = build_security_readiness_view()
+    external_contributions = build_external_contributions_view()
     return {
-        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc, agent_audit_doc, security_readiness),
+        DASHBOARD_PATH: render_dashboard(projects_doc, milestones_doc, agent_audit_doc, security_readiness, external_contributions),
         ARCHITECTURE_PATH: render_architecture(projects_doc, relationships_doc),
         IMPACT_PATH: render_impact(projects_doc, relationships_doc),
         DASHBOARD_JSON_PATH: render_dashboard_json(
-            projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc, security_readiness
+            projects_doc, relationships_doc, milestones_doc, maintenance_doc, agent_audit_doc, security_readiness, external_contributions
         ),
     }
 
