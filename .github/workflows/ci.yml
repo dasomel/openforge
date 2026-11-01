@@ -179,3 +179,9 @@ jobs:
         run: |
           set -euo pipefail
           python3 templates/scripts/validate-security-readiness.py --validate
+
+      - name: Validate external contributions registry
+        shell: bash
+        run: |
+          set -euo pipefail
+          python3 templates/scripts/validate-external-contributions.py --validate

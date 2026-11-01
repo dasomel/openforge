@@ -1366,5 +1366,138 @@
         }
       }
     ]
+  },
+  "external_contributions": {
+    "contract": "openforge-external-contributions/v1",
+    "generated_from": [
+      "portfolio/external-contributions.json"
+    ],
+    "observed_at": "2026-11-01T23:15:01Z",
+    "summary": {
+      "entries": 7,
+      "contributors": 7,
+      "by_state": {
+        "closed": 2,
+        "merged": 1,
+        "open": 4
+      },
+      "by_type": {
+        "bug-report": 1,
+        "design": 1,
+        "design-review": 2,
+        "docs": 1,
+        "proposal": 1,
+        "support-offer": 1
+      },
+      "by_repository": {
+        "dasomel/kube-ready-box": 1,
+        "dasomel/kubemetal": 1,
+        "dasomel/narwhal": 4,
+        "dasomel/openforge": 1
+      }
+    },
+    "entries": [
+      {
+        "id": "kube-ready-box-issue-79",
+        "repository": "dasomel/kube-ready-box",
+        "kind": "issue",
+        "number": 79,
+        "url": "https://github.com/dasomel/kube-ready-box/issues/79",
+        "contributors": [
+          "Evantage-WS"
+        ],
+        "contribution_type": "bug-report",
+        "summary": "26.04 box dracut loop on VirtualBox, macOS 27, M4",
+        "state": "closed",
+        "observed_at": "2026-11-01T23:15:01Z",
+        "outcome": "Reproduced and fixed: VirtualBox ARM64 boxes ship on an NVMe controller (kube-ready-box#80); reporter confirmed the login prompt"
+      },
+      {
+        "id": "kubemetal-issue-84",
+        "repository": "dasomel/kubemetal",
+        "kind": "issue",
+        "number": 84,
+        "url": "https://github.com/dasomel/kubemetal/issues/84",
+        "contributors": [
+          "Lulzx"
+        ],
+        "contribution_type": "support-offer",
+        "summary": "CuMetal maintainer offered support when issues are reported",
+        "state": "open",
+        "observed_at": "2026-11-01T23:15:01Z"
+      },
+      {
+        "id": "narwhal-pr-4",
+        "repository": "dasomel/narwhal",
+        "kind": "pull_request",
+        "number": 4,
+        "url": "https://github.com/dasomel/narwhal/pull/4",
+        "contributors": [
+          "iamroseyoung"
+        ],
+        "contribution_type": "docs",
+        "summary": "Staged verification guide (docs/evaluation) with stage-0 static validation",
+        "state": "merged",
+        "observed_at": "2026-11-01T23:15:01Z"
+      },
+      {
+        "id": "narwhal-issue-73",
+        "repository": "dasomel/narwhal",
+        "kind": "issue",
+        "number": 73,
+        "url": "https://github.com/dasomel/narwhal/issues/73",
+        "contributors": [
+          "23A91A6183",
+          "Aliipou"
+        ],
+        "contribution_type": "proposal",
+        "summary": "Agent identity / MCP tool authorization: PDP-PEP separation, spend-once grants, signed evidence log",
+        "state": "open",
+        "observed_at": "2026-11-01T23:15:01Z"
+      },
+      {
+        "id": "narwhal-issue-155",
+        "repository": "dasomel/narwhal",
+        "kind": "issue",
+        "number": 155,
+        "url": "https://github.com/dasomel/narwhal/issues/155",
+        "contributors": [
+          "ozereray"
+        ],
+        "contribution_type": "design-review",
+        "summary": "Tool authorization, approval and execution evidence reviewed from the contributor's own project perspective",
+        "state": "open",
+        "observed_at": "2026-11-01T23:15:01Z"
+      },
+      {
+        "id": "narwhal-issue-372",
+        "repository": "dasomel/narwhal",
+        "kind": "issue",
+        "number": 372,
+        "url": "https://github.com/dasomel/narwhal/issues/372",
+        "contributors": [
+          "ozereray"
+        ],
+        "contribution_type": "design-review",
+        "summary": "Roadmap issue for agent/MCP tool authorization, approval and execution evidence, reviewed from the contributor's own project perspective",
+        "state": "open",
+        "observed_at": "2026-11-01T23:15:01Z"
+      },
+      {
+        "id": "openforge-issue-128",
+        "repository": "dasomel/openforge",
+        "kind": "issue",
+        "number": 128,
+        "url": "https://github.com/dasomel/openforge/issues/128",
+        "contributors": [
+          "saniya-malik"
+        ],
+        "contribution_type": "design",
+        "summary": "Figma dashboard/infographic reference design for the portfolio control plane",
+        "state": "closed",
+        "observed_at": "2026-11-01T23:15:01Z",
+        "outcome": "Reflected in the live portfolio dashboard"
+      }
+    ]
   }
 }
