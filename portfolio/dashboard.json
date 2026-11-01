@@ -7,7 +7,7 @@
     "portfolio/maintenance.json",
     "portfolio/agent-audit.json"
   ],
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-11-01",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -371,6 +371,84 @@
         "security",
         "evidence"
       ],
+      "status": {
+        "revision": "3a9877ab16bba13abcf70b71817e59aeab6ca047",
+        "updated_at": "2026-11-01",
+        "milestone": null,
+        "progress_percent": null,
+        "capabilities": {
+          "license-gate": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-run",
+              "unit": "pass"
+            }
+          },
+          "node-network": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-observability": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-readiness": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-storage": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-time": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "rust-verifier": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "workload-security": {
+            "standard": "openforge/agent-execution-security",
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-run",
+              "unit": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "ci": "pass",
+          "commit": "3a9877ab16bba13abcf70b71817e59aeab6ca047",
+          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/41304264483"
+        }
+      },
       "impact_score": 10,
       "maintenance": {
         "project": "kube-ready-box",
