@@ -66,21 +66,21 @@
 - Repositories with false-green findings: **7**
 - False-green findings (total): **7**
 - Canonical agent skills: **21**
-- Evidence-backed mature skills: **11**
+- Evidence-backed mature skills: **12**
 - Skill audit errors: **0**
 - Swallowed-failure findings: **0** (measured in 9 of 9 repositories)
 - Repositories with a local agent CI gate: **2** (measured in 9 of 9 repositories)
 
 | Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
-| dasomel/narwhal | `e2845fc` | 0 | 4 | 3 | 0 |
-| dasomel/beluga | `5adf8fc` | 1 | 2 | 1 | 0 |
-| dasomel/kubemetal | `a7acdba` | 1 | 1 | 1 | 0 |
-| dasomel/clusterdeck | `2f25ed7` | 1 | 1 | 1 | 0 |
-| dasomel/ldapium | `2da51c8` | 1 | 1 | 1 | 0 |
+| dasomel/narwhal | `31f8a5b` | 0 | 4 | 3 | 0 |
+| dasomel/beluga | `f93d6fb` | 1 | 2 | 2 | 0 |
+| dasomel/kubemetal | `8362307` | 1 | 1 | 1 | 0 |
+| dasomel/clusterdeck | `ec3f193` | 1 | 1 | 1 | 0 |
+| dasomel/ldapium | `0bfe765` | 1 | 1 | 1 | 0 |
 | dasomel/nfs-quota-agent | `bfc4ab0` | 1 | 1 | 1 | 0 |
 | dasomel/egovframe-launcher | `26ad1fb` | 1 | 1 | 1 | 0 |
-| dasomel/kube-ready-box | `1f047ff` | 0 | 9 | 1 | 0 |
+| dasomel/kube-ready-box | `961ac32` | 0 | 9 | 1 | 0 |
 | dasomel/siqoq | `fe1804b` | 1 | 1 | 1 | 0 |
 
 ## Security readiness
