@@ -63,9 +63,9 @@ class SecurityReadinessDashboardTests(unittest.TestCase):
         self.assertNotIn("security_readiness", without)
         self.assertEqual(without["version"], "openforge-dashboard/v1")
         self.assertEqual(committed["version"], "openforge-dashboard/v1")
-        with_block = {k: v for k, v in committed.items() if k != "security_readiness"}
+        with_block = {k: v for k, v in committed.items() if k not in ("security_readiness", "external_contributions")}
         self.assertEqual(with_block, without)
-        self.assertEqual(set(committed) - set(without), {"security_readiness"})
+        self.assertEqual(set(committed) - set(without), {"security_readiness", "external_contributions"})
 
     def test_no_evidence_omits_the_key(self):
         shutil.rmtree(self.directory)

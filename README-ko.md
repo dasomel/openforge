@@ -82,6 +82,7 @@ Profile, applicability, 기간이 있는 waiver, baseline, compare/regression ga
 - [OpenForge OSS Design System — Figma](https://www.figma.com/design/Y1JpRSOwctAKSwPjDNbe1g)
 - [Security Standard](docs/security-ko.md)
 - [Supply Chain Security Standard](docs/supply-chain-ko.md)
+- [외부 기여 레지스트리](docs/external-contributions-ko.md) ([English](docs/external-contributions.md))
 - [Plugin Supply-Chain Intake Standard](docs/plugin-supply-chain-ko.md)
 - [Package and Artifact Identity](docs/package-identity-ko.md)
 - [CI/CD Security Standard](docs/ci-security-ko.md)
