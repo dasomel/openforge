@@ -1,6 +1,6 @@
 {
   "schema_version": "openforge-external-contributions/v1",
-  "observed_at": "2026-10-22T21:00:00Z",
+  "observed_at": "2026-11-01T23:15:01Z",
   "entries": [
     {
       "id": "kube-ready-box-issue-79",
@@ -13,8 +13,9 @@
       ],
       "contribution_type": "bug-report",
       "summary": "26.04 box dracut loop on VirtualBox, macOS 27, M4",
-      "state": "open",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "state": "closed",
+      "observed_at": "2026-11-01T23:15:01Z",
+      "outcome": "Reproduced and fixed: VirtualBox ARM64 boxes ship on an NVMe controller (kube-ready-box#80); reporter confirmed the login prompt"
     },
     {
       "id": "kubemetal-issue-84",
@@ -28,7 +29,7 @@
       "contribution_type": "support-offer",
       "summary": "CuMetal maintainer offered support when issues are reported",
       "state": "open",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     },
     {
       "id": "narwhal-pr-4",
@@ -42,7 +43,7 @@
       "contribution_type": "docs",
       "summary": "Staged verification guide (docs/evaluation) with stage-0 static validation",
       "state": "merged",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     },
     {
       "id": "narwhal-issue-73",
@@ -57,7 +58,7 @@
       "contribution_type": "proposal",
       "summary": "Agent identity / MCP tool authorization: PDP-PEP separation, spend-once grants, signed evidence log",
       "state": "open",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     },
     {
       "id": "narwhal-issue-155",
@@ -71,7 +72,7 @@
       "contribution_type": "design-review",
       "summary": "Tool authorization, approval and execution evidence reviewed from the contributor's own project perspective",
       "state": "open",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     },
     {
       "id": "narwhal-issue-372",
@@ -85,7 +86,7 @@
       "contribution_type": "design-review",
       "summary": "Roadmap issue for agent/MCP tool authorization, approval and execution evidence, reviewed from the contributor's own project perspective",
       "state": "open",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     },
     {
       "id": "openforge-issue-128",
@@ -100,7 +101,7 @@
       "summary": "Figma dashboard/infographic reference design for the portfolio control plane",
       "state": "closed",
       "outcome": "Reflected in the live portfolio dashboard",
-      "observed_at": "2026-10-22T21:00:00Z"
+      "observed_at": "2026-11-01T23:15:01Z"
     }
   ]
 }

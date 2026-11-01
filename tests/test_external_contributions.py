@@ -52,7 +52,8 @@ class ExternalContributionsTests(unittest.TestCase):
     def test_committed_registry_is_valid(self):
         doc = json.loads(REGISTRY.read_text(encoding="utf-8"))
         self.assertGreaterEqual(len(doc["entries"]), 1)
-        self.assertEqual(validator.validate(doc, None, NOW), [])
+        # Real clock: refreshing the committed snapshot must not require editing a pinned date.
+        self.assertEqual(validator.validate(doc, None, dt.datetime.now(dt.timezone.utc)), [])
 
     def test_unknown_repository(self):
         self.assertRejected(self.mutated(repository="example-org/unknown", url="https://github.com/example-org/unknown/issues/7"), "not a portfolio project")
