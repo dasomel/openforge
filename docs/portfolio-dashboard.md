@@ -17,7 +17,7 @@
 | Project | Role | Development | OpenForge adoption | Domains | Verified revision | Evidence (ci · security · runtime) |
 |---|---|---|---:|---|---|---|
 | [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio | — | — |
-| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | — | — |
+| [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | [`00b08708bce934f05fa38e0d85b2f9cb58730b23`](https://github.com/dasomel/narwhal/commit/00b08708bce934f05fa38e0d85b2f9cb58730b23) | ci: pass |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`ed1d870`](https://github.com/dasomel/kubemetal/commit/ed1d8709823547c8c4ee1efb1843701dffc635f7) | — |
 | [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7`](https://github.com/dasomel/kube-ready-box/commit/2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7) | ci: pass |
