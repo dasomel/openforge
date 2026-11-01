@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-09-24",
+  "updated_at": "2026-11-01",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -195,7 +195,85 @@
         "sandbox",
         "security",
         "evidence"
-      ]
+      ],
+      "status": {
+        "revision": "8321cdbe7a282109d5eb167f84812671c667e312",
+        "updated_at": "2026-11-01",
+        "milestone": null,
+        "progress_percent": null,
+        "capabilities": {
+          "license-gate": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-run",
+              "unit": "pass"
+            }
+          },
+          "node-network": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-observability": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-readiness": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-storage": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "node-time": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "rust-verifier": {
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-applicable",
+              "unit": "pass"
+            }
+          },
+          "workload-security": {
+            "standard": "openforge/agent-execution-security",
+            "status": "verifying",
+            "verification": {
+              "runtime": "not-run",
+              "security": "not-run",
+              "unit": "pass"
+            }
+          }
+        },
+        "evidence": {
+          "ci": "pass",
+          "commit": "8321cdbe7a282109d5eb167f84812671c667e312",
+          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/41315644073"
+        }
+      }
     },
     {
       "id": "nfs-quota-agent",

@@ -20,7 +20,7 @@
 | [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | — | — |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`ed1d870`](https://github.com/dasomel/kubemetal/commit/ed1d8709823547c8c4ee1efb1843701dffc635f7) | — |
 | [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
-| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | — | — |
+| [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`8321cdbe7a282109d5eb167f84812671c667e312`](https://github.com/dasomel/kube-ready-box/commit/8321cdbe7a282109d5eb167f84812671c667e312) | ci: pass |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
 | [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | — | — |
@@ -38,6 +38,14 @@
 | Beluga | `stream-iceberg` | unit pass · integration pass · runtime pass · security pass |
 | Beluga | `policy-compiler-seam` | unit pass · integration pass · runtime pass · security pass |
 | Beluga | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
+| kube-ready-box | `license-gate` | unit pass · runtime not-run · security not-run |
+| kube-ready-box | `node-network` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `node-observability` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `node-readiness` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `node-storage` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `node-time` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `rust-verifier` | unit pass · runtime not-run · security not-applicable |
+| kube-ready-box | `workload-security` | unit pass · runtime not-run · security not-run |
 
 ## Adoption snapshot
 
