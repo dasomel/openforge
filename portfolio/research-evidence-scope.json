@@ -1,0 +1,10 @@
+{
+  "schema_version": "openforge-research-evidence-scope/v1",
+  "updated_at": "2026-11-05",
+  "excluded_repositories": [
+    {
+      "repository": "dasomel/cka-lab",
+      "reason": "Excluded from research evidence management at the owner request."
+    }
+  ]
+}

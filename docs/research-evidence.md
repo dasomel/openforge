@@ -117,3 +117,20 @@ Existing invalid lines stay append-only. List each known exception in `research/
 ## Research integrity
 
 Evidence collection is observational by default. A later paper may select a subset and define hypotheses, baselines, experimental controls, exclusion criteria, and statistical analysis separately. Do not optimize or selectively discard development records merely to improve a future result. Preserve schema versions, source references, limitations, failures, and exclusion reasons so future analysis can distinguish unavailable data from intentionally excluded data.
+
+### GitHub Actions historical backfill
+
+Copy `templates/scripts/backfill-actions-evidence.py` beside the shared validator, or run it from this repository. It requires Python 3, `jsonschema`, an authenticated `gh` CLI and full local `origin/main` history. It reads completed workflow runs with unfiltered pagination, keeps the latest attempt returned by GitHub, and includes only revisions reachable from `origin/main`. It never recovers deleted/expired runs or earlier attempts that the API no longer returns. Exclusion counts are part of the dataset; this main-history cohort is not representative of all development or PR failures.
+
+```sh
+python3 templates/scripts/backfill-actions-evidence.py --repo-root /path/to/project --output-dir /path/to/staging --dry-run
+python3 templates/scripts/backfill-actions-evidence.py --repo-root /path/to/project --output-dir /path/to/staging
+```
+
+Review and validate staging together with the repository's existing evidence before publication. Repeated runs skip `(gh_run_id, gh_run_attempt)` keys already present in staging or the checkout. Existing bytes are preserved; an unterminated target file aborts writing. A separate staging directory avoids modifying historical files. The output defaults to the checkout's evidence directory if omitted. `--since YYYY-MM-DD` limits the cohort; without it, all available history is considered.
+
+`duration_ms` is the API's `updated_at - run_started_at` interval, identified by `metadata.duration_semantics=workflow_update_interval`. Updates after execution and reruns can affect it; it is not job execution time, CPU time, or a precise workflow completion measurement. Workflow event categories are inferred from names/paths, with unmatched workflows classified as `test`. `attempt` and `ci_retries` derive from `run_attempt`; these count workflow reruns, not individual job retries. Human interventions and review corrections are unavailable: v1 requires integer fields, so zero placeholders carry `human_interventions_observed=false` and `review_corrections_observed=false` in metadata. Exclude those fields from intervention/correction analysis. Do not treat their zero placeholders as measured zero.
+
+### Portfolio evidence scope
+
+[Research evidence scope](../portfolio/research-evidence-scope.json) records explicit portfolio exclusions. `dasomel/cka-lab` is excluded from evidence collection, backfill, and completeness audits at the owner request. Keep its existing historical artifacts intact; exclusion does not remove the project from the engineering portfolio. Collection and audit operators must consult this scope before choosing repositories.
