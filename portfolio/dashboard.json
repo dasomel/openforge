@@ -7,7 +7,7 @@
     "portfolio/maintenance.json",
     "portfolio/agent-audit.json"
   ],
-  "updated_at": "2026-11-01",
+  "updated_at": "2026-11-04",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -228,22 +228,15 @@
         "remediation"
       ],
       "status": {
-        "revision": "ed1d870",
-        "updated_at": "2026-09-08",
+        "revision": "44931433ea92ed9a92ea4a01d81d51d131d4a76a",
+        "updated_at": "2026-11-04",
+        "milestone": null,
+        "progress_percent": null,
+        "capabilities": {},
         "evidence": {
-          "commit": "ed1d8709823547c8c4ee1efb1843701dffc635f7"
-        },
-        "compliance_audit": {
-          "score_percent": 95.8,
-          "score_earned": 69,
-          "score_possible": 72,
-          "gap_count": 2,
-          "gaps": [
-            "DOC-004",
-            "I18N-001"
-          ],
-          "audit_timestamp": "2026-09-08T11:26:30.988917+00:00",
-          "audit_command": "python3 templates/scripts/audit-portfolio.py --config <workspace>/portfolio-kubemetal-only.yml (workspaceRoot=/Users/m/Documents/IdeaProjects/20.dasomel, path=kubemetal, archetype=Desktop Operator from templates/portfolio.example.yml)"
+          "ci": "pass",
+          "commit": "44931433ea92ed9a92ea4a01d81d51d131d4a76a",
+          "workflow": "https://github.com/dasomel/kubemetal/actions/runs/41843998452"
         }
       },
       "impact_score": 9,
