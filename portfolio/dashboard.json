@@ -943,7 +943,7 @@
     "repositories": [
       {
         "repository": "dasomel/narwhal",
-        "revision": "31f8a5ba17e62620746f8cf112b67ebfb5942e20",
+        "revision": "1c45aaafc76503d2e99cebb6773df81779ccf479",
         "false_green_findings": [],
         "deterministic_controls": {
           "formatting": true,
@@ -976,7 +976,7 @@
       },
       {
         "repository": "dasomel/beluga",
-        "revision": "f93d6fb3e9396200394f41840e1ef155518b241b",
+        "revision": "2256da106fe6c00508f89acdac28678fd57c04a9",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1011,7 +1011,7 @@
       },
       {
         "repository": "dasomel/kubemetal",
-        "revision": "8362307612dd9f4e9408116afb3327b496b85dfd",
+        "revision": "44931433ea92ed9a92ea4a01d81d51d131d4a76a",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1046,7 +1046,7 @@
       },
       {
         "repository": "dasomel/clusterdeck",
-        "revision": "ec3f193d037e97e5bd61864b82c16805fea61bf0",
+        "revision": "874d193c708fd309516c379d00de8d9633c535a9",
         "false_green_findings": [
           "agent contract changes have no repository-local CI gate (no-gate-workflow)"
         ],
@@ -1186,14 +1186,14 @@
       },
       {
         "repository": "dasomel/kube-ready-box",
-        "revision": "961ac32cac3f35079633fda04af4dff2cd3d54a7",
+        "revision": "a4098a9e11a54d799793da04423de1a601f3494a",
         "false_green_findings": [],
         "deterministic_controls": {
           "formatting": true,
           "lint": true,
           "tests": true,
           "static-analysis": false,
-          "security-policy": false,
+          "security-policy": true,
           "generated-files": true
         },
         "agent_skills": {
