@@ -90,7 +90,7 @@ jobs:
         with:
           persist-credentials: false
       - name: Resolve one scoped issue
-        uses: anthropics/claude-code-action@6fed3ca145920b639991cb756090506e1bcaf515 # v1 resolved 2026-10-08
+        uses: anthropics/claude-code-action@d70510b174a1244958df0b03166a54912811f3e6 # v1 resolved 2026-10-08
         with:
           github_token: ${{ github.token }}
           anthropic_federation_rule_id: ${{ vars.ANTHROPIC_FEDERATION_RULE_ID }}
