@@ -22,7 +22,7 @@
 | [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7`](https://github.com/dasomel/kube-ready-box/commit/2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7) | ci: pass |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
-| [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
+| [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | [`0bfe765102f309d43bb22cded35b7d46ad368677`](https://github.com/dasomel/ldapium/commit/0bfe765102f309d43bb22cded35b7d46ad368677) | ci: pass |
 | [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | — | — |
 | [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe | — | — |
 | [Siqoq](https://github.com/dasomel/siqoq) | `experiment` | **active** | — | physical-ai, edge-ai, simulation, ai-agent | — | — |
