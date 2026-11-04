@@ -81,14 +81,14 @@
 
 | Repository | Revision | False-green findings | Canonical skills | Evidence-backed verified+stable skills | Skill audit errors |
 |---|---|---:|---:|---:|---:|
-| dasomel/narwhal | `31f8a5b` | 0 | 4 | 3 | 0 |
-| dasomel/beluga | `f93d6fb` | 1 | 2 | 2 | 0 |
-| dasomel/kubemetal | `8362307` | 1 | 1 | 1 | 0 |
-| dasomel/clusterdeck | `ec3f193` | 1 | 1 | 1 | 0 |
+| dasomel/narwhal | `1c45aaa` | 0 | 4 | 3 | 0 |
+| dasomel/beluga | `2256da1` | 1 | 2 | 2 | 0 |
+| dasomel/kubemetal | `4493143` | 1 | 1 | 1 | 0 |
+| dasomel/clusterdeck | `874d193` | 1 | 1 | 1 | 0 |
 | dasomel/ldapium | `0bfe765` | 1 | 1 | 1 | 0 |
 | dasomel/nfs-quota-agent | `bfc4ab0` | 1 | 1 | 1 | 0 |
 | dasomel/egovframe-launcher | `26ad1fb` | 1 | 1 | 1 | 0 |
-| dasomel/kube-ready-box | `961ac32` | 0 | 9 | 1 | 0 |
+| dasomel/kube-ready-box | `a4098a9` | 0 | 9 | 1 | 0 |
 | dasomel/siqoq | `fe1804b` | 1 | 1 | 1 | 0 |
 
 ## Security readiness
