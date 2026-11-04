@@ -267,17 +267,31 @@ class RealOutputTests(unittest.TestCase):
             parsed = adapter.parse_scorecard(raw, f"dasomel/{name}")
             self.assertEqual(parsed["version"], "v5.6.0")
             updated, _ = adapter.apply_scorecard(self.reset_scorecard(name), parsed, f"portfolio/security-readiness/scorecard/{name}.json")
-            self.assertEqual(updated, json.loads((EVIDENCE / f"{name}.json").read_text(encoding="utf-8")), name)
+            expected = json.loads((EVIDENCE / f"{name}.json").read_text(encoding="utf-8"))
+            # D1: rescan is hand-written, not adapter output. Cost: validated separately;
+            # escape hatch: compare it here if the adapter starts computing historical deltas.
+            signal(expected, "scorecard").pop("rescan", None)
+            self.assertEqual(updated, expected, name)
             self.assertEqual(signal(updated, "scorecard")["status"], "partial")
 
     def test_real_inconclusive_checks_are_not_pass(self):
-        raw = json.loads((EVIDENCE / "scorecard/narwhal.json").read_text(encoding="utf-8"))
-        record = self.reset_scorecard("narwhal")
-        record["signals"] = [s for s in record["signals"] if s["id"] != "release-signing"]
-        record["summary"].update({"total": 5, "fail": 2})
-        updated, _ = adapter.apply_scorecard(record, adapter.parse_scorecard(raw, "dasomel/narwhal"), "x.json")
-        self.assertEqual(signal(updated, "release-signing")["status"], "not-run")  # Signed-Releases is -1 upstream
-        self.assertIn("Packaging", signal(updated, "scorecard")["note"])
+        inconclusive_count = 0
+        for name in ("narwhal", "kubemetal", "clusterdeck"):
+            with self.subTest(repository=name):
+                raw = json.loads((EVIDENCE / f"scorecard/{name}.json").read_text(encoding="utf-8"))
+                record = self.reset_scorecard(name)
+                record["signals"] = [s for s in record["signals"] if s["id"] != "release-signing"]
+                updated, _ = adapter.apply_scorecard(record, adapter.parse_scorecard(raw, f"dasomel/{name}"), "x.json")
+                overall = signal(updated, "scorecard")
+                for check in raw["checks"]:
+                    if check["score"] == -1:
+                        inconclusive_count += 1
+                        self.assertIn(check["name"], overall["note"])
+                        self.assertNotEqual(overall["status"], "pass")
+                    if check["name"] == "Signed-Releases":
+                        expected = "not-run" if check["score"] == -1 else "fail" if check["score"] == 0 else "pass" if check["score"] == 10 else "partial"
+                        self.assertEqual(signal(updated, "release-signing")["status"], expected)
+        self.assertGreater(inconclusive_count, 0)
 
     def test_real_output_rejected_for_the_wrong_repository(self):
         raw = json.loads((EVIDENCE / "scorecard/narwhal.json").read_text(encoding="utf-8"))
