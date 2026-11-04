@@ -30,6 +30,8 @@ jobs:
         with:
           ref: main
           fetch-depth: 0
+          # D1: no persisted credential; the PR step pushes with its own token (see below).
+          persist-credentials: false
       - name: Clone priority repositories
         shell: bash
         run: |
@@ -59,7 +61,11 @@ jobs:
       - name: Open reviewable refresh PR when state changed
         shell: bash
         env:
-          GH_TOKEN: ${{ github.token }}
+          # D1: PRs opened with github.token do not trigger CI, so the refresh PR sat with no
+          # checks (#171). OPENFORGE_STATUS_TOKEN is the same narrowly scoped push+PR token the
+          # status publisher uses; it is exposed only to this step. Without it, fall back to
+          # github.token and expect to close/reopen the PR to start CI.
+          GH_TOKEN: ${{ secrets.OPENFORGE_STATUS_TOKEN || github.token }}
         run: |
           set -euo pipefail
           if git diff --quiet -- portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md portfolio/dashboard.json docs/portfolio-dashboard.md; then
@@ -73,7 +79,7 @@ jobs:
           git switch -c "$branch"
           git add portfolio/agent-audit.json docs/agent-audit-matrix.md docs/agent-audit-matrix-ko.md portfolio/dashboard.json docs/portfolio-dashboard.md
           git commit -m 'chore(agent): refresh portfolio audit matrix'
-          git push origin "$branch"
+          git push "https://x-access-token:${GH_TOKEN}@github.com/${GITHUB_REPOSITORY}.git" "$branch"
 
           body='Automated revision-bound refresh of the OpenForge Agent Engineering portfolio audit, including canonical Agent Skills maturity/evidence status. Review false-green findings and judgment fields before merging.'
           if gh pr create \
