@@ -1,0 +1,14 @@
+[
+  {
+    "file": "2026-10.jsonl",
+    "line": 3,
+    "sha256": "652c7c4112cd2e41a9e784c6e4e56a227e4eb8e77c07ba35ee6b014af2712623",
+    "reason": "recovered local-only record (from unpushed commit 5e2e82fe0); revision 8889ec3f5 is a branch commit not reachable from main (squash-merged), so it cannot be resolved in CI. Preserved verbatim."
+  },
+  {
+    "file": "2026-10.jsonl",
+    "line": 4,
+    "sha256": "4ac04a0273295a196d7c5ce847de39c162f54eed4363f86f37c203a2613311c3",
+    "reason": "recovered local-only record (from unpushed commit 5e2e82fe0); revision 8889ec3f5 is a branch commit not reachable from main (squash-merged), so it cannot be resolved in CI. Preserved verbatim."
+  }
+]

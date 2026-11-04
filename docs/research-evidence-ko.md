@@ -44,3 +44,20 @@ make research-check
 기존의 부적합 줄은 수정하거나 삭제하지 않습니다. `research/evidence/known-invalid.json`에 각 줄의 `file`, `line`, `sha256`, `reason`을 배열 원소로 기록합니다. 해시는 줄바꿈을 포함한 원본 바이트로 계산합니다. 검증기는 해시가 일치하는 줄만 건너뛰고, 줄의 변경·삭제 또는 새 부적합 줄을 실패로 처리합니다. 새 기록에는 예외를 적용하지 않습니다. 연결된 정정 기록이 생긴 뒤에만 예외 항목을 제거합니다.
 
 연구 분석에서는 가설, 비교 집단, 제외 기준을 별도로 정하고, 증거의 출처·버전·실패·한계를 함께 보존합니다.
+
+### GitHub Actions 과거 기록 백필
+
+`templates/scripts/backfill-actions-evidence.py`를 공통 검증기 옆에 복사하거나 이 저장소에서 실행합니다. Python 3, `jsonschema`, 인증된 `gh` CLI, 전체 `origin/main` 이력이 필요합니다. 필터 없는 페이지 조회로 완료된 workflow 실행을 읽고 GitHub가 반환한 최신 attempt를 사용하며, `origin/main`에서 도달 가능한 revision만 포함합니다. 삭제·만료된 실행이나 API가 반환하지 않는 이전 attempt는 복구하지 못합니다. 제외 건수도 데이터셋에 포함해야 합니다. main 이력만 고른 표본을 전체 개발이나 PR 실패의 대표 표본으로 해석하면 안 됩니다.
+
+```sh
+python3 templates/scripts/backfill-actions-evidence.py --repo-root /path/to/project --output-dir /path/to/staging --dry-run
+python3 templates/scripts/backfill-actions-evidence.py --repo-root /path/to/project --output-dir /path/to/staging
+```
+
+공개 전 staging 결과와 기존 증적을 합쳐 검토·검증합니다. staging 또는 checkout에 있는 `(gh_run_id, gh_run_attempt)`는 재실행 시 건너뜁니다. 기존 바이트를 보존하며 대상 파일 끝에 개행이 없으면 쓰기를 중단합니다. 별도 staging 디렉터리를 쓰면 과거 파일을 수정하지 않습니다. 출력 경로를 생략하면 checkout의 증적 디렉터리에 기록합니다. `--since YYYY-MM-DD`로 기간을 제한하며, 생략하면 조회 가능한 전체 이력을 사용합니다.
+
+`duration_ms`는 API의 `updated_at - run_started_at` 간격이며 `metadata.duration_semantics=workflow_update_interval`로 표시합니다. 실행 후 갱신과 재실행의 영향을 받을 수 있어 job 실행 시간·CPU 시간·정확한 workflow 완료 시간으로 해석하지 않습니다. event 분류는 이름/경로로 추론하며 일치하지 않으면 `test`로 분류합니다. `attempt`와 `ci_retries`는 `run_attempt`에서 파생된 workflow 재실행 횟수이며 개별 job 재시도 횟수가 아닙니다. 사람 개입·리뷰 수정은 관측되지 않았습니다. v1이 정수를 요구해 0을 채우지만 metadata에 `human_interventions_observed=false`, `review_corrections_observed=false`를 명시합니다. 개입·수정 분석에서는 이 필드를 제외하고, 0을 실측 0으로 간주하지 않습니다.
+
+### 포트폴리오 증적 관리 범위
+
+[증적 관리 범위](../portfolio/research-evidence-scope.json)에 명시적 제외 대상을 기록합니다. `dasomel/cka-lab`은 소유자 요청에 따라 증적 수집·백필·완전성 감사에서 제외합니다. 기존 과거 산출물은 보존하며, 증적 관리 제외가 엔지니어링 포트폴리오에서의 삭제를 뜻하지는 않습니다. 수집·감사 담당자는 저장소를 선택하기 전에 이 범위를 확인합니다.
