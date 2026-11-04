@@ -1351,7 +1351,7 @@
       },
       {
         "repository": "dasomel/narwhal",
-        "revision": "e91fc6b0ba9020acc7733f9e0966032b62d09952",
+        "revision": "626ed66fd365a2e7104e94cbfe4bbaecad262212",
         "observed_at": "2026-11-04T22:15:41Z",
         "overall": "fail",
         "signal_counts": {

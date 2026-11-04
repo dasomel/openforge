@@ -1,1 +1,386 @@
-{"date":"2026-11-05T07:15:41+09:00","repo":{"name":"github.com/dasomel/narwhal","commit":"e91fc6b0ba9020acc7733f9e0966032b62d09952"},"scorecard":{"version":"v5.6.0","commit":"61e84743356275f6ffca23b1b2f2cb945e19eb96"},"score":5.0,"checks":[{"details":null,"score":10,"reason":"no binaries found in the repo","name":"Binary-Artifacts","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#binary-artifacts","short":"Determines if the project has generated executable (binary) artifacts in the source repository."}},{"details":["Info: 'allow deletion' disabled on branch 'main'","Info: 'force pushes' disabled on branch 'main'","Warn: 'branch protection settings apply to administrators' is disabled on branch 'main'","Warn: 'stale review dismissal' is disabled on branch 'main'","Warn: codeowners review is not required on branch 'main'","Warn: 'last push approval' is disabled on branch 'main'","Warn: 'up-to-date branches' is disabled on branch 'main'","Info: status check found to merge onto on branch 'main'","Warn: PRs are not required to make changes on branch 'main'; or we don't have data to detect it.If you think it might be the latter, make sure to run Scorecard with a PAT or use Repo Rules (that are always public) instead of Branch Protection settings"],"score":3,"reason":"branch protection is not maximal on development and all release branches","name":"Branch-Protection","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#branch-protection","short":"Determines if the default and release branches are protected with GitHub's branch protection settings."}},{"details":null,"score":10,"reason":"30 out of 30 merged PRs checked by a CI test -- score normalized to 10","name":"CI-Tests","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#ci-tests","short":"Determines if the project runs tests before pull requests are merged."}},{"details":null,"score":0,"reason":"no effort to earn an OpenSSF best practices badge detected","name":"CII-Best-Practices","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#cii-best-practices","short":"Determines if the project has an OpenSSF (formerly CII) Best Practices Badge."}},{"details":null,"score":0,"reason":"Found 0/25 approved changesets -- score normalized to 0","name":"Code-Review","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#code-review","short":"Determines if the project requires human code review before pull requests (aka merge requests) are merged."}},{"details":null,"score":0,"reason":"project has 0 contributing companies or organizations -- score normalized to 0","name":"Contributors","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#contributors","short":"Determines if the project has a set of contributors from multiple organizations (e.g., companies)."}},{"details":null,"score":10,"reason":"no dangerous workflow patterns detected","name":"Dangerous-Workflow","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#dangerous-workflow","short":"Determines if the project's GitHub Action workflows avoid dangerous patterns."}},{"details":["Info: detected update tool: Dependabot: .github/dependabot.yml:1"],"score":10,"reason":"update tool detected","name":"Dependency-Update-Tool","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#dependency-update-tool","short":"Determines if the project uses a dependency update tool."}},{"details":["Warn: no fuzzer integrations found"],"score":0,"reason":"project is not fuzzed","name":"Fuzzing","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#fuzzing","short":"Determines if the project uses fuzzing."}},{"details":["Info: project has a license file: LICENSE:0","Info: FSF or OSI recognized license: Apache License 2.0: LICENSE:0"],"score":10,"reason":"license file detected","name":"License","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#license","short":"Determines if the project has defined a license."}},{"details":null,"score":10,"reason":"30 commit(s) and 28 issue activity found in the last 90 days -- score normalized to 10","name":"Maintained","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#maintained","short":"Determines if the project is \"actively maintained\"."}},{"details":["Info: Project packages its releases by way of GitHub Actions.: .github/workflows/portal-docker-publish.yml:70"],"score":10,"reason":"packaging workflow detected","name":"Packaging","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#packaging","short":"Determines if the project is published as a package that others can easily download, install, easily update, and uninstall."}},{"details":["Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:422","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:427","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:460","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:492","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:496","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:615","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:633","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:673","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:684","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:731","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:830","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:838","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:844","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:861","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:869","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:875","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:886","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:895","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:906","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:915","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:926","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:936","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:956","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:966","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:974","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:983","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:990","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1000","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1007","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1017","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1027","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1036","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1045","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1054","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1155","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1174","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1183","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1190","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1194","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1239","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1245","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1534","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1884","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1894","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1901","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1916","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1923","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1954","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1990","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2138","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2177","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2273","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2276","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2331","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2340","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2345","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2353","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2363","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2406","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2415","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2424","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2652","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2661","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2670","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2691","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2701","Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2718","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2900","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2984","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3140","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3148","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3167","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3191","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3222","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3247","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3252","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3255","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3261","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3274","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3283","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3293","Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3300","Warn: containerImage not pinned by hash: portal/Dockerfile.dev:10: pin your Docker image by updating node:22-slim to node:22-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da","Warn: containerImage not pinned by hash: portal/deploy/tuning-job.Dockerfile:19: pin your Docker image by updating alpine:3.21 to alpine:3.21@sha256:ee16d92f96db08d9d2d07da48555a27f3a69d8f0759021dbc601195ed0d2b5bd","Warn: downloadThenRun not pinned by hash: scripts/cluster/08-5-registry.sh:210","Warn: downloadThenRun not pinned by hash: scripts/cluster/13-2-narwhal-portal-bindings.sh:512","Warn: downloadThenRun not pinned by hash: scripts/cluster/13-2-narwhal-portal-bindings.sh:531","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:80","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:94","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:97","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:156","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:214","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:231","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:263","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:296","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:335","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:344","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:629","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:777","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:825","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:831","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:884","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:905","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:907","Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:943","Warn: npmCommand not pinned by hash: .github/workflows/lint.yml:211","Warn: npmCommand not pinned by hash: .github/workflows/markdown-changed.yml:39","Warn: pipCommand not pinned by hash: .github/workflows/portal-research-evidence.yml:60","Warn: pipCommand not pinned by hash: .github/workflows/research-evidence.yml:32","Info:  43 out of  43 GitHub-owned GitHubAction dependencies pinned","Info:  30 out of  30 third-party GitHubAction dependencies pinned","Info:   0 out of  21 downloadThenRun dependencies pinned","Info:   0 out of   2 npmCommand dependencies pinned","Info:   0 out of   2 pipCommand dependencies pinned","Info:   5 out of   7 containerImage dependencies pinned"],"score":5,"reason":"dependency not pinned by hash detected -- score normalized to 5","name":"Pinned-Dependencies","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#pinned-dependencies","short":"Determines if the project has declared and pinned the dependencies of its build process."}},{"details":["Warn: 0 commits out of 30 are checked with a SAST tool"],"score":0,"reason":"SAST tool is not run on all commits -- score normalized to 0","name":"SAST","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#sast","short":"Determines if the project uses static code analysis."}},{"details":["Info: security policy file detected: SECURITY.md:1","Info: Found linked content: SECURITY.md:1","Info: Found disclosure, vulnerability, and/or timelines in security policy: SECURITY.md:1","Info: Found text in security policy: SECURITY.md:1"],"score":10,"reason":"security policy file detected","name":"Security-Policy","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#security-policy","short":"Determines if the project has published a security policy."}},{"details":["Warn: release artifact portal/v1.1.6 not signed: https://api.github.com/repos/dasomel/narwhal/releases/434510715","Warn: release artifact portal/v1.1.5 not signed: https://api.github.com/repos/dasomel/narwhal/releases/429573484","Warn: release artifact portal/v1.1.4 not signed: https://api.github.com/repos/dasomel/narwhal/releases/425660916","Warn: release artifact portal/v1.1.3 not signed: https://api.github.com/repos/dasomel/narwhal/releases/424896218","Warn: release artifact portal/v1.1.2 not signed: https://api.github.com/repos/dasomel/narwhal/releases/424435698","Warn: release artifact portal/v1.1.6 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/434510715","Warn: release artifact portal/v1.1.5 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/429573484","Warn: release artifact portal/v1.1.4 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/425660916","Warn: release artifact portal/v1.1.3 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/424896218","Warn: release artifact portal/v1.1.2 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/424435698"],"score":0,"reason":"Project has not signed or included provenance with any releases.","name":"Signed-Releases","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#signed-releases","short":"Determines if the project cryptographically signs release artifacts."}},{"details":["Info: jobLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:24","Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:75","Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:210","Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:322","Info: topLevel 'contents' permission set to 'read': .github/workflows/agent-behavior.yml:13","Warn: topLevel 'contents' permission set to 'write': .github/workflows/cleanup-merged-branch.yml:13","Info: topLevel 'pull-requests' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:14","Info: topLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:17","Info: topLevel 'contents' permission set to 'read': .github/workflows/lint.yml:16","Info: topLevel 'contents' permission set to 'read': .github/workflows/markdown-changed.yml:24","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-agent-contract.yml:32","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-build-check.yml:53","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-design-lint.yml:35","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:67","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-harness-rules.yml:40","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-license-and-sbom.yml:64","Warn: topLevel 'contents' permission set to 'write': .github/workflows/portal-release.yml:70","Info: topLevel 'packages' permission set to 'read': .github/workflows/portal-release.yml:71","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-research-evidence.yml:27","Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-test.yml:41","Info: topLevel 'contents' permission set to 'read': .github/workflows/publish-openforge-status.yml:29","Warn: topLevel 'contents' permission set to 'write': .github/workflows/release.yml:12","Info: topLevel 'contents' permission set to 'read': .github/workflows/research-evidence.yml:16","Info: topLevel 'contents' permission set to 'read': .github/workflows/version-check.yml:19","Info: no jobLevel write permissions found"],"score":0,"reason":"detected GitHub workflow tokens with excessive permissions","name":"Token-Permissions","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#token-permissions","short":"Determines if the project's workflows follow the principle of least privilege."}},{"details":["Warn: Project is vulnerable to: https://osv.dev/GHSA-gcqx-w48m-w2h4","Warn: Project is vulnerable to: https://osv.dev/GHSA-3g3m-2fjr-6pw4","Warn: Project is vulnerable to: https://osv.dev/GHSA-g3hv-75wg-m249","Warn: Project is vulnerable to: https://osv.dev/GHSA-28wg-ghj8-5hjv","Warn: Project is vulnerable to: https://osv.dev/GHSA-2v37-7h3g-55p8","Warn: Project is vulnerable to: https://osv.dev/GHSA-xwg4-73v4-xw9w","Warn: Project is vulnerable to: https://osv.dev/GHSA-fxqj-rqcc-2cmp","Warn: Project is vulnerable to: https://osv.dev/GHSA-r28c-9q8g-f849","Warn: Project is vulnerable to: https://osv.dev/GHSA-9wx9-5pv9-3349","Warn: Project is vulnerable to: https://osv.dev/GHSA-f86p-h4j2-7qgj","Warn: Project is vulnerable to: https://osv.dev/GHSA-68fv-2mgg-jv7q"],"score":0,"reason":"11 existing vulnerabilities detected","name":"Vulnerabilities","documentation":{"url":"https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#vulnerabilities","short":"Determines if the project has open, known unfixed vulnerabilities."}}],"metadata":null}
+{
+    "date": "2026-11-05T07:15:41+09:00",
+    "repo": {
+        "name": "github.com/dasomel/narwhal",
+        "commit": "e91fc6b0ba9020acc7733f9e0966032b62d09952"
+    },
+    "scorecard": {
+        "version": "v5.6.0",
+        "commit": "61e84743356275f6ffca23b1b2f2cb945e19eb96"
+    },
+    "score": 5.0,
+    "checks": [
+        {
+            "details": null,
+            "score": 10,
+            "reason": "no binaries found in the repo",
+            "name": "Binary-Artifacts",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#binary-artifacts",
+                "short": "Determines if the project has generated executable (binary) artifacts in the source repository."
+            }
+        },
+        {
+            "details": [
+                "Info: 'allow deletion' disabled on branch 'main'",
+                "Info: 'force pushes' disabled on branch 'main'",
+                "Warn: 'branch protection settings apply to administrators' is disabled on branch 'main'",
+                "Warn: 'stale review dismissal' is disabled on branch 'main'",
+                "Warn: codeowners review is not required on branch 'main'",
+                "Warn: 'last push approval' is disabled on branch 'main'",
+                "Warn: 'up-to-date branches' is disabled on branch 'main'",
+                "Info: status check found to merge onto on branch 'main'",
+                "Warn: PRs are not required to make changes on branch 'main'; or we don't have data to detect it.If you think it might be the latter, make sure to run Scorecard with a PAT or use Repo Rules (that are always public) instead of Branch Protection settings"
+            ],
+            "score": 3,
+            "reason": "branch protection is not maximal on development and all release branches",
+            "name": "Branch-Protection",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#branch-protection",
+                "short": "Determines if the default and release branches are protected with GitHub's branch protection settings."
+            }
+        },
+        {
+            "details": null,
+            "score": 10,
+            "reason": "30 out of 30 merged PRs checked by a CI test -- score normalized to 10",
+            "name": "CI-Tests",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#ci-tests",
+                "short": "Determines if the project runs tests before pull requests are merged."
+            }
+        },
+        {
+            "details": null,
+            "score": 0,
+            "reason": "no effort to earn an OpenSSF best practices badge detected",
+            "name": "CII-Best-Practices",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#cii-best-practices",
+                "short": "Determines if the project has an OpenSSF (formerly CII) Best Practices Badge."
+            }
+        },
+        {
+            "details": null,
+            "score": 0,
+            "reason": "Found 0/25 approved changesets -- score normalized to 0",
+            "name": "Code-Review",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#code-review",
+                "short": "Determines if the project requires human code review before pull requests (aka merge requests) are merged."
+            }
+        },
+        {
+            "details": null,
+            "score": 0,
+            "reason": "project has 0 contributing companies or organizations -- score normalized to 0",
+            "name": "Contributors",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#contributors",
+                "short": "Determines if the project has a set of contributors from multiple organizations (e.g., companies)."
+            }
+        },
+        {
+            "details": null,
+            "score": 10,
+            "reason": "no dangerous workflow patterns detected",
+            "name": "Dangerous-Workflow",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#dangerous-workflow",
+                "short": "Determines if the project's GitHub Action workflows avoid dangerous patterns."
+            }
+        },
+        {
+            "details": [
+                "Info: detected update tool: Dependabot: .github/dependabot.yml:1"
+            ],
+            "score": 10,
+            "reason": "update tool detected",
+            "name": "Dependency-Update-Tool",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#dependency-update-tool",
+                "short": "Determines if the project uses a dependency update tool."
+            }
+        },
+        {
+            "details": [
+                "Warn: no fuzzer integrations found"
+            ],
+            "score": 0,
+            "reason": "project is not fuzzed",
+            "name": "Fuzzing",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#fuzzing",
+                "short": "Determines if the project uses fuzzing."
+            }
+        },
+        {
+            "details": [
+                "Info: project has a license file: LICENSE:0",
+                "Info: FSF or OSI recognized license: Apache License 2.0: LICENSE:0"
+            ],
+            "score": 10,
+            "reason": "license file detected",
+            "name": "License",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#license",
+                "short": "Determines if the project has defined a license."
+            }
+        },
+        {
+            "details": null,
+            "score": 10,
+            "reason": "30 commit(s) and 28 issue activity found in the last 90 days -- score normalized to 10",
+            "name": "Maintained",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#maintained",
+                "short": "Determines if the project is \"actively maintained\"."
+            }
+        },
+        {
+            "details": [
+                "Info: Project packages its releases by way of GitHub Actions.: .github/workflows/portal-docker-publish.yml:70"
+            ],
+            "score": 10,
+            "reason": "packaging workflow detected",
+            "name": "Packaging",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#packaging",
+                "short": "Determines if the project is published as a package that others can easily download, install, easily update, and uninstall."
+            }
+        },
+        {
+            "details": [
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:422",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:427",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:460",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:492",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:496",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:615",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:633",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:673",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:684",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:731",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:830",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:838",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:844",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:861",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:869",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:875",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:886",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:895",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:906",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:915",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:926",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:936",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:956",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:966",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:974",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:983",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:990",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1000",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1007",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1017",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1027",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1036",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1045",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1054",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1155",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1174",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1183",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1190",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1194",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1239",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1245",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1534",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1884",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1894",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1901",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1916",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:1923",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1954",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:1990",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2138",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2177",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2273",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2276",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2331",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2340",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2345",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2353",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2363",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2406",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2415",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2424",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2652",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2661",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2670",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2691",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2701",
+                "Info: Possibly incomplete results: error parsing shell code: reached EOF without closing quote `'`: scripts/test/regression-check-kakao.sh:2718",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2900",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:2984",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3140",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3148",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3167",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3191",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3222",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3247",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3252",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3255",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3261",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3274",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3283",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3293",
+                "Info: Possibly incomplete results: error parsing shell code: a command can only contain words and redirects; encountered `(`: scripts/test/regression-check-kakao.sh:3300",
+                "Warn: containerImage not pinned by hash: portal/Dockerfile.dev:10: pin your Docker image by updating node:22-slim to node:22-slim@sha256:4b150b48b4116e2a22f2c39cc27025fbf4f153e2078fd3b14d159fdb5c7279da",
+                "Warn: containerImage not pinned by hash: portal/deploy/tuning-job.Dockerfile:19: pin your Docker image by updating alpine:3.21 to alpine:3.21@sha256:ee16d92f96db08d9d2d07da48555a27f3a69d8f0759021dbc601195ed0d2b5bd",
+                "Warn: downloadThenRun not pinned by hash: scripts/cluster/08-5-registry.sh:210",
+                "Warn: downloadThenRun not pinned by hash: scripts/cluster/13-2-narwhal-portal-bindings.sh:512",
+                "Warn: downloadThenRun not pinned by hash: scripts/cluster/13-2-narwhal-portal-bindings.sh:531",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:80",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:94",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:97",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:156",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:214",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:231",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:263",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:296",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:335",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:344",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:629",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:777",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:825",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:831",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:884",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:905",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:907",
+                "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:943",
+                "Warn: npmCommand not pinned by hash: .github/workflows/lint.yml:211",
+                "Warn: npmCommand not pinned by hash: .github/workflows/markdown-changed.yml:39",
+                "Warn: pipCommand not pinned by hash: .github/workflows/portal-research-evidence.yml:60",
+                "Warn: pipCommand not pinned by hash: .github/workflows/research-evidence.yml:32",
+                "Info:  43 out of  43 GitHub-owned GitHubAction dependencies pinned",
+                "Info:  30 out of  30 third-party GitHubAction dependencies pinned",
+                "Info:   0 out of  21 downloadThenRun dependencies pinned",
+                "Info:   0 out of   2 npmCommand dependencies pinned",
+                "Info:   0 out of   2 pipCommand dependencies pinned",
+                "Info:   5 out of   7 containerImage dependencies pinned"
+            ],
+            "score": 5,
+            "reason": "dependency not pinned by hash detected -- score normalized to 5",
+            "name": "Pinned-Dependencies",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#pinned-dependencies",
+                "short": "Determines if the project has declared and pinned the dependencies of its build process."
+            }
+        },
+        {
+            "details": [
+                "Warn: 0 commits out of 30 are checked with a SAST tool"
+            ],
+            "score": 0,
+            "reason": "SAST tool is not run on all commits -- score normalized to 0",
+            "name": "SAST",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#sast",
+                "short": "Determines if the project uses static code analysis."
+            }
+        },
+        {
+            "details": [
+                "Info: security policy file detected: SECURITY.md:1",
+                "Info: Found linked content: SECURITY.md:1",
+                "Info: Found disclosure, vulnerability, and/or timelines in security policy: SECURITY.md:1",
+                "Info: Found text in security policy: SECURITY.md:1"
+            ],
+            "score": 10,
+            "reason": "security policy file detected",
+            "name": "Security-Policy",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#security-policy",
+                "short": "Determines if the project has published a security policy."
+            }
+        },
+        {
+            "details": [
+                "Warn: release artifact portal/v1.1.6 not signed: https://api.github.com/repos/dasomel/narwhal/releases/434510715",
+                "Warn: release artifact portal/v1.1.5 not signed: https://api.github.com/repos/dasomel/narwhal/releases/429573484",
+                "Warn: release artifact portal/v1.1.4 not signed: https://api.github.com/repos/dasomel/narwhal/releases/425660916",
+                "Warn: release artifact portal/v1.1.3 not signed: https://api.github.com/repos/dasomel/narwhal/releases/424896218",
+                "Warn: release artifact portal/v1.1.2 not signed: https://api.github.com/repos/dasomel/narwhal/releases/424435698",
+                "Warn: release artifact portal/v1.1.6 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/434510715",
+                "Warn: release artifact portal/v1.1.5 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/429573484",
+                "Warn: release artifact portal/v1.1.4 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/425660916",
+                "Warn: release artifact portal/v1.1.3 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/424896218",
+                "Warn: release artifact portal/v1.1.2 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/424435698"
+            ],
+            "score": 0,
+            "reason": "Project has not signed or included provenance with any releases.",
+            "name": "Signed-Releases",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#signed-releases",
+                "short": "Determines if the project cryptographically signs release artifacts."
+            }
+        },
+        {
+            "details": [
+                "Info: jobLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:24",
+                "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:75",
+                "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:210",
+                "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:322",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/agent-behavior.yml:13",
+                "Warn: topLevel 'contents' permission set to 'write': .github/workflows/cleanup-merged-branch.yml:13",
+                "Info: topLevel 'pull-requests' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:14",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:17",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/lint.yml:16",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/markdown-changed.yml:24",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-agent-contract.yml:32",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-build-check.yml:53",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-design-lint.yml:35",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:67",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-harness-rules.yml:40",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-license-and-sbom.yml:64",
+                "Warn: topLevel 'contents' permission set to 'write': .github/workflows/portal-release.yml:70",
+                "Info: topLevel 'packages' permission set to 'read': .github/workflows/portal-release.yml:71",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-research-evidence.yml:27",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/portal-test.yml:41",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/publish-openforge-status.yml:29",
+                "Warn: topLevel 'contents' permission set to 'write': .github/workflows/release.yml:12",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/research-evidence.yml:16",
+                "Info: topLevel 'contents' permission set to 'read': .github/workflows/version-check.yml:19",
+                "Info: no jobLevel write permissions found"
+            ],
+            "score": 0,
+            "reason": "detected GitHub workflow tokens with excessive permissions",
+            "name": "Token-Permissions",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#token-permissions",
+                "short": "Determines if the project's workflows follow the principle of least privilege."
+            }
+        },
+        {
+            "details": [
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-gcqx-w48m-w2h4",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-3g3m-2fjr-6pw4",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-g3hv-75wg-m249",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-28wg-ghj8-5hjv",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-2v37-7h3g-55p8",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-xwg4-73v4-xw9w",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-fxqj-rqcc-2cmp",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-r28c-9q8g-f849",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-9wx9-5pv9-3349",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-f86p-h4j2-7qgj",
+                "Warn: Project is vulnerable to: https://osv.dev/GHSA-68fv-2mgg-jv7q"
+            ],
+            "score": 0,
+            "reason": "11 existing vulnerabilities detected",
+            "name": "Vulnerabilities",
+            "documentation": {
+                "url": "https://github.com/ossf/scorecard/blob/61e84743356275f6ffca23b1b2f2cb945e19eb96/docs/checks.md#vulnerabilities",
+                "short": "Determines if the project has open, known unfixed vulnerabilities."
+            }
+        }
+    ],
+    "metadata": null
+}
