@@ -19,7 +19,7 @@
 | [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio | — | — |
 | [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | [`00b08708bce934f05fa38e0d85b2f9cb58730b23`](https://github.com/dasomel/narwhal/commit/00b08708bce934f05fa38e0d85b2f9cb58730b23) | ci: pass |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`44931433ea92ed9a92ea4a01d81d51d131d4a76a`](https://github.com/dasomel/kubemetal/commit/44931433ea92ed9a92ea4a01d81d51d131d4a76a) | ci: pass |
-| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`2f78873`](https://github.com/dasomel/beluga/commit/2f7887376cc4e048e04d715b7d429c1991ec4d60) | ci: pass · security: pass · runtime: pass |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`f148f6d2d878a23f207a8e763888856e25975200`](https://github.com/dasomel/beluga/commit/f148f6d2d878a23f207a8e763888856e25975200) | ci: pass · security: pass · runtime: not-run |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7`](https://github.com/dasomel/kube-ready-box/commit/2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7) | ci: pass |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | [`0bfe765102f309d43bb22cded35b7d46ad368677`](https://github.com/dasomel/ldapium/commit/0bfe765102f309d43bb22cded35b7d46ad368677) | ci: pass |
@@ -34,10 +34,10 @@
 
 | Project | Capability | Verification (unit · integration · runtime · security) |
 |---|---|---|
-| Beluga | `compliance-baseline` | unit pass · integration pass · runtime not-applicable · security pass |
-| Beluga | `stream-iceberg` | unit pass · integration pass · runtime pass · security pass |
-| Beluga | `policy-compiler-seam` | unit pass · integration pass · runtime pass · security pass |
-| Beluga | `policy-compiler` | unit pass · integration pass · runtime pass · security pass |
+| Beluga | `compliance-baseline` | unit not-run · integration not-run · runtime not-applicable · security not-run |
+| Beluga | `stream-iceberg` | unit not-run · integration not-run · runtime not-run · security not-run |
+| Beluga | `policy-compiler-seam` | unit not-run · integration not-run · runtime not-run · security not-run |
+| Beluga | `policy-compiler` | unit not-run · integration not-run · runtime not-run · security not-run |
 | kube-ready-box | `license-gate` | unit pass · runtime not-run · security not-run |
 | kube-ready-box | `node-network` | unit pass · runtime not-run · security not-applicable |
 | kube-ready-box | `node-observability` | unit pass · runtime not-run · security not-applicable |
