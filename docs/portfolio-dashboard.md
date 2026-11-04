@@ -23,7 +23,7 @@
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7`](https://github.com/dasomel/kube-ready-box/commit/2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7) | ci: pass |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | — | — |
-| [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | — | — |
+| [ClusterDeck](https://github.com/dasomel/clusterdeck) | `operations-client` | **active** | 82.4% | kubernetes, desktop, operations, ui | [`874d193c708fd309516c379d00de8d9633c535a9`](https://github.com/dasomel/clusterdeck/commit/874d193c708fd309516c379d00de8d9633c535a9) | ci: pass |
 | [eGovFrame Launcher](https://github.com/dasomel/egovframe-launcher) | `developer-tool` | **active** | — | developer-experience, egovframe | — | — |
 | [Siqoq](https://github.com/dasomel/siqoq) | `experiment` | **active** | — | physical-ai, edge-ai, simulation, ai-agent | — | — |
 | [CKA Lab](https://github.com/dasomel/cka-lab) | `lab` | **maintenance** | — | kubernetes, education, lab | — | — |
