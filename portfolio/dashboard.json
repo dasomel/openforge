@@ -7,7 +7,7 @@
     "portfolio/maintenance.json",
     "portfolio/agent-audit.json"
   ],
-  "updated_at": "2026-11-05",
+  "updated_at": "2026-11-08",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -377,8 +377,8 @@
         "evidence"
       ],
       "status": {
-        "revision": "2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7",
-        "updated_at": "2026-11-01",
+        "revision": "17cdd5a8fd7b9014050fd211bcafdaab22171cbd",
+        "updated_at": "2026-11-08",
         "milestone": null,
         "progress_percent": null,
         "capabilities": {
@@ -450,8 +450,8 @@
         },
         "evidence": {
           "ci": "pass",
-          "commit": "2b6e00d01cff18ca25bacfc96265a0b6b0f6dae7",
-          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/41333107551"
+          "commit": "17cdd5a8fd7b9014050fd211bcafdaab22171cbd",
+          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/42478716103"
         }
       },
       "impact_score": 10,
