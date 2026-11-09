@@ -131,6 +131,17 @@ Review and validate staging together with the repository's existing evidence bef
 
 `duration_ms` is the API's `updated_at - run_started_at` interval, identified by `metadata.duration_semantics=workflow_update_interval`. Updates after execution and reruns can affect it; it is not job execution time, CPU time, or a precise workflow completion measurement. Workflow event categories are inferred from names/paths, with unmatched workflows classified as `test`. `attempt` and `ci_retries` derive from `run_attempt`; these count workflow reruns, not individual job retries. Human interventions and review corrections are unavailable: v1 requires integer fields, so zero placeholders carry `human_interventions_observed=false` and `review_corrections_observed=false` in metadata. Exclude those fields from intervention/correction analysis. Do not treat their zero placeholders as measured zero.
 
+### Scheduled backfill
+
+A one-time backfill stops growing the evidence the day it is run. `templates/workflows/research-evidence-backfill.yml` reruns it weekly (Monday 00:17 UTC, plus manual `workflow_dispatch`). Copy the workflow to `.github/workflows/` and `templates/scripts/backfill-actions-evidence.py` byte-identically to `scripts/research/` (next to the validator it imports). The job fetches full history, appends only runs whose `(gh_run_id, gh_run_attempt)` is not yet recorded, skips its own workflow's runs (`--exclude-path`), runs `scripts/research/check-research-evidence.py`, and exits without a commit when nothing changed. Jobs are serialized by a concurrency group.
+
+Delivery is chosen explicitly per repository through `EVIDENCE_DELIVERY` in the workflow `env` (never auto-detected):
+
+- `push`: `main` is unprotected or has no required checks. Only `research/evidence` changes are committed as `github-actions[bot]` and pushed to `main` (one rebase retry on non-fast-forward).
+- `pr`: `main` requires checks. The fixed branch `bot/research-evidence-backfill` is regenerated from `main` and force-pushed on every run (only that bot branch is force-pushed), and a PR is opened if none is open; otherwise the push updates the open PR. This mode needs the repository setting "Allow GitHub Actions to create and approve pull requests" (`gh api -X PUT repos/<owner>/<repo>/actions/permissions/workflow -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true`).
+
+Limitation: pushes and PRs made with `GITHUB_TOKEN` do not trigger other workflows, so required checks do not run on the bot PR automatically. The owner merges it (admin merge or the repository's review process); this is deliberately not worked around with a personal token. Re-evaluate the mode if branch protection changes.
+
 ### Portfolio evidence scope
 
 [Research evidence scope](../portfolio/research-evidence-scope.json) records explicit portfolio exclusions. `dasomel/cka-lab` is excluded from evidence collection, backfill, and completeness audits at the owner request. Keep its existing historical artifacts intact; exclusion does not remove the project from the engineering portfolio. Collection and audit operators must consult this scope before choosing repositories.

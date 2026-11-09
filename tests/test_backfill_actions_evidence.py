@@ -93,6 +93,14 @@ class TestBackfillActionsEvidence(unittest.TestCase):
         records, stats = self.convert(runs, known={(1, 1)})
         self.assertEqual((len(records), stats["skipped_existing"]), (1, 1))
 
+    def test_exclude_paths_skips_own_workflow_runs(self):
+        own = ".github/workflows/research-evidence-backfill.yml"
+        runs = [run(self.main_sha, 1), run(self.main_sha, 2, path=own, name="Research evidence backfill")]
+        records, stats = self.backfill.convert(runs, self.tmp_path, "example/project", None, set(),
+                                               backfilled_at="2026-11-05T00:00:00Z", exclude_paths=(own,))
+        self.assertEqual([item["metadata"]["gh_run_id"] for item in records], [1])
+        self.assertEqual((stats["excluded_workflow"], stats["fetched"]), (1, 2))
+
     def test_write_groups_by_month_and_appends(self):
         runs = [run(self.main_sha, 1, run_started_at="2026-09-02T00:00:00Z"),
                 run(self.main_sha, 2, run_started_at="2026-08-02T00:00:00Z")]
