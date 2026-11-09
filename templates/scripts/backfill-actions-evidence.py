@@ -124,7 +124,7 @@ def on_main(root: pathlib.Path, sha: str, cache: dict[str, bool]) -> bool:
 
 
 def convert(runs: list[dict], root: pathlib.Path, slug: str, since: dt.date | None, known: set,
-            default_branch: str = "main", backfilled_at: str | None = None):
+            default_branch: str = "main", backfilled_at: str | None = None, exclude_paths: tuple[str, ...] = ()):
     backfilled_at = backfilled_at or dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
     stats = collections.Counter()
     # D9: Fail on a missing baseline instead of reporting a successful empty export.
@@ -141,6 +141,12 @@ def convert(runs: list[dict], root: pathlib.Path, slug: str, since: dt.date | No
         started = parse_time(run.get("run_started_at"))
         if since and started and started.date() < since:
             stats["excluded_since"] += 1
+            continue
+        # D11: Workflow files named here are skipped so a scheduled backfill does not record its own
+        # runs (each week's run would otherwise add a record about the previous run). Cost: those
+        # runs are absent from the dataset by design; the count is reported as excluded_workflow.
+        if run.get("path") in exclude_paths:
+            stats["excluded_workflow"] += 1
             continue
         record = build_record(run, slug, default_branch, backfilled_at)
         if record is None:
@@ -184,6 +190,8 @@ def main() -> int:
     parser.add_argument("--repo-root", type=pathlib.Path, default=pathlib.Path.cwd())
     parser.add_argument("--output-dir", type=pathlib.Path, help="default: <repo-root>/research/evidence")
     parser.add_argument("--since", type=dt.date.fromisoformat, help="only runs started on/after YYYY-MM-DD")
+    parser.add_argument("--exclude-path", action="append", default=[], metavar="WORKFLOW_PATH",
+                        help="skip runs of this workflow file, e.g. .github/workflows/x.yml (repeatable)")
     parser.add_argument("--dry-run", action="store_true", help="print counts only")
     args = parser.parse_args()
     root = args.repo_root.resolve()
@@ -193,7 +201,7 @@ def main() -> int:
         slug = validation.repository_slug(root)
         runs = fetch_runs(slug)
         known = existing_keys(*(path for path in (root / "research/evidence", output_dir) if path.is_dir()))
-        records, stats = convert(runs, root, slug, args.since, known)
+        records, stats = convert(runs, root, slug, args.since, known, exclude_paths=tuple(args.exclude_path))
         # D7: Every record is validated before anything is written; one invalid record aborts the run.
         for record in records:
             errors = validation.record_errors(record, root, slug)

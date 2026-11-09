@@ -58,6 +58,17 @@ python3 templates/scripts/backfill-actions-evidence.py --repo-root /path/to/proj
 
 `duration_ms`는 API의 `updated_at - run_started_at` 간격이며 `metadata.duration_semantics=workflow_update_interval`로 표시합니다. 실행 후 갱신과 재실행의 영향을 받을 수 있어 job 실행 시간·CPU 시간·정확한 workflow 완료 시간으로 해석하지 않습니다. event 분류는 이름/경로로 추론하며 일치하지 않으면 `test`로 분류합니다. `attempt`와 `ci_retries`는 `run_attempt`에서 파생된 workflow 재실행 횟수이며 개별 job 재시도 횟수가 아닙니다. 사람 개입·리뷰 수정은 관측되지 않았습니다. v1이 정수를 요구해 0을 채우지만 metadata에 `human_interventions_observed=false`, `review_corrections_observed=false`를 명시합니다. 개입·수정 분석에서는 이 필드를 제외하고, 0을 실측 0으로 간주하지 않습니다.
 
+### 주기적 백필
+
+일회성 백필은 실행한 날 이후의 증거를 늘리지 못합니다. `templates/workflows/research-evidence-backfill.yml`은 이를 매주(월요일 00:17 UTC, 수동 `workflow_dispatch` 포함) 다시 실행합니다. workflow를 `.github/workflows/`에, `templates/scripts/backfill-actions-evidence.py`를 `scripts/research/`에 바이트 단위로 동일하게 복사합니다(가져오는 검증기 옆). 작업은 전체 이력을 가져와 `(gh_run_id, gh_run_attempt)`가 아직 없는 실행만 추가하고, 자기 workflow의 실행은 `--exclude-path`로 제외하며, `scripts/research/check-research-evidence.py`를 통과해야 하고, 변경이 없으면 커밋 없이 종료합니다. concurrency 그룹으로 실행이 겹치지 않습니다.
+
+전달 방식은 자동 감지하지 않고 workflow `env`의 `EVIDENCE_DELIVERY`로 저장소마다 명시합니다.
+
+- `push`: `main`이 보호되지 않았거나 필수 검사가 없을 때. `research/evidence` 변경만 `github-actions[bot]`으로 커밋해 `main`에 push합니다(non-fast-forward면 rebase 후 한 번 재시도).
+- `pr`: `main`에 필수 검사가 있을 때. 고정 브랜치 `bot/research-evidence-backfill`을 매 실행마다 `main`에서 새로 만들어 force-push하고(force-push 대상은 이 봇 브랜치뿐), 열린 PR이 없으면 PR을 만듭니다. 이미 열려 있으면 push가 그 PR을 갱신합니다. 저장소 설정 "Allow GitHub Actions to create and approve pull requests"가 필요합니다(`gh api -X PUT repos/<owner>/<repo>/actions/permissions/workflow -f default_workflow_permissions=read -F can_approve_pull_request_reviews=true`).
+
+한계: `GITHUB_TOKEN`으로 만든 push와 PR은 다른 workflow를 실행하지 않으므로 봇 PR에서는 필수 검사가 자동으로 돌지 않습니다. 소유자가 관리자 머지 또는 저장소의 리뷰 절차로 머지합니다. 개인 토큰 등으로 우회하지 않습니다. 브랜치 보호가 바뀌면 방식을 다시 정합니다.
+
 ### 포트폴리오 증적 관리 범위
 
 [증적 관리 범위](../portfolio/research-evidence-scope.json)에 명시적 제외 대상을 기록합니다. `dasomel/cka-lab`은 소유자 요청에 따라 증적 수집·백필·완전성 감사에서 제외합니다. 기존 과거 산출물은 보존하며, 증적 관리 제외가 엔지니어링 포트폴리오에서의 삭제를 뜻하지는 않습니다. 수집·감사 담당자는 저장소를 선택하기 전에 이 범위를 확인합니다.
