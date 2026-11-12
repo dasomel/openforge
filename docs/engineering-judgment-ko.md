@@ -85,7 +85,7 @@ Worker Agent에게 위임하는 세션을 위한 관행이며, 모든 저장소�
 
 - **특정 벤더나 등급으로의 모델 라우팅.** OpenForge는 모델 비종속을 유지합니다([Model-Agnostic Agent Instruction Design](model-agnostic-agent-instructions.md) 참조).
 - **Cursor 전용 기능**(플러그인 명령, Agent, 설정 흐름). 도구별 어댑터 영역이지 포트폴리오 표준이 아닙니다.
-- **영어 산문 스타일 규칙.** OpenForge 문서는 이중 언어이며 스타일은 [Documentation Standard](documentation.md)가 정합니다.
+- **영어 산문 스타일 규칙.** OpenForge 문서는 이중 언어이며 스타일은 [Documentation Standard](documentation-ko.md)가 정합니다.
 - **23개 Playbook.** 작업 워크플로는 좁게 트리거되는 Skill([Agent Skills](agent-skills-ko.md))에 두고, 반복되는 필요가 확인될 때 추가합니다.
 - **묻지 않고 커밋하거나 외부 작업을 수행하는 자율성.** OpenForge의 권한 경계([Agent Execution Security Contract](agent-execution-security-ko.md), [Agent Engineering Standard](agent-engineering-ko.md))와 충돌합니다. 커밋, 푸시, 외부 영향 작업은 명시적 승인이 계속 필요하며, 위의 "갈림길 분류"는 되돌릴 수 있는 로컬 작업에만 적용됩니다.
 
