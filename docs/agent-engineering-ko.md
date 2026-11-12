@@ -2,6 +2,8 @@
 
 OpenForge는 Repository Instruction을 모든 코딩 취향을 넣는 파일이 아니라 **Agent와 사람이 공유하는 Engineering Control**로 봅니다.
 
+강제되지 않는 판단 가이드(범위, 근본 원인, 증거 라벨링, 위임)는 [Agent 작업을 위한 엔지니어링 판단 기준](engineering-judgment-ko.md)을 참고하세요.
+
 ## 계층 구조
 
 ```text

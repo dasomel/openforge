@@ -75,6 +75,7 @@ Profile, applicability, 기간이 있는 waiver, baseline, compare/regression ga
 - [Engineering Tooling Matrix](docs/tooling-matrix-ko.md)
 - [의사결정 관리 표준](docs/decision-management-ko.md) ([English](docs/decision-management.md))
 - [Agent Engineering 표준](docs/agent-engineering-ko.md) ([English](docs/agent-engineering.md))
+- [Agent 작업을 위한 엔지니어링 판단 기준](docs/engineering-judgment-ko.md) ([English](docs/engineering-judgment.md))
 - [Agent Execution Security Contract](docs/agent-execution-security-ko.md) ([English](docs/agent-execution-security.md))
 - [실험적 Agent Harness 평가 프로필](docs/agent-harness-evaluation-ko.md) ([English](docs/agent-harness-evaluation.md))
 - [Agent Engineering 적용 기록 — 2026-08](docs/agent-engineering-adoption-2026-08.md)
