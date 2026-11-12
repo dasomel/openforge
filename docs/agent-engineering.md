@@ -2,7 +2,7 @@
 
 OpenForge treats repository instructions as an engineering control, not as a dumping ground for every coding preference.
 
-For the canonical model-independent instruction architecture, progressive disclosure, autonomy boundaries, compatibility overrides, and instruction-debt auditing, see [Model-Agnostic Agent Instruction Design](model-agnostic-agent-instructions.md).
+For the canonical model-independent instruction architecture, progressive disclosure, autonomy boundaries, compatibility overrides, and instruction-debt auditing, see [Model-Agnostic Agent Instruction Design](model-agnostic-agent-instructions.md). For non-enforced judgment guidance on scope, root cause, evidence labeling, and delegation, see [Engineering Judgment for Agent Work](engineering-judgment.md).
 
 ## Layered instruction model
 
