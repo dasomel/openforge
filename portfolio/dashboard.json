@@ -1352,7 +1352,7 @@
       {
         "repository": "dasomel/narwhal",
         "revision": "626ed66fd365a2e7104e94cbfe4bbaecad262212",
-        "observed_at": "2026-11-04T22:15:41Z",
+        "observed_at": "2026-11-22T16:07:47Z",
         "overall": "fail",
         "signal_counts": {
           "total": 6,
@@ -1372,10 +1372,10 @@
         },
         "scorecard": {
           "status": "partial",
-          "score": 5.0,
-          "tool_version": "v5.6.0",
-          "observed_at": "2026-11-04T22:15:41Z",
-          "commit": "e91fc6b0ba9020acc7733f9e0966032b62d09952"
+          "score": 6.2,
+          "tool_version": "v5.7.0",
+          "observed_at": "2026-11-22T16:07:47Z",
+          "commit": "412cf3a0a6c59d898ab0a19d4214d3d78d664367"
         },
         "evidence": {
           "record": "portfolio/security-readiness/narwhal.json",
