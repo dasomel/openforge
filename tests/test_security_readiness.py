@@ -17,8 +17,8 @@ spec.loader.exec_module(validator)
 
 TODAY = dt.date(2026, 10, 7)
 NOW = dt.datetime(2026, 10, 7, 12, 0, 0, tzinfo=dt.timezone.utc)
-# Committed samples were last re-observed on 2026-11-05 (narwhal re-scan); they need a later clock.
-SAMPLES_NOW = dt.datetime(2026, 11, 6, 0, 0, 0, tzinfo=dt.timezone.utc)
+# Committed samples were last re-observed on 2026-11-23 (narwhal re-scan); they need a later clock.
+SAMPLES_NOW = dt.datetime(2026, 11, 24, 0, 0, 0, tzinfo=dt.timezone.utc)
 
 
 def fixture(name):
