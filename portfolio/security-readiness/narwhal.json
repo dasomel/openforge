@@ -2,18 +2,18 @@
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/narwhal",
   "revision": "626ed66fd365a2e7104e94cbfe4bbaecad262212",
-  "observed_at": "2026-11-04T22:15:41Z",
+  "observed_at": "2026-11-22T16:07:47Z",
   "signals": [
     {
       "id": "scorecard",
       "source": {
         "tool": "openssf-scorecard",
-        "version": "v5.6.0",
-        "observed_at": "2026-11-04T22:15:41Z",
-        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit e91fc6b0ba9020acc7733f9e0966032b62d09952; scorecard commit 61e8474; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:753a48fe942422af7b7a003f456c006a4e3e05de4e6c0722af1a2dc62375606e)"
+        "version": "v5.7.0",
+        "observed_at": "2026-11-22T16:07:47Z",
+        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit 412cf3a0a6c59d898ab0a19d4214d3d78d664367; scorecard commit d7552fb; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:c90bcc006df4349645befc54c386d0897a1cbaea1ff27b72d4117aed05610ce4)"
       },
       "status": "partial",
-      "note": "Scorecard v5.6.0 overall 5/10 over 18 checks (18 conclusive). Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
+      "note": "Scorecard v5.7.0 overall 6.2/10 over 18 checks (18 conclusive). Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
       "findings": [
         {
           "id": "narwhal-scorecard-branch-protection",
@@ -27,7 +27,7 @@
         },
         {
           "id": "narwhal-scorecard-code-review",
-          "summary": "Code-Review 0/10: Found 0/25 approved changesets -- score normalized to 0",
+          "summary": "Code-Review 0/10: Found 0/30 approved changesets -- score normalized to 0",
           "severity": "high"
         },
         {
@@ -42,7 +42,7 @@
         },
         {
           "id": "narwhal-scorecard-pinned-dependencies",
-          "summary": "Pinned-Dependencies 5/10: dependency not pinned by hash detected -- score normalized to 5",
+          "summary": "Pinned-Dependencies 6/10: dependency not pinned by hash detected -- score normalized to 6",
           "severity": "medium"
         },
         {
@@ -56,25 +56,20 @@
           "severity": "high"
         },
         {
-          "id": "narwhal-scorecard-token-permissions",
-          "summary": "Token-Permissions 0/10: detected GitHub workflow tokens with excessive permissions",
-          "severity": "high"
-        },
-        {
           "id": "narwhal-scorecard-vulnerabilities",
-          "summary": "Vulnerabilities 0/10: 11 existing vulnerabilities detected",
+          "summary": "Vulnerabilities 6/10: 4 existing vulnerabilities detected",
           "severity": "high"
         }
       ],
       "rescan": {
-        "previous_ref": "bb1e12fbbd7d9dd42fcf749f99d06757e501339f",
-        "previous_observed_at": "2026-10-15T11:44:48Z",
+        "previous_ref": "e91fc6b0ba9020acc7733f9e0966032b62d09952",
+        "previous_observed_at": "2026-11-04T22:15:41Z",
         "delta": "improved",
         "resolved_findings": [
           {
-            "id": "narwhal-scorecard-dangerous-workflow",
-            "summary": "Dangerous-Workflow 0/10: dangerous workflow patterns detected",
-            "resolved_by": "https://github.com/dasomel/narwhal/pull/433"
+            "id": "narwhal-scorecard-token-permissions",
+            "summary": "Token-Permissions 0/10: detected GitHub workflow tokens with excessive permissions",
+            "resolved_by": "https://github.com/dasomel/narwhal/pull/768"
           }
         ]
       }

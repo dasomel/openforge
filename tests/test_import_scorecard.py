@@ -262,10 +262,13 @@ class RealOutputTests(unittest.TestCase):
         return record
 
     def test_committed_samples_reproduce_from_raw_output(self):
+        # D2: pin each sample's measured tool version; cost: update on re-scan;
+        # escape hatch: move versions to fixtures if the sample set grows.
+        versions = {"narwhal": "v5.7.0", "kubemetal": "v5.6.0", "clusterdeck": "v5.6.0"}
         for name in ("narwhal", "kubemetal", "clusterdeck"):
             raw = json.loads((EVIDENCE / "scorecard" / f"{name}.json").read_text(encoding="utf-8"))
             parsed = adapter.parse_scorecard(raw, f"dasomel/{name}")
-            self.assertEqual(parsed["version"], "v5.6.0")
+            self.assertEqual(parsed["version"], versions[name])
             updated, _ = adapter.apply_scorecard(self.reset_scorecard(name), parsed, f"portfolio/security-readiness/scorecard/{name}.json")
             expected = json.loads((EVIDENCE / f"{name}.json").read_text(encoding="utf-8"))
             # D1: rescan is hand-written, not adapter output. Cost: validated separately;
