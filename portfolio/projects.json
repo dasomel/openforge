@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-11-15",
+  "updated_at": "2026-11-22",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -202,8 +202,8 @@
         "evidence"
       ],
       "status": {
-        "revision": "7c4df4bd6cc3877c8a7c368420730b926b4cb16d",
-        "updated_at": "2026-11-15",
+        "revision": "52c2c3d21a8e6cd49579edc364c65bdc455ec69e",
+        "updated_at": "2026-11-22",
         "milestone": null,
         "progress_percent": null,
         "capabilities": {
@@ -275,8 +275,8 @@
         },
         "evidence": {
           "ci": "pass",
-          "commit": "7c4df4bd6cc3877c8a7c368420730b926b4cb16d",
-          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/43747031063"
+          "commit": "52c2c3d21a8e6cd49579edc364c65bdc455ec69e",
+          "workflow": "https://github.com/dasomel/kube-ready-box/actions/runs/45039906622"
         }
       }
     },
