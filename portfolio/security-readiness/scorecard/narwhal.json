@@ -1,14 +1,14 @@
 {
-    "date": "2026-11-23T01:07:47+09:00",
+    "date": "2026-11-25T09:21:24+09:00",
     "repo": {
         "name": "github.com/dasomel/narwhal",
-        "commit": "412cf3a0a6c59d898ab0a19d4214d3d78d664367"
+        "commit": "acbd2bcd34345c946ff6ae2ef7d29bd2021a62e5"
     },
     "scorecard": {
         "version": "v5.7.0",
         "commit": "d7552fb3cdc05e9f6426177d3328887304fce554"
     },
-    "score": 6.2,
+    "score": 6.5,
     "checks": [
         {
             "details": null,
@@ -63,7 +63,7 @@
         {
             "details": null,
             "score": 0,
-            "reason": "Found 0/30 approved changesets -- score normalized to 0",
+            "reason": "Found 0/28 approved changesets -- score normalized to 0",
             "name": "Code-Review",
             "documentation": {
                 "url": "https://github.com/ossf/scorecard/blob/d7552fb3cdc05e9f6426177d3328887304fce554/docs/checks.md#code-review",
@@ -130,7 +130,7 @@
         {
             "details": null,
             "score": 10,
-            "reason": "30 commit(s) and 29 issue activity found in the last 90 days -- score normalized to 10",
+            "reason": "30 commit(s) and 28 issue activity found in the last 90 days -- score normalized to 10",
             "name": "Maintained",
             "documentation": {
                 "url": "https://github.com/ossf/scorecard/blob/d7552fb3cdc05e9f6426177d3328887304fce554/docs/checks.md#maintained",
@@ -255,17 +255,13 @@
                 "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:993",
                 "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:995",
                 "Warn: downloadThenRun not pinned by hash: scripts/test/test-sso.sh:1031",
-                "Warn: npmCommand not pinned by hash: .github/workflows/lint.yml:211",
-                "Warn: npmCommand not pinned by hash: .github/workflows/markdown-changed.yml:39",
-                "Warn: pipCommand not pinned by hash: .github/workflows/portal-research-evidence.yml:60",
                 "Warn: pipCommand not pinned by hash: .github/workflows/research-evidence-backfill.yml:59",
-                "Warn: pipCommand not pinned by hash: .github/workflows/research-evidence.yml:32",
                 "Info:  47 out of  47 GitHub-owned GitHubAction dependencies pinned",
                 "Info:  31 out of  31 third-party GitHubAction dependencies pinned",
-                "Info:   0 out of   3 pipCommand dependencies pinned",
+                "Info:   2 out of   3 pipCommand dependencies pinned",
                 "Info:   7 out of   7 containerImage dependencies pinned",
                 "Info:   0 out of  22 downloadThenRun dependencies pinned",
-                "Info:   0 out of   2 npmCommand dependencies pinned"
+                "Info:   2 out of   2 npmCommand dependencies pinned"
             ],
             "score": 6,
             "reason": "dependency not pinned by hash detected -- score normalized to 6",
@@ -304,21 +300,21 @@
         },
         {
             "details": [
-                "Warn: release artifact portal/v1.1.23 not signed: https://api.github.com/repos/dasomel/narwhal/releases/452300735",
-                "Warn: release artifact portal/v1.1.22 not signed: https://api.github.com/repos/dasomel/narwhal/releases/451201234",
-                "Warn: release artifact portal/v1.1.21 not signed: https://api.github.com/repos/dasomel/narwhal/releases/450897424",
-                "Warn: release artifact portal/v1.1.20 not signed: https://api.github.com/repos/dasomel/narwhal/releases/450793815",
-                "Warn: release artifact portal/v1.1.19 not signed: https://api.github.com/repos/dasomel/narwhal/releases/449346583",
-                "Warn: release artifact portal/v1.1.23 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/452300735",
-                "Warn: release artifact portal/v1.1.22 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/451201234",
-                "Warn: release artifact portal/v1.1.21 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/450897424",
-                "Warn: release artifact portal/v1.1.20 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/450793815",
-                "Warn: release artifact portal/v1.1.19 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/449346583",
-                "Warn: release artifact portal/v1.1.23 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/452300735",
-                "Warn: release artifact portal/v1.1.22 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/451201234",
-                "Warn: release artifact portal/v1.1.21 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/450897424",
-                "Warn: release artifact portal/v1.1.20 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/450793815",
-                "Warn: release artifact portal/v1.1.19 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/449346583"
+                "Warn: release artifact portal/v1.1.28 not signed: https://api.github.com/repos/dasomel/narwhal/releases/457364838",
+                "Warn: release artifact portal/v1.1.27 not signed: https://api.github.com/repos/dasomel/narwhal/releases/457058790",
+                "Warn: release artifact portal/v1.1.26 not signed: https://api.github.com/repos/dasomel/narwhal/releases/456869267",
+                "Warn: release artifact portal/v1.1.25 not signed: https://api.github.com/repos/dasomel/narwhal/releases/456694149",
+                "Warn: release artifact portal/v1.1.24 not signed: https://api.github.com/repos/dasomel/narwhal/releases/454785069",
+                "Warn: release artifact portal/v1.1.28 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/457364838",
+                "Warn: release artifact portal/v1.1.27 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/457058790",
+                "Warn: release artifact portal/v1.1.26 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/456869267",
+                "Warn: release artifact portal/v1.1.25 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/456694149",
+                "Warn: release artifact portal/v1.1.24 is not immutable: https://api.github.com/repos/dasomel/narwhal/releases/454785069",
+                "Warn: release artifact portal/v1.1.28 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/457364838",
+                "Warn: release artifact portal/v1.1.27 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/457058790",
+                "Warn: release artifact portal/v1.1.26 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/456869267",
+                "Warn: release artifact portal/v1.1.25 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/456694149",
+                "Warn: release artifact portal/v1.1.24 does not have provenance: https://api.github.com/repos/dasomel/narwhal/releases/454785069"
             ],
             "score": 0,
             "reason": "Project has not signed or included provenance with any releases.",
@@ -330,21 +326,21 @@
         },
         {
             "details": [
-                "Warn: jobLevel 'contents' permission set to 'write': .github/workflows/cleanup-merged-branch.yml:21",
                 "Info: jobLevel 'pull-requests' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:22",
+                "Warn: jobLevel 'contents' permission set to 'write': .github/workflows/cleanup-merged-branch.yml:21",
                 "Info: jobLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:24",
                 "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:101",
                 "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:236",
                 "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:343",
                 "Info: jobLevel 'contents' permission set to 'read': .github/workflows/portal-docker-publish.yml:414",
-                "Info: jobLevel 'packages' permission set to 'read': .github/workflows/portal-release.yml:79",
                 "Warn: jobLevel 'contents' permission set to 'write': .github/workflows/portal-release.yml:78",
+                "Info: jobLevel 'packages' permission set to 'read': .github/workflows/portal-release.yml:79",
                 "Warn: jobLevel 'contents' permission set to 'write': .github/workflows/release.yml:19",
                 "Info: jobLevel 'actions' permission set to 'read': .github/workflows/research-evidence-backfill.yml:45",
                 "Warn: jobLevel 'contents' permission set to 'write': .github/workflows/research-evidence-backfill.yml:46",
                 "Info: topLevel 'contents' permission set to 'read': .github/workflows/agent-behavior.yml:13",
-                "Info: topLevel 'pull-requests' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:14",
                 "Info: topLevel 'contents' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:13",
+                "Info: topLevel 'pull-requests' permission set to 'read': .github/workflows/cleanup-merged-branch.yml:14",
                 "Info: topLevel 'contents' permission set to 'read': .github/workflows/image-digest-drift.yml:17",
                 "Info: topLevel 'contents' permission set to 'read': .github/workflows/lint.yml:16",
                 "Info: topLevel 'contents' permission set to 'read': .github/workflows/markdown-changed.yml:24",
@@ -373,14 +369,9 @@
             }
         },
         {
-            "details": [
-                "Warn: Project is vulnerable to: https://osv.dev/GHSA-3g3m-2fjr-6pw4",
-                "Warn: Project is vulnerable to: https://osv.dev/GHSA-g3hv-75wg-m249",
-                "Warn: Project is vulnerable to: https://osv.dev/GHSA-9wx9-5pv9-3349",
-                "Warn: Project is vulnerable to: https://osv.dev/GHSA-f86p-h4j2-7qgj"
-            ],
-            "score": 6,
-            "reason": "4 existing vulnerabilities detected",
+            "details": null,
+            "score": 10,
+            "reason": "0 existing vulnerabilities detected",
             "name": "Vulnerabilities",
             "documentation": {
                 "url": "https://github.com/ossf/scorecard/blob/d7552fb3cdc05e9f6426177d3328887304fce554/docs/checks.md#vulnerabilities",

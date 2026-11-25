@@ -2,18 +2,18 @@
   "schema_version": "openforge-security-readiness-evidence/v1",
   "repository": "dasomel/narwhal",
   "revision": "626ed66fd365a2e7104e94cbfe4bbaecad262212",
-  "observed_at": "2026-11-22T16:07:47Z",
+  "observed_at": "2026-11-25T00:21:24Z",
   "signals": [
     {
       "id": "scorecard",
       "source": {
         "tool": "openssf-scorecard",
         "version": "v5.7.0",
-        "observed_at": "2026-11-22T16:07:47Z",
-        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit 412cf3a0a6c59d898ab0a19d4214d3d78d664367; scorecard commit d7552fb; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:c90bcc006df4349645befc54c386d0897a1cbaea1ff27b72d4117aed05610ce4)"
+        "observed_at": "2026-11-25T00:21:24Z",
+        "ref": "scorecard --repo=github.com/dasomel/narwhal --format=json (scanned commit acbd2bcd34345c946ff6ae2ef7d29bd2021a62e5; scorecard commit d7552fb; raw output: portfolio/security-readiness/scorecard/narwhal.json; checks digest sha256:c84f86ff9cb856b7071a2ee46c4c8ab30f4d6451b0e35a8fdacb229ca57c150e)"
       },
       "status": "partial",
-      "note": "Scorecard v5.7.0 overall 6.2/10 over 18 checks (18 conclusive). Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
+      "note": "Scorecard v5.7.0 overall 6.5/10 over 18 checks (18 conclusive). Status follows the upstream score, not an OpenForge threshold: pass only at 10/10 with no check below 10, fail at 0, otherwise partial.",
       "findings": [
         {
           "id": "narwhal-scorecard-branch-protection",
@@ -27,7 +27,7 @@
         },
         {
           "id": "narwhal-scorecard-code-review",
-          "summary": "Code-Review 0/10: Found 0/30 approved changesets -- score normalized to 0",
+          "summary": "Code-Review 0/10: Found 0/28 approved changesets -- score normalized to 0",
           "severity": "high"
         },
         {
@@ -54,22 +54,17 @@
           "id": "narwhal-scorecard-signed-releases",
           "summary": "Signed-Releases 0/10: Project has not signed or included provenance with any releases.",
           "severity": "high"
-        },
-        {
-          "id": "narwhal-scorecard-vulnerabilities",
-          "summary": "Vulnerabilities 6/10: 4 existing vulnerabilities detected",
-          "severity": "high"
         }
       ],
       "rescan": {
-        "previous_ref": "e91fc6b0ba9020acc7733f9e0966032b62d09952",
-        "previous_observed_at": "2026-11-04T22:15:41Z",
+        "previous_ref": "412cf3a0a6c59d898ab0a19d4214d3d78d664367",
+        "previous_observed_at": "2026-11-22T16:07:47Z",
         "delta": "improved",
         "resolved_findings": [
           {
-            "id": "narwhal-scorecard-token-permissions",
-            "summary": "Token-Permissions 0/10: detected GitHub workflow tokens with excessive permissions",
-            "resolved_by": "https://github.com/dasomel/narwhal/pull/768"
+            "id": "narwhal-scorecard-vulnerabilities",
+            "summary": "Vulnerabilities 6/10: 4 existing vulnerabilities detected. CI markdownlint fixes also landed in https://github.com/dasomel/narwhal/pull/805.",
+            "resolved_by": "https://github.com/dasomel/narwhal/pull/803"
           }
         ]
       }
