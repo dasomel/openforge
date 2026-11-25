@@ -99,7 +99,7 @@
 |---|---|---|---|---|
 | dasomel/clusterdeck | **fail** | 2 · 3 · 1 · 0 · 0 | 3.6/10 (2026-10-15, `2f25ed7`) | [record](../portfolio/security-readiness/clusterdeck.json) · [scorecard](../portfolio/security-readiness/scorecard/clusterdeck.json) |
 | dasomel/kubemetal | **fail** | 2 · 2 · 2 · 0 · 0 | 3.5/10 (2026-10-15, `a7acdba`) | [record](../portfolio/security-readiness/kubemetal.json) · [scorecard](../portfolio/security-readiness/scorecard/kubemetal.json) |
-| dasomel/narwhal | **fail** | 2 · 3 · 1 · 0 · 0 | 6.2/10 (2026-11-22, `412cf3a`) | [record](../portfolio/security-readiness/narwhal.json) · [scorecard](../portfolio/security-readiness/scorecard/narwhal.json) |
+| dasomel/narwhal | **fail** | 2 · 3 · 1 · 0 · 0 | 6.5/10 (2026-11-25, `acbd2bc`) | [record](../portfolio/security-readiness/narwhal.json) · [scorecard](../portfolio/security-readiness/scorecard/narwhal.json) |
 
 ## External contributions
 
