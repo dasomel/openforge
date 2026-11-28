@@ -1,6 +1,6 @@
 {
   "version": "openforge-portfolio/v1",
-  "updated_at": "2026-11-22",
+  "updated_at": "2026-11-25",
   "portfolio": {
     "standard_metrics": 35,
     "standard_maturity_percent": 96.9,
@@ -102,8 +102,8 @@
         "ui"
       ],
       "status": {
-        "revision": "f148f6d2d878a23f207a8e763888856e25975200",
-        "updated_at": "2026-11-05",
+        "revision": "9def2dd838ea03d7489d2785b021c2eace2b99b6",
+        "updated_at": "2026-11-25",
         "milestone": "openforge-compliance-baseline",
         "progress_percent": 90,
         "capabilities": {
@@ -111,17 +111,17 @@
             "status": "implemented",
             "standard": "openforge/compliance-baseline",
             "verification": {
-              "unit": "not-run",
+              "unit": "pass",
               "integration": "not-run",
               "runtime": "not-applicable",
-              "security": "not-run"
+              "security": "pass"
             }
           },
           "stream-iceberg": {
             "status": "implemented",
             "standard": "openforge/data-platform",
             "verification": {
-              "unit": "not-run",
+              "unit": "pass",
               "integration": "not-run",
               "runtime": "not-run",
               "security": "not-run"
@@ -131,7 +131,7 @@
             "status": "implemented",
             "standard": "openforge/data-platform",
             "verification": {
-              "unit": "not-run",
+              "unit": "pass",
               "integration": "not-run",
               "runtime": "not-run",
               "security": "not-run"
@@ -141,17 +141,17 @@
             "status": "implemented",
             "standard": "openforge/agent-engineering",
             "verification": {
-              "unit": "not-run",
+              "unit": "pass",
               "integration": "not-run",
               "runtime": "not-run",
-              "security": "not-run"
+              "security": "pass"
             }
           }
         },
         "evidence": {
           "issue": 114,
           "pull_request": null,
-          "commit": "f148f6d2d878a23f207a8e763888856e25975200",
+          "commit": "9def2dd838ea03d7489d2785b021c2eace2b99b6",
           "ci": "pass",
           "security": "pass",
           "runtime": "not-run"
