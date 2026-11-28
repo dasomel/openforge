@@ -19,7 +19,7 @@
 | [OpenForge](https://github.com/dasomel/openforge) | `portfolio-governance` | **active** | — | standards, governance, security, compliance, portfolio | — | — |
 | [Narwhal](https://github.com/dasomel/narwhal) | `reference-implementation` | **active** | 81.8% | kubernetes, platform-engineering, gitops, ai-agent, portal, operations | [`c9ea9ec5f3ce2170bb6b3b698fc82c5ec3857c7e`](https://github.com/dasomel/narwhal/commit/c9ea9ec5f3ce2170bb6b3b698fc82c5ec3857c7e) | ci: pass |
 | [KubeMetal](https://github.com/dasomel/kubemetal) | `adopter` | **active** | 95.8% | kubernetes, local-ai, mlops, agent, remediation | [`44931433ea92ed9a92ea4a01d81d51d131d4a76a`](https://github.com/dasomel/kubemetal/commit/44931433ea92ed9a92ea4a01d81d51d131d4a76a) | ci: pass |
-| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`f148f6d2d878a23f207a8e763888856e25975200`](https://github.com/dasomel/beluga/commit/f148f6d2d878a23f207a8e763888856e25975200) | ci: pass · security: pass · runtime: not-run |
+| [Beluga](https://github.com/dasomel/beluga) | `adopter` | **active** | — | kubernetes, data-platform, operations-agent, management, ui | [`9def2dd838ea03d7489d2785b021c2eace2b99b6`](https://github.com/dasomel/beluga/commit/9def2dd838ea03d7489d2785b021c2eace2b99b6) | ci: pass · security: pass · runtime: not-run |
 | [kube-ready-box](https://github.com/dasomel/kube-ready-box) | `enforcement-provider` | **active** | 87.1% | kubernetes, runtime, sandbox, security, evidence | [`52c2c3d21a8e6cd49579edc364c65bdc455ec69e`](https://github.com/dasomel/kube-ready-box/commit/52c2c3d21a8e6cd49579edc364c65bdc455ec69e) | ci: pass |
 | [nfs-quota-agent](https://github.com/dasomel/nfs-quota-agent) | `service-provider` | **active** | 81.8% | kubernetes, storage, quota, controller | — | — |
 | [ldapium](https://github.com/dasomel/ldapium) | `service-provider` | **active** | 89.7% | identity, ldap, admin | [`0bfe765102f309d43bb22cded35b7d46ad368677`](https://github.com/dasomel/ldapium/commit/0bfe765102f309d43bb22cded35b7d46ad368677) | ci: pass |
@@ -34,10 +34,10 @@
 
 | Project | Capability | Verification (unit · integration · runtime · security) |
 |---|---|---|
-| Beluga | `compliance-baseline` | unit not-run · integration not-run · runtime not-applicable · security not-run |
-| Beluga | `stream-iceberg` | unit not-run · integration not-run · runtime not-run · security not-run |
-| Beluga | `policy-compiler-seam` | unit not-run · integration not-run · runtime not-run · security not-run |
-| Beluga | `policy-compiler` | unit not-run · integration not-run · runtime not-run · security not-run |
+| Beluga | `compliance-baseline` | unit pass · integration not-run · runtime not-applicable · security pass |
+| Beluga | `stream-iceberg` | unit pass · integration not-run · runtime not-run · security not-run |
+| Beluga | `policy-compiler-seam` | unit pass · integration not-run · runtime not-run · security not-run |
+| Beluga | `policy-compiler` | unit pass · integration not-run · runtime not-run · security pass |
 | kube-ready-box | `license-gate` | unit pass · runtime not-run · security not-run |
 | kube-ready-box | `node-network` | unit pass · runtime not-run · security not-applicable |
 | kube-ready-box | `node-observability` | unit pass · runtime not-run · security not-applicable |
